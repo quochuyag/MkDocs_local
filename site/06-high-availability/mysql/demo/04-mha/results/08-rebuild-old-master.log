@@ -1,0 +1,98 @@
+[14:30:28] ==> Auto-detect master mới qua read_only=0
+[14:30:34] ==> OLD_MASTER=node1  NEW_MASTER=node2
+[14:30:34] ==> Power-on node1
+Bringing machine 'node1' up with 'virtualbox' provider...
+==> node1: Clearing any previously set forwarded ports...
+==> node1: Clearing any previously set network interfaces...
+==> node1: Preparing network interfaces based on configuration...
+    node1: Adapter 1: nat
+    node1: Adapter 2: hostonly
+==> node1: Forwarding ports...
+    node1: 22 (guest) => 2222 (host) (adapter 1)
+==> node1: Running 'pre-boot' VM customizations...
+==> node1: Booting VM...
+==> node1: Waiting for machine to boot. This may take a few minutes...
+    node1: SSH address: 127.0.0.1:2222
+    node1: SSH username: vagrant
+    node1: SSH auth method: private key
+    node1: Warning: Connection reset. Retrying...
+    node1: Warning: Remote connection disconnect. Retrying...
+    node1: Warning: Connection aborted. Retrying...
+    node1: Warning: Connection aborted. Retrying...
+==> node1: Machine booted and ready!
+==> node1: Checking for guest additions in VM...
+    node1: The guest additions on this VM do not match the installed version of
+    node1: VirtualBox! In most cases this is fine, but in rare cases it can
+    node1: prevent things such as shared folders from working properly. If you see
+    node1: shared folder errors, please make sure the guest additions within the
+    node1: virtual machine match the version of VirtualBox you have installed on
+    node1: your host and reload your VM.
+    node1: 
+    node1: Guest Additions Version: 7.2.4
+    node1: VirtualBox Version: 7.0
+==> node1: Setting hostname...
+==> node1: Configuring and enabling network interfaces...
+==> node1: Mounting shared folders...
+    node1: D:/Dba_project/HA/Mysql => /vagrant
+==> node1: Machine already provisioned. Run `vagrant provision` or use the `--provision`
+==> node1: flag to force provisioning. Provisioners marked to run always will still run.
+[14:31:29] ==> Đợi MySQL trên node1 sẵn sàng
+[14:31:34]     MySQL trên node1 ready (1s)
+[14:31:34] ==> Configure node1 làm replica của node2 (192.168.10.12)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[14:31:43] ==> Verify node1 đã trở thành replica
+                  Source_Host: 192.168.10.12
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+[14:31:49] ==> Restart MHA manager (đã tự dừng sau failover)
+Tue May 19 07:31:57 2026 - [warning] Global configuration file /etc/masterha_default.cnf not found. Skipping.
+Tue May 19 07:31:57 2026 - [info] Reading application default configuration from /etc/mha/myCluster.cnf..
+Tue May 19 07:31:57 2026 - [info] Reading server configuration from /etc/mha/myCluster.cnf..
+Tue May 19 07:31:57 2026 - [info] MHA::MasterMonitor version 0.58.
+Tue May 19 07:31:58 2026 - [info] GTID failover mode = 1
+Tue May 19 07:31:58 2026 - [info] Dead Servers:
+Tue May 19 07:31:58 2026 - [info] Alive Servers:
+Tue May 19 07:31:58 2026 - [info]   192.168.10.11(192.168.10.11:3306)
+Tue May 19 07:31:58 2026 - [info]   192.168.10.12(192.168.10.12:3306)
+Tue May 19 07:31:58 2026 - [info]   192.168.10.13(192.168.10.13:3306)
+Tue May 19 07:31:58 2026 - [info] Alive Slaves:
+Tue May 19 07:31:58 2026 - [info]   192.168.10.11(192.168.10.11:3306)  Version=8.0.46 (oldest major version between slaves) log-bin:enabled
+Tue May 19 07:31:58 2026 - [info]     GTID ON
+Tue May 19 07:31:58 2026 - [info]     Replicating from 192.168.10.12(192.168.10.12:3306)
+Tue May 19 07:31:58 2026 - [info]     Primary candidate for the new Master (candidate_master is set)
+Tue May 19 07:31:58 2026 - [info]   192.168.10.13(192.168.10.13:3306)  Version=8.0.46 (oldest major version between slaves) log-bin:enabled
+Tue May 19 07:31:58 2026 - [info]     GTID ON
+Tue May 19 07:31:58 2026 - [info]     Replicating from 192.168.10.12(192.168.10.12:3306)
+Tue May 19 07:31:58 2026 - [info] Current Alive Master: 192.168.10.12(192.168.10.12:3306)
+Tue May 19 07:31:58 2026 - [info] Checking slave configurations..
+Tue May 19 07:31:58 2026 - [info] Checking replication filtering settings..
+Tue May 19 07:31:58 2026 - [info]  binlog_do_db= , binlog_ignore_db= 
+Tue May 19 07:31:58 2026 - [info]  Replication filtering check ok.
+Tue May 19 07:31:58 2026 - [info] GTID (with auto-pos) is supported. Skipping all SSH and Node package checking.
+Tue May 19 07:31:58 2026 - [info] Checking SSH publickey authentication settings on the current master..
+Tue May 19 07:31:58 2026 - [info] HealthCheck: SSH to 192.168.10.12 is reachable.
+Tue May 19 07:31:58 2026 - [info] 
+192.168.10.12(192.168.10.12:3306) (current master)
+ +--192.168.10.11(192.168.10.11:3306)
+ +--192.168.10.13(192.168.10.13:3306)
+
+Tue May 19 07:31:58 2026 - [info] Checking replication health on 192.168.10.11..
+Tue May 19 07:31:58 2026 - [info]  ok.
+Tue May 19 07:31:58 2026 - [info] Checking replication health on 192.168.10.13..
+Tue May 19 07:31:58 2026 - [info]  ok.
+Tue May 19 07:31:58 2026 - [info] Checking master_ip_failover_script status:
+Tue May 19 07:31:58 2026 - [info]   /etc/mha/master_ip_failover.sh --command=status --ssh_user=root --orig_master_host=192.168.10.12 --orig_master_ip=192.168.10.12 --orig_master_port=3306 
+
+MySQL Replication Health is OK.
+Tue May 19 07:31:58 2026 - [info]  OK.
+Tue May 19 07:31:58 2026 - [warning] shutdown_script is not defined.
+Tue May 19 07:31:58 2026 - [info] Got exit code 0 (Not master dead).
+[14:32:01] ==> masterha_check_status
+myCluster (pid:7001) is running(0:PING_OK), master:192.168.10.12
+[14:32:07] ==> Bước 8 hoàn tất. node1 đã làm replica của node2.

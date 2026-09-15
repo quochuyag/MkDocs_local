@@ -1,0 +1,20 @@
+[22:47:26] ================ FORCE FAILOVER TEST (Orchestrator) ================
+[22:47:32] ==> Master ban đầu: node2 (192.168.10.12)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[22:47:38] ==> Đảm bảo recoveries enabled + acknowledge mọi recovery cũ
+{"Code":"OK","Message":"Globally enabled recoveries","Details":"enabled"}
+force-failover-demo
+[22:47:44] ==> Halt --force node2
+==> node2: Forcing shutdown of VM...
+[22:47:50] ==> Poll Orchestrator detection (timeout 120s)
+[22:49:01]     NEW MASTER detected: 192.168.10.13 (qua node1) sau 77s
+[22:49:01] ==> New master = node3
+[22:49:07]     node1 Source_Host = 192.168.10.13
+[22:49:13]     node3 chấp nhận INSERT sau 89s
+[22:49:13] ================ KẾT LUẬN ================
+[22:49:13] FAILOVER_PASS=true PROMOTE_RTO=77s WRITE_RTO=89s old=node2 new=node3
+FAILOVER_PASS=true
+[22:49:13] 
+[22:49:13] Để khôi phục node2:
+[22:49:14]   vagrant up node2
+[22:49:14]   vagrant ssh node2 -c "mysql -uroot -p... -e 'CHANGE REPLICATION SOURCE TO SOURCE_HOST=\"192.168.10.13\", SOURCE_AUTO_POSITION=1, ...; START REPLICA;'"

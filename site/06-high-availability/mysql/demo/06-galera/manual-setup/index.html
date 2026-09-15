@@ -1,0 +1,3752 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../000-overview/">
+      
+      
+        <link rel="next" href="../readme/">
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Hướng dẫn setup THỦ CÔNG — Demo 06 Galera Cluster (Percona XtraDB Cluster 8.0) - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#huong-dan-setup-thu-cong-demo-06-galera-cluster-percona-xtradb-cluster-80" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hướng dẫn setup THỦ CÔNG — Demo 06 Galera Cluster (Percona XtraDB Cluster 8.0)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            06. High Availability (MySQL & MongoDB)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../mongo/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongo
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mysql
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            Mysql
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_2" id="__nav_6_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Demo
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Demo
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../01-async-semisync/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01 async semisync
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../02-innodb-cluster/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02 innodb cluster
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../03-group-replication/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03 group replication
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../04-mha/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04 mha
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../05-orchestrator/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    05 orchestrator
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_2_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_2_6" id="__nav_6_3_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    06 galera
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_6_3_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_3_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            06 galera
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    00 — Tổng quan bài demo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Hướng dẫn setup THỦ CÔNG — Demo 06 Galera Cluster (Percona XtraDB Cluster 8.0)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn setup THỦ CÔNG — Demo 06 Galera Cluster (Percona XtraDB Cluster 8.0)
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-topology-bien-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Topology &amp; biến môi trường
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b0-prerequisites-tren-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0 · Prerequisites trên HOST
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b1-bring-up-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1 · Bring up 4 VMs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B1 · Bring up 4 VMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.1 — Sinh SSH key dùng chung cho cluster (chỉ 1 lần)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b12-spin-up-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.2 — Spin up 4 VMs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b2-prepare-os-chay-tren-moi-4-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2 · Prepare OS — chạy TRÊN MỖI 4 NODES
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B2 · Prepare OS — chạy TRÊN MỖI 4 NODES">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b21-etchosts-4-nodes-giong-nhau" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.1 — /etc/hosts (4 nodes giống nhau)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b22-tat-swap-ntp-sysctl-ulimit" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.2 — Tắt swap, NTP, sysctl, ulimit
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b3-cai-percona-xtradb-cluster-80-chay-tren-3-db-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3 · Cài Percona XtraDB Cluster 8.0 — chạy TRÊN 3 DB NODES
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B3 · Cài Percona XtraDB Cluster 8.0 — chạy TRÊN 3 DB NODES">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b30-purge-mysql-community-neu-a-cai-one-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.0 — Purge MySQL community nếu đã cài (one-time)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b31-add-percona-repo-preseed-root-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.1 — Add Percona repo + preseed root password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b32-cai-pxc" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.2 — Cài PXC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b33-ghi-config-galera-moi-node-1-file-khac-nhau-o-wsrep_node_name-wsrep_node_address" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.3 — Ghi config Galera (mỗi node 1 file, khác nhau ở wsrep_node_name + wsrep_node_address)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b4-bootstrap-cluster-tren-node1" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4 · Bootstrap cluster trên node1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B4 · Bootstrap cluster trên node1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b41-start-mysql-o-che-o-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.1 — Start mysql ở chế độ bootstrap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b42-am-bao-root-co-password-native" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.2 — Đảm bảo root có password native
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b43-verify-cluster-size-1-primary" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.3 — Verify cluster size = 1, Primary
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b5-join-node2-node3-promote-node1" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5 · Join node2 + node3 + Promote node1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B5 · Join node2 + node3 + Promote node1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b51-start-mysqlservice-tren-node2" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.1 — Start mysql.service trên node2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b52-start-mysqlservice-tren-node3-giong-node2" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.2 — Start mysql.service trên node3 (giống node2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b53-promote-node1-tu-bootstrap-mode-regular-member" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.3 — Promote node1 từ bootstrap-mode → regular member
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b6-verify-ay-u" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6 · Verify đầy đủ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B6 · Verify đầy đủ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b61-service-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6.1 — Service + port
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b62-wsrep-status-a-lam-o-b53-galera-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6.2 — wsrep status (đã làm ở B5.3) + Galera config
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b7-smoke-test-multi-master-write-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7 · Smoke test — Multi-master write + Consistency
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B7 · Smoke test — Multi-master write + Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b71-tao-schema-nho-galera-bat-buoc-pk-innodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.1 — Tạo schema (nhớ: Galera bắt buộc PK + InnoDB)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b72-part-1-insert-tuan-tu-tren-node1-check-sync-tren-node23" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.2 — Part 1: Insert tuần tự trên node1, check sync trên node2/3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b73-part-2-insert-song-song-50-rows-tren-moi-node-test-multi-master-certification" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.3 — Part 2: Insert SONG SONG 50 rows trên mỗi node (test multi-master + certification)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b8-test-split-brain-destructive-se-halt-2-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8 · Test Split-Brain (DESTRUCTIVE — sẽ halt 2 VM)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B8 · Test Split-Brain (DESTRUCTIVE — sẽ halt 2 VM)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b81-halt-node2-node3" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.1 — Halt node2 + node3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b82-verify-node1-chuyen-sang-non-primary" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.2 — Verify node1 chuyển sang non-Primary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b83-verify-node1-refuse-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.3 — Verify node1 REFUSE write
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b84-recovery-power-on-lai-node2-node3" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.4 — Recovery: power-on lại node2 + node3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b85-force-quorum-khi-that-su-chi-con-1-node-can-than" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.5 — Force quorum khi thật sự chỉ còn 1 node (CẨN THẬN)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b9-rollback-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      B9 · Rollback (OPTIONAL)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B9 · Rollback (OPTIONAL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b91-soft-rollback-uninstall-pxc-giu-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B9.1 — Soft rollback (uninstall PXC, giữ VMs)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b92-hard-rollback-destroy-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B9.2 — Hard rollback (destroy VMs)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-a-trouble-shooting-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục A — Trouble-shooting nhanh
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phụ lục A — Trouble-shooting nhanh">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a1-error-1698-28000-access-denied-for-user-rootlocalhost" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.1 ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a2-error-log-unknown-variable-wsrep_sst_auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.2 Error log: unknown variable 'wsrep_sst_auth=...'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a3-error-log-failed-to-establish-connection-invalid-padding-certificate-signature-failure" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.3 Error log: Failed to establish connection: invalid padding: certificate signature failure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a4-cluster-bootstrap-uoc-nhung-node23-khong-join-error-connection-refused-roi-connection-timed-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.4 Cluster bootstrap được nhưng node2/3 không join — error Connection refused rồi Connection timed out
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a5-unknown-variable-pxc-encrypt-cluster-traffic" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.5 unknown variable 'pxc-encrypt-cluster-traffic=...'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a6-bootstrap-fail-mysqlbootstrapservice-failed-with-result-signal" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.6 Bootstrap fail: mysql@bootstrap.service: Failed with result 'signal'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a7-node2-sst-fail-giua-chung-datadir-partial" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.7 node2 SST fail giữa chừng → datadir partial
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a8-pxc_strict_modeenforcing-bao-loi-khi-create-table-khong-co-pk" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.8 pxc_strict_mode=ENFORCING báo lỗi khi CREATE TABLE không có PK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a9-er_lock_deadlock-1213-khi-parallel-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.9 ER_LOCK_DEADLOCK (1213) khi parallel write
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-b-tom-tat-files-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục B — Tóm tắt files config
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-c-mapping-bash-scripts-manual-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục C — Mapping bash scripts ↔ manual steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-d-khac-biet-voi-cac-demo-ha-khac" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục D — Khác biệt với các demo HA khác
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-e-loi-a-gap-khi-tu-ong-hoa-demo-nay-lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục E — Lỗi đã gặp khi tự động hoá demo này (lessons learned)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo 06 — Galera Cluster (Percona XtraDB Cluster 8.0)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../results/report/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Results
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../07-proxysql/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07 proxysql
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../08-vagrant-lab/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    08 vagrant lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MySQL High Availability — Toolkit & Runbooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../runbooks/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Runbooks
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-topology-bien-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Topology &amp; biến môi trường
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b0-prerequisites-tren-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0 · Prerequisites trên HOST
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b1-bring-up-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1 · Bring up 4 VMs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B1 · Bring up 4 VMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.1 — Sinh SSH key dùng chung cho cluster (chỉ 1 lần)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b12-spin-up-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.2 — Spin up 4 VMs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b2-prepare-os-chay-tren-moi-4-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2 · Prepare OS — chạy TRÊN MỖI 4 NODES
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B2 · Prepare OS — chạy TRÊN MỖI 4 NODES">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b21-etchosts-4-nodes-giong-nhau" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.1 — /etc/hosts (4 nodes giống nhau)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b22-tat-swap-ntp-sysctl-ulimit" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.2 — Tắt swap, NTP, sysctl, ulimit
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b3-cai-percona-xtradb-cluster-80-chay-tren-3-db-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3 · Cài Percona XtraDB Cluster 8.0 — chạy TRÊN 3 DB NODES
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B3 · Cài Percona XtraDB Cluster 8.0 — chạy TRÊN 3 DB NODES">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b30-purge-mysql-community-neu-a-cai-one-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.0 — Purge MySQL community nếu đã cài (one-time)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b31-add-percona-repo-preseed-root-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.1 — Add Percona repo + preseed root password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b32-cai-pxc" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.2 — Cài PXC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b33-ghi-config-galera-moi-node-1-file-khac-nhau-o-wsrep_node_name-wsrep_node_address" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.3 — Ghi config Galera (mỗi node 1 file, khác nhau ở wsrep_node_name + wsrep_node_address)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b4-bootstrap-cluster-tren-node1" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4 · Bootstrap cluster trên node1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B4 · Bootstrap cluster trên node1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b41-start-mysql-o-che-o-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.1 — Start mysql ở chế độ bootstrap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b42-am-bao-root-co-password-native" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.2 — Đảm bảo root có password native
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b43-verify-cluster-size-1-primary" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.3 — Verify cluster size = 1, Primary
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b5-join-node2-node3-promote-node1" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5 · Join node2 + node3 + Promote node1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B5 · Join node2 + node3 + Promote node1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b51-start-mysqlservice-tren-node2" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.1 — Start mysql.service trên node2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b52-start-mysqlservice-tren-node3-giong-node2" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.2 — Start mysql.service trên node3 (giống node2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b53-promote-node1-tu-bootstrap-mode-regular-member" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.3 — Promote node1 từ bootstrap-mode → regular member
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b6-verify-ay-u" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6 · Verify đầy đủ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B6 · Verify đầy đủ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b61-service-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6.1 — Service + port
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b62-wsrep-status-a-lam-o-b53-galera-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6.2 — wsrep status (đã làm ở B5.3) + Galera config
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b7-smoke-test-multi-master-write-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7 · Smoke test — Multi-master write + Consistency
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B7 · Smoke test — Multi-master write + Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b71-tao-schema-nho-galera-bat-buoc-pk-innodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.1 — Tạo schema (nhớ: Galera bắt buộc PK + InnoDB)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b72-part-1-insert-tuan-tu-tren-node1-check-sync-tren-node23" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.2 — Part 1: Insert tuần tự trên node1, check sync trên node2/3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b73-part-2-insert-song-song-50-rows-tren-moi-node-test-multi-master-certification" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.3 — Part 2: Insert SONG SONG 50 rows trên mỗi node (test multi-master + certification)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b8-test-split-brain-destructive-se-halt-2-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8 · Test Split-Brain (DESTRUCTIVE — sẽ halt 2 VM)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B8 · Test Split-Brain (DESTRUCTIVE — sẽ halt 2 VM)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b81-halt-node2-node3" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.1 — Halt node2 + node3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b82-verify-node1-chuyen-sang-non-primary" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.2 — Verify node1 chuyển sang non-Primary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b83-verify-node1-refuse-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.3 — Verify node1 REFUSE write
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b84-recovery-power-on-lai-node2-node3" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.4 — Recovery: power-on lại node2 + node3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b85-force-quorum-khi-that-su-chi-con-1-node-can-than" class="md-nav__link">
+    <span class="md-ellipsis">
+      B8.5 — Force quorum khi thật sự chỉ còn 1 node (CẨN THẬN)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b9-rollback-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      B9 · Rollback (OPTIONAL)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B9 · Rollback (OPTIONAL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b91-soft-rollback-uninstall-pxc-giu-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B9.1 — Soft rollback (uninstall PXC, giữ VMs)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b92-hard-rollback-destroy-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B9.2 — Hard rollback (destroy VMs)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-a-trouble-shooting-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục A — Trouble-shooting nhanh
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phụ lục A — Trouble-shooting nhanh">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a1-error-1698-28000-access-denied-for-user-rootlocalhost" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.1 ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a2-error-log-unknown-variable-wsrep_sst_auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.2 Error log: unknown variable 'wsrep_sst_auth=...'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a3-error-log-failed-to-establish-connection-invalid-padding-certificate-signature-failure" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.3 Error log: Failed to establish connection: invalid padding: certificate signature failure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a4-cluster-bootstrap-uoc-nhung-node23-khong-join-error-connection-refused-roi-connection-timed-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.4 Cluster bootstrap được nhưng node2/3 không join — error Connection refused rồi Connection timed out
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a5-unknown-variable-pxc-encrypt-cluster-traffic" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.5 unknown variable 'pxc-encrypt-cluster-traffic=...'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a6-bootstrap-fail-mysqlbootstrapservice-failed-with-result-signal" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.6 Bootstrap fail: mysql@bootstrap.service: Failed with result 'signal'
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a7-node2-sst-fail-giua-chung-datadir-partial" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.7 node2 SST fail giữa chừng → datadir partial
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a8-pxc_strict_modeenforcing-bao-loi-khi-create-table-khong-co-pk" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.8 pxc_strict_mode=ENFORCING báo lỗi khi CREATE TABLE không có PK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a9-er_lock_deadlock-1213-khi-parallel-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      A.9 ER_LOCK_DEADLOCK (1213) khi parallel write
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-b-tom-tat-files-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục B — Tóm tắt files config
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-c-mapping-bash-scripts-manual-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục C — Mapping bash scripts ↔ manual steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-d-khac-biet-voi-cac-demo-ha-khac" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục D — Khác biệt với các demo HA khác
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc-e-loi-a-gap-khi-tu-ong-hoa-demo-nay-lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ lục E — Lỗi đã gặp khi tự động hoá demo này (lessons learned)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="huong-dan-setup-thu-cong-demo-06-galera-cluster-percona-xtradb-cluster-80">Hướng dẫn setup THỦ CÔNG — Demo 06 Galera Cluster (Percona XtraDB Cluster 8.0)<a class="headerlink" href="#huong-dan-setup-thu-cong-demo-06-galera-cluster-percona-xtradb-cluster-80" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Tài liệu này ghi lại <strong>TỪNG CÂU LỆNH</strong> để dựng giải pháp 06 mà không cần <code>run-all.sh</code> / <code>run-all.ps1</code>. Copy-paste theo thứ tự từ trên xuống. Mỗi bước nêu rõ:
+- 🖥️ <strong>Where</strong>: chạy ở đâu (HOST / node1 / node2 / node3 / mgmt)
+- 💻 <strong>Command</strong>: lệnh CLI hoặc SQL
+- 📝 <strong>File</strong>: cấu hình cần ghi (nếu có)
+- ✅ <strong>Verify</strong>: cách kiểm tra step OK</p>
+<p>⚠ <strong>QUAN TRỌNG</strong>: PXC thay thế HẲN <code>mysql-server</code> community. <strong>KHÔNG</strong> chạy <code>scripts/common/01-install-mysql.sh</code> trên 3 DB nodes. Nếu host đã cài MySQL community, phải PURGE trước (xem B3.0).</p>
+</blockquote>
+<h2 id="0-topology-bien-moi-truong">0. Topology &amp; biến môi trường<a class="headerlink" href="#0-topology-bien-moi-truong" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Host</th>
+<th>IP</th>
+<th>Vai trò</th>
+<th>Ports listen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>192.168.10.11</td>
+<td>PXC member (bootstrap node)</td>
+<td>3306, 4567, 4568, 4444</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.10.12</td>
+<td>PXC member (joiner)</td>
+<td>3306, 4567, 4568, 4444</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.10.13</td>
+<td>PXC member (joiner)</td>
+<td>3306, 4567, 4568, 4444</td>
+</tr>
+<tr>
+<td>mgmt</td>
+<td>192.168.10.20</td>
+<td>mysql-client / observer</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Credentials mặc định (đổi nếu muốn — xem <a href="../../../scripts/common/env.sh">scripts/common/env.sh</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>MYSQL_ROOT_PWD       = ChangeMe!Root#2026
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>GALERA_CLUSTER_NAME  = pxc-cluster
+</span></code></pre></div>
+<p>Cổng Galera cần thông giữa 3 DB nodes:</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Mục đích</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3306</td>
+<td>Client MySQL (như bình thường — mọi node WRITABLE)</td>
+</tr>
+<tr>
+<td>4567</td>
+<td>Galera replication (group communication, gcomm)</td>
+</tr>
+<tr>
+<td>4568</td>
+<td>IST — Incremental State Transfer (replay missed txns)</td>
+</tr>
+<tr>
+<td>4444</td>
+<td>SST — State Snapshot Transfer (full copy via xtrabackup)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="b0-prerequisites-tren-host">B0 · Prerequisites trên HOST<a class="headerlink" href="#b0-prerequisites-tren-host" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST (Windows / macOS / Linux)</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Linux/macOS — cài Vagrant + VirtualBox qua package manager</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># Windows — tải installer:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">#   https://www.virtualbox.org/wiki/Downloads     (≥ 7.0)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">#   https://www.vagrantup.com/downloads           (≥ 2.3)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">#   https://git-scm.com/download/win              (Git Bash)</span>
+</span></code></pre></div>
+<p>✅ <strong>Verify</strong>:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">vagrant</span> <span class="p">-</span><span class="n">-version</span>       <span class="c"># Vagrant 2.3+</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">VBoxManage</span> <span class="p">-</span><span class="n">-version</span>    <span class="c"># 7.0+</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="b1-bring-up-4-vms">B1 · Bring up 4 VMs<a class="headerlink" href="#b1-bring-up-4-vms" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST, ở thư mục <code>vagrant/</code></p>
+<h3 id="b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan">B1.1 — Sinh SSH key dùng chung cho cluster (chỉ 1 lần)<a class="headerlink" href="#b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>bash<span class="w"> </span>provision/generate-ssh-key.sh
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># tạo provision/cluster_id_rsa + .pub</span>
+</span></code></pre></div>
+<h3 id="b12-spin-up-4-vms">B1.2 — Spin up 4 VMs<a class="headerlink" href="#b12-spin-up-4-vms" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">VAGRANT_DEFAULT_PROVIDER</span><span class="o">=</span>virtualbox<span class="w">    </span><span class="c1"># PowerShell: $env:VAGRANT_DEFAULT_PROVIDER='virtualbox'</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>vagrant<span class="w"> </span>up<span class="w"> </span>node1<span class="w"> </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>vagrant<span class="w"> </span>up<span class="w"> </span>node2<span class="w"> </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>vagrant<span class="w"> </span>up<span class="w"> </span>node3<span class="w"> </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>vagrant<span class="w"> </span>up<span class="w"> </span>mgmt<span class="w">  </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span></code></pre></div>
+<p>✅ <strong>Verify</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>vagrant<span class="w"> </span>status
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Tất cả 4 VM: running (virtualbox)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Test connectivity giữa các nodes (đặc biệt port 4567 sau này — không kiểm tra ở đây vì PXC chưa chạy)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"ping -c1 -W2 node2 &amp;&amp; ping -c1 -W2 node3 &amp;&amp; ping -c1 -W2 mgmt"</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="b2-prepare-os-chay-tren-moi-4-nodes">B2 · Prepare OS — chạy TRÊN MỖI 4 NODES<a class="headerlink" href="#b2-prepare-os-chay-tren-moi-4-nodes" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: node1, node2, node3, mgmt (4 lần) — chạy với <code>sudo</code></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># SSH vào từng VM (lặp lại 4 lần)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w">     </span><span class="c1"># rồi node2, node3, mgmt</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>sudo<span class="w"> </span>-i<span class="w">               </span><span class="c1"># vào root shell</span>
+</span></code></pre></div>
+<h3 id="b21-etchosts-4-nodes-giong-nhau">B2.1 — <code>/etc/hosts</code> (4 nodes giống nhau)<a class="headerlink" href="#b21-etchosts-4-nodes-giong-nhau" title="Permanent link">&para;</a></h3>
+<p>📝 <strong>File</strong>: <code>/etc/hosts</code> — append block:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a># &gt;&gt;&gt; mysql-ha cluster &gt;&gt;&gt;
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>192.168.10.11  node1
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>192.168.10.12  node2
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>192.168.10.13  node3
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>192.168.10.20  mgmt
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a># &lt;&lt;&lt; mysql-ha cluster &lt;&lt;&lt;
+</span></code></pre></div></p>
+<h3 id="b22-tat-swap-ntp-sysctl-ulimit">B2.2 — Tắt swap, NTP, sysctl, ulimit<a class="headerlink" href="#b22-tat-swap-ntp-sysctl-ulimit" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Tắt swap (PXC khuyến nghị)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>swapoff<span class="w"> </span>-a
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>sed<span class="w"> </span>-i.bak<span class="w"> </span>-E<span class="w"> </span><span class="s1">'/^[^#].*\sswap\s/s/^/#/'</span><span class="w"> </span>/etc/fstab
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># NTP — clock skew giữa nodes phá hỏng cert-based replication</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>timedatectl<span class="w"> </span>set-ntp<span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive<span class="w"> </span>apt-get<span class="w"> </span>update
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>chrony<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>chrony
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1"># sysctl</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>cat<span class="w"> </span>&gt;/etc/sysctl.d/99-mysql-ha.conf<span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="s">vm.swappiness = 1</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="s">net.core.somaxconn = 65535</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="s">net.ipv4.tcp_tw_reuse = 1</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="s">net.ipv4.tcp_fin_timeout = 15</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="s">net.ipv4.tcp_keepalive_time = 60</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="s">net.ipv4.tcp_keepalive_intvl = 10</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="s">net.ipv4.tcp_keepalive_probes = 6</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="s">fs.aio-max-nr = 1048576</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="s">fs.file-max = 2097152</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="s">EOF</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>sysctl<span class="w"> </span>--system
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="c1"># ulimit</span>
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/systemd/system/mysql.service.d
+</span><span id="__span-8-26"><a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>cat<span class="w"> </span>&gt;/etc/systemd/system/mysql.service.d/limits.conf<span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
+</span><span id="__span-8-27"><a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="s">[Service]</span>
+</span><span id="__span-8-28"><a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a><span class="s">LimitNOFILE=1048576</span>
+</span><span id="__span-8-29"><a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a><span class="s">LimitNPROC=65535</span>
+</span><span id="__span-8-30"><a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a><span class="s">EOF</span>
+</span><span id="__span-8-31"><a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>systemctl<span class="w"> </span>daemon-reload
+</span><span id="__span-8-32"><a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>
+</span><span id="__span-8-33"><a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a><span class="c1"># AppArmor: disable (Galera bind 4567/4568/4444 mà default profile chặn)</span>
+</span><span id="__span-8-34"><a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a>systemctl<span class="w"> </span>disable<span class="w"> </span>--now<span class="w"> </span>apparmor<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span></code></pre></div>
+<p>✅ <strong>Verify</strong>: trên mỗi node:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>grep<span class="w"> </span>-A4<span class="w"> </span><span class="s1">'mysql-ha cluster'</span><span class="w"> </span>/etc/hosts<span class="w">    </span><span class="c1"># 4 dòng IP</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>swapon<span class="w"> </span>--show<span class="w">                              </span><span class="c1"># rỗng (swap OFF)</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>timedatectl<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>synchron<span class="w">             </span><span class="c1"># "System clock synchronized: yes"</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>sysctl<span class="w"> </span>vm.swappiness<span class="w">                       </span><span class="c1"># = 1</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="b3-cai-percona-xtradb-cluster-80-chay-tren-3-db-nodes">B3 · Cài Percona XtraDB Cluster 8.0 — chạy TRÊN 3 DB NODES<a class="headerlink" href="#b3-cai-percona-xtradb-cluster-80-chay-tren-3-db-nodes" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: node1, node2, node3 (KHÔNG cài trên mgmt)</p>
+<blockquote>
+<p>⚠ <strong>Bỏ qua bước này</strong> nếu host vẫn còn package <code>mysql-server</code> (MySQL community) từ demo khác. Trước hết PURGE — xem B3.0.</p>
+</blockquote>
+<h3 id="b30-purge-mysql-community-neu-a-cai-one-time">B3.0 — Purge MySQL community nếu đã cài (one-time)<a class="headerlink" href="#b30-purge-mysql-community-neu-a-cai-one-time" title="Permanent link">&para;</a></h3>
+<p>🖥️ <strong>Where</strong>: node1, node2, node3</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Kiểm tra</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>dpkg<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">'^ii  mysql-server-8\.|^ii  mysql-server-core'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n3
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Nếu thấy package mysql-server* → purge</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>mysql<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>mysql@bootstrap.service<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>sudo<span class="w"> </span><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive<span class="w"> </span>apt-get<span class="w"> </span>remove<span class="w"> </span>--purge<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">  </span><span class="s1">'mysql-server*'</span><span class="w"> </span><span class="s1">'mysql-client*'</span><span class="w"> </span><span class="s1">'mysql-common*'</span><span class="w"> </span><span class="s1">'mysql-community*'</span><span class="w"> </span><span class="s1">'libmysqlclient*'</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/var/lib/mysql<span class="w"> </span>/etc/mysql<span class="w"> </span>/var/log/mysql
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>autoremove<span class="w"> </span>-y
+</span></code></pre></div>
+<p>✅ <strong>Verify</strong> không còn <code>mysql-server-*</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>dpkg<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">'mysql-server|percona-xtradb'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"OK - clean"</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>ls<span class="w"> </span>/var/lib/mysql<span class="w"> </span>/etc/mysql<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s1">'no such'</span><span class="w">  </span><span class="c1"># đều "No such file"</span>
+</span></code></pre></div></p>
+<h3 id="b31-add-percona-repo-preseed-root-password">B3.1 — Add Percona repo + preseed root password<a class="headerlink" href="#b31-add-percona-repo-preseed-root-password" title="Permanent link">&para;</a></h3>
+<p>🖥️ <strong>Where</strong>: node1, node2, node3 (cùng câu lệnh)</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Add Percona repo</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>wget<span class="w"> </span>-qO<span class="w"> </span>/tmp/percona.deb<span class="w"> </span>https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>/tmp/percona.deb
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>sudo<span class="w"> </span>percona-release<span class="w"> </span>setup<span class="w"> </span>pxc-80
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># Preseed root password TRƯỚC khi cài — nếu không, PXC mặc định set root@localhost</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1"># với plugin auth_socket (không có password), khiến mọi tool TCP+password fail.</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>sudo<span class="w"> </span>debconf-set-selections<span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="s">percona-xtradb-cluster-server percona-xtradb-cluster-server/root-pass password ChangeMe!Root#2026</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="s">percona-xtradb-cluster-server percona-xtradb-cluster-server/re-root-pass password ChangeMe!Root#2026</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<h3 id="b32-cai-pxc">B3.2 — Cài PXC<a class="headerlink" href="#b32-cai-pxc" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sudo<span class="w"> </span><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>percona-xtradb-cluster
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="c1"># Package ~250 MB, mất 1-3 phút</span>
+</span></code></pre></div>
+<p>Postinst của Percona thường tự start <code>mysql.service</code> ngay — STOP nó trước khi config:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>mysql<span class="w"> </span><span class="o">||</span><span class="w"> </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>mysqld<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span></code></pre></div>
+<h3 id="b33-ghi-config-galera-moi-node-1-file-khac-nhau-o-wsrep_node_name-wsrep_node_address">B3.3 — Ghi config Galera (mỗi node 1 file, khác nhau ở <code>wsrep_node_name</code> + <code>wsrep_node_address</code>)<a class="headerlink" href="#b33-ghi-config-galera-moi-node-1-file-khac-nhau-o-wsrep_node_name-wsrep_node_address" title="Permanent link">&para;</a></h3>
+<p>📝 <strong>File</strong>: <code>/etc/mysql/mysql.conf.d/zz-pxc.cnf</code></p>
+<blockquote>
+<p>🚨 <strong>Quan trọng — đa NIC</strong>: Vagrant gắn 2 interface cho mỗi VM: <code>eth0</code> (NAT 10.0.2.15 — DÙNG CHUNG cho cả 3 VMs) và <code>eth1</code> (host-only 192.168.10.x — IP unique). Galera dùng <code>wsrep_node_address</code> để tự nhận diện. NẾU dùng NAT IP (10.0.2.15), 3 node đều khai báo cùng IP → cluster broken. <strong>PHẢI</strong> pin IP host-only.</p>
+</blockquote>
+<p>Bash one-liner pick IP host-only:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nv">LOCAL_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s1">' '</span><span class="w"> </span><span class="s1">'\n'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">'^192\.168\.10\.[0-9]+$'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"LOCAL_IP=</span><span class="nv">$LOCAL_IP</span><span class="s2">"</span><span class="w">   </span><span class="c1"># phải là 192.168.10.11/12/13 theo node</span>
+</span></code></pre></div></p>
+<p>Set NODE_NAME theo hostname:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">case</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>hostname<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="k">in</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>node1<span class="o">)</span><span class="w"> </span><span class="nv">NODE_NAME</span><span class="o">=</span>pxc-node1<span class="w"> </span><span class="p">;;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span>node2<span class="o">)</span><span class="w"> </span><span class="nv">NODE_NAME</span><span class="o">=</span>pxc-node2<span class="w"> </span><span class="p">;;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span>node3<span class="o">)</span><span class="w"> </span><span class="nv">NODE_NAME</span><span class="o">=</span>pxc-node3<span class="w"> </span><span class="p">;;</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">esac</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"NODE_NAME=</span><span class="nv">$NODE_NAME</span><span class="s2">"</span>
+</span></code></pre></div></p>
+<p>Ghi config:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/mysql/mysql.conf.d/zz-pxc.cnf<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="s">[mysqld]</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="s">wsrep_provider                = /usr/lib/galera4/libgalera_smm.so</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="s">wsrep_cluster_address         = gcomm://192.168.10.11,192.168.10.12,192.168.10.13</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="s">wsrep_cluster_name            = pxc-cluster</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s">wsrep_node_name               = ${NODE_NAME}</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s">wsrep_node_address            = ${LOCAL_IP}</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">binlog_format                 = ROW</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">default_storage_engine        = InnoDB</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="s">innodb_autoinc_lock_mode      = 2</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="s">wsrep_sst_method              = xtrabackup-v2</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="s"># wsrep_sst_auth REMOVED in PXC 8.0 — SST nay dùng internal user</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="s"># mysql.pxc.sst.user.&lt;rand&gt; tự sinh bởi mysqld; KHÔNG khai báo ở đây.</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="s"># Tắt SSL cho LAB — PXC 8.0 mặc định pxc-encrypt-cluster-traffic=ON,</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="s"># mỗi node sinh cert riêng → handshake fail. Production phải bật + đồng bộ certs.</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="s">pxc-encrypt-cluster-traffic    = OFF</span>
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="s">pxc_strict_mode               = ENFORCING</span>
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="s">EOF</span>
+</span></code></pre></div></p>
+<p>✅ <strong>Verify</strong> trên cả 3 node:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>dpkg<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>percona-xtradb-cluster<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n3
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="c1"># percona-xtradb-cluster                 1:8.0.45-36-1.jammy</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="c1"># percona-xtradb-cluster-client          1:8.0.45-36-1.jammy</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># percona-xtradb-cluster-common          1:8.0.45-36-1.jammy</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>sudo<span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">'^wsrep_node_(name|address)'</span><span class="w"> </span>/etc/mysql/mysql.conf.d/zz-pxc.cnf
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># wsrep_node_name = pxc-nodeN</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="c1"># wsrep_node_address = 192.168.10.1N    ← KHÔNG được là 10.0.2.15</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>mysql
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="c1"># inactive  ← OK, mỗi node sẽ start riêng ở B4/B5</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="b4-bootstrap-cluster-tren-node1">B4 · Bootstrap cluster trên node1<a class="headerlink" href="#b4-bootstrap-cluster-tren-node1" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: node1</p>
+<blockquote>
+<p>⚠ Bước này CHỈ chạy 1 lần khi tạo cluster MỚI. Nếu cluster đã tồn tại, dùng <code>systemctl start mysql</code> thường (như B5).</p>
+</blockquote>
+<h3 id="b41-start-mysql-o-che-o-bootstrap">B4.1 — Start mysql ở chế độ bootstrap<a class="headerlink" href="#b41-start-mysql-o-che-o-bootstrap" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>reset-failed<span class="w"> </span>mysql@bootstrap.service<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>mysql@bootstrap.service
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># Đợi 10s để PXC init datadir</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>sleep<span class="w"> </span><span class="m">10</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="c1"># Verify service đang active</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>mysql@bootstrap.service<span class="w">     </span><span class="c1"># active</span>
+</span></code></pre></div>
+<p><code>mysql@bootstrap.service</code> được tạo bởi PXC, đọc thêm <code>/etc/default/mysql.bootstrap</code> để override <code>wsrep_cluster_address=gcomm://</code> (rỗng = "tạo cluster mới"). Sau khi cluster đã có thành viên, ta sẽ chuyển sang <code>mysql.service</code> ở B5.</p>
+<h3 id="b42-am-bao-root-co-password-native">B4.2 — Đảm bảo root có password native<a class="headerlink" href="#b42-am-bao-root-co-password-native" title="Permanent link">&para;</a></h3>
+<p>Nếu B3.1 preseed thành công thì root@localhost đã có password. Nhưng nếu trước đó cài qua đường khác (vagrant snapshot, install-mysql.sh), root có thể đang dùng <code>auth_socket</code>. Set lại (idempotent):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Thử login với password trước</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>mysql<span class="w"> </span>-uroot<span class="w"> </span>-p<span class="s1">'ChangeMe!Root#2026'</span><span class="w"> </span>-h127.0.0.1<span class="w"> </span>-e<span class="w"> </span><span class="s2">"SELECT 1"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="o">||</span><span class="w"> </span>sudo<span class="w"> </span>mysql<span class="w"> </span>-uroot<span class="w"> </span>-e<span class="w"> </span><span class="s2">"ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ChangeMe!Root#2026'; FLUSH PRIVILEGES;"</span>
+</span></code></pre></div>
+<h3 id="b43-verify-cluster-size-1-primary">B4.3 — Verify cluster size = 1, Primary<a class="headerlink" href="#b43-verify-cluster-size-1-primary" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>mysql<span class="w"> </span>-uroot<span class="w"> </span>-p<span class="s1">'ChangeMe!Root#2026'</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="s2">SHOW STATUS WHERE Variable_name IN</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="s2"> ('wsrep_cluster_size','wsrep_cluster_status','wsrep_local_state_comment','wsrep_ready');"</span>
+</span></code></pre></div>
+<p>Kỳ vọng:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>wsrep_cluster_size           1
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>wsrep_cluster_status         Primary
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>wsrep_local_state_comment    Synced
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>wsrep_ready                  ON
+</span></code></pre></div></p>
+<hr />
+<h2 id="b5-join-node2-node3-promote-node1">B5 · Join node2 + node3 + Promote node1<a class="headerlink" href="#b5-join-node2-node3-promote-node1" title="Permanent link">&para;</a></h2>
+<h3 id="b51-start-mysqlservice-tren-node2">B5.1 — Start mysql.service trên node2<a class="headerlink" href="#b51-start-mysqlservice-tren-node2" title="Permanent link">&para;</a></h3>
+<p>🖥️ <strong>Where</strong>: node2</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>mysql
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="c1"># Mất 1-3 phút: PXC sẽ chọn donor (node1), thực hiện SST qua xtrabackup-v2</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="c1"># (stream backup full /var/lib/mysql sang node2).</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1"># Đợi sync xong</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..60<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">  </span><span class="nv">STATE</span><span class="o">=</span><span class="k">$(</span>mysql<span class="w"> </span>-uroot<span class="w"> </span>-p<span class="s1">'ChangeMe!Root#2026'</span><span class="w"> </span>-NB<span class="w"> </span>-e<span class="w"> </span><span class="s2">"SHOW STATUS LIKE 'wsrep_local_state_comment'"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $2}'</span><span class="k">)</span>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"   wsrep_local_state_comment=</span><span class="nv">$STATE</span><span class="s2">"</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="w">  </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$STATE</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Synced"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">5</span>
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="k">done</span>
+</span></code></pre></div>
+<h3 id="b52-start-mysqlservice-tren-node3-giong-node2">B5.2 — Start mysql.service trên node3 (giống node2)<a class="headerlink" href="#b52-start-mysqlservice-tren-node3-giong-node2" title="Permanent link">&para;</a></h3>
+<p>🖥️ <strong>Where</strong>: node3</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>mysql
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..60<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span><span class="nv">STATE</span><span class="o">=</span><span class="k">$(</span>mysql<span class="w"> </span>-uroot<span class="w"> </span>-p<span class="s1">'ChangeMe!Root#2026'</span><span class="w"> </span>-NB<span class="w"> </span>-e<span class="w"> </span><span class="s2">"SHOW STATUS LIKE 'wsrep_local_state_comment'"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $2}'</span><span class="k">)</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"   wsrep_local_state_comment=</span><span class="nv">$STATE</span><span class="s2">"</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">  </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$STATE</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Synced"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">5</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="k">done</span>
+</span></code></pre></div>
+<h3 id="b53-promote-node1-tu-bootstrap-mode-regular-member">B5.3 — Promote node1 từ bootstrap-mode → regular member<a class="headerlink" href="#b53-promote-node1-tu-bootstrap-mode-regular-member" title="Permanent link">&para;</a></h3>
+<p>🖥️ <strong>Where</strong>: node1</p>
+<p>Sau khi cluster đã có ≥ 2 thành viên (node2, node3), <code>mysql@bootstrap.service</code> trên node1 không còn cần thiết (cluster đã có quorum, không cần ai khai báo <code>gcomm://</code> rỗng nữa). Switch sang <code>mysql.service</code> để:
+- <code>systemctl is-active mysql</code> trả về <code>active</code> → verify pass.
+- Sau này restart node1 (sửa config, OS update...) không phải nhớ "node1 dùng @bootstrap, node2/3 dùng mysql".</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>mysql@bootstrap.service
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>reset-failed<span class="w"> </span>mysql@bootstrap.service<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>mysql
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="c1"># Đợi node1 rejoin cluster (IST nhẹ vì datadir vẫn cùng UUID)</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..30<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">  </span><span class="nv">STATE</span><span class="o">=</span><span class="k">$(</span>mysql<span class="w"> </span>-uroot<span class="w"> </span>-p<span class="s1">'ChangeMe!Root#2026'</span><span class="w"> </span>-NB<span class="w"> </span>-e<span class="w"> </span><span class="s2">"SHOW STATUS LIKE 'wsrep_local_state_comment'"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $2}'</span><span class="k">)</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"   node1 state=</span><span class="nv">$STATE</span><span class="s2">"</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">  </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$STATE</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Synced"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">2</span>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="k">done</span>
+</span></code></pre></div>
+<p>✅ <strong>Verify</strong> trên cả 3 node:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># Trên HOST</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"--- </span><span class="nv">$N</span><span class="s2"> ---"</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -e \"</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="s2">    SHOW STATUS WHERE Variable_name IN</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="s2">     ('wsrep_cluster_size','wsrep_cluster_status','wsrep_local_state_comment','wsrep_ready','wsrep_connected');\""</span>
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="k">done</span>
+</span></code></pre></div></p>
+<p>Kỳ vọng MỖI node hiển thị:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>wsrep_cluster_size           3
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>wsrep_cluster_status         Primary
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>wsrep_local_state_comment    Synced
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>wsrep_ready                  ON
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>wsrep_connected              ON
+</span></code></pre></div></p>
+<hr />
+<h2 id="b6-verify-ay-u">B6 · Verify đầy đủ<a class="headerlink" href="#b6-verify-ay-u" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST</p>
+<h3 id="b61-service-port">B6.1 — Service + port<a class="headerlink" href="#b61-service-port" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"--- </span><span class="nv">$N</span><span class="s2"> ---"</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="s2">    sudo systemctl is-active mysql</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="s2">    sudo ss -tlnp 2&gt;/dev/null | grep -E ':(3306|4567) ' | head -n2</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="s2">  "</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="k">done</span>
+</span></code></pre></div>
+<p>Kỳ vọng: mọi node <code>active</code>, listen 3306 + 4567.</p>
+<h3 id="b62-wsrep-status-a-lam-o-b53-galera-config">B6.2 — wsrep status (đã làm ở B5.3) + Galera config<a class="headerlink" href="#b62-wsrep-status-a-lam-o-b53-galera-config" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"--- </span><span class="nv">$N</span><span class="s2"> ---"</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -e \"</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="s2">    SELECT @@innodb_autoinc_lock_mode AS aim,</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="s2">           @@wsrep_cluster_name AS cluster,</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="s2">           @@wsrep_node_name AS node;\""</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="k">done</span>
+</span></code></pre></div>
+<p>Kỳ vọng <code>aim=2</code>, <code>cluster=pxc-cluster</code>, <code>node=pxc-nodeN</code>.</p>
+<hr />
+<h2 id="b7-smoke-test-multi-master-write-consistency">B7 · Smoke test — Multi-master write + Consistency<a class="headerlink" href="#b7-smoke-test-multi-master-write-consistency" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST</p>
+<h3 id="b71-tao-schema-nho-galera-bat-buoc-pk-innodb">B7.1 — Tạo schema (nhớ: Galera bắt buộc PK + InnoDB)<a class="headerlink" href="#b71-tao-schema-nho-galera-bat-buoc-pk-innodb" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -e \"</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="s2">DROP DATABASE IF EXISTS smoke_db;</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="s2">CREATE DATABASE smoke_db CHARACTER SET utf8mb4;</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="s2">USE smoke_db;</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="s2">CREATE TABLE t(</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="s2">  id  BIGINT PRIMARY KEY AUTO_INCREMENT,</span>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="s2">  src VARCHAR(16) NOT NULL,</span>
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="s2">  val VARCHAR(64) NOT NULL,</span>
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="s2">  ts  DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)</span>
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="s2">) ENGINE=InnoDB;\""</span>
+</span></code></pre></div>
+<h3 id="b72-part-1-insert-tuan-tu-tren-node1-check-sync-tren-node23">B7.2 — Part 1: Insert tuần tự trên node1, check sync trên node2/3<a class="headerlink" href="#b72-part-1-insert-tuan-tu-tren-node1-check-sync-tren-node23" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># Insert 150 rows trên node1</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="nv">SQL</span><span class="o">=</span><span class="s2">"USE smoke_db;"</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>seq<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">150</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nv">SQL</span><span class="o">+=</span><span class="s2">"INSERT INTO t(src,val) VALUES('node1','seq-</span><span class="si">${</span><span class="nv">i</span><span class="si">}</span><span class="s2">');"</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -e \"</span><span class="nv">$SQL</span><span class="s2">\""</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="c1"># Check count trên cả 3 node</span>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="w">  </span><span class="nv">C</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -NB -e 'SELECT COUNT(*) FROM smoke_db.t'"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="k">)</span>
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2"> count=</span><span class="nv">$C</span><span class="s2">"</span><span class="w">   </span><span class="c1"># Tất cả phải = 150</span>
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="k">done</span>
+</span></code></pre></div>
+<h3 id="b73-part-2-insert-song-song-50-rows-tren-moi-node-test-multi-master-certification">B7.3 — Part 2: Insert SONG SONG 50 rows trên mỗi node (test multi-master + certification)<a class="headerlink" href="#b73-part-2-insert-song-song-50-rows-tren-moi-node-test-multi-master-certification" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">  </span><span class="o">(</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">    </span><span class="nv">SQL</span><span class="o">=</span><span class="s2">"USE smoke_db;"</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>seq<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">50</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">      </span><span class="nv">SQL</span><span class="o">+=</span><span class="s2">"INSERT INTO t(src,val) VALUES('</span><span class="si">${</span><span class="nv">N</span><span class="si">}</span><span class="s2">','par-</span><span class="si">${</span><span class="nv">i</span><span class="si">}</span><span class="s2">-</span><span class="nv">$$</span><span class="s2">');"</span>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="w">    </span><span class="k">done</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="w">    </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -e \"</span><span class="nv">$SQL</span><span class="s2">\""</span>
+</span><span id="__span-32-8"><a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2">] done 50 rows"</span>
+</span><span id="__span-32-9"><a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a><span class="w">  </span><span class="o">)</span><span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-32-10"><a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a><span class="k">done</span>
+</span><span id="__span-32-11"><a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a><span class="nb">wait</span>
+</span><span id="__span-32-12"><a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a>sleep<span class="w"> </span><span class="m">2</span><span class="w">   </span><span class="c1"># đợi cert-replication settle</span>
+</span><span id="__span-32-13"><a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a>
+</span><span id="__span-32-14"><a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="c1"># Verify consistency</span>
+</span><span id="__span-32-15"><a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-32-16"><a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a><span class="w">  </span><span class="nv">C</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -NB -e 'SELECT COUNT(*) FROM smoke_db.t'"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="k">)</span>
+</span><span id="__span-32-17"><a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2"> total=</span><span class="nv">$C</span><span class="s2">"</span><span class="w">   </span><span class="c1"># Tất cả phải = 300 (150 + 3*50)</span>
+</span><span id="__span-32-18"><a id="__codelineno-32-18" name="__codelineno-32-18" href="#__codelineno-32-18"></a><span class="k">done</span>
+</span></code></pre></div>
+<p>✅ <strong>Verify</strong>: 3 node báo total <strong>giống nhau</strong> (= 300). Nếu lệch — có race condition trong test, hoặc network partition giữa các node.</p>
+<hr />
+<h2 id="b8-test-split-brain-destructive-se-halt-2-vm">B8 · Test Split-Brain (DESTRUCTIVE — sẽ halt 2 VM)<a class="headerlink" href="#b8-test-split-brain-destructive-se-halt-2-vm" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST</p>
+<blockquote>
+<p>⚠ Phá tạm cluster để demo behaviour minority partition. Sau test → B8.4 để recovery.</p>
+</blockquote>
+<h3 id="b81-halt-node2-node3">B8.1 — Halt node2 + node3<a class="headerlink" href="#b81-halt-node2-node3" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>vagrant<span class="w"> </span>halt<span class="w"> </span>--force<span class="w"> </span>node2
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>vagrant<span class="w"> </span>halt<span class="w"> </span>--force<span class="w"> </span>node3
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>sleep<span class="w"> </span><span class="m">15</span><span class="w">   </span><span class="c1"># đợi node1 detect (gmcast.peer_timeout ~3s default, nhưng cộng failure detection thì ~10s)</span>
+</span></code></pre></div>
+<h3 id="b82-verify-node1-chuyen-sang-non-primary">B8.2 — Verify node1 chuyển sang non-Primary<a class="headerlink" href="#b82-verify-node1-chuyen-sang-non-primary" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -e \"</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="s2">SHOW STATUS WHERE Variable_name IN</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="s2"> ('wsrep_cluster_size','wsrep_cluster_status','wsrep_local_state_comment','wsrep_ready');\""</span>
+</span></code></pre></div>
+<p>Kỳ vọng:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>wsrep_cluster_size           1
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>wsrep_cluster_status         non-Primary     ← KEY
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>wsrep_local_state_comment    Initialized
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>wsrep_ready                  OFF
+</span></code></pre></div></p>
+<h3 id="b83-verify-node1-refuse-write">B8.3 — Verify node1 REFUSE write<a class="headerlink" href="#b83-verify-node1-refuse-write" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -e \"</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="s2">INSERT INTO smoke_db.t(src,val) VALUES('node1','split-brain-probe');\""</span>
+</span></code></pre></div>
+<p>Kỳ vọng error:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>ERROR 1047 (08S01): WSREP has not yet prepared node for application use
+</span></code></pre></div></p>
+<h3 id="b84-recovery-power-on-lai-node2-node3">B8.4 — Recovery: power-on lại node2 + node3<a class="headerlink" href="#b84-recovery-power-on-lai-node2-node3" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>vagrant<span class="w"> </span>up<span class="w"> </span>node2<span class="w"> </span>node3
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="c1"># 2 node sẽ tự rejoin cluster:</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="c1">#  - IST nếu data delta nhỏ (nhanh, vài giây)</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="c1">#  - SST nếu donor đã purge log → mất 1-3 phút như B5</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="c1"># Đợi và verify</span>
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a>sleep<span class="w"> </span><span class="m">30</span>
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"mysql -uroot -p'ChangeMe!Root#2026' -NB -e \"</span>
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="s2">    SHOW STATUS WHERE Variable_name IN</span>
+</span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a><span class="s2">     ('wsrep_cluster_size','wsrep_cluster_status','wsrep_local_state_comment');\""</span>
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a><span class="k">done</span>
+</span></code></pre></div>
+<h3 id="b85-force-quorum-khi-that-su-chi-con-1-node-can-than">B8.5 — Force quorum khi thật sự chỉ còn 1 node (CẨN THẬN)<a class="headerlink" href="#b85-force-quorum-khi-that-su-chi-con-1-node-can-than" title="Permanent link">&para;</a></h3>
+<p>Nếu trong production node2+node3 thực sự MẤT vĩnh viễn (disk failure), bạn cần ép node1 thành Primary để write tiếp:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="k">SET</span><span class="w"> </span><span class="k">GLOBAL</span><span class="w"> </span><span class="n">wsrep_provider_options</span><span class="o">=</span><span class="s1">'pc.bootstrap=true'</span><span class="p">;</span>
+</span></code></pre></div>
+<p>⚠ <strong>RỦI RO split-brain</strong>: nếu node2/node3 thực ra vẫn sống và đang hoạt động ở phía khác → bạn vừa tạo 2 cluster đồng thời chấp nhận write. Chỉ làm khi chắc chắn 2 node kia DEAD.</p>
+<hr />
+<h2 id="b9-rollback-optional">B9 · Rollback (OPTIONAL)<a class="headerlink" href="#b9-rollback-optional" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST</p>
+<h3 id="b91-soft-rollback-uninstall-pxc-giu-vms">B9.1 — Soft rollback (uninstall PXC, giữ VMs)<a class="headerlink" href="#b91-soft-rollback-uninstall-pxc-giu-vms" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash -c '</span>
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a><span class="s2">    systemctl stop mysql 2&gt;/dev/null || true</span>
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a><span class="s2">    systemctl stop mysql@bootstrap.service 2&gt;/dev/null || true</span>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a><span class="s2">    apt-get remove --purge -y \"percona-xtradb-cluster*\" 2&gt;/dev/null || true</span>
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a><span class="s2">    rm -rf /var/lib/mysql /etc/mysql/mysql.conf.d/zz-pxc.cnf</span>
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a><span class="s2">  '"</span>
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a><span class="k">done</span>
+</span></code></pre></div>
+<h3 id="b92-hard-rollback-destroy-vms">B9.2 — Hard rollback (destroy VMs)<a class="headerlink" href="#b92-hard-rollback-destroy-vms" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>vagrant<span class="w"> </span>destroy<span class="w"> </span>-f
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>rm<span class="w"> </span>-f<span class="w"> </span>provision/cluster_id_rsa<span class="w"> </span>provision/cluster_id_rsa.pub
+</span></code></pre></div>
+<hr />
+<h2 id="phu-luc-a-trouble-shooting-nhanh">Phụ lục A — Trouble-shooting nhanh<a class="headerlink" href="#phu-luc-a-trouble-shooting-nhanh" title="Permanent link">&para;</a></h2>
+<h3 id="a1-error-1698-28000-access-denied-for-user-rootlocalhost">A.1 <code>ERROR 1698 (28000): Access denied for user 'root'@'localhost'</code><a class="headerlink" href="#a1-error-1698-28000-access-denied-for-user-rootlocalhost" title="Permanent link">&para;</a></h3>
+<p>→ PXC apt install chạy với <code>DEBIAN_FRONTEND=noninteractive</code> mà KHÔNG preseed → root@localhost dùng <code>auth_socket</code> (login qua unix socket, không password). Fix:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>sudo<span class="w"> </span>mysql<span class="w"> </span>-uroot<span class="w"> </span>-e<span class="w"> </span><span class="s2">"</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a><span class="s2">ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ChangeMe!Root#2026';</span>
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a><span class="s2">FLUSH PRIVILEGES;"</span>
+</span></code></pre></div>
+Hoặc xem B3.1 — preseed TRƯỚC khi cài.</p>
+<h3 id="a2-error-log-unknown-variable-wsrep_sst_auth">A.2 Error log: <code>unknown variable 'wsrep_sst_auth=...'</code><a class="headerlink" href="#a2-error-log-unknown-variable-wsrep_sst_auth" title="Permanent link">&para;</a></h3>
+<p>→ <code>wsrep_sst_auth</code> đã bị <strong>REMOVED</strong> ở PXC 8.0. PXC giờ dùng internal user <code>mysql.pxc.sst.user.&lt;rand&gt;</code> tự sinh. Xóa dòng <code>wsrep_sst_auth = ...</code> khỏi <code>zz-pxc.cnf</code>.</p>
+<h3 id="a3-error-log-failed-to-establish-connection-invalid-padding-certificate-signature-failure">A.3 Error log: <code>Failed to establish connection: invalid padding: certificate signature failure</code><a class="headerlink" href="#a3-error-log-failed-to-establish-connection-invalid-padding-certificate-signature-failure" title="Permanent link">&para;</a></h3>
+<p>→ PXC 8.0 mặc định <code>pxc-encrypt-cluster-traffic=ON</code>. Mỗi node sinh SSL cert riêng tại first start, không match nhau → handshake fail trên port 4567. Fix:
+- LAB: thêm <code>pxc-encrypt-cluster-traffic = OFF</code> vào <code>zz-pxc.cnf</code> (đã làm ở B3.3).
+- PROD: bật ON và copy <code>/var/lib/mysql/{ca,server-cert,server-key}.pem</code> từ node1 sang node2/3 TRƯỚC khi <code>systemctl start mysql</code>.</p>
+<h3 id="a4-cluster-bootstrap-uoc-nhung-node23-khong-join-error-connection-refused-roi-connection-timed-out">A.4 Cluster bootstrap được nhưng node2/3 không join — error <code>Connection refused</code> rồi <code>Connection timed out</code><a class="headerlink" href="#a4-cluster-bootstrap-uoc-nhung-node23-khong-join-error-connection-refused-roi-connection-timed-out" title="Permanent link">&para;</a></h3>
+<p>→ Thường do <code>wsrep_node_address</code> trỏ về NAT IP shared (10.0.2.15) thay vì host-only IP. Kiểm tra:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>sudo<span class="w"> </span>grep<span class="w"> </span>wsrep_node_address<span class="w"> </span>/etc/mysql/mysql.conf.d/zz-pxc.cnf
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a><span class="c1"># Phải là 192.168.10.11/12/13, KHÔNG được 10.0.2.15</span>
+</span></code></pre></div>
+Nếu sai → sửa file + <code>sudo systemctl restart mysql</code>.</p>
+<h3 id="a5-unknown-variable-pxc-encrypt-cluster-traffic">A.5 <code>unknown variable 'pxc-encrypt-cluster-traffic=...'</code><a class="headerlink" href="#a5-unknown-variable-pxc-encrypt-cluster-traffic" title="Permanent link">&para;</a></h3>
+<p>→ Sai key name. PXC 8.0 dùng dấu <strong>gạch</strong> (<code>pxc-encrypt-cluster-traffic</code>), KHÔNG phải underscore. Cùng giá trị ON/OFF.</p>
+<h3 id="a6-bootstrap-fail-mysqlbootstrapservice-failed-with-result-signal">A.6 Bootstrap fail: <code>mysql@bootstrap.service: Failed with result 'signal'</code><a class="headerlink" href="#a6-bootstrap-fail-mysqlbootstrapservice-failed-with-result-signal" title="Permanent link">&para;</a></h3>
+<p>→ Đọc <code>/var/log/mysql/error.log</code> 50 dòng cuối. Thường vì:
+- Config <code>zz-pxc.cnf</code> sai syntax (xem A.2, A.3, A.5).
+- Datadir cũ corrupt → backup <code>/var/lib/mysql.bak</code> và <code>sudo rm -rf /var/lib/mysql &amp;&amp; sudo mysqld --initialize-insecure</code>.
+- AppArmor block port 4567 → <code>sudo systemctl disable --now apparmor</code>.</p>
+<h3 id="a7-node2-sst-fail-giua-chung-datadir-partial">A.7 node2 SST fail giữa chừng → datadir partial<a class="headerlink" href="#a7-node2-sst-fail-giua-chung-datadir-partial" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>mysql
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/var/lib/mysql/*<span class="w">       </span><span class="c1"># CẨN THẬN: chỉ làm trên joiner, không phải donor</span>
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>mysql<span class="w">         </span><span class="c1"># SST chạy lại từ đầu</span>
+</span></code></pre></div>
+<h3 id="a8-pxc_strict_modeenforcing-bao-loi-khi-create-table-khong-co-pk">A.8 <code>pxc_strict_mode=ENFORCING</code> báo lỗi khi <code>CREATE TABLE</code> không có PK<a class="headerlink" href="#a8-pxc_strict_modeenforcing-bao-loi-khi-create-table-khong-co-pk" title="Permanent link">&para;</a></h3>
+<p>→ Đúng kỳ vọng. Galera bắt buộc PK cho mọi bảng có write. Add PK rồi retry.</p>
+<h3 id="a9-er_lock_deadlock-1213-khi-parallel-write">A.9 <code>ER_LOCK_DEADLOCK (1213)</code> khi parallel write<a class="headerlink" href="#a9-er_lock_deadlock-1213-khi-parallel-write" title="Permanent link">&para;</a></h3>
+<p>→ Đó là Galera certification fail (write-set conflict). App phải retry transaction. Galera dùng "first-commit-wins" — node nào commit local trước thắng, node sau bị abort. Bình thường khi 2 node update cùng row.</p>
+<hr />
+<h2 id="phu-luc-b-tom-tat-files-config">Phụ lục B — Tóm tắt files config<a class="headerlink" href="#phu-luc-b-tom-tat-files-config" title="Permanent link">&para;</a></h2>
+<p>Toàn bộ file ghi mới trong demo này:</p>
+<table>
+<thead>
+<tr>
+<th>Host</th>
+<th>File</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4 nodes</td>
+<td><code>/etc/hosts</code> (block <code>mysql-ha cluster</code>)</td>
+<td>resolve hostname → IP</td>
+</tr>
+<tr>
+<td>4 nodes</td>
+<td><code>/etc/fstab</code> (swap dòng comment)</td>
+<td>tắt swap vĩnh viễn</td>
+</tr>
+<tr>
+<td>4 nodes</td>
+<td><code>/etc/sysctl.d/99-mysql-ha.conf</code></td>
+<td>tuning kernel cho MySQL</td>
+</tr>
+<tr>
+<td>4 nodes</td>
+<td><code>/etc/systemd/system/mysql.service.d/limits.conf</code></td>
+<td>ulimit cho mysql</td>
+</tr>
+<tr>
+<td>3 DB nodes</td>
+<td><code>/etc/apt/sources.list.d/percona-*.list</code></td>
+<td>repo Percona PXC 8.0</td>
+</tr>
+<tr>
+<td>3 DB nodes</td>
+<td><code>/etc/mysql/mysql.conf.d/zz-pxc.cnf</code></td>
+<td>wsrep_*, pxc_strict_mode, SSL OFF</td>
+</tr>
+<tr>
+<td>3 DB nodes</td>
+<td><code>/etc/default/mysql.bootstrap</code></td>
+<td>(PXC sinh sẵn — chỉ relevant cho mysql@bootstrap)</td>
+</tr>
+</tbody>
+</table>
+<p>Toàn bộ user/privilege thay đổi trong mysql:</p>
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Tạo ở</th>
+<th>Host pattern</th>
+<th>Privilege</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root</code></td>
+<td>install</td>
+<td>localhost</td>
+<td>password = <code>ChangeMe!Root#2026</code> (mysql_native_password)</td>
+</tr>
+<tr>
+<td><code>mysql.pxc.sst.user.&lt;rand&gt;</code></td>
+<td>tự sinh</td>
+<td>localhost</td>
+<td>(PXC quản lý, no need to touch) — dùng cho SST</td>
+</tr>
+<tr>
+<td><code>mysql.pxc.internal.session</code></td>
+<td>tự sinh</td>
+<td>localhost</td>
+<td>(PXC quản lý) — DML internal cho replication</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>Không cần tạo <code>sstuser</code> thủ công</strong> như PXC 5.7. PXC 8.0 đã tự động hoá toàn bộ SST credential.</p>
+</blockquote>
+<hr />
+<h2 id="phu-luc-c-mapping-bash-scripts-manual-steps">Phụ lục C — Mapping bash scripts ↔ manual steps<a class="headerlink" href="#phu-luc-c-mapping-bash-scripts-manual-steps" title="Permanent link">&para;</a></h2>
+<p>Nếu bạn muốn xem script gốc:</p>
+<table>
+<thead>
+<tr>
+<th>Script trong repo</th>
+<th>Bước trong tài liệu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vagrant/Vagrantfile</code></td>
+<td>B1</td>
+</tr>
+<tr>
+<td><code>vagrant/provision/generate-ssh-key.sh</code></td>
+<td>B1.1</td>
+</tr>
+<tr>
+<td><code>scripts/common/00-prepare-os.sh</code></td>
+<td>B2</td>
+</tr>
+<tr>
+<td><code>scripts/galera/install-pxc.sh</code></td>
+<td>B3.1 – B3.3</td>
+</tr>
+<tr>
+<td><code>scripts/galera/bootstrap-node.sh</code></td>
+<td>B4</td>
+</tr>
+<tr>
+<td><code>scripts/galera/join-node.sh</code></td>
+<td>B5.1, B5.2</td>
+</tr>
+<tr>
+<td><code>scripts/galera/recover-split-brain.sh</code></td>
+<td>B8.5</td>
+</tr>
+<tr>
+<td><code>demo/06-galera/04-bootstrap-node1.sh</code></td>
+<td>B4</td>
+</tr>
+<tr>
+<td><code>demo/06-galera/05-join-node2-node3.sh</code></td>
+<td>B5</td>
+</tr>
+<tr>
+<td><code>demo/06-galera/06-verify.sh</code></td>
+<td>B6</td>
+</tr>
+<tr>
+<td><code>demo/06-galera/07-smoke-test.sh</code></td>
+<td>B7</td>
+</tr>
+<tr>
+<td><code>demo/06-galera/08-split-brain-test.sh</code></td>
+<td>B8</td>
+</tr>
+<tr>
+<td><code>demo/06-galera/09-rollback.sh</code></td>
+<td>B9</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phu-luc-d-khac-biet-voi-cac-demo-ha-khac">Phụ lục D — Khác biệt với các demo HA khác<a class="headerlink" href="#phu-luc-d-khac-biet-voi-cac-demo-ha-khac" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Khía cạnh</th>
+<th>Demo 06 (Galera)</th>
+<th>Demo 02 (InnoDB Cluster)</th>
+<th>Demo 03 (Group Replication)</th>
+<th>Demo 01 (Async)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Replication mode</td>
+<td>Synchronous (cert-based)</td>
+<td>Async + Paxos consensus</td>
+<td>Async + Paxos consensus</td>
+<td>Async / Semi-sync</td>
+</tr>
+<tr>
+<td>Where can write?</td>
+<td><strong>MỌI node</strong></td>
+<td>Chỉ 1 PRIMARY</td>
+<td>Chỉ 1 PRIMARY (single-primary)</td>
+<td>Chỉ master</td>
+</tr>
+<tr>
+<td>Auto failover</td>
+<td>Không cần (multi-master)</td>
+<td>Có (Router auto re-route)</td>
+<td>Có (Paxos election)</td>
+<td>Không (manual)</td>
+</tr>
+<tr>
+<td>Replication lag</td>
+<td>0 (đồng bộ)</td>
+<td>gần 0 (Paxos)</td>
+<td>gần 0 (Paxos)</td>
+<td>có thể &gt; 1s</td>
+</tr>
+<tr>
+<td>Yêu cầu PK</td>
+<td><strong>Bắt buộc</strong></td>
+<td>Bắt buộc</td>
+<td>Bắt buộc</td>
+<td>Khuyến nghị</td>
+</tr>
+<tr>
+<td>WAN-friendly</td>
+<td><strong>Không</strong> (consensus delay)</td>
+<td>Trung bình</td>
+<td>Trung bình</td>
+<td>Tốt</td>
+</tr>
+<tr>
+<td>Conflict resolution</td>
+<td>First-commit-wins (cert abort)</td>
+<td>Single primary chỉ 1 writer</td>
+<td>Single primary</td>
+<td>Master-only writes</td>
+</tr>
+<tr>
+<td>Package required</td>
+<td><code>percona-xtradb-cluster</code></td>
+<td><code>mysql-server-8.0</code></td>
+<td><code>mysql-server-8.0</code></td>
+<td><code>mysql-server-8.0</code></td>
+</tr>
+<tr>
+<td>Đụng MySQL community?</td>
+<td><strong>CÓ — phải purge trước</strong></td>
+<td>Không</td>
+<td>Không</td>
+<td>Không</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phu-luc-e-loi-a-gap-khi-tu-ong-hoa-demo-nay-lessons-learned">Phụ lục E — Lỗi đã gặp khi tự động hoá demo này (lessons learned)<a class="headerlink" href="#phu-luc-e-loi-a-gap-khi-tu-ong-hoa-demo-nay-lessons-learned" title="Permanent link">&para;</a></h2>
+<p>Demo run đầu tiên gặp 6 bug — tất cả đã fix vào upstream <code>scripts/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Triệu chứng</th>
+<th>Nguyên nhân</th>
+<th>Fix file &amp; dòng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Bootstrap pass nhưng node2/3 không thấy node1 qua Galera</td>
+<td><code>wsrep_node_address = 10.0.2.15</code> (NAT shared) trên cả 3 node</td>
+<td><code>install-pxc.sh:31</code> — pick <code>192.168.10.x</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>unknown variable 'wsrep_sst_auth=...'</code> aborted server</td>
+<td><code>#</code> trong password bị MySQL parser coi là comment-start</td>
+<td><code>install-pxc.sh:60-61</code> — biến đã bị remove ở PXC 8.0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Bootstrap fail vẫn với cùng error sau khi quote <code>"..."</code></td>
+<td><code>wsrep_sst_auth</code> REMOVED hoàn toàn ở PXC 8.0</td>
+<td><code>install-pxc.sh</code> — xóa hẳn dòng</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>Access denied for user 'root'@'localhost'</code></td>
+<td>Không preseed root pwd → auth_socket plugin</td>
+<td><code>install-pxc.sh:17-20</code> — debconf preseed</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>invalid padding: certificate signature failure</code> trên port 4567</td>
+<td>SSL cluster ON, mỗi node sinh cert riêng</td>
+<td><code>install-pxc.sh:63-65</code> — <code>pxc-encrypt-cluster-traffic = OFF</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>06-verify.sh</code> báo <code>[FAIL] [node1] mysql=inactive</code></td>
+<td>node1 còn dùng <code>mysql@bootstrap.service</code>, không phải <code>mysql.service</code></td>
+<td><code>demo/06-galera/05-join-node2-node3.sh</code> — promote step</td>
+</tr>
+</tbody>
+</table>
+<p>Lưu ý: lần chạy đầu (sau khi đã có MySQL community từ demo trước) còn cần B3.0 purge mysql-server thủ công vì script <code>03-install-pxc.sh</code> chỉ DETECT (rồi exit 1), không tự purge — để tránh xoá nhầm data demo khác.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>HA/Mysql/demo/06-galera/MANUAL-SETUP.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../000-overview/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 00 — Tổng quan bài demo">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                00 — Tổng quan bài demo
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../readme/" class="md-footer__link md-footer__link--next" aria-label="Sau: Demo 06 — Galera Cluster (Percona XtraDB Cluster 8.0)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Demo 06 — Galera Cluster (Percona XtraDB Cluster 8.0)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

@@ -1,0 +1,1768 @@
+[23:16:08] ==> replica-setup trên node2
+[16:16:15] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:16:15] ==> [2/4] Kiểm tra state replica hiện tại
+[16:16:15]     current: IO= SQL= HOST='' AUTO_POS=
+[16:16:15] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:16:17] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:16:17] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+            Executed_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+                Auto_Position: 1
+[16:16:17] ==> Replica node2 đã online
+[23:16:16] ==> replica-setup trên node3
+[16:16:24] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:16:24] ==> [2/4] Kiểm tra state replica hiện tại
+[16:16:24]     current: IO= SQL= HOST='' AUTO_POS=
+[16:16:24] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:16:26] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:16:26] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+            Executed_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+                Auto_Position: 1
+[16:16:26] ==> Replica node3 đã online
+[23:16:25] ==> Chờ 3s để replica IO/SQL thread khởi động
+[23:16:28] ==> Verify trên các replica
+[23:16:28]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+            Executed_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Variable_name	Value
+Rpl_semi_sync_replica_status	ON
+@@read_only	@@super_read_only
+1	1
+[23:16:35]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+            Executed_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Variable_name	Value
+Rpl_semi_sync_replica_status	ON
+@@read_only	@@super_read_only
+1	1
+[23:16:41] ==> Verify trên master: phải thấy 2 clients, status=ON
+Variable_name	Value
+Rpl_semi_sync_source_clients	2
+Rpl_semi_sync_source_net_avg_wait_time	0
+Rpl_semi_sync_source_net_wait_time	0
+Rpl_semi_sync_source_net_waits	1
+Rpl_semi_sync_source_no_times	1
+Rpl_semi_sync_source_no_tx	4
+Rpl_semi_sync_source_status	ON
+Rpl_semi_sync_source_timefunc_failures	0
+Rpl_semi_sync_source_tx_avg_wait_time	0
+Rpl_semi_sync_source_tx_wait_time	0
+Rpl_semi_sync_source_tx_waits	0
+Rpl_semi_sync_source_wait_pos_backtraverse	0
+Rpl_semi_sync_source_wait_sessions	0
+Rpl_semi_sync_source_yes_tx	0
+[23:16:48] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[07:08:03] ==> replica-setup trên node2
+[00:08:08] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:08:08] ==> [2/4] Kiểm tra state replica hiện tại
+[00:08:08]     current: IO= SQL= HOST='' AUTO_POS=
+[00:08:08] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:08:10] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:08:10] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+            Executed_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+                Auto_Position: 1
+[00:08:10] ==> Replica node2 đã online
+[07:08:09] ==> replica-setup trên node3
+[00:08:14] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:08:14] ==> [2/4] Kiểm tra state replica hiện tại
+[00:08:14]     current: IO= SQL= HOST='' AUTO_POS=
+[00:08:14] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:08:16] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:08:16] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+            Executed_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+                Auto_Position: 1
+[00:08:16] ==> Replica node3 đã online
+[07:08:15] ==> Chờ 3s để replica IO/SQL thread khởi động
+[07:08:18] ==> Verify trên các replica
+[07:08:18]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+            Executed_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[07:08:22]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+            Executed_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[07:08:26] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[07:08:30] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[14:03:09] ==> replica-setup trên node2
+[07:03:15] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:03:15] ==> [2/4] Kiểm tra state replica hiện tại
+[07:03:15]     current: IO=OFF SQL=OFF HOST='<NULL>' AUTO_POS=1
+[07:03:15] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:03:18] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:03:18] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4
+            Executed_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4,
+                Auto_Position: 1
+[07:03:18] ==> Replica node2 đã online
+[14:03:17] ==> replica-setup trên node3
+[07:03:23] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:03:23] ==> [2/4] Kiểm tra state replica hiện tại
+[07:03:23]     current: IO=OFF SQL=OFF HOST='<NULL>' AUTO_POS=1
+[07:03:23] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:03:25] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:03:25] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4
+            Executed_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4,
+                Auto_Position: 1
+[07:03:25] ==> Replica node3 đã online
+[14:03:24] ==> Chờ 3s để replica IO/SQL thread khởi động
+[14:03:27] ==> Verify trên các replica
+[14:03:27]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4
+            Executed_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4,
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Variable_name	Value
+Rpl_semi_sync_replica_status	ON
+@@read_only	@@super_read_only
+1	1
+[14:03:32]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4
+            Executed_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4,
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Variable_name	Value
+Rpl_semi_sync_replica_status	ON
+@@read_only	@@super_read_only
+1	1
+[14:03:38] ==> Verify trên master: phải thấy 2 clients, status=ON
+Variable_name	Value
+Rpl_semi_sync_source_clients	2
+Rpl_semi_sync_source_net_avg_wait_time	0
+Rpl_semi_sync_source_net_wait_time	0
+Rpl_semi_sync_source_net_waits	1
+Rpl_semi_sync_source_no_times	1
+Rpl_semi_sync_source_no_tx	4
+Rpl_semi_sync_source_status	ON
+Rpl_semi_sync_source_timefunc_failures	0
+Rpl_semi_sync_source_tx_avg_wait_time	0
+Rpl_semi_sync_source_tx_wait_time	0
+Rpl_semi_sync_source_tx_waits	0
+Rpl_semi_sync_source_wait_pos_backtraverse	0
+Rpl_semi_sync_source_wait_sessions	0
+Rpl_semi_sync_source_yes_tx	0
+[14:03:43] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[14:55:45] ==> replica-setup trên node2
+[07:55:50] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:50] ==> [2/4] Kiểm tra state replica hiện tại
+[07:55:50]     current: IO= SQL= HOST='' AUTO_POS=
+[07:55:50] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:52] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:52] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+            Executed_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+                Auto_Position: 1
+[07:55:52] ==> Replica node2 đã online
+[14:55:51] ==> replica-setup trên node3
+[07:55:57] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:57] ==> [2/4] Kiểm tra state replica hiện tại
+[07:55:57]     current: IO= SQL= HOST='' AUTO_POS=
+[07:55:57] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:59] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:59] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+            Executed_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+                Auto_Position: 1
+[07:55:59] ==> Replica node3 đã online
+[14:55:58] ==> Chờ 3s để replica IO/SQL thread khởi động
+[14:56:01] ==> Verify trên các replica
+[14:56:01]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+            Executed_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[14:56:06]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+            Executed_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[14:56:11] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[14:56:16] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[15:41:28] ==> replica-setup trên node2
+[08:41:34] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:34] ==> [2/4] Kiểm tra state replica hiện tại
+[08:41:34]     current: IO= SQL= HOST='' AUTO_POS=
+[08:41:34] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:36] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:36] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+            Executed_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+                Auto_Position: 1
+[08:41:36] ==> Replica node2 đã online
+[15:41:35] ==> replica-setup trên node3
+[08:41:43] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:43] ==> [2/4] Kiểm tra state replica hiện tại
+[08:41:43]     current: IO= SQL= HOST='' AUTO_POS=
+[08:41:43] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:45] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:45] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+            Executed_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+                Auto_Position: 1
+[08:41:45] ==> Replica node3 đã online
+[15:41:44] ==> Chờ 3s để replica IO/SQL thread khởi động
+[15:41:47] ==> Verify trên các replica
+[15:41:47]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+            Executed_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[15:41:53]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+            Executed_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[15:41:59] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[15:42:06] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[14:14:29] ==> replica-setup trên node2
+[07:14:37] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:37] ==> [2/4] Kiểm tra state replica hiện tại
+[07:14:37]     current: IO= SQL= HOST='' AUTO_POS=
+[07:14:37] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:39] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:39] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+                Auto_Position: 1
+[07:14:39] ==> Replica node2 đã online
+[14:14:35] ==> replica-setup trên node3
+[07:14:42] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:43] ==> [2/4] Kiểm tra state replica hiện tại
+[07:14:43]     current: IO= SQL= HOST='' AUTO_POS=
+[07:14:43] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:45] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:45] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+                Auto_Position: 1
+[07:14:45] ==> Replica node3 đã online
+[14:14:41] ==> Chờ 3s để replica IO/SQL thread khởi động
+[14:14:44] ==> Verify trên các replica
+[14:14:44]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[14:14:48]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[14:14:52] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[14:14:56] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[15:20:21] ==> replica-setup trên node2
+[08:20:30] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:20:30] ==> [2/4] Kiểm tra state replica hiện tại
+[08:20:30]     current: IO=ON SQL=ON HOST='node1' AUTO_POS=1
+[08:20:30] ==> [3/4] Replica đã configured & chạy OK → SKIP CHANGE REPLICATION SOURCE
+[08:20:30] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:20:30] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+                Auto_Position: 1
+[08:20:30] ==> Replica node2 đã online
+[15:20:26] ==> replica-setup trên node3
+[08:20:34] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:20:34] ==> [2/4] Kiểm tra state replica hiện tại
+[08:20:34]     current: IO=ON SQL=ON HOST='node1' AUTO_POS=1
+[08:20:34] ==> [3/4] Replica đã configured & chạy OK → SKIP CHANGE REPLICATION SOURCE
+[08:20:34] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:20:34] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+                Auto_Position: 1
+[08:20:34] ==> Replica node3 đã online
+[15:20:30] ==> Chờ 3s để replica IO/SQL thread khởi động
+[15:20:33] ==> Verify trên các replica
+[15:20:33]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[15:20:38]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+            Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[15:20:42] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 415   |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 326   |
+| Rpl_semi_sync_source_tx_wait_time          | 67551 |
+| Rpl_semi_sync_source_tx_waits              | 207   |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 207   |
++--------------------------------------------+-------+
+[15:20:46] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[22:09:57] ==> replica-setup trên node2
+[15:10:06] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:10:06] ==> [2/4] Kiểm tra state replica hiện tại
+[15:10:06]     current: IO= SQL= HOST='' AUTO_POS=
+[15:10:06] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:10:08] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:10:08] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+            Executed_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+                Auto_Position: 1
+[15:10:08] ==> Replica node2 đã online
+[22:10:04] ==> replica-setup trên node3
+[15:10:12] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:10:12] ==> [2/4] Kiểm tra state replica hiện tại
+[15:10:12]     current: IO= SQL= HOST='' AUTO_POS=
+[15:10:12] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:10:14] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:10:14] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+            Executed_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+                Auto_Position: 1
+[15:10:14] ==> Replica node3 đã online
+[22:10:10] ==> Chờ 3s để replica IO/SQL thread khởi động
+[22:10:13] ==> Verify trên các replica
+[22:10:13]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+            Executed_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:10:18]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+            Executed_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:10:22] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[22:10:26] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[22:31:21] ==> replica-setup trên node2
+[15:31:29] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:29] ==> [2/4] Kiểm tra state replica hiện tại
+[15:31:30]     current: IO= SQL= HOST='' AUTO_POS=
+[15:31:30] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:32] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:32] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+            Executed_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+                Auto_Position: 1
+[15:31:32] ==> Replica node2 đã online
+[22:31:28] ==> replica-setup trên node3
+[15:31:36] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:36] ==> [2/4] Kiểm tra state replica hiện tại
+[15:31:36]     current: IO= SQL= HOST='' AUTO_POS=
+[15:31:36] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:38] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:38] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+            Executed_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+                Auto_Position: 1
+[15:31:38] ==> Replica node3 đã online
+[22:31:34] ==> Chờ 3s để replica IO/SQL thread khởi động
+[22:31:37] ==> Verify trên các replica
+[22:31:37]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+            Executed_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:31:41]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+            Executed_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:31:45] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[22:31:49] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[22:59:28] ==> replica-setup trên node2
+[15:59:36] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:36] ==> [2/4] Kiểm tra state replica hiện tại
+[15:59:36]     current: IO= SQL= HOST='' AUTO_POS=
+[15:59:36] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:39] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:39] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+            Executed_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+                Auto_Position: 1
+[15:59:39] ==> Replica node2 đã online
+[22:59:35] ==> replica-setup trên node3
+[15:59:43] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:43] ==> [2/4] Kiểm tra state replica hiện tại
+[15:59:43]     current: IO= SQL= HOST='' AUTO_POS=
+[15:59:43] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:45] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:45] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+            Executed_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+                Auto_Position: 1
+[15:59:45] ==> Replica node3 đã online
+[22:59:41] ==> Chờ 3s để replica IO/SQL thread khởi động
+[22:59:44] ==> Verify trên các replica
+[22:59:44]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+            Executed_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:59:49]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+            Executed_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:59:53] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[22:59:58] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[15:03:14] ==> replica-setup trên node2
+[08:03:25] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:25] ==> [2/4] Kiểm tra state replica hiện tại
+[08:03:25]     current: IO= SQL= HOST='' AUTO_POS=
+[08:03:25] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:27] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:27] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+            Executed_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+                Auto_Position: 1
+[08:03:27] ==> Replica node2 đã online
+[15:03:20] ==> replica-setup trên node3
+[08:03:31] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:31] ==> [2/4] Kiểm tra state replica hiện tại
+[08:03:31]     current: IO= SQL= HOST='' AUTO_POS=
+[08:03:31] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:33] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:33] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+            Executed_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+                Auto_Position: 1
+[08:03:33] ==> Replica node3 đã online
+[15:03:26] ==> Chờ 3s để replica IO/SQL thread khởi động
+[15:03:29] ==> Verify trên các replica
+[15:03:30]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+            Executed_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[15:03:34]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+            Executed_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[15:03:38] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[15:03:42] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[20:34:16] ==> replica-setup trên node2
+[13:34:28] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:28] ==> [2/4] Kiểm tra state replica hiện tại
+[13:34:28]     current: IO= SQL= HOST='' AUTO_POS=
+[13:34:28] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:30] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:30] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+            Executed_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+                Auto_Position: 1
+[13:34:30] ==> Replica node2 đã online
+[20:34:23] ==> replica-setup trên node3
+[13:34:35] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:35] ==> [2/4] Kiểm tra state replica hiện tại
+[13:34:35]     current: IO= SQL= HOST='' AUTO_POS=
+[13:34:35] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:37] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:37] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+            Executed_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+                Auto_Position: 1
+[13:34:37] ==> Replica node3 đã online
+[20:34:30] ==> Chờ 3s để replica IO/SQL thread khởi động
+[20:34:33] ==> Verify trên các replica
+[20:34:33]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+            Executed_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[20:34:38]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+            Executed_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[20:34:43] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[20:34:48] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[22:02:40] ==> replica-setup trên node2
+[15:02:52] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:02:52] ==> [2/4] Kiểm tra state replica hiện tại
+[15:02:52]     current: IO= SQL= HOST='' AUTO_POS=
+[15:02:52] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:02:54] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:02:54] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+            Executed_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+                Auto_Position: 1
+[15:02:54] ==> Replica node2 đã online
+[22:02:48] ==> replica-setup trên node3
+[15:02:59] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:02:59] ==> [2/4] Kiểm tra state replica hiện tại
+[15:02:59]     current: IO= SQL= HOST='' AUTO_POS=
+[15:02:59] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:03:01] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:03:01] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+            Executed_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+                Auto_Position: 1
+[15:03:01] ==> Replica node3 đã online
+[22:02:54] ==> Chờ 3s để replica IO/SQL thread khởi động
+[22:02:57] ==> Verify trên các replica
+[22:02:58]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+            Executed_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:03:02]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+            Executed_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[22:03:07] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[22:03:11] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[08:06:05] ==> replica-setup trên node2
+[01:06:16] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:06:16] ==> [2/4] Kiểm tra state replica hiện tại
+[01:06:16]     current: IO= SQL= HOST='' AUTO_POS=
+[01:06:16] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:06:18] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:06:18] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+            Executed_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+                Auto_Position: 1
+[01:06:18] ==> Replica node2 đã online
+[08:06:11] ==> replica-setup trên node3
+[01:06:22] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:06:22] ==> [2/4] Kiểm tra state replica hiện tại
+[01:06:22]     current: IO= SQL= HOST='' AUTO_POS=
+[01:06:22] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:06:25] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:06:25] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+            Executed_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+                Auto_Position: 1
+[01:06:25] ==> Replica node3 đã online
+[08:06:17] ==> Chờ 3s để replica IO/SQL thread khởi động
+[08:06:21] ==> Verify trên các replica
+[08:06:21]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+            Executed_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[08:06:25]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+            Executed_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[08:06:29] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[08:06:33] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh
+[11:32:09] ==> replica-setup trên node2
+[04:32:20] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:20] ==> [2/4] Kiểm tra state replica hiện tại
+[04:32:20]     current: IO= SQL= HOST='' AUTO_POS=
+[04:32:20] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:22] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:22] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+            Executed_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+                Auto_Position: 1
+[04:32:22] ==> Replica node2 đã online
+[11:32:15] ==> replica-setup trên node3
+[04:32:26] ==> [1/4] Cài plugin semi-sync replica (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:26] ==> [2/4] Kiểm tra state replica hiện tại
+[04:32:27]     current: IO= SQL= HOST='' AUTO_POS=
+[04:32:27] ==> [3/4] Replica chưa OK → STOP/RESET/CHANGE REPLICATION SOURCE
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:29] ==> [4/4] Set host này read-only để chống ghi nhầm
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:29] ==> Replica state cuối:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+            Executed_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+                Auto_Position: 1
+[04:32:29] ==> Replica node3 đã online
+[11:32:21] ==> Chờ 3s để replica IO/SQL thread khởi động
+[11:32:24] ==> Verify trên các replica
+[11:32:24]     --- node2 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+            Executed_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[11:32:28]     --- node3 ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+                  Source_Host: node1
+           Replica_IO_Running: Yes
+          Replica_SQL_Running: Yes
+        Seconds_Behind_Source: 0
+                Last_IO_Error: 
+               Last_SQL_Error: 
+    Replica_SQL_Running_State: Replica has read all relay log; waiting for more updates
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+           Retrieved_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+            Executed_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+                Auto_Position: 1
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------------------------+-------+
+| Variable_name                | Value |
++------------------------------+-------+
+| Rpl_semi_sync_replica_status | ON    |
++------------------------------+-------+
++-------------+-------------------+
+| @@read_only | @@super_read_only |
++-------------+-------------------+
+|           1 |                 1 |
++-------------+-------------------+
+[11:32:32] ==> Verify trên master: phải thấy 2 clients, status=ON
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 1     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
+[11:32:46] ==> Bước 5 hoàn tất. Tiếp theo: bash demo/01-async-semisync/06-verify.sh

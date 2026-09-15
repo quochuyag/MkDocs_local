@@ -1,0 +1,3431 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../000-overview/">
+      
+      
+        <link rel="next" href="../readme/">
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Hướng dẫn setup THỦ CÔNG — Demo 08 Vagrant Lab (4 VMs Ubuntu 22.04) - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#huong-dan-setup-thu-cong-demo-08-vagrant-lab-4-vms-ubuntu-2204" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hướng dẫn setup THỦ CÔNG — Demo 08 Vagrant Lab (4 VMs Ubuntu 22.04)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            06. High Availability (MySQL & MongoDB)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../mongo/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongo
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mysql
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            Mysql
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_2" id="__nav_6_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Demo
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Demo
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../01-async-semisync/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01 async semisync
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../02-innodb-cluster/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02 innodb cluster
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../03-group-replication/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03 group replication
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../04-mha/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04 mha
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../05-orchestrator/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    05 orchestrator
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../06-galera/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06 galera
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../07-proxysql/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07 proxysql
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_2_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_2_8" id="__nav_6_3_2_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    08 vagrant lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_6_3_2_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_3_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            08 vagrant lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    00 — Tổng quan bài demo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Hướng dẫn setup THỦ CÔNG — Demo 08 Vagrant Lab (4 VMs Ubuntu 22.04)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn setup THỦ CÔNG — Demo 08 Vagrant Lab (4 VMs Ubuntu 22.04)
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-topology-bien-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Topology &amp; biến môi trường
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b0-prerequisites-tren-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0 · Prerequisites trên HOST
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B0 · Prerequisites trên HOST">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b01-cai-vagrant-virtualbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0.1 — Cài Vagrant + VirtualBox
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b02-free-ramdisk-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0.2 — Free RAM/disk check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b03-subnet-conflict-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0.3 — Subnet conflict check
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b1-bring-up-4-vms-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1 · Bring up 4 VMs (HOST)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B1 · Bring up 4 VMs (HOST)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.1 — Sinh SSH key dùng chung cho cluster (chỉ 1 lần)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b12-spin-up-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.2 — Spin up 4 VMs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b13-troubleshooting-orphan-vm-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.3 — Troubleshooting orphan VM cleanup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b2-prepare-os-chay-provisioner-common-prep-tren-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2 · Prepare OS — chạy provisioner common-prep trên 4 VMs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B2 · Prepare OS — chạy provisioner common-prep trên 4 VMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b21-trigger-provisioner-tren-tung-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.1 — Trigger provisioner trên từng VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b22-etchosts-noi-dung-block-uoc-inject" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.2 — /etc/hosts (nội dung block được inject)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b23-swap" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.3 — Swap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b24-sysctl-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.4 — sysctl tuning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b25-ulimit-systemd-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.5 — ulimit / systemd limits
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b26-ntp" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.6 — NTP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b27-apparmor-ubuntu" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.7 — AppArmor (Ubuntu)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b3-ssh-trust-giua-vagrant-user-tren-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3 · SSH trust giữa vagrant user trên 4 VMs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B3 · SSH trust giữa vagrant user trên 4 VMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b31-trigger-provisioner" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.1 — Trigger provisioner
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b32-provisioner-noi-dung-a-trong-vagrantfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.2 — Provisioner nội dung (đã trong Vagrantfile)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b33-tuong-uong-thu-cong-neu-khong-dung-provisioner" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.3 — Tương đương thủ công nếu không dùng provisioner
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b4-verify-lab-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4 · Verify lab baseline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B4 · Verify lab baseline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b41-vm-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.1 — VM state
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b42-ping-noi-bo" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.2 — Ping nội bộ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b43-etchosts-entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.3 — /etc/hosts entries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b44-swap-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.4 — Swap off
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b45-ntp" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.5 — NTP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b46-sysctl" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.6 — sysctl
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b47-ssh-cross-trust" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.7 — SSH cross-trust
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b5-snapshot-clean-optional-nhung-khuyen-nghi" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5 · Snapshot clean (optional nhưng khuyến nghị)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B5 · Snapshot clean (optional nhưng khuyến nghị)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b51-save-snapshot-cho-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.1 — Save snapshot cho 4 VMs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b52-restore-snapshot-khi-can" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.2 — Restore snapshot khi cần
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b53-xoa-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.3 — Xoá snapshot
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b6-buoc-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6 · Bước tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b7-cleanup-destructive" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7 · Cleanup (destructive)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B7 · Cleanup (destructive)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b71-halt-giu-disk-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.1 — Halt (giữ disk + snapshot)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b72-destroy-hoan-toan" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.2 — Destroy hoàn toàn
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-trouble-shooting-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix A · Trouble-shooting tổng hợp
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-b-cau-truc-thu-muc-lien-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix B · Cấu trúc thư mục liên quan
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-c-mapping-buoc-script-goc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix C · Mapping bước → script gốc
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo 08 — Vagrant Lab (4 VMs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../results/report/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Results
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MySQL High Availability — Toolkit & Runbooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../runbooks/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Runbooks
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-topology-bien-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Topology &amp; biến môi trường
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b0-prerequisites-tren-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0 · Prerequisites trên HOST
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B0 · Prerequisites trên HOST">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b01-cai-vagrant-virtualbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0.1 — Cài Vagrant + VirtualBox
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b02-free-ramdisk-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0.2 — Free RAM/disk check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b03-subnet-conflict-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      B0.3 — Subnet conflict check
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b1-bring-up-4-vms-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1 · Bring up 4 VMs (HOST)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B1 · Bring up 4 VMs (HOST)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.1 — Sinh SSH key dùng chung cho cluster (chỉ 1 lần)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b12-spin-up-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.2 — Spin up 4 VMs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b13-troubleshooting-orphan-vm-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      B1.3 — Troubleshooting orphan VM cleanup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b2-prepare-os-chay-provisioner-common-prep-tren-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2 · Prepare OS — chạy provisioner common-prep trên 4 VMs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B2 · Prepare OS — chạy provisioner common-prep trên 4 VMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b21-trigger-provisioner-tren-tung-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.1 — Trigger provisioner trên từng VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b22-etchosts-noi-dung-block-uoc-inject" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.2 — /etc/hosts (nội dung block được inject)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b23-swap" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.3 — Swap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b24-sysctl-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.4 — sysctl tuning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b25-ulimit-systemd-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.5 — ulimit / systemd limits
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b26-ntp" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.6 — NTP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b27-apparmor-ubuntu" class="md-nav__link">
+    <span class="md-ellipsis">
+      B2.7 — AppArmor (Ubuntu)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b3-ssh-trust-giua-vagrant-user-tren-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3 · SSH trust giữa vagrant user trên 4 VMs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B3 · SSH trust giữa vagrant user trên 4 VMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b31-trigger-provisioner" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.1 — Trigger provisioner
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b32-provisioner-noi-dung-a-trong-vagrantfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.2 — Provisioner nội dung (đã trong Vagrantfile)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b33-tuong-uong-thu-cong-neu-khong-dung-provisioner" class="md-nav__link">
+    <span class="md-ellipsis">
+      B3.3 — Tương đương thủ công nếu không dùng provisioner
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b4-verify-lab-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4 · Verify lab baseline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B4 · Verify lab baseline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b41-vm-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.1 — VM state
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b42-ping-noi-bo" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.2 — Ping nội bộ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b43-etchosts-entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.3 — /etc/hosts entries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b44-swap-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.4 — Swap off
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b45-ntp" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.5 — NTP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b46-sysctl" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.6 — sysctl
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b47-ssh-cross-trust" class="md-nav__link">
+    <span class="md-ellipsis">
+      B4.7 — SSH cross-trust
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b5-snapshot-clean-optional-nhung-khuyen-nghi" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5 · Snapshot clean (optional nhưng khuyến nghị)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B5 · Snapshot clean (optional nhưng khuyến nghị)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b51-save-snapshot-cho-4-vms" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.1 — Save snapshot cho 4 VMs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b52-restore-snapshot-khi-can" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.2 — Restore snapshot khi cần
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b53-xoa-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      B5.3 — Xoá snapshot
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b6-buoc-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      B6 · Bước tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b7-cleanup-destructive" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7 · Cleanup (destructive)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B7 · Cleanup (destructive)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b71-halt-giu-disk-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.1 — Halt (giữ disk + snapshot)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b72-destroy-hoan-toan" class="md-nav__link">
+    <span class="md-ellipsis">
+      B7.2 — Destroy hoàn toàn
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-trouble-shooting-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix A · Trouble-shooting tổng hợp
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-b-cau-truc-thu-muc-lien-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix B · Cấu trúc thư mục liên quan
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-c-mapping-buoc-script-goc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix C · Mapping bước → script gốc
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="huong-dan-setup-thu-cong-demo-08-vagrant-lab-4-vms-ubuntu-2204">Hướng dẫn setup THỦ CÔNG — Demo 08 Vagrant Lab (4 VMs Ubuntu 22.04)<a class="headerlink" href="#huong-dan-setup-thu-cong-demo-08-vagrant-lab-4-vms-ubuntu-2204" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Tài liệu này ghi lại <strong>TỪNG CÂU LỆNH</strong> để dựng lab 4 VMs (3 DB + 1 mgmt) làm baseline cho mọi giải pháp HA của Demo 01–07, <strong>không cần</strong> <code>run-all.sh</code> / <code>run-all.ps1</code>.</p>
+<p>Copy-paste theo thứ tự từ trên xuống. Mỗi bước nêu rõ:
+- 🖥️ <strong>Where</strong>: chạy ở đâu (HOST / node1 / node2 / node3 / mgmt)
+- 💻 <strong>Command</strong>: lệnh CLI hoặc SQL
+- 📝 <strong>File</strong>: cấu hình cần ghi (nếu có)
+- ✅ <strong>Verify</strong>: cách kiểm tra step OK</p>
+<p>Mục tiêu sau khi xong: <strong>4 VMs <code>running</code></strong>, ping nội bộ OK, <code>/etc/hosts</code> chứa 4 entries, swap off, NTP synced, sysctl tuned, <code>vagrant</code> user SSH passwordless giữa các VMs, snapshot <code>clean</code> để rollback nhanh.</p>
+</blockquote>
+<h2 id="0-topology-bien-moi-truong">0. Topology &amp; biến môi trường<a class="headerlink" href="#0-topology-bien-moi-truong" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Host</th>
+<th>IP</th>
+<th>Vai trò</th>
+<th>vCPU</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>192.168.10.11</td>
+<td>DB candidate (master / primary)</td>
+<td>2</td>
+<td>2 GB</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.10.12</td>
+<td>DB candidate</td>
+<td>2</td>
+<td>2 GB</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.10.13</td>
+<td>DB candidate</td>
+<td>2</td>
+<td>2 GB</td>
+</tr>
+<tr>
+<td>mgmt</td>
+<td>192.168.10.20</td>
+<td>Manager / Proxy / Client</td>
+<td>1</td>
+<td>1.5 GB</td>
+</tr>
+</tbody>
+</table>
+<p>Tổng tài nguyên trên host: <strong>7 vCPU, ~7.5 GB RAM</strong>. Khuyến nghị host RAM ≥ 12 GB, disk ≥ 30 GB.</p>
+<p>Biến cấu hình lấy từ <a href="../../../scripts/common/env.sh">scripts/common/env.sh</a> — không cần đổi cho demo 08 (chỉ cần đổi nếu subnet <code>192.168.10.0/24</code> trùng với mạng host).</p>
+<hr />
+<h2 id="b0-prerequisites-tren-host">B0 · Prerequisites trên HOST<a class="headerlink" href="#b0-prerequisites-tren-host" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST (Windows / macOS / Linux)</p>
+<h3 id="b01-cai-vagrant-virtualbox">B0.1 — Cài Vagrant + VirtualBox<a class="headerlink" href="#b01-cai-vagrant-virtualbox" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Linux/macOS — cài qua package manager</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>virtualbox<span class="w"> </span>vagrant<span class="w">      </span><span class="c1"># Ubuntu/Debian</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>brew<span class="w"> </span>install<span class="w"> </span>--cask<span class="w"> </span>virtualbox<span class="w"> </span>vagrant<span class="w">   </span><span class="c1"># macOS</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Windows — tải installer:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">#   https://www.virtualbox.org/wiki/Downloads     (≥ 7.0)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">#   https://www.vagrantup.com/downloads           (≥ 2.3)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">#   https://git-scm.com/download/win              (Git Bash để chạy .sh)</span>
+</span></code></pre></div>
+<blockquote>
+<p>⚠ <strong>Windows pitfall</strong>: tắt Hyper-V trước khi cài VirtualBox (xung đột hypervisor):
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">bcdedit</span> <span class="p">/</span><span class="nb">set </span><span class="n">hypervisorlaunchtype</span> <span class="n">off</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c"># Restart Windows</span>
+</span></code></pre></div>
+Và bật Intel VT-x / AMD-V trong BIOS.</p>
+</blockquote>
+<p>✅ <strong>Verify</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>vagrant<span class="w"> </span>--version<span class="w">       </span><span class="c1"># 2.3+</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>VBoxManage<span class="w"> </span>--version<span class="w">    </span><span class="c1"># 7.0+    (Windows Git Bash: /c/Program\ Files/Oracle/VirtualBox/VBoxManage.exe)</span>
+</span></code></pre></div></p>
+<h3 id="b02-free-ramdisk-check">B0.2 — Free RAM/disk check<a class="headerlink" href="#b02-free-ramdisk-check" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Linux/macOS</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>free<span class="w"> </span>-h<span class="w">                            </span><span class="c1"># ≥ 8 GB free</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>df<span class="w"> </span>-h<span class="w"> </span>.<span class="w">                            </span><span class="c1"># ≥ 30 GB free trên thư mục chứa repo</span>
+</span></code></pre></div>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c"># Windows</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">Get-CimInstance</span> <span class="n">Win32_OperatingSystem</span> <span class="p">|</span> <span class="nb">Select </span><span class="n">FreePhysicalMemory</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">Get-PSDrive</span> <span class="n">C</span> <span class="p">|</span> <span class="nb">Select </span><span class="n">Used</span><span class="p">,</span><span class="n">Free</span>
+</span></code></pre></div></p>
+<h3 id="b03-subnet-conflict-check">B0.3 — Subnet conflict check<a class="headerlink" href="#b03-subnet-conflict-check" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Nếu host đã có route cho 192.168.10.0/24 thì phải đổi IP plan</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>ip<span class="w"> </span>route<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="m">192</span>.168.10<span class="w">       </span><span class="c1"># Linux/macOS</span>
+</span></code></pre></div>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">route</span> <span class="n">print</span> <span class="p">-</span><span class="n">4</span> <span class="p">|</span> <span class="n">findstr</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">10</span>   <span class="c"># Windows</span>
+</span></code></pre></div></p>
+<p>Nếu trùng — sửa cả 2 file:
+- <code>vagrant/Vagrantfile</code> — block <code>NODES = { ... }</code>
+- <code>scripts/common/env.sh</code> — <code>NODE*_IP</code>, <code>MGMT_IP</code>, <code>VIP</code></p>
+<hr />
+<h2 id="b1-bring-up-4-vms-host">B1 · Bring up 4 VMs (HOST)<a class="headerlink" href="#b1-bring-up-4-vms-host" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST, ở thư mục <code>vagrant/</code></p>
+<h3 id="b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan">B1.1 — Sinh SSH key dùng chung cho cluster (chỉ 1 lần)<a class="headerlink" href="#b11-sinh-ssh-key-dung-chung-cho-cluster-chi-1-lan" title="Permanent link">&para;</a></h3>
+<p>💻 <strong>Command</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>bash<span class="w"> </span>provision/generate-ssh-key.sh
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># tạo provision/cluster_id_rsa + cluster_id_rsa.pub</span>
+</span></code></pre></div></p>
+<p>📝 <strong>File output</strong> — <code>vagrant/provision/cluster_id_rsa</code> (private key, 4096-bit RSA, không passphrase).</p>
+<p>Script source: <a href="../../../vagrant/provision/generate-ssh-key.sh">vagrant/provision/generate-ssh-key.sh</a>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="ch">#!/usr/bin/env bash</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">"</span><span class="nv">$0</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-f<span class="w"> </span>cluster_id_rsa<span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"cluster_id_rsa đã tồn tại. Xoá nếu muốn regenerate."</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">fi</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>rsa<span class="w"> </span>-b<span class="w"> </span><span class="m">4096</span><span class="w"> </span>-N<span class="w"> </span><span class="s1">''</span><span class="w"> </span>-C<span class="w"> </span><span class="s1">'mysql-ha-cluster'</span><span class="w"> </span>-f<span class="w"> </span>cluster_id_rsa
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>cluster_id_rsa
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>cluster_id_rsa.pub
+</span></code></pre></div></p>
+<p>✅ <strong>Verify</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ls<span class="w"> </span>-la<span class="w"> </span>provision/cluster_id_rsa*
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1"># -rw-------  1 user  staff  3.4K  cluster_id_rsa</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># -rw-r--r--  1 user  staff   742  cluster_id_rsa.pub</span>
+</span></code></pre></div></p>
+<h3 id="b12-spin-up-4-vms">B1.2 — Spin up 4 VMs<a class="headerlink" href="#b12-spin-up-4-vms" title="Permanent link">&para;</a></h3>
+<p>💻 <strong>Command</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Linux/macOS:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">VAGRANT_DEFAULT_PROVIDER</span><span class="o">=</span>virtualbox
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># Windows PowerShell:</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># $env:VAGRANT_DEFAULT_PROVIDER='virtualbox'</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>vagrant<span class="w"> </span>up<span class="w"> </span>node1<span class="w"> </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>vagrant<span class="w"> </span>up<span class="w"> </span>node2<span class="w"> </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>vagrant<span class="w"> </span>up<span class="w"> </span>node3<span class="w"> </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>vagrant<span class="w"> </span>up<span class="w"> </span>mgmt<span class="w">  </span>--provider<span class="o">=</span>virtualbox<span class="w"> </span>--no-destroy-on-error
+</span></code></pre></div></p>
+<p>Lần đầu mất 10–15 phút (tải box <code>bento/ubuntu-22.04</code> ~600 MB). Vagrantfile đã set <code>boot_timeout = 1200</code> để tránh timeout trên host yếu.</p>
+<blockquote>
+<p>⚠ <strong>Common errors</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Lỗi</th>
+<th>Cách xử lý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VERR_ALREADY_EXISTS</code> (D:\VM VirtualBox\mysql-ha-nodeX đã tồn tại)</td>
+<td>Xem <a href="#b13--troubleshooting-orphan-vm-cleanup">B1.3</a></td>
+</tr>
+<tr>
+<td><code>VERR_INTNET_FLT_IF_NOT_FOUND</code> adapter not found</td>
+<td>Adapter NDIS bị ghost-bind — chạy <code>vagrant/fix-vbox-hostonly.ps1</code> (Method A) hoặc tạo Host-Only Adapter mới</td>
+</tr>
+<tr>
+<td><code>Vagrant could not detect VirtualBox</code></td>
+<td>Cài VirtualBox 7.0+ trước Vagrant; reboot</td>
+</tr>
+<tr>
+<td><code>box bento/ubuntu-22.04 not found</code></td>
+<td><code>vagrant box add bento/ubuntu-22.04</code> thủ công</td>
+</tr>
+<tr>
+<td>Box tải chậm</td>
+<td>Đổi mirror trong <code>~/.vagrant.d/data/vagrant_login_token</code></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h3 id="b13-troubleshooting-orphan-vm-cleanup">B1.3 — Troubleshooting orphan VM cleanup<a class="headerlink" href="#b13-troubleshooting-orphan-vm-cleanup" title="Permanent link">&para;</a></h3>
+<p>Nếu <code>vagrant up</code> báo VM đã tồn tại:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c"># Windows</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">VBoxManage</span> <span class="n">list</span> <span class="n">vms</span>                                      <span class="c"># nếu thấy "&lt;inaccessible&gt;"</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">VBoxManage</span> <span class="n">unregistervm</span> <span class="p">&lt;</span><span class="n">UUID</span><span class="p">&gt;</span>                            <span class="c"># nếu cần</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nb">Remove-Item</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="s2">"D:\VM VirtualBox\mysql-ha-node1"</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nb">Remove-Item</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="s2">"D:\VM VirtualBox\temp_clone_*"</span>
+</span></code></pre></div></p>
+<p>Hoặc dùng helper:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>bash<span class="w"> </span>vagrant/cleanup.sh<span class="w"> </span>--all<span class="w"> </span>--dry-run<span class="w">    </span><span class="c1"># xem</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>bash<span class="w"> </span>vagrant/cleanup.sh<span class="w"> </span>--all<span class="w"> </span>--yes<span class="w">        </span><span class="c1"># thực hiện</span>
+</span></code></pre></div></p>
+<p>✅ <strong>Verify</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>vagrant<span class="w"> </span>status
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="c1"># Output:</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># node1                     running (virtualbox)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># node2                     running (virtualbox)</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># node3                     running (virtualbox)</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="c1"># mgmt                      running (virtualbox)</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1"># Test connectivity giữa các node</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"=== </span><span class="nv">$N</span><span class="s2"> ==="</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"for T in node1 node2 node3 mgmt; do \</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="s2">    [ \"\$T\" = \"\$(hostname)\" ] &amp;&amp; continue; \</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="s2">    ping -c1 -W2 \$T &gt;/dev/null &amp;&amp; echo \"\$(hostname) -&gt; \$T OK\" || echo \"FAIL\"; \</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="s2">  done"</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="k">done</span>
+</span></code></pre></div></p>
+<p>Mong đợi: 12 dòng <code>... -&gt; ... OK</code> (4 × 3 pairs).</p>
+<hr />
+<h2 id="b2-prepare-os-chay-provisioner-common-prep-tren-4-vms">B2 · Prepare OS — chạy provisioner <code>common-prep</code> trên 4 VMs<a class="headerlink" href="#b2-prepare-os-chay-provisioner-common-prep-tren-4-vms" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST, ở thư mục <code>vagrant/</code> — provisioner sẽ tự SSH vào từng VM và chạy <code>/vagrant/scripts/common/00-prepare-os.sh</code> với quyền root.</p>
+<h3 id="b21-trigger-provisioner-tren-tung-vm">B2.1 — Trigger provisioner trên từng VM<a class="headerlink" href="#b21-trigger-provisioner-tren-tung-vm" title="Permanent link">&para;</a></h3>
+<p>💻 <strong>Command</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"==&gt; prepare-os </span><span class="nv">$N</span><span class="s2">"</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span>vagrant<span class="w"> </span>provision<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>--provision-with<span class="w"> </span>common-prep
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">done</span>
+</span></code></pre></div></p>
+<p>Script được chạy: <a href="../../../scripts/common/00-prepare-os.sh">scripts/common/00-prepare-os.sh</a> — làm các việc:</p>
+<table>
+<thead>
+<tr>
+<th>Tác vụ</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/etc/hosts</code></td>
+<td>Inject block với marker <code>&gt;&gt;&gt; mysql-ha cluster &gt;&gt;&gt;</code> (idempotent)</td>
+</tr>
+<tr>
+<td>Swap off</td>
+<td><code>swapoff -a</code> + comment dòng swap trong <code>/etc/fstab</code></td>
+</tr>
+<tr>
+<td>NTP</td>
+<td><code>apt install chrony</code> + <code>systemctl enable --now chrony</code> + <code>timedatectl set-ntp true</code></td>
+</tr>
+<tr>
+<td>sysctl</td>
+<td>Ghi <code>/etc/sysctl.d/99-mysql-ha.conf</code> (xem B2.4) + <code>sysctl --system</code></td>
+</tr>
+<tr>
+<td>ulimit</td>
+<td>Ghi <code>/etc/systemd/system/mysql.service.d/limits.conf</code> + <code>mysqld.service.d/</code> (xem B2.5)</td>
+</tr>
+<tr>
+<td>AppArmor</td>
+<td><code>systemctl disable --now apparmor</code> (cho lab)</td>
+</tr>
+<tr>
+<td>Repo MySQL cũ</td>
+<td>Dọn <code>/etc/apt/sources.list.d/mysql.list*</code> nếu B3 fail trước đó</td>
+</tr>
+</tbody>
+</table>
+<h3 id="b22-etchosts-noi-dung-block-uoc-inject">B2.2 — <code>/etc/hosts</code> (nội dung block được inject)<a class="headerlink" href="#b22-etchosts-noi-dung-block-uoc-inject" title="Permanent link">&para;</a></h3>
+<p>📝 <strong>File</strong> — <code>/etc/hosts</code> trên mỗi VM (append nếu chưa có):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a># &gt;&gt;&gt; mysql-ha cluster &gt;&gt;&gt;
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>192.168.10.11  node1
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>192.168.10.12  node2
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>192.168.10.13  node3
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>192.168.10.20  mgmt
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a># &lt;&lt;&lt; mysql-ha cluster &lt;&lt;&lt;
+</span></code></pre></div></p>
+<blockquote>
+<p>Ghi chú: Vagrantfile provisioner <code>prep</code> (chạy tự động khi <code>vagrant up</code>) cũng inject một block tương đương với marker <code># --- mysql-ha cluster ---</code>. Sau B2 sẽ có 2 block — đó là bình thường, idempotent.</p>
+</blockquote>
+<h3 id="b23-swap">B2.3 — Swap<a class="headerlink" href="#b23-swap" title="Permanent link">&para;</a></h3>
+<p>💻 <strong>Tương đương thủ công nếu muốn chạy bằng tay</strong> (SSH vào từng VM, <code>sudo -i</code>):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>swapoff<span class="w"> </span>-a
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>sed<span class="w"> </span>-i.bak<span class="w"> </span>-E<span class="w"> </span><span class="s1">'/^[^#].*\sswap\s/s/^/#/'</span><span class="w"> </span>/etc/fstab
+</span></code></pre></div></p>
+<h3 id="b24-sysctl-tuning">B2.4 — sysctl tuning<a class="headerlink" href="#b24-sysctl-tuning" title="Permanent link">&para;</a></h3>
+<p>📝 <strong>File</strong> — <code>/etc/sysctl.d/99-mysql-ha.conf</code> (được script tạo):
+<div class="language-ini highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="na">vm.swappiness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">1</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="na">net.core.somaxconn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">65535</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="na">net.ipv4.tcp_tw_reuse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">1</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="na">net.ipv4.tcp_fin_timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">15</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="na">net.ipv4.tcp_keepalive_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">60</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="na">net.ipv4.tcp_keepalive_intvl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">10</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="na">net.ipv4.tcp_keepalive_probes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">6</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="na">fs.aio-max-nr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">1048576</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="na">fs.file-max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">2097152</span>
+</span></code></pre></div></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sysctl<span class="w"> </span>--system
+</span></code></pre></div>
+<blockquote>
+<p>⚠ <strong>Bento box quirk</strong>: <code>net.ipv4.conf.all.accept_source_route</code> và <code>promote_secondaries</code> có thể báo <code>Invalid argument</code> trên bento/ubuntu-22.04 — bỏ qua, không có trong config trên.</p>
+</blockquote>
+<h3 id="b25-ulimit-systemd-limits">B2.5 — ulimit / systemd limits<a class="headerlink" href="#b25-ulimit-systemd-limits" title="Permanent link">&para;</a></h3>
+<p>📝 <strong>File</strong> — <code>/etc/systemd/system/mysql.service.d/limits.conf</code> (và copy sang <code>mysqld.service.d/</code>):
+<div class="language-ini highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">[Service]</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="na">LimitNOFILE</span><span class="o">=</span><span class="s">1048576</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="na">LimitNPROC</span><span class="o">=</span><span class="s">65535</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>systemctl<span class="w"> </span>daemon-reload
+</span></code></pre></div></p>
+<h3 id="b26-ntp">B2.6 — NTP<a class="headerlink" href="#b26-ntp" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive<span class="w"> </span>apt-get<span class="w"> </span>update
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>chrony
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>chrony
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>timedatectl<span class="w"> </span>set-ntp<span class="w"> </span><span class="nb">true</span>
+</span></code></pre></div>
+<h3 id="b27-apparmor-ubuntu">B2.7 — AppArmor (Ubuntu)<a class="headerlink" href="#b27-apparmor-ubuntu" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>systemctl<span class="w"> </span>disable<span class="w"> </span>--now<span class="w"> </span>apparmor
+</span></code></pre></div>
+<p>✅ <strong>Verify</strong> (chạy trên HOST sau khi xong cả 4 VMs):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"--- </span><span class="nv">$N</span><span class="s2"> ---"</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="s2">    grep -A4 'mysql-ha cluster' /etc/hosts | head -5</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="s2">    echo 'swap:'; swapon --show || echo '  swap OFF'</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="s2">    timedatectl | grep -E 'NTP|synchron'</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="s2">    sysctl vm.swappiness fs.file-max</span>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="s2">  "</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="k">done</span>
+</span></code></pre></div></p>
+<p>Mong đợi mỗi VM:
+- <code>/etc/hosts</code> chứa block <code>mysql-ha cluster</code>
+- <code>swap OFF</code> (output rỗng)
+- <code>System clock synchronized: yes</code>, <code>NTP service: active</code>
+- <code>vm.swappiness = 1</code>, <code>fs.file-max = 2097152</code></p>
+<hr />
+<h2 id="b3-ssh-trust-giua-vagrant-user-tren-4-vms">B3 · SSH trust giữa <code>vagrant</code> user trên 4 VMs<a class="headerlink" href="#b3-ssh-trust-giua-vagrant-user-tren-4-vms" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST — chạy provisioner <code>ssh-trust</code> (Vagrantfile sẽ inject cùng cặp <code>cluster_id_rsa</code> vào cả <code>/root/.ssh/</code> và <code>/home/vagrant/.ssh/</code>).</p>
+<blockquote>
+<p>Mục đích: cho phép <code>vagrant ssh nodeA -c "ssh nodeB hostname"</code> chạy không cần password. Demo 04 (MHA) cần passwordless cho <strong>root</strong> — đã được set sẵn ở provisioner này. Các demo còn lại chỉ cần qua <code>vagrant</code> user.</p>
+</blockquote>
+<h3 id="b31-trigger-provisioner">B3.1 — Trigger provisioner<a class="headerlink" href="#b31-trigger-provisioner" title="Permanent link">&para;</a></h3>
+<p>💻 <strong>Command</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"==&gt; ssh-trust </span><span class="nv">$N</span><span class="s2">"</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span>vagrant<span class="w"> </span>provision<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>--provision-with<span class="w"> </span>ssh-trust
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="k">done</span>
+</span></code></pre></div></p>
+<h3 id="b32-provisioner-noi-dung-a-trong-vagrantfile">B3.2 — Provisioner nội dung (đã trong Vagrantfile)<a class="headerlink" href="#b32-provisioner-noi-dung-a-trong-vagrantfile" title="Permanent link">&para;</a></h3>
+<p>📝 <strong>File</strong> — đoạn shell inline trong <a href="../../vagrant/Vagrantfile">vagrant/Vagrantfile</a> provisioner <code>ssh-trust</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nv">SRC</span><span class="o">=</span>/vagrant/vagrant/provision/cluster_id_rsa
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nv">SSH_CONF</span><span class="o">=</span><span class="s1">'Host node1 node2 node3 mgmt 192.168.10.*</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="s1">  StrictHostKeyChecking no</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="s1">  UserKnownHostsFile /dev/null</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="s1">  LogLevel ERROR'</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1"># --- root ---</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>/root/.ssh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>/root/.ssh
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>cp<span class="w">  </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span><span class="w">     </span>/root/.ssh/id_rsa
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>cp<span class="w">  </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>/root/.ssh/id_rsa.pub
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>grep<span class="w"> </span>-qxF<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="k">)</span><span class="s2">"</span><span class="w"> </span>/root/.ssh/authorized_keys<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="w">  </span><span class="o">||</span><span class="w"> </span>cat<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>&gt;&gt;<span class="w"> </span>/root/.ssh/authorized_keys
+</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/root/.ssh/id_rsa<span class="w"> </span>/root/.ssh/authorized_keys
+</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/root/.ssh/id_rsa.pub
+</span><span id="__span-25-15"><a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$SSH_CONF</span><span class="s2">"</span><span class="w"> </span>&gt;/root/.ssh/config
+</span><span id="__span-25-16"><a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/root/.ssh/config
+</span><span id="__span-25-17"><a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a>
+</span><span id="__span-25-18"><a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="c1"># --- vagrant ---</span>
+</span><span id="__span-25-19"><a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a>install<span class="w"> </span>-d<span class="w"> </span>-o<span class="w"> </span>vagrant<span class="w"> </span>-g<span class="w"> </span>vagrant<span class="w"> </span>-m<span class="w"> </span><span class="m">700</span><span class="w"> </span>/home/vagrant/.ssh
+</span><span id="__span-25-20"><a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a>cp<span class="w">  </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span><span class="w">     </span>/home/vagrant/.ssh/id_rsa
+</span><span id="__span-25-21"><a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a>cp<span class="w">  </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>/home/vagrant/.ssh/id_rsa.pub
+</span><span id="__span-25-22"><a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a>grep<span class="w"> </span>-qxF<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="k">)</span><span class="s2">"</span><span class="w"> </span>/home/vagrant/.ssh/authorized_keys<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-23"><a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="w">  </span><span class="o">||</span><span class="w"> </span>cat<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>&gt;&gt;<span class="w"> </span>/home/vagrant/.ssh/authorized_keys
+</span><span id="__span-25-24"><a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$SSH_CONF</span><span class="s2">"</span><span class="w"> </span>&gt;/home/vagrant/.ssh/config
+</span><span id="__span-25-25"><a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a>chown<span class="w"> </span>-R<span class="w"> </span>vagrant:vagrant<span class="w"> </span>/home/vagrant/.ssh
+</span><span id="__span-25-26"><a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/home/vagrant/.ssh/id_rsa<span class="w"> </span>/home/vagrant/.ssh/authorized_keys<span class="w"> </span>/home/vagrant/.ssh/config
+</span><span id="__span-25-27"><a id="__codelineno-25-27" name="__codelineno-25-27" href="#__codelineno-25-27"></a>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/home/vagrant/.ssh/id_rsa.pub
+</span></code></pre></div></p>
+<blockquote>
+<p>🐛 <strong>Bug đã fix khi viết tài liệu này</strong>: phiên bản cũ chỉ copy vào <code>/root/.ssh/</code> → step verify (<code>vagrant ssh ...</code> = vagrant user) bị treo đợi password. Sau fix cả root + vagrant đều có key + ssh config.</p>
+</blockquote>
+<h3 id="b33-tuong-uong-thu-cong-neu-khong-dung-provisioner">B3.3 — Tương đương thủ công nếu không dùng provisioner<a class="headerlink" href="#b33-tuong-uong-thu-cong-neu-khong-dung-provisioner" title="Permanent link">&para;</a></h3>
+<p>Nếu muốn làm bằng tay (mỗi VM, login <code>vagrant</code> user):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># Trên HOST (chỉ 1 lần):</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>bash<span class="w"> </span>provision/generate-ssh-key.sh
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="c1"># Trên mỗi VM (SSH vào: vagrant ssh node1, rồi node2, node3, mgmt):</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>sudo<span class="w"> </span>-i
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="nv">SRC</span><span class="o">=</span>/vagrant/vagrant/provision/cluster_id_rsa
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="nv">SSH_CONF</span><span class="o">=</span><span class="s1">'Host node1 node2 node3 mgmt 192.168.10.*</span>
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="s1">  StrictHostKeyChecking no</span>
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="s1">  UserKnownHostsFile /dev/null</span>
+</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="s1">  LogLevel ERROR'</span>
+</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>
+</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="c1"># root</span>
+</span><span id="__span-26-15"><a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>/root/.ssh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>/root/.ssh
+</span><span id="__span-26-16"><a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a>cp<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span><span class="w"> </span>/root/.ssh/id_rsa
+</span><span id="__span-26-17"><a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a>cp<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>/root/.ssh/id_rsa.pub
+</span><span id="__span-26-18"><a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a>cat<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>&gt;&gt;<span class="w"> </span>/root/.ssh/authorized_keys
+</span><span id="__span-26-19"><a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$SSH_CONF</span><span class="s2">"</span><span class="w"> </span>&gt;/root/.ssh/config
+</span><span id="__span-26-20"><a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/root/.ssh/id_rsa<span class="w"> </span>/root/.ssh/authorized_keys<span class="w"> </span>/root/.ssh/config
+</span><span id="__span-26-21"><a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a>
+</span><span id="__span-26-22"><a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a><span class="c1"># vagrant</span>
+</span><span id="__span-26-23"><a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a>install<span class="w"> </span>-d<span class="w"> </span>-o<span class="w"> </span>vagrant<span class="w"> </span>-g<span class="w"> </span>vagrant<span class="w"> </span>-m<span class="w"> </span><span class="m">700</span><span class="w"> </span>/home/vagrant/.ssh
+</span><span id="__span-26-24"><a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a>cp<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span><span class="w"> </span>/home/vagrant/.ssh/id_rsa
+</span><span id="__span-26-25"><a id="__codelineno-26-25" name="__codelineno-26-25" href="#__codelineno-26-25"></a>cp<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>/home/vagrant/.ssh/id_rsa.pub
+</span><span id="__span-26-26"><a id="__codelineno-26-26" name="__codelineno-26-26" href="#__codelineno-26-26"></a>cat<span class="w"> </span><span class="si">${</span><span class="nv">SRC</span><span class="si">}</span>.pub<span class="w"> </span>&gt;&gt;<span class="w"> </span>/home/vagrant/.ssh/authorized_keys
+</span><span id="__span-26-27"><a id="__codelineno-26-27" name="__codelineno-26-27" href="#__codelineno-26-27"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$SSH_CONF</span><span class="s2">"</span><span class="w"> </span>&gt;/home/vagrant/.ssh/config
+</span><span id="__span-26-28"><a id="__codelineno-26-28" name="__codelineno-26-28" href="#__codelineno-26-28"></a>chown<span class="w"> </span>-R<span class="w"> </span>vagrant:vagrant<span class="w"> </span>/home/vagrant/.ssh
+</span><span id="__span-26-29"><a id="__codelineno-26-29" name="__codelineno-26-29" href="#__codelineno-26-29"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/home/vagrant/.ssh/id_rsa<span class="w"> </span>/home/vagrant/.ssh/authorized_keys<span class="w"> </span>/home/vagrant/.ssh/config
+</span></code></pre></div></p>
+<p>✅ <strong>Verify</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># Trên HOST — 12 cross-SSH (4 nodes × 3 peers):</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span>T<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"</span><span class="nv">$T</span><span class="s2">"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">continue</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="nv">R</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 </span><span class="si">${</span><span class="nv">T</span><span class="si">}</span><span class="s2"> hostname 2&gt;/dev/null"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">    </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$R</span><span class="s2">"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"</span><span class="nv">$T</span><span class="s2">"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2"> -&gt; </span><span class="nv">$T</span><span class="s2">] OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2"> -&gt; </span><span class="nv">$T</span><span class="s2">] FAIL (</span><span class="nv">$R</span><span class="s2">)"</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">  </span><span class="k">done</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="k">done</span>
+</span></code></pre></div></p>
+<p>Mong đợi: <strong>12 dòng <code>OK</code></strong>.</p>
+<hr />
+<h2 id="b4-verify-lab-baseline">B4 · Verify lab baseline<a class="headerlink" href="#b4-verify-lab-baseline" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST — read-only kiểm tra 7 tiêu chí thành công.</p>
+<h3 id="b41-vm-state">B4.1 — VM state<a class="headerlink" href="#b41-vm-state" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span><span class="nv">STATE</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>status<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>--machine-readable<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F,<span class="w"> </span>-v<span class="w"> </span><span class="nv">n</span><span class="o">=</span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span><span class="s1">'$2==n &amp;&amp; $3=="state"{print $4; exit}'</span><span class="k">)</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2">] state=</span><span class="nv">$STATE</span><span class="s2">"</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="k">done</span>
+</span></code></pre></div>
+Mong đợi: 4 dòng <code>state=running</code>.</p>
+<h3 id="b42-ping-noi-bo">B4.2 — Ping nội bộ<a class="headerlink" href="#b42-ping-noi-bo" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span>T<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">    </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"</span><span class="nv">$T</span><span class="s2">"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">continue</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">    </span><span class="nv">R</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"ping -c1 -W2 </span><span class="nv">$T</span><span class="s2"> &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo OK || echo FAIL"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2"> -&gt; </span><span class="nv">$T</span><span class="s2">] </span><span class="nv">$R</span><span class="s2">"</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">  </span><span class="k">done</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="k">done</span>
+</span></code></pre></div>
+Mong đợi: 12 dòng <code>OK</code>.</p>
+<h3 id="b43-etchosts-entries">B4.3 — <code>/etc/hosts</code> entries<a class="headerlink" href="#b43-etchosts-entries" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="w">  </span><span class="nv">CNT</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"grep -E 'node1|node2|node3|mgmt' /etc/hosts | wc -l"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2">] entries=</span><span class="nv">$CNT</span><span class="s2">"</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="k">done</span>
+</span></code></pre></div>
+Mong đợi: <code>entries ≥ 4</code> mỗi VM.</p>
+<h3 id="b44-swap-off">B4.4 — Swap off<a class="headerlink" href="#b44-swap-off" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="w">  </span><span class="nv">SWAP</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"swapon --show 2&gt;/dev/null | wc -l"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2">] swap_lines=</span><span class="nv">$SWAP</span><span class="s2">"</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="k">done</span>
+</span></code></pre></div>
+Mong đợi: <code>swap_lines=0</code>.</p>
+<h3 id="b45-ntp">B4.5 — NTP<a class="headerlink" href="#b45-ntp" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">  </span><span class="nv">S</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"timedatectl 2&gt;/dev/null | awk -F': ' '/synchron/{print \$2}' | tr -d ' \r'"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2">] NTP=</span><span class="nv">$S</span><span class="s2">"</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="k">done</span>
+</span></code></pre></div>
+Mong đợi: <code>NTP=yes</code>.</p>
+<h3 id="b46-sysctl">B4.6 — sysctl<a class="headerlink" href="#b46-sysctl" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">  </span><span class="nv">SW</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"sysctl -n vm.swappiness"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">  </span><span class="nv">FM</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"sysctl -n fs.file-max"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2">] vm.swappiness=</span><span class="nv">$SW</span><span class="s2">  fs.file-max=</span><span class="nv">$FM</span><span class="s2">"</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="k">done</span>
+</span></code></pre></div>
+Mong đợi: <code>vm.swappiness=1</code>, <code>fs.file-max=2097152</code>.</p>
+<h3 id="b47-ssh-cross-trust">B4.7 — SSH cross-trust<a class="headerlink" href="#b47-ssh-cross-trust" title="Permanent link">&para;</a></h3>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span>T<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="w">    </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"</span><span class="nv">$T</span><span class="s2">"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">continue</span>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="w">    </span><span class="nv">R</span><span class="o">=</span><span class="k">$(</span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 </span><span class="nv">$T</span><span class="s2"> hostname 2&gt;/dev/null"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'\r'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n1<span class="k">)</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="w">    </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$R</span><span class="s2">"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"</span><span class="nv">$T</span><span class="s2">"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2"> -&gt; </span><span class="nv">$T</span><span class="s2">] OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="nv">$N</span><span class="s2"> -&gt; </span><span class="nv">$T</span><span class="s2">] FAIL (</span><span class="nv">$R</span><span class="s2">)"</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="w">  </span><span class="k">done</span>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="k">done</span>
+</span></code></pre></div>
+Mong đợi: 12 dòng <code>OK</code>.</p>
+<hr />
+<h2 id="b5-snapshot-clean-optional-nhung-khuyen-nghi">B5 · Snapshot <code>clean</code> (optional nhưng khuyến nghị)<a class="headerlink" href="#b5-snapshot-clean-optional-nhung-khuyen-nghi" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST.</p>
+<p>Mục đích: chụp state "lab ready" để rollback nhanh khi test các demo HA destructive (failover, split-brain, force-shutdown).</p>
+<h3 id="b51-save-snapshot-cho-4-vms">B5.1 — Save snapshot cho 4 VMs<a class="headerlink" href="#b51-save-snapshot-cho-4-vms" title="Permanent link">&para;</a></h3>
+<p>💻 <strong>Command</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="w">  </span><span class="c1"># Xoá snapshot trùng tên (nếu có)</span>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>list<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span>clean<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="w">    </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>delete<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>clean
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="w">  </span><span class="k">fi</span>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="w">  </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>save<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>clean
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="k">done</span>
+</span></code></pre></div></p>
+<p>Mất ~1–2 phút (mỗi VM ~30s).</p>
+<p>✅ <strong>Verify</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"--- </span><span class="nv">$N</span><span class="s2"> ---"</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="w">  </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>list<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="k">done</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="c1"># Mỗi VM in ra: clean</span>
+</span></code></pre></div></p>
+<h3 id="b52-restore-snapshot-khi-can">B5.2 — Restore snapshot khi cần<a class="headerlink" href="#b52-restore-snapshot-khi-can" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="w">  </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>restore<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>clean
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="k">done</span>
+</span></code></pre></div>
+<blockquote>
+<p>⚠ Sau restore, các block IP/route có thể cần khởi tạo lại — chạy lại <code>vagrant reload</code> hoặc <code>vagrant ssh nodeX -c "sudo systemctl restart networking"</code> nếu mất kết nối.</p>
+</blockquote>
+<h3 id="b53-xoa-snapshot">B5.3 — Xoá snapshot<a class="headerlink" href="#b53-xoa-snapshot" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="w">  </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>delete<span class="w"> </span><span class="s2">"</span><span class="nv">$N</span><span class="s2">"</span><span class="w"> </span>clean
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="k">done</span>
+</span></code></pre></div>
+<hr />
+<h2 id="b6-buoc-tiep-theo">B6 · Bước tiếp theo<a class="headerlink" href="#b6-buoc-tiep-theo" title="Permanent link">&para;</a></h2>
+<p>Sau khi xong B1–B5, bạn có lab baseline. Chọn 1 trong các demo HA:</p>
+<table>
+<thead>
+<tr>
+<th>Demo</th>
+<th>Script chạy</th>
+<th>Cần MySQL community?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 Async/Semi-sync</td>
+<td><code>bash demo/01-async-semisync/run-all.sh</code></td>
+<td>✅ (script tự cài)</td>
+</tr>
+<tr>
+<td>02 InnoDB Cluster</td>
+<td><code>bash demo/02-innodb-cluster/run-all.sh</code></td>
+<td>✅ (script tự cài)</td>
+</tr>
+<tr>
+<td>03 Group Replication</td>
+<td><code>bash demo/03-group-replication/run-all.sh</code></td>
+<td>✅ (script tự cài)</td>
+</tr>
+<tr>
+<td>04 MHA</td>
+<td><code>bash demo/04-mha/run-all.sh</code></td>
+<td>✅ + root SSH passwordless (demo tự setup) — cần demo 01 chạy trước</td>
+</tr>
+<tr>
+<td>05 Orchestrator</td>
+<td><code>bash demo/05-orchestrator/run-all.sh</code></td>
+<td>✅ + MySQL trên mgmt — cần demo 01 chạy trước</td>
+</tr>
+<tr>
+<td>06 Galera (PXC)</td>
+<td><code>bash demo/06-galera/run-all.sh</code></td>
+<td>❌ — dùng PXC thay thế, <strong>không chạy 01-install-mysql.sh</strong></td>
+</tr>
+<tr>
+<td>07 ProxySQL</td>
+<td><code>bash demo/07-proxysql/run-all.sh</code></td>
+<td>✅ — cần demo 01 hoặc 06 chạy trước</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠ Các demo 01/02/03 đều có B1 + B2 tương đương demo 08 — sẽ skip nhanh do VMs đã <code>running</code> và <code>/etc/hosts</code> đã có block.</p>
+</blockquote>
+<hr />
+<h2 id="b7-cleanup-destructive">B7 · Cleanup (destructive)<a class="headerlink" href="#b7-cleanup-destructive" title="Permanent link">&para;</a></h2>
+<p>🖥️ <strong>Where</strong>: HOST.</p>
+<h3 id="b71-halt-giu-disk-snapshot">B7.1 — Halt (giữ disk + snapshot)<a class="headerlink" href="#b71-halt-giu-disk-snapshot" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>vagrant<span class="w"> </span>halt
+</span></code></pre></div>
+<h3 id="b72-destroy-hoan-toan">B7.2 — Destroy hoàn toàn<a class="headerlink" href="#b72-destroy-hoan-toan" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>vagrant<span class="w"> </span>destroy<span class="w"> </span>-f
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>rm<span class="w"> </span>-f<span class="w"> </span>provision/cluster_id_rsa<span class="w"> </span>provision/cluster_id_rsa.pub
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>rm<span class="w"> </span>-rf<span class="w"> </span>.vagrant/
+</span></code></pre></div>
+<p>Hoặc dùng helper interactive:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>bash<span class="w"> </span>vagrant/cleanup.sh<span class="w"> </span>--all<span class="w"> </span>--dry-run<span class="w">    </span><span class="c1"># xem</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>bash<span class="w"> </span>vagrant/cleanup.sh<span class="w"> </span>--all<span class="w"> </span>--yes<span class="w">        </span><span class="c1"># thực hiện không hỏi</span>
+</span></code></pre></div></p>
+<p>Demo 08 cleanup wrapper:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>bash<span class="w"> </span>demo/08-vagrant-lab/09-cleanup.sh<span class="w"> </span>--all<span class="w"> </span>--yes
+</span></code></pre></div></p>
+<hr />
+<h2 id="appendix-a-trouble-shooting-tong-hop">Appendix A · Trouble-shooting tổng hợp<a class="headerlink" href="#appendix-a-trouble-shooting-tong-hop" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Nguyên nhân</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vagrant up</code> báo IP conflict</td>
+<td>Subnet <code>192.168.10.0/24</code> trùng host</td>
+<td>Đổi NODES IPs trong Vagrantfile + env.sh</td>
+</tr>
+<tr>
+<td>Box <code>bento/ubuntu-22.04</code> không tải</td>
+<td>Network / mirror</td>
+<td><code>vagrant box add bento/ubuntu-22.04</code> thủ công; hoặc đổi sang <code>ubuntu/jammy64</code></td>
+</tr>
+<tr>
+<td><code>VT-x not available</code></td>
+<td>Hyper-V đang chiếm</td>
+<td>Windows: <code>bcdedit /set hypervisorlaunchtype off</code> + reboot; BIOS bật VT-x</td>
+</tr>
+<tr>
+<td>Provisioner timeout</td>
+<td>RAM/IO host thấp</td>
+<td>Tăng <code>config.vm.boot_timeout</code> trong Vagrantfile; chạy <code>vagrant up</code> tuần tự</td>
+</tr>
+<tr>
+<td><code>synced_folder</code> chậm trên Windows</td>
+<td>virtualbox shared folder</td>
+<td>Đổi sang <code>type: "smb"</code> (cần SMB share) hoặc <code>type: "rsync"</code></td>
+</tr>
+<tr>
+<td>MySQL repo install fail trong B2</td>
+<td>Key A8D3785C expired</td>
+<td>Script đã tự dọn — chạy lại</td>
+</tr>
+<tr>
+<td>UFW chặn SSH</td>
+<td><code>02-firewall.sh</code> đã allow 22 sẵn</td>
+<td>Nếu vẫn chặn: <code>vagrant ssh nodeX -c "sudo ufw allow 22/tcp"</code> (lưu trong memory: bug_ufw_blocks_ssh.md)</td>
+</tr>
+<tr>
+<td>Host-Only adapter NDIS ghost-bind</td>
+<td><code>VERR_INTNET_FLT_IF_NOT_FOUND</code> adapter #N</td>
+<td>Chạy <code>vagrant/fix-vbox-hostonly.ps1</code> Method A (memory: bug_vbox_hostonly_ndis_filter.md)</td>
+</tr>
+<tr>
+<td><code>ssh node2 hostname</code> từ vagrant user treo</td>
+<td>Provisioner <code>ssh-trust</code> cũ chỉ set root</td>
+<td>Đã fix trong B3 — re-run <code>vagrant provision $N --provision-with ssh-trust</code></td>
+</tr>
+<tr>
+<td><code>vagrant halt --force</code> rồi PXC seqno=-1</td>
+<td>Crash recovery cần</td>
+<td><code>sudo -u mysql mysqld --wsrep-recover</code> (memory: bug_pxc_halt_seqno_minus_1_recovery.md)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="appendix-b-cau-truc-thu-muc-lien-quan">Appendix B · Cấu trúc thư mục liên quan<a class="headerlink" href="#appendix-b-cau-truc-thu-muc-lien-quan" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>HA/Mysql/
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>├── vagrant/
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>│   ├── Vagrantfile                  # 4 VMs definition + 5 provisioners
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a>│   ├── Makefile                     # full-bootstrap = ssh-keys + up + prep-all + install-mysql + ssh-trust
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a>│   ├── cleanup.sh / cleanup.ps1     # destructive cleanup
+</span><span id="__span-43-6"><a id="__codelineno-43-6" name="__codelineno-43-6" href="#__codelineno-43-6"></a>│   └── provision/
+</span><span id="__span-43-7"><a id="__codelineno-43-7" name="__codelineno-43-7" href="#__codelineno-43-7"></a>│       ├── generate-ssh-key.sh      # B1.1
+</span><span id="__span-43-8"><a id="__codelineno-43-8" name="__codelineno-43-8" href="#__codelineno-43-8"></a>│       ├── cluster_id_rsa           # sinh local (gitignored)
+</span><span id="__span-43-9"><a id="__codelineno-43-9" name="__codelineno-43-9" href="#__codelineno-43-9"></a>│       └── cluster_id_rsa.pub
+</span><span id="__span-43-10"><a id="__codelineno-43-10" name="__codelineno-43-10" href="#__codelineno-43-10"></a>├── scripts/
+</span><span id="__span-43-11"><a id="__codelineno-43-11" name="__codelineno-43-11" href="#__codelineno-43-11"></a>│   └── common/
+</span><span id="__span-43-12"><a id="__codelineno-43-12" name="__codelineno-43-12" href="#__codelineno-43-12"></a>│       ├── env.sh                   # single source of truth: IPs, ports, creds
+</span><span id="__span-43-13"><a id="__codelineno-43-13" name="__codelineno-43-13" href="#__codelineno-43-13"></a>│       ├── 00-prepare-os.sh         # chạy bởi B2 provisioner `common-prep`
+</span><span id="__span-43-14"><a id="__codelineno-43-14" name="__codelineno-43-14" href="#__codelineno-43-14"></a>│       ├── 01-install-mysql.sh      # demo 01-05/07 (KHÔNG cho Galera)
+</span><span id="__span-43-15"><a id="__codelineno-43-15" name="__codelineno-43-15" href="#__codelineno-43-15"></a>│       └── 02-firewall.sh           # UFW rules
+</span><span id="__span-43-16"><a id="__codelineno-43-16" name="__codelineno-43-16" href="#__codelineno-43-16"></a>├── demo/08-vagrant-lab/
+</span><span id="__span-43-17"><a id="__codelineno-43-17" name="__codelineno-43-17" href="#__codelineno-43-17"></a>│   ├── 00-overview.md
+</span><span id="__span-43-18"><a id="__codelineno-43-18" name="__codelineno-43-18" href="#__codelineno-43-18"></a>│   ├── 01-vagrant-up.sh             # B1
+</span><span id="__span-43-19"><a id="__codelineno-43-19" name="__codelineno-43-19" href="#__codelineno-43-19"></a>│   ├── 02-prepare-os.sh             # B2 (wrapper provisioner common-prep)
+</span><span id="__span-43-20"><a id="__codelineno-43-20" name="__codelineno-43-20" href="#__codelineno-43-20"></a>│   ├── 03-ssh-trust.sh              # B3 (wrapper provisioner ssh-trust)
+</span><span id="__span-43-21"><a id="__codelineno-43-21" name="__codelineno-43-21" href="#__codelineno-43-21"></a>│   ├── 04-verify.sh                 # B4
+</span><span id="__span-43-22"><a id="__codelineno-43-22" name="__codelineno-43-22" href="#__codelineno-43-22"></a>│   ├── 05-snapshot-clean.sh         # B5
+</span><span id="__span-43-23"><a id="__codelineno-43-23" name="__codelineno-43-23" href="#__codelineno-43-23"></a>│   ├── 09-cleanup.sh                # B7
+</span><span id="__span-43-24"><a id="__codelineno-43-24" name="__codelineno-43-24" href="#__codelineno-43-24"></a>│   ├── run-all.sh / run-all.ps1     # B1→B4 pipeline
+</span><span id="__span-43-25"><a id="__codelineno-43-25" name="__codelineno-43-25" href="#__codelineno-43-25"></a>│   ├── MANUAL-SETUP.md              # tài liệu này
+</span><span id="__span-43-26"><a id="__codelineno-43-26" name="__codelineno-43-26" href="#__codelineno-43-26"></a>│   └── results/                     # logs sau khi chạy
+</span><span id="__span-43-27"><a id="__codelineno-43-27" name="__codelineno-43-27" href="#__codelineno-43-27"></a>└── runbooks/
+</span><span id="__span-43-28"><a id="__codelineno-43-28" name="__codelineno-43-28" href="#__codelineno-43-28"></a>    └── 08-vagrant-lab.md             # runbook tham chiếu gốc
+</span></code></pre></div>
+<h2 id="appendix-c-mapping-buoc-script-goc">Appendix C · Mapping bước → script gốc<a class="headerlink" href="#appendix-c-mapping-buoc-script-goc" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Bước manual</th>
+<th>Script demo 08</th>
+<th>Provisioner Vagrantfile</th>
+<th>Script trong VM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B0</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>B1</td>
+<td><code>01-vagrant-up.sh</code></td>
+<td><code>prep</code> (auto) + <code>banner</code> (auto)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>B2</td>
+<td><code>02-prepare-os.sh</code></td>
+<td><code>common-prep</code></td>
+<td><code>scripts/common/00-prepare-os.sh</code></td>
+</tr>
+<tr>
+<td>B3</td>
+<td><code>03-ssh-trust.sh</code></td>
+<td><code>ssh-trust</code></td>
+<td>(inline shell trong Vagrantfile)</td>
+</tr>
+<tr>
+<td>B4</td>
+<td><code>04-verify.sh</code></td>
+<td>—</td>
+<td>— (chạy <code>ssh ... hostname</code> cross VMs)</td>
+</tr>
+<tr>
+<td>B5</td>
+<td><code>05-snapshot-clean.sh</code></td>
+<td>—</td>
+<td>— (chạy <code>vagrant snapshot save</code>)</td>
+</tr>
+<tr>
+<td>B7</td>
+<td><code>09-cleanup.sh</code></td>
+<td>—</td>
+<td>— (chạy <code>vagrant destroy -f</code> + xoá keys)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Tham chiếu</strong>:
+- Runbook gốc: <a href="../../../runbooks/008-vagrant-lab/">runbooks/08-vagrant-lab.md</a>
+- Vagrantfile: <a href="../../vagrant/Vagrantfile">vagrant/Vagrantfile</a>
+- Env shared: <a href="../../../scripts/common/env.sh">scripts/common/env.sh</a>
+- Prepare-OS script: <a href="../../../scripts/common/00-prepare-os.sh">scripts/common/00-prepare-os.sh</a></p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>HA/Mysql/demo/08-vagrant-lab/MANUAL-SETUP.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../000-overview/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 00 — Tổng quan bài demo">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                00 — Tổng quan bài demo
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../readme/" class="md-footer__link md-footer__link--next" aria-label="Sau: Demo 08 — Vagrant Lab (4 VMs)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Demo 08 — Vagrant Lab (4 VMs)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

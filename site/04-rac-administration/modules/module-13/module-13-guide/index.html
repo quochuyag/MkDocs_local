@@ -1,0 +1,2354 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../module-12/module-12-guide/">
+      
+      
+        <link rel="next" href="../../module-14/module-14-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📘 Module 13: RAC with Data Guard — Physical Standby RAC Database - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-13-rac-with-data-guard-physical-standby-rac-database" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📘 Module 13: RAC with Data Guard — Physical Standby RAC Database
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            04. RAC Administration
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn tiếp tục cho khoá học Oracle RAC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-01/module-01-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 01
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-02/module-02-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 02
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-03/module-03-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 03
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-04/module-04-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 04
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-05/module-05-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 05
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-06/module-06-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 06
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-07/module-07-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 07
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-08/module-08-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 08
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-09/module-09-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 09
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-10/module-10-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 10
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-11/module-11-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 11
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-12/module-12-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 12
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3_13" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_3_13" id="__nav_5_3_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Module 13
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_3_13_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            Module 13
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📘 Module 13: RAC with Data Guard — Physical Standby RAC Database
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 13: RAC with Data Guard — Physical Standby RAC Database
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bai-hoc-trong-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Bài học trong Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-moi-truong-thong-so" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Môi trường &amp; thông số
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-can-nhac-data-guard-trong-rac-khac-single-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Cân nhắc Data Guard trong RAC (khác single-instance)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-bon-giai-oan" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Bốn giai đoạn
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-giai-oan-i-chuan-bi-primary-rac" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Giai đoạn I — Chuẩn bị Primary (rac)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-giai-oan-ii-chuan-bi-standby-system-srva-srvb" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Giai đoạn II — Chuẩn bị Standby system (srva, srvb)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-giai-oan-iii-tao-physical-standby-bang-rman" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Giai đoạn III — Tạo Physical Standby bằng RMAN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-giai-oan-iv-test-monitor" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Giai đoạn IV — Test &amp; Monitor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-e-nho-lau" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Tóm tắt để nhớ lâu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sau-khi-hoc-xong-hay-tu-lam" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Sau khi học xong, hãy tự làm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Module tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-14/module-14-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 14
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tiến độ học Oracle RAC Administration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Oracle Database RAC Administration — Mục lục khóa học
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scenarios/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🧩 10 tình huống thực tế Oracle RAC & cách giải quyết
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database RAC Administration Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bai-hoc-trong-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Bài học trong Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-moi-truong-thong-so" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Môi trường &amp; thông số
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-can-nhac-data-guard-trong-rac-khac-single-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Cân nhắc Data Guard trong RAC (khác single-instance)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-bon-giai-oan" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Bốn giai đoạn
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-giai-oan-i-chuan-bi-primary-rac" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Giai đoạn I — Chuẩn bị Primary (rac)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-giai-oan-ii-chuan-bi-standby-system-srva-srvb" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Giai đoạn II — Chuẩn bị Standby system (srva, srvb)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-giai-oan-iii-tao-physical-standby-bang-rman" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Giai đoạn III — Tạo Physical Standby bằng RMAN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-giai-oan-iv-test-monitor" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Giai đoạn IV — Test &amp; Monitor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-e-nho-lau" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Tóm tắt để nhớ lâu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sau-khi-hoc-xong-hay-tu-lam" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Sau khi học xong, hãy tự làm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Module tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="module-13-rac-with-data-guard-physical-standby-rac-database">📘 Module 13: RAC with Data Guard — Physical Standby RAC Database<a class="headerlink" href="#module-13-rac-with-data-guard-physical-standby-rac-database" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Section</strong>: 13/14
+<strong>Khóa học</strong>: Oracle Database RAC Administration Course (Ahmed Baraka)
+<strong>Thời gian học ước tính</strong>: 3-4 giờ</p>
+</blockquote>
+<hr />
+<h2 id="bai-hoc-trong-module">📋 Bài học trong Module<a class="headerlink" href="#bai-hoc-trong-module" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Bài học</th>
+<th>File nguồn</th>
+<th>Loại</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Creating an Oracle 12c R2 Physical Standby RAC Database from a Primary RAC</td>
+<td><code>Section 13/62_Creating-...Physical-Standby-RAC-...pdf</code></td>
+<td>📘 Tutorial (lý thuyết + thực hành)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>ℹ️ Section 13 là một <strong>tutorial</strong> trọn vẹn (không tách lý thuyết/practice). Tài liệu hỗ trợ: <code>Section 13/tns_files</code>.</p>
+</blockquote>
+<hr />
+<h2 id="muc-tieu-module">🎯 Mục tiêu Module<a class="headerlink" href="#muc-tieu-module" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Cấu hình <strong>Data Guard</strong> giữa <strong>hai RAC database</strong> (primary ↔ physical standby) trên Oracle 12c R2.</li>
+<li>Nắm các <strong>cân nhắc đặc thù của Data Guard trong RAC</strong>.</li>
+<li>Đi hết quy trình: chuẩn bị primary → chuẩn bị standby → tạo standby bằng RMAN DUPLICATE → start Redo Apply → kiểm tra/monitor.</li>
+</ul>
+<hr />
+<h2 id="noi-dung-chinh">📋 Nội dung chính<a class="headerlink" href="#noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>📄 Nguồn: <code>Section 13/62_Creating-an-Oracle-12c-R2-Physical-Standby-RAC-Database-from-a-Primary-RAC-database.pdf</code></p>
+</blockquote>
+<h3 id="1-moi-truong-thong-so">1. Môi trường &amp; thông số<a class="headerlink" href="#1-moi-truong-thong-so" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>4 máy ảo</strong>: 2 node cho <strong>primary</strong> (<code>srv1</code>, <code>srv2</code>, cluster đã có RAC database), 2 node cho <strong>standby</strong> (<code>srva</code>, <code>srvb</code>, chỉ có GI + DB software + ASM, <strong>chưa</strong> có database).</li>
+<li><strong>DB_NAME giống nhau</strong>, nhưng <strong><code>DB_UNIQUE_NAME</code> khác nhau</strong>: primary = <code>rac</code>, standby = <code>stdrac</code>.</li>
+<li>Cấu hình Data Guard: <strong>Protection mode = Maximum Performance</strong>, Fast-Start Failover = Disabled, quản lý bằng <strong>SQL*Plus</strong>, loại <strong>Physical Standby</strong>.</li>
+</ul>
+<h3 id="2-can-nhac-data-guard-trong-rac-khac-single-instance">2. Cân nhắc Data Guard trong RAC (khác single-instance)<a class="headerlink" href="#2-can-nhac-data-guard-trong-rac-khac-single-instance" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>DUPLICATE ... FOR STANDBY FROM ACTIVE DATABASE</code> tạo ra <strong>standby single-instance</strong> ⇒ phải <strong>tự</strong> set các tham số RAC (<code>INSTANCE_NUMBER</code>, <code>INSTANCE_NAME</code>), enable instance thứ 2, và <strong>thêm database vào OCR</strong> như một resource mới.</li>
+<li><strong><code>INSTANCE_NUMBER</code>/<code>INSTANCE_NAME</code></strong> phải chỉnh tay cho <strong>instance standby thứ 2</strong>.</li>
+<li>Primary <strong>hoặc</strong> standby có thể là single-instance non-cluster (tutorial này dùng cả hai đều RAC).</li>
+<li><strong>Standby Redo Log (SRL)</strong> phải nằm ở nơi <strong>mọi instance standby truy cập được</strong> (khuyến nghị <strong>FRA trong ASM</strong>); mọi instance archive SRL về <strong>cùng vị trí</strong>.</li>
+<li>Nếu <strong>không</strong> dùng OMF thì phải set <code>LOG_ARCHIVE_FORMAT</code> có <strong><code>%t</code>/<code>%T</code></strong> (thread) để phân biệt archive theo instance.</li>
+</ul>
+<h3 id="3-bon-giai-oan">3. Bốn giai đoạn<a class="headerlink" href="#3-bon-giai-oan" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    A[I. Chuẩn bị Primary] --&gt; B[II. Chuẩn bị Standby system]
+    B --&gt; C[III. Tạo Physical Standby - RMAN DUPLICATE]
+    C --&gt; D[IV. Test &amp; Monitor]</code></pre>
+<h3 id="4-giai-oan-i-chuan-bi-primary-rac">4. Giai đoạn I — Chuẩn bị Primary (<code>rac</code>)<a class="headerlink" href="#4-giai-oan-i-chuan-bi-primary-rac" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">-- ARCHIVELOG</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">LOG_ARCHIVE_DEST_1</span><span class="o">=</span><span class="s1">'LOCATION=USE_DB_RECOVERY_FILE_DEST'</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">-- (srvctl stop/start database -o mount) ALTER DATABASE ARCHIVELOG;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">-- Forced logging</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">FORCE</span><span class="w"> </span><span class="n">LOGGING</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">-- Standby Redo Log: số lượng = (max redo logfiles + 1) * số thread  → vd (4+1)*2 = 10</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="n">STANDBY</span><span class="w"> </span><span class="n">LOGFILE</span><span class="w"> </span><span class="n">THREAD</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="s1">'+FRA'</span><span class="w"> </span><span class="k">SIZE</span><span class="w"> </span><span class="mi">50</span><span class="n">M</span><span class="p">;</span><span class="w">   </span><span class="c1">-- lặp cho thread 1 &amp; 2</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">-- Tham số Data Guard</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">LOG_ARCHIVE_CONFIG</span><span class="o">=</span><span class="s1">'DG_CONFIG=(rac,stdrac)'</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">LOG_ARCHIVE_DEST_2</span><span class="o">=</span><span class="s1">'SERVICE=stdrac ASYNC</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="s1">   VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=stdrac'</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">FAL_SERVER</span><span class="o">=</span><span class="s1">'stdrac'</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span><span class="w">        </span><span class="c1">-- FAL = fetch archive log</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">STANDBY_FILE_MANAGEMENT</span><span class="o">=</span><span class="s1">'AUTO'</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">LOG_ARCHIVE_MAX_PROCESSES</span><span class="o">=</span><span class="mi">8</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1">-- Flashback (khuyến nghị) + giữ control file records</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">FLASHBACK</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">CONTROL_FILE_RECORD_KEEP_TIME</span><span class="o">=</span><span class="mi">30</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Cấu hình <code>tnsnames.ora</code> (mục <code>RAC</code> và <code>STDRAC</code>) trên <strong>mọi node</strong>; ở standby dùng <strong><code>(UR=A)</code></strong> cho descriptor STDRAC.</p>
+<h3 id="5-giai-oan-ii-chuan-bi-standby-system-srva-srvb">5. Giai đoạn II — Chuẩn bị Standby system (<code>srva</code>, <code>srvb</code>)<a class="headerlink" href="#5-giai-oan-ii-chuan-bi-standby-system-srva-srvb" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Tạo thư mục (ASM: <code>mkdir RAC</code>, <code>STDRAC</code> trong DATA; OS: <code>admin/stdrac/adump</code>, <code>cdump</code>).</li>
+<li>Tạo pfile tối thiểu <code>init&lt;SID&gt;.ora</code> chỉ chứa <code>DB_NAME=rac</code> (RMAN sẽ dựng SPFILE đầy đủ).</li>
+<li><strong>Copy password file</strong> từ primary (<code>asmcmd pwget/pwcopy</code> → <code>scp</code> sang <code>srva</code>/<code>srvb</code>).</li>
+<li>Tạo <strong>static listener entry</strong> cho instance standby (<code>SID_LIST_LISTENER</code> với <code>GLOBAL_DBNAME=stdrac.localdomain</code>, <code>SID_NAME=stdrac1</code>).</li>
+</ul>
+<h3 id="6-giai-oan-iii-tao-physical-standby-bang-rman">6. Giai đoạn III — Tạo Physical Standby bằng RMAN<a class="headerlink" href="#6-giai-oan-iii-tao-physical-standby-bang-rman" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># srva: start instance NOMOUNT bằng pfile</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ORACLE_SID</span><span class="o">=</span>stdrac1
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>sqlplus<span class="w"> </span>/<span class="w"> </span>as<span class="w"> </span>sysdba
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>STARTUP<span class="w"> </span>NOMOUNT<span class="w"> </span><span class="nv">pfile</span><span class="o">=</span><span class="s1">'.../dbs/initstdrac1.ora'</span>
+</span></code></pre></div>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">-- RMAN (chạy từ standby: kéo dữ liệu từ primary)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">CONNECT</span><span class="w"> </span><span class="n">TARGET</span><span class="w"> </span><span class="n">sys</span><span class="o">/</span><span class="n">oracle</span><span class="o">@</span><span class="n">rac</span><span class="p">;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">CONNECT</span><span class="w"> </span><span class="n">AUXILIARY</span><span class="w"> </span><span class="n">sys</span><span class="o">/</span><span class="n">oracle</span><span class="o">@</span><span class="n">stdrac</span><span class="p">;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">run</span><span class="w"> </span><span class="err">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="k">allocate</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="n">prmy1</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">disk</span><span class="p">;</span><span class="w"> </span><span class="k">allocate</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="n">prmy2</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">disk</span><span class="p">;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="k">allocate</span><span class="w"> </span><span class="n">auxiliary</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="n">stby1</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">disk</span><span class="p">;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="n">DUPLICATE</span><span class="w"> </span><span class="n">TARGET</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">STANDBY</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ACTIVE</span><span class="w"> </span><span class="k">DATABASE</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="n">SPFILE</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">set</span><span class="w"> </span><span class="s1">'db_unique_name'</span><span class="o">=</span><span class="s1">'stdrac'</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="k">set</span><span class="w"> </span><span class="n">db_create_online_log_dest_1</span><span class="o">=</span><span class="s1">'+FRA'</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">db_recovery_file_dest</span><span class="o">=</span><span class="s1">'+FRA'</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="p">...</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="n">nofilenamecheck</span><span class="p">;</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="err">}</span>
+</span></code></pre></div>
+<p>Sau DUPLICATE:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- set tham số standby</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">FAL_SERVER</span><span class="o">=</span><span class="n">rac</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">FAL_CLIENT</span><span class="o">=</span><span class="n">stdrac</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">LOG_ARCHIVE_DEST_2</span><span class="o">=</span><span class="s1">'SERVICE=rac ASYNC DB_UNIQUE_NAME=rac</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s1">   VALID_FOR=(ONLINE_LOGFILE,PRIMARY_ROLE)'</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'*'</span><span class="p">;</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># thêm standby vào OCR</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>srvctl<span class="w"> </span>add<span class="w"> </span>database<span class="w"> </span>-d<span class="w"> </span>stdrac<span class="w"> </span>-o<span class="w"> </span><span class="nv">$ORACLE_HOME</span><span class="w"> </span>-role<span class="w"> </span>physical_standby<span class="w"> </span>-startoption<span class="w"> </span>mount<span class="w"> </span>-diskgroup<span class="w"> </span>DATA,FRA
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>srvctl<span class="w"> </span>add<span class="w"> </span>instance<span class="w"> </span>-d<span class="w"> </span>stdrac<span class="w"> </span>-i<span class="w"> </span>stdrac1<span class="w"> </span>-n<span class="w"> </span>srva.localdomain
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>srvctl<span class="w"> </span>add<span class="w"> </span>instance<span class="w"> </span>-d<span class="w"> </span>stdrac<span class="w"> </span>-i<span class="w"> </span>stdrac2<span class="w"> </span>-n<span class="w"> </span>srvb.localdomain
+</span></code></pre></div>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">-- chỉnh INSTANCE_NUMBER/NAME cho từng instance rồi start instance 2</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">INSTANCE_NUMBER</span><span class="o">=</span><span class="mi">2</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="n">SPFILE</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'stdrac2'</span><span class="p">;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">INSTANCE_NAME</span><span class="o">=</span><span class="s1">'stdrac2'</span><span class="w"> </span><span class="k">SCOPE</span><span class="o">=</span><span class="n">SPFILE</span><span class="w"> </span><span class="n">SID</span><span class="o">=</span><span class="s1">'stdrac2'</span><span class="p">;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">-- start Redo Apply</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">RECOVER</span><span class="w"> </span><span class="n">MANAGED</span><span class="w"> </span><span class="n">STANDBY</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">DISCONNECT</span><span class="p">;</span>
+</span></code></pre></div>
+<blockquote>
+<p>💡 Nhớ chuyển <strong>SPFILE sang ASM</strong> và cập nhật OCR (<code>srvctl modify database -d stdrac -p +DATA/.../spfilestdrac.ora</code>). Gỡ các member SRL bị multiplex thừa trên DATA.</p>
+</blockquote>
+<h3 id="7-giai-oan-iv-test-monitor">7. Giai đoạn IV — Test &amp; Monitor<a class="headerlink" href="#7-giai-oan-iv-test-monitor" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- vai trò &amp; bảo vệ</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">INST_ID</span><span class="p">,</span><span class="w"> </span><span class="n">DATABASE_ROLE</span><span class="p">,</span><span class="w"> </span><span class="n">DB_UNIQUE_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">OPEN_MODE</span><span class="p">,</span><span class="w"> </span><span class="n">PROTECTION_MODE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">GV$DATABASE</span><span class="p">;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1">-- transport lag &amp; apply lag (transport lag = dữ liệu sẽ mất khi thảm họa)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">VALUE</span><span class="p">,</span><span class="w"> </span><span class="n">UNIT</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$DATAGUARD_STATS</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'transport lag'</span><span class="p">,</span><span class="s1">'apply lag'</span><span class="p">);</span>
+</span></code></pre></div>
+<p><strong>Post-creation</strong>: cả 2 hệ set <code>CONFIGURE ARCHIVELOG DELETION POLICY TO APPLIED ON ALL STANDBY;</code>; bật Flashback trên standby.</p>
+<p><strong>Test chức năng</strong>: tạo <code>CREATE TABLESPACE TEST;</code> trên primary → kiểm tra xuất hiện trên standby.</p>
+<p><strong>Next steps thực tế</strong>: cấu hình <strong>Data Guard Broker</strong>, cân nhắc đổi protection mode, cơ chế purge archive log trên standby.</p>
+<hr />
+<h2 id="tom-tat-e-nho-lau">🧠 Tóm tắt để nhớ lâu<a class="headerlink" href="#tom-tat-e-nho-lau" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Data Guard RAC↔RAC: <strong>DB_NAME giống</strong>, <strong>DB_UNIQUE_NAME khác</strong> (<code>rac</code>/<code>stdrac</code>).</li>
+<li>Chuẩn bị primary: <strong>ARCHIVELOG + FORCE LOGGING + SRL</strong> (số = (max redo+1)×threads) + tham số <code>LOG_ARCHIVE_CONFIG/DEST_2</code>, <code>FAL_SERVER</code>, <code>STANDBY_FILE_MANAGEMENT=AUTO</code>.</li>
+<li>Tạo standby bằng <strong>RMAN <code>DUPLICATE ... FOR STANDBY FROM ACTIVE DATABASE</code></strong> → ra <strong>single-instance</strong> ⇒ phải <strong>thêm vào OCR + chỉnh INSTANCE_NAME/NUMBER + enable instance 2</strong> thủ công.</li>
+<li>Start apply bằng <strong><code>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE DISCONNECT;</code></strong>; SRL để trong <strong>FRA/ASM</strong> cho mọi instance truy cập.</li>
+<li>Monitor bằng <strong><code>V$DATAGUARD_STATS</code></strong> (transport/apply lag).</li>
+</ul>
+<hr />
+<h2 id="sau-khi-hoc-xong-hay-tu-lam">🛠️ Sau khi học xong, hãy tự làm<a class="headerlink" href="#sau-khi-hoc-xong-hay-tu-lam" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Vẽ kiến trúc 4 node primary/standby, ghi rõ DB_NAME vs DB_UNIQUE_NAME.</li>
+<li>Tính số SRL cần tạo với công thức (max redo+1)×threads.</li>
+<li>Liệt kê các bước "RAC-specific" phải làm thủ công sau RMAN DUPLICATE.</li>
+<li>Test failover-readiness: tạo tablespace ở primary, kiểm tra ở standby; đọc transport/apply lag.</li>
+</ol>
+<hr />
+<h2 id="module-tiep-theo">⏭️ Module tiếp theo<a class="headerlink" href="#module-tiep-theo" title="Permanent link">&para;</a></h2>
+<p><strong>Module 14: Oracle 19c RAC</strong> — dựng lab và tạo RAC database 19c trên Linux 7.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-RAC-Administration-Course/modules/module_13/module_13_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../module-12/module-12-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📘 Module 12: Deleting and Adding a Node from/to Oracle RAC">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 12: Deleting and Adding a Node from/to Oracle RAC
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../module-14/module-14-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📘 Module 14: Oracle 19c RAC">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 14: Oracle 19c RAC
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

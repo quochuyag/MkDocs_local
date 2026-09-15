@@ -1,0 +1,102 @@
+[21:37:54] ================ VERIFY INNODB CLUSTER ================
+[21:37:54] --- node1 ---
+[ OK ] [node1] mysql service active
+[ OK ] [node1] port 3306 listening
+[ OK ] [node1] port 3306 (GR local_address) listening
+[ OK ] [node1] gtid+enforce+row OK (ON	ON	ROW)
+[21:38:15] --- node2 ---
+[ OK ] [node2] mysql service active
+[ OK ] [node2] port 3306 listening
+[ OK ] [node2] port 3306 (GR local_address) listening
+[ OK ] [node2] gtid+enforce+row OK (ON	ON	ROW)
+[21:38:37] --- node3 ---
+[ OK ] [node3] mysql service active
+[ OK ] [node3] port 3306 listening
+[ OK ] [node3] port 3306 (GR local_address) listening
+[ OK ] [node3] gtid+enforce+row OK (ON	ON	ROW)
+[21:38:59] --- plugin group_replication trên 3 node ---
+[ OK ] [node1] group_replication = ACTIVE
+[ OK ] [node2] group_replication = ACTIVE
+[ OK ] [node3] group_replication = ACTIVE
+[21:39:12] --- replication_group_members ---
++---------------+--------------+-------------+
+| MEMBER_HOST   | MEMBER_STATE | MEMBER_ROLE |
++---------------+--------------+-------------+
+| 192.168.10.11 | ONLINE       | PRIMARY     |
+| 192.168.10.12 | ONLINE       | SECONDARY   |
+| 192.168.10.13 | ONLINE       | SECONDARY   |
++---------------+--------------+-------------+
+[ OK ] 3 members ONLINE
+[ OK ] exactly 1 PRIMARY
+[21:39:28]     current PRIMARY = 192.168.10.11 (node1)
+[21:39:28] --- dba.getCluster().status() ---
+{
+  "clusterName": "myCluster",
+  "defaultReplicaSet": {
+    "name": "default",
+    "primary": "192.168.10.11:3306",
+    "ssl": "REQUIRED",
+    "status": "OK",
+    "statusText": "Cluster is ONLINE and can tolerate up to ONE failure.",
+    "topology": {
+      "192.168.10.11:3306": {
+        "address": "192.168.10.11:3306",
+        "memberRole": "PRIMARY",
+        "mode": "R/W",
+        "readReplicas": {},
+        "replicationLag": "applier_queue_applied",
+        "role": "HA",
+        "status": "ONLINE",
+        "version": "8.0.46"
+      },
+      "192.168.10.12:3306": {
+        "address": "192.168.10.12:3306",
+        "memberRole": "SECONDARY",
+        "mode": "R/O",
+        "readReplicas": {},
+        "replicationLag": "applier_queue_applied",
+        "role": "HA",
+        "status": "ONLINE",
+        "version": "8.0.46"
+      },
+      "192.168.10.13:3306": {
+        "address": "192.168.10.13:3306",
+        "memberRole": "SECONDARY",
+        "mode": "R/O",
+        "readReplicas": {},
+        "replicationLag": "applier_queue_applied",
+        "role": "HA",
+        "status": "ONLINE",
+        "version": "8.0.46"
+      }
+    },
+    "topologyMode": "Single-Primary"
+  },
+  "groupInformationSourceMember": "192.168.10.11:3306"
+}
+[ OK ] cluster.status() = OK
+[21:39:33] --- mgmt: mysqlrouter ---
+[ OK ] [mgmt] mysqlrouter service active
+[ OK ] [mgmt] Router listening :6446
+[ OK ] [mgmt] Router listening :6447
+[21:39:46] --- routing :6446 (RW) — 3 hits, expect all = node1 ---
+[21:39:50]     hit #1: node1
+[21:39:54]     hit #2: node1
+[21:39:58]     hit #3: node1
+[ OK ] :6446 luôn route đến PRIMARY (node1)
+[21:39:58] --- routing :6447 (RO) — 4 hits, expect != node1 ---
+[21:40:03]     hit #1: node3
+[21:40:07]     hit #2: node2
+[21:40:11]     hit #3: node3
+[21:40:15]     hit #4: node2
+[ OK ] :6447 chỉ route đến SECONDARY
+[ OK ] [node1] super_read_only=0 (PRIMARY)
+[ OK ] [node2] super_read_only=1 (SECONDARY)
+[ OK ] [node3] super_read_only=1 (SECONDARY)
+[21:40:41]     node1 gtid_executed: 7f581c7a-5458-11f1-9779-08002716ddef:1-7,\nee740ab4-5458-11f1-9972-08002716ddef:1-118,\nee740e29-5458-11f1-9972-08002716ddef:1-5
+[21:40:41]     node2 gtid_executed: 7f581c7a-5458-11f1-9779-08002716ddef:1-7,\nee740ab4-5458-11f1-9972-08002716ddef:1-119,\nee740e29-5458-11f1-9972-08002716ddef:1-5
+[21:40:41]     node3 gtid_executed: 7f581c7a-5458-11f1-9779-08002716ddef:1-7,\nee740ab4-5458-11f1-9972-08002716ddef:1-119,\nee740e29-5458-11f1-9972-08002716ddef:1-5
+[ OK ] gtid_executed gần khớp (chấp nhận sai khác cuối-stream)
+[21:40:41] ==================== KẾT QUẢ ====================
+[21:40:41] VERIFY_PASS=true — cluster sẵn sàng cho smoke test.
+VERIFY_PASS=true

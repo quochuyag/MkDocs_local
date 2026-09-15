@@ -1,0 +1,2271 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../06-high-availability/mysql/runbooks/008-vagrant-lab/">
+      
+      
+        <link rel="next" href="../devsecops-in-oracle-cloud-securing-and-automating-oracle-cloud-infrastructure-for-sebastian-hassinger/guide-ai/012-introduction-to-oci-and-devsecops-guide/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>CLAUDE.md - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#claudemd" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CLAUDE.md
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            07. Sach & Tai lieu (PDF da chuyen doi)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu dự án
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-truc-thu-muc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 Cấu trúc thư mục
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 Cấu trúc thư mục">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-trong-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ví dụ thực tế trong dự án
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quy-trinh-lam-viec-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔄 Quy trình làm việc (Workflow)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔄 Quy trình làm việc (Workflow)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-bat-au-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1 — Bắt đầu session
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-oc-chapter-nguon" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2 — Đọc chapter nguồn
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-tao-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3 — Tạo guide
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-4-cap-nhat-statusmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 4 — Cập nhật STATUS.md
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guide-structure-9-sections-bat-buoc-theo-thu-tu" class="md-nav__link">
+    <span class="md-ellipsis">
+      📝 Guide Structure — 9 sections bắt buộc theo thứ tự
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📝 Guide Structure — 9 sections bắt buộc theo thứ tự">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-1-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 1 — Header
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 2 — 🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-3-tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 3 — 📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 4 — 🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 5 — 🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-6-so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 6 — 📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-7-cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 7 — ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-8-ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 8 — 💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-9-giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 9 — 📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quy-tac-format-notebooklm-optimized" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Quy tắc Format (NotebookLM-optimized)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statusmd-tracking-tien-o" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 STATUS.md — Tracking tiến độ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 STATUS.md — Tracking tiến độ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vi-tri-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vị trí file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#khi-nao-cap-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khi nào cập nhật
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format-statusmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Format STATUS.md
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kiem-tra-chat-luong-guide-quality-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Kiểm tra chất lượng guide (Quality Check)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 Kiểm tra chất lượng guide (Quality Check)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checklist-noi-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checklist nội dung
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checklist-format-markdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checklist format (Markdown)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#khi-phat-hien-thieu-noi-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khi phát hiện thiếu nội dung
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quy-tac-uu-tien-khi-lam-viec" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚦 Quy tắc ưu tiên khi làm việc
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tham-chieu-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔖 Tham chiếu nhanh
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../devsecops-in-oracle-cloud-securing-and-automating-oracle-cloud-infrastructure-for-sebastian-hassinger/guide-ai/012-introduction-to-oci-and-devsecops-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Devsecops in oracle cloud securing and automating oracle cloud infrastructure for sebastian hassinger
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../itil-foundation-v5/guide-ai/001-itil-foundation-version5-official-book-en-v50-prpdf-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Itil foundation v5
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../managing-it-performance-to-create-business-value/guide-ai/004-chapter-1-designing-performance-based-strategic-planning-systems-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Managing it performance to create business value
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../references/guide-structure/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    References
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../skill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Book Study Guide — Tạo Bài Giảng Từ Sách
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../the-business-value-of-it-managing-risks-optimizing-performance-and-measuring-results-auerbach-publications-2008/guide-ai/003-introduction-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    The business value of it managing risks optimizing performance and measuring results auerbach publications 2008
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu dự án
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-truc-thu-muc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 Cấu trúc thư mục
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 Cấu trúc thư mục">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-trong-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ví dụ thực tế trong dự án
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quy-trinh-lam-viec-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔄 Quy trình làm việc (Workflow)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔄 Quy trình làm việc (Workflow)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-bat-au-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1 — Bắt đầu session
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-oc-chapter-nguon" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2 — Đọc chapter nguồn
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-tao-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3 — Tạo guide
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-4-cap-nhat-statusmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 4 — Cập nhật STATUS.md
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guide-structure-9-sections-bat-buoc-theo-thu-tu" class="md-nav__link">
+    <span class="md-ellipsis">
+      📝 Guide Structure — 9 sections bắt buộc theo thứ tự
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📝 Guide Structure — 9 sections bắt buộc theo thứ tự">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-1-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 1 — Header
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 2 — 🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-3-tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 3 — 📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 4 — 🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 5 — 🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-6-so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 6 — 📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-7-cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 7 — ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-8-ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 8 — 💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-9-giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section 9 — 📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quy-tac-format-notebooklm-optimized" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Quy tắc Format (NotebookLM-optimized)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statusmd-tracking-tien-o" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 STATUS.md — Tracking tiến độ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 STATUS.md — Tracking tiến độ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vi-tri-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vị trí file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#khi-nao-cap-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khi nào cập nhật
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format-statusmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Format STATUS.md
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kiem-tra-chat-luong-guide-quality-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Kiểm tra chất lượng guide (Quality Check)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 Kiểm tra chất lượng guide (Quality Check)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checklist-noi-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checklist nội dung
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checklist-format-markdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checklist format (Markdown)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#khi-phat-hien-thieu-noi-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khi phát hiện thiếu nội dung
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quy-tac-uu-tien-khi-lam-viec" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚦 Quy tắc ưu tiên khi làm việc
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tham-chieu-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔖 Tham chiếu nhanh
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="claudemd">CLAUDE.md<a class="headerlink" href="#claudemd" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Đây là bộ nhớ chính của Claude Code cho dự án học từ sách.
+Đọc file này <strong>trước tiên</strong> trước mọi thao tác trong session.</p>
+</blockquote>
+<hr />
+<h2 id="muc-tieu-du-an">🎯 Mục tiêu dự án<a class="headerlink" href="#muc-tieu-du-an" title="Permanent link">&para;</a></h2>
+<p>Đọc các file <code>.md</code> chapter (đã có sẵn trong thư mục sách) và tạo <strong>bài học study guide</strong> chất lượng cao bằng tiếng Việt, tối ưu cho NotebookLM và tự học.</p>
+<p><strong>Không cần xử lý PDF.</strong> Pipeline PDF → MD đã hoàn chỉnh và không thuộc phạm vi nhiệm vụ này.</p>
+<hr />
+<h2 id="cau-truc-thu-muc">📁 Cấu trúc thư mục<a class="headerlink" href="#cau-truc-thu-muc" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pdf_md/                                  ← Root của dự án
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── CLAUDE.md                            ← File này
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── STATUS.md                            ← Tổng tiến độ tất cả sách
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── references/
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── guide-structure.md               ← Template đầy đủ của guide
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   └── notebooklm-tips.md               ← Quy tắc format cho NotebookLM
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>├── &lt;book-slug&gt;/                         ← Thư mục mỗi cuốn sách
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   ├── STATUS.md                        ← Tiến độ riêng của sách này
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── 00_front-matter.md               ← Chapter files (đã có sẵn)
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   ├── 01_chapter-one.md
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   ├── 02_chapter-two.md
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   └── guide_ai/                        ← Output: guide do Claude tạo
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│       ├── 01_chapter-one_guide.md
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│       └── 02_chapter-two_guide.md
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>└── tools/                               ← Scripts Python (không dùng trong task này)
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    ├── pdf2md.py
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    ├── pdf_parser.py
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    ├── md_writer.py
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    └── utils.py
+</span></code></pre></div>
+<h3 id="vi-du-thuc-te-trong-du-an">Ví dụ thực tế trong dự án<a class="headerlink" href="#vi-du-thuc-te-trong-du-an" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>itil-foundation-v5/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── STATUS.md
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── 01_introduction.md
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── 02_key-concepts.md
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>└── guide_ai/
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    └── 01_introduction_guide.md
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>oracle-cloud-infrastructure-a-guide-to-building-/
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>├── STATUS.md
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>├── 00_front-matter.md
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>├── 01_introduction.md
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>└── guide_ai/
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    └── 01_introduction_guide.md
+</span></code></pre></div>
+<hr />
+<h2 id="quy-trinh-lam-viec-workflow">🔄 Quy trình làm việc (Workflow)<a class="headerlink" href="#quy-trinh-lam-viec-workflow" title="Permanent link">&para;</a></h2>
+<h3 id="buoc-1-bat-au-session">Bước 1 — Bắt đầu session<a class="headerlink" href="#buoc-1-bat-au-session" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Đọc <code>STATUS.md</code> của sách đang làm việc để biết chapter nào còn <code>❌</code></li>
+<li>Hỏi người dùng: "Bắt đầu từ chapter nào?" nếu chưa rõ</li>
+<li>Xác nhận đường dẫn file nguồn trước khi đọc</li>
+</ol>
+<h3 id="buoc-2-oc-chapter-nguon">Bước 2 — Đọc chapter nguồn<a class="headerlink" href="#buoc-2-oc-chapter-nguon" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Đọc file <code>&lt;book-slug&gt;/XX_chapter-title.md</code></li>
+<li>Nắm rõ: số chapter, tiêu đề, các section chính, thuật ngữ quan trọng</li>
+<li><strong>Không dịch thẳng</strong> — phân tích rồi viết lại bằng ngôn ngữ dễ hiểu</li>
+</ul>
+<h3 id="buoc-3-tao-guide">Bước 3 — Tạo guide<a class="headerlink" href="#buoc-3-tao-guide" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Tạo file <code>&lt;book-slug&gt;/guide_ai/XX_chapter-title_guide.md</code></li>
+<li>Theo đúng <strong>9 sections</strong> trong phần Guide Structure bên dưới</li>
+<li>Ngôn ngữ: <strong>Tiếng Việt là chính</strong>, giữ nguyên thuật ngữ tiếng Anh (có giải thích trong ngoặc)</li>
+</ul>
+<h3 id="buoc-4-cap-nhat-statusmd">Bước 4 — Cập nhật STATUS.md<a class="headerlink" href="#buoc-4-cap-nhat-statusmd" title="Permanent link">&para;</a></h3>
+<p>Sau khi tạo xong guide:
+1. Đổi <code>❌</code> → <code>✅</code> cho chapter vừa xong
+2. Cập nhật <code>Cập nhật lần cuối</code> và <code>Tiến độ</code> ở đầu file
+3. Nếu người dùng nói <strong>"xong" / "done" / "kết thúc"</strong> → ghi thêm vào bảng Lịch sử session</p>
+<hr />
+<h2 id="guide-structure-9-sections-bat-buoc-theo-thu-tu">📝 Guide Structure — 9 sections bắt buộc theo thứ tự<a class="headerlink" href="#guide-structure-9-sections-bat-buoc-theo-thu-tu" title="Permanent link">&para;</a></h2>
+<h3 id="section-1-header">Section 1 — Header<a class="headerlink" href="#section-1-header" title="Permanent link">&para;</a></h3>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gh"># [Tiêu đề chapter bằng tiếng Việt]</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>| Trường        | Nội dung                              |
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>|---------------|---------------------------------------|
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>| 📚 Nguồn      | Tên sách — Chapter XX                 |
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>| 📅 Ngày tạo   | YYYY-MM-DD                            |
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>| ⏱ Thời gian   | ~XX phút                              |
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>| 🔢 Phiên bản  | Guide v1.0                            |
+</span></code></pre></div>
+<h3 id="section-2-muc-tieu-hoc-tap">Section 2 — 🎯 Mục tiêu học tập<a class="headerlink" href="#section-2-muc-tieu-hoc-tap" title="Permanent link">&para;</a></h3>
+<p>5–7 bullet points, dùng động từ hành động:</p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Sau khi học xong chapter này, bạn có thể:
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Hiểu**</span> được...
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Phân biệt**</span> được...
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Mô tả**</span> được...
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Áp dụng**</span> được...
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Đánh giá**</span> được...
+</span></code></pre></div>
+<h3 id="section-3-tom-tat-noi-dung-chinh">Section 3 — 📋 Tóm tắt nội dung chính<a class="headerlink" href="#section-3-tom-tat-noi-dung-chinh" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Độ dài: <strong>300–500 từ</strong></li>
+<li>Theo đúng thứ tự các section trong sách</li>
+<li>Paraphrase, không dịch literal</li>
+<li>Giữ thuật ngữ tiếng Anh + giải thích tiếng Việt trong ngoặc: <code>Service Management (Quản lý Dịch vụ)</code></li>
+</ul>
+<h3 id="section-4-khai-niem-quan-trong">Section 4 — 🔑 Khái niệm quan trọng<a class="headerlink" href="#section-4-khai-niem-quan-trong" title="Permanent link">&para;</a></h3>
+<p>Bảng 4 cột, 5–10 khái niệm:</p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>| Khái niệm | Định nghĩa | Tại sao quan trọng | Ví dụ thực tế |
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>|-----------|------------|-------------------|---------------|
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>| ...       | ...        | ...               | ...           |
+</span></code></pre></div>
+<h3 id="section-5-vi-du-thuc-te-case-study">Section 5 — 🌍 Ví dụ thực tế &amp; Case Study<a class="headerlink" href="#section-5-vi-du-thuc-te-case-study" title="Permanent link">&para;</a></h3>
+<p>2–3 case studies, mỗi case theo cấu trúc:</p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gu">#### Case Study: [Tên tình huống]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Bối cảnh:**</span> ...
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Vấn đề:**</span> ...
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Giải pháp:**</span> ...
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Kết quả:**</span> ...
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Bài học:**</span> ...
+</span></code></pre></div>
+<p>Ưu tiên ví dụ gắn với <strong>bối cảnh Việt Nam</strong> 🇻🇳 khi phù hợp.</p>
+<h3 id="section-6-so-o-bang-tong-hop">Section 6 — 📊 Sơ đồ &amp; Bảng tổng hợp<a class="headerlink" href="#section-6-so-o-bang-tong-hop" title="Permanent link">&para;</a></h3>
+<p>1–3 bảng so sánh hoặc flow dạng text (không dùng ASCII art phức tạp).</p>
+<p>Ví dụ bảng so sánh:</p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>| Tiêu chí     | Phương án A | Phương án B |
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>|--------------|-------------|-------------|
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>| Tốc độ       | Nhanh       | Chậm hơn    |
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>| Chi phí      | Cao         | Thấp hơn    |
+</span></code></pre></div>
+<h3 id="section-7-cau-hoi-on-tap">Section 7 — ❓ Câu hỏi ôn tập<a class="headerlink" href="#section-7-cau-hoi-on-tap" title="Permanent link">&para;</a></h3>
+<p>Đúng 5 câu hỏi theo tỷ lệ:
+- 2 câu <strong>nhớ lại</strong> (Recall) — định nghĩa, liệt kê
+- 2 câu <strong>hiểu sâu</strong> (Comprehension) — so sánh, giải thích tại sao
+- 1 câu <strong>áp dụng</strong> (Application) — tình huống thực tế</p>
+<p>Mỗi câu hỏi bắt buộc có:</p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gs">**Câu X:**</span> [Nội dung câu hỏi]
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>💡 <span class="gs">**Gợi ý:**</span> [Một câu gợi ý hướng suy nghĩ, không tiết lộ đáp án]
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>📝 <span class="gs">**Đáp án:**</span> [3–6 câu giải thích đầy đủ, đủ rõ để người mới hiểu mà không cần đọc lại sách]
+</span></code></pre></div>
+<h3 id="section-8-ghi-nho-nhanh">Section 8 — 💡 Ghi nhớ nhanh<a class="headerlink" href="#section-8-ghi-nho-nhanh" title="Permanent link">&para;</a></h3>
+<p>5–7 bullets tổng kết:</p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">-</span><span class="w"> </span>✅ [Điểm quan trọng cần nhớ]
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">-</span><span class="w"> </span>✅ [Điểm quan trọng cần nhớ]
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">-</span><span class="w"> </span>⚠️ [Lỗi thường gặp / hiểu sai phổ biến]
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">-</span><span class="w"> </span>⚠️ [Lỗi thường gặp]
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">-</span><span class="w"> </span>🔗 Chapter tiếp theo sẽ bàn về: [tên chủ đề]
+</span></code></pre></div>
+<h3 id="section-9-giai-thich-thuat-ngu-chuyen-nganh">Section 9 — 📖 Giải thích thuật ngữ chuyên ngành<a class="headerlink" href="#section-9-giai-thich-thuat-ngu-chuyen-nganh" title="Permanent link">&para;</a></h3>
+<p>Mỗi thuật ngữ theo cấu trúc:</p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gu">#### **[English Term]** — [Nghĩa tiếng Việt]</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="gs">**Định nghĩa:**</span> [1–2 câu, không dùng jargon trong định nghĩa]
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="gs">**Ví dụ/Tương tự:**</span> [Một ví dụ cụ thể hoặc phép so sánh dễ hiểu]
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="gs">**Tại sao quan trọng trong chapter này:**</span> [1 câu]
+</span></code></pre></div>
+<hr />
+<h2 id="quy-tac-format-notebooklm-optimized">✅ Quy tắc Format (NotebookLM-optimized)<a class="headerlink" href="#quy-tac-format-notebooklm-optimized" title="Permanent link">&para;</a></h2>
+<p><strong>NÊN làm:</strong>
+- Heading hierarchy rõ ràng: H1 → H2 → H3
+- Đoạn văn ngắn: 3–5 câu mỗi đoạn
+- Dùng bullet list cho các danh sách
+- Một tên duy nhất cho mỗi khái niệm — nhất quán xuyên suốt
+- Bảng so sánh ≤ 5 cột
+- Lặp lại key terms tự nhiên qua các section</p>
+<p><strong>TRÁNH:</strong>
+- ASCII diagram phức tạp
+- Code block dài không liên quan nội dung
+- Bảng &gt; 5 cột
+- Footnote kiểu học thuật
+- Dịch literal từng câu từ sách gốc</p>
+<p><strong>NotebookLM limits:</strong>
+- Tối đa 50 sources mỗi Notebook, 500,000 words mỗi source
+- Upload qua Google Drive folder <code>NotebookLM-Books</code>
+- 1 Notebook mỗi sách, 1 source mỗi chapter guide</p>
+<hr />
+<h2 id="statusmd-tracking-tien-o">📊 STATUS.md — Tracking tiến độ<a class="headerlink" href="#statusmd-tracking-tien-o" title="Permanent link">&para;</a></h2>
+<h3 id="vi-tri-file">Vị trí file<a class="headerlink" href="#vi-tri-file" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Cấp sách:</strong> <code>&lt;book-slug&gt;/STATUS.md</code> — theo dõi chapters của sách đó</li>
+<li><strong>Cấp project:</strong> <code>pdf_md/STATUS.md</code> — tổng hợp tất cả sách</li>
+</ul>
+<h3 id="khi-nao-cap-nhat">Khi nào cập nhật<a class="headerlink" href="#khi-nao-cap-nhat" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Sự kiện</th>
+<th>Hành động</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tạo xong 1 guide</td>
+<td>Đổi <code>❌</code> → <code>✅</code>, ghi ngày</td>
+</tr>
+<tr>
+<td>Người dùng nói "xong" / "done" / "kết thúc"</td>
+<td>Ghi vào bảng Lịch sử session</td>
+</tr>
+<tr>
+<td>Bắt đầu session mới</td>
+<td>Đọc STATUS.md trước để biết còn gì chưa làm</td>
+</tr>
+</tbody>
+</table>
+<h3 id="format-statusmd">Format STATUS.md<a class="headerlink" href="#format-statusmd" title="Permanent link">&para;</a></h3>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gh"># STATUS — [Tên sách]</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="gs">**Cập nhật lần cuối:**</span> YYYY-MM-DD
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="gs">**Tiến độ:**</span> X/Y chapters hoàn thành
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>---
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="gu">## Danh sách chapters</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>| # | File nguồn | Tiêu đề ngắn | Guide | Ngày hoàn thành |
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>|---|------------|--------------|-------|-----------------|
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>| 01 | 01_intro.md | Introduction to ... | ✅ | 2026-04-25 |
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>| 02 | 02_concepts.md | Key Concepts | ❌ | — |
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>---
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="gu">## Lịch sử session</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>| Ngày | Chapters hoàn thành | Ghi chú |
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>|------|---------------------|---------|
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>| 2026-04-25 | Ch.01 | Session đầu tiên |
+</span></code></pre></div>
+<hr />
+<h2 id="kiem-tra-chat-luong-guide-quality-check">🔍 Kiểm tra chất lượng guide (Quality Check)<a class="headerlink" href="#kiem-tra-chat-luong-guide-quality-check" title="Permanent link">&para;</a></h2>
+<p>Sau khi tạo xong guide, <strong>bắt buộc</strong> đối chiếu lại với file nguồn theo checklist này trước khi báo hoàn thành:</p>
+<h3 id="checklist-noi-dung">Checklist nội dung<a class="headerlink" href="#checklist-noi-dung" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th>Câu hỏi kiểm tra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tóm tắt đủ section</strong></td>
+<td>Mọi heading <code>##</code> trong nguồn đều có trong Section 3 chưa?</td>
+</tr>
+<tr>
+<td><strong>Lợi ích đủ số</strong></td>
+<td>Nếu nguồn liệt kê N lợi ích, guide có đủ N lợi ích không?</td>
+</tr>
+<tr>
+<td><strong>Chi tiết kỹ thuật</strong></td>
+<td>Số liệu cụ thể (GB, IOPS, giờ, giá...) có được giữ lại không?</td>
+</tr>
+<tr>
+<td><strong>Note/Warning</strong></td>
+<td>Các khung Note/Warning trong nguồn đã được xử lý chưa?</td>
+</tr>
+<tr>
+<td><strong>Free Tier đầy đủ</strong></td>
+<td>Nếu chương có Free Tier — liệt kê đủ mọi nhóm dịch vụ không?</td>
+</tr>
+<tr>
+<td><strong>SLA và điều kiện</strong></td>
+<td>Các điều kiện/constraint quan trọng (account limit, SLA...) có ghi không?</td>
+</tr>
+<tr>
+<td><strong>Đội ngũ/vai trò</strong></td>
+<td>Nếu có bảng vai trò/team — đã liệt kê đủ tên từng vai trò chưa?</td>
+</tr>
+<tr>
+<td><strong>Feedback loop &amp; văn hóa</strong></td>
+<td>Các yếu tố soft (collaboration, feedback loop, training) có trong guide không?</td>
+</tr>
+</tbody>
+</table>
+<h3 id="checklist-format-markdown">Checklist format (Markdown)<a class="headerlink" href="#checklist-format-markdown" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Danh sách sau dấu <code>:</code> phải có <strong>dòng trống</strong> trước item đầu tiên</li>
+<li>Case Study dùng heading <code>###</code> (không dùng <code>####</code> nếu section cha là <code>##</code>)</li>
+<li>Bảng separator dùng <code>| --- |</code> với khoảng trắng hai bên</li>
+<li>Heading trong Section 9 (thuật ngữ) dùng <code>####</code> đồng nhất</li>
+</ul>
+<h3 id="khi-phat-hien-thieu-noi-dung">Khi phát hiện thiếu nội dung<a class="headerlink" href="#khi-phat-hien-thieu-noi-dung" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Bổ sung vào đúng section tương ứng (không tạo section mới ngoài 9 sections)</li>
+<li>Cập nhật version header: <code>Guide v1.0</code> → <code>Guide v1.1</code></li>
+<li>Cập nhật <code>⏱ Thời gian</code> nếu nội dung tăng đáng kể</li>
+</ol>
+<hr />
+<h2 id="quy-tac-uu-tien-khi-lam-viec">🚦 Quy tắc ưu tiên khi làm việc<a class="headerlink" href="#quy-tac-uu-tien-khi-lam-viec" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Đọc STATUS.md trước</strong> — không bắt đầu mà không biết tiến độ hiện tại</li>
+<li><strong>Một chapter một lúc</strong> — hoàn thành và cập nhật STATUS trước khi sang chapter tiếp</li>
+<li><strong>Hỏi khi không chắc</strong> — nếu file nguồn không tìm thấy hoặc nội dung không rõ</li>
+<li><strong>Không tự ý sửa file nguồn</strong> — chỉ đọc chapter <code>.md</code>, không chỉnh sửa</li>
+<li><strong>Tiếng Việt là ngôn ngữ chính</strong> của guide — thuật ngữ chuyên ngành giữ tiếng Anh</li>
+</ol>
+<hr />
+<h2 id="tham-chieu-nhanh">🔖 Tham chiếu nhanh<a class="headerlink" href="#tham-chieu-nhanh" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tài liệu</th>
+<th>Đường dẫn</th>
+<th>Mục đích</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Template guide đầy đủ</td>
+<td><code>references/guide-structure.md</code></td>
+<td>Xem ví dụ mẫu hoàn chỉnh</td>
+</tr>
+<tr>
+<td>NotebookLM tips</td>
+<td><code>references/notebooklm-tips.md</code></td>
+<td>Quy tắc format chi tiết</td>
+</tr>
+<tr>
+<td>Status tổng</td>
+<td><code>pdf_md/STATUS.md</code></td>
+<td>Tổng tiến độ tất cả sách</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>pdf_md/CLAUDE.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../06-high-availability/mysql/runbooks/008-vagrant-lab/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Runbook 08 — Vagrant Lab (4 VMs Ubuntu 22.04)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Runbook 08 — Vagrant Lab (4 VMs Ubuntu 22.04)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../devsecops-in-oracle-cloud-securing-and-automating-oracle-cloud-infrastructure-for-sebastian-hassinger/guide-ai/012-introduction-to-oci-and-devsecops-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Giới thiệu về OCI và DevSecOps">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Giới thiệu về OCI và DevSecOps
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

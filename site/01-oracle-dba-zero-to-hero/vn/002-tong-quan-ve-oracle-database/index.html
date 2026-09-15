@@ -1,0 +1,4294 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../001-tong-quan-ve-rdbms/">
+      
+      
+        <link rel="next" href="../003-cong-nghe-oracle-database/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Bài 02: Tổng quan về Oracle Database (Overview on Oracle Database) - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bai-02-tong-quan-ve-oracle-database-overview-on-oracle-database" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Bài 02: Tổng quan về Oracle Database (Overview on Oracle Database)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            01. Oracle DBA — Zero to Hero
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Vn
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Vn
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000-muc-luc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Oracle Database Administration - Từ Zero đến Hero
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../001-tong-quan-ve-rdbms/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 01: Tổng quan về Hệ quản trị Cơ sở dữ liệu Quan hệ (RDBMS)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Bài 02: Tổng quan về Oracle Database (Overview on Oracle Database)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Bài 02: Tổng quan về Oracle Database (Overview on Oracle Database)
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-lich-su-phat-trien-cua-oracle-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Lịch sử phát triển của Oracle Database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-phan-loai-release-lts-vs-innovation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Phân loại Release: LTS vs Innovation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Phân loại Release: LTS vs Innovation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#long-term-support-lts-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Long Term Support (LTS) Release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#innovation-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Innovation Release
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cac-an-ban-editions-cua-oracle-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Các ấn bản (Editions) của Oracle Database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-oracle-database-cloud-services-dich-vu-am-may" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Oracle Database Cloud Services (Dịch vụ Đám mây)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-oracle-support-licensing-ho-tro-ky-thuat-va-ban-quyen" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Oracle Support &amp; Licensing (Hỗ trợ kỹ thuật và Bản quyền)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Oracle Support & Licensing (Hỗ trợ kỹ thuật và Bản quyền)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oracle-support-dich-vu-ho-tro" class="md-nav__link">
+    <span class="md-ellipsis">
+      Oracle Support (Dịch vụ hỗ trợ)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#licensing-ban-quyen-oracle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Licensing (Bản quyền Oracle)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-bai-hoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt bài học
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../003-cong-nghe-oracle-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 03: Tổng quan các công nghệ Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-ve-nghe-oracle-dba/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 04: Về nghề Oracle DBA (Database Administrator)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../005-thuc-hanh-chuan-bi-moi-truong/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 05: Thực hành - Chuẩn bị môi trường thực hành
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../006-kien-truc-oracle-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 06: Kiến trúc Oracle Database (Oracle Database Architecture)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../007-tablespaces-va-datafiles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 07: Tablespaces và Datafiles trong Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../008-cai-dat-oracle-db/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 08: Cài đặt Oracle Database Software (Phần mềm Cơ sở dữ liệu)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../009-thuc-hanh-cai-oracle-linux/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 09: Thực Hành - Cài Đặt Oracle Database Software trên Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../010-thuc-hanh-cai-oracle-windows/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 10: Thực hành - Cài đặt Oracle Database Software trên Windows
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../011-tao-oracle-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 11: Tạo Oracle Database (Creating an Oracle Database)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../012-thuc-hanh-tao-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 12: Thực hành - Tạo Oracle Databases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../013-cong-cu-quan-tri/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 13: Các công cụ quản trị Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../014-thuc-hanh-sqlplus/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 14: Thực hành - Sử dụng SQL*Plus
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../015-thuc-hanh-sql-developer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 15: Thực hành - Sử dụng SQL Developer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../016-khoi-dong-tat-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 16: Khởi động và Tắt Database Instance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../017-thuc-hanh-khoi-dong-tat-db/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 17: Thực hành - Khởi động và Tắt Database Instance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../018-tham-so-khoi-tao/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 18: Tham số khởi tạo Database (Database Initialization Parameters)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../019-thuc-hanh-init-parameters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 19: Thực hành - Quản lý Init Parameters
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../020-data-dictionary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 20: Data Dictionary (Từ điển dữ liệu) và Dynamic Performance Views
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../021-thuc-hanh-data-dictionary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 21: Thực hành - Truy vấn Data Dictionary và Dynamic Performance Views
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../022-su-dung-tai-lieu-oracle/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 22: Sử dụng Tài liệu Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../023-kien-truc-multitenant/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 23: Kiến trúc Oracle Database Multitenant (CDB và PDB)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../024-thuc-hanh-tao-cdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 24: Thực hành - Tạo CDB Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../025-tao-pluggable-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 25: Tạo Pluggable Databases (PDBs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../026-thuc-hanh-tao-pdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 26: Thực hành - Tạo Pluggable Databases (PDBs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../027-quan-tri-multitenant-co-ban/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 27: Quản trị Multitenant Cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../028-thuc-hanh-quan-tri-cdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 28: Thực hành - Quản trị CDB Cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../029-khai-niem-bo-nho-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 29: Khái niệm Bộ nhớ Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../030-quan-ly-bo-nho-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 30: Quản lý Bộ nhớ Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../031-thuc-hanh-quan-ly-bo-nho/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 31: Thực hành - Quản lý Bộ nhớ Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../032-cau-truc-luu-tru-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 32: Cấu trúc Lưu trữ Oracle Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../033-quan-ly-tablespace/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 33: Quản lý Tablespaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../034-thuc-hanh-quan-ly-tablespace/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 34: Thực hành - Quản lý Tablespaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../035-quan-ly-data-files/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 35: Quản lý Data Files
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../036-thuc-hanh-quan-ly-data-files/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 36: Thực hành - Quản lý Data Files
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../037-quan-ly-resumable-space/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 37: Quản lý Resumable Space Allocation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../038-thuc-hanh-resumable-space/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 38: Thực hành - Quản lý Resumable Space Allocation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../039-quan-ly-undo-data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 39: Quản lý Undo Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../040-thuc-hanh-quan-ly-undo-data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 40: Thực hành - Quản lý Undo Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../041-thu-nho-segments/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 41: Thu nhỏ Segments (Shrinking Segments)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../042-thuc-hanh-thu-nho-segments/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 42: Thực hành - Thu nhỏ Segments
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../043-deferred-segment-creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 43: Deferred Segment Creation (Tạo Segment Trì hoãn)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../044-thuc-hanh-deferred-segment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 44: Thực hành - Deferred Segment Creation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../045-nen-bang-table-compression/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 45: Nén Bảng (Table Compression)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../046-thuc-hanh-table-compression/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 46: Thực hành - Nén Bảng (Table Compression)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../047-quan-ly-database-users/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 47: Quản lý Database Users (Người dùng Database)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../048-quan-ly-user-privileges/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 48: Quản lý User Privileges (Quyền người dùng)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../049-quan-ly-roles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 49: Quản lý Roles (Vai trò)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../050-quan-ly-user-profiles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 50: Quản lý User Profiles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../051-thuc-hanh-quan-ly-users-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 51: Thực hành - Quản lý Users và User Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../052-local-va-common-users/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 52: Quản lý Local và Common Users trong CDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../053-container-data-objects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 53: Truy vấn Container Data Objects
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../054-thuc-hanh-local-common-users/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 54: Thực hành - Quản lý Local và Common Users trong CDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../055-nguyen-tac-least-privileges/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 55: Áp dụng Nguyên tắc Đặc quyền Tối thiểu (Principle of Least Privilege)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../056-tai-khoan-va-dac-quyen-quan-tri/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 56: Tài khoản và Đặc quyền Quản trị (Administrative Accounts and Privileges)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../057-os-authentication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 57: Xác thực cấp Hệ điều hành (Using OS Authentication)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../058-password-file-authentication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 58: Xác thực bằng Password File (Using Password File Authentication)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../059-thuc-hanh-authentication-methods/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 59: Thực hành - Các phương thức xác thực Database (Authentication Methods)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../060-cau-hinh-oracle-network/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 60: Cấu hình Môi trường Mạng Oracle Network (Configuring Oracle Network)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../061-thuc-hanh-cau-hinh-network/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 61: Thực hành - Cấu hình Môi trường Mạng Oracle Network
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../062-database-links/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 62: Sử dụng Database Links (Using Database Links)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../063-thuc-hanh-database-links/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 63: Thực hành - Sử dụng Database Links (Using Database Links)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../064-cau-hinh-shared-server/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 64: Cấu hình Shared Server (Configuring Databases for Shared Server)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../065-thuc-hanh-shared-server/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 65: Thực hành - Cấu hình và Giám sát Shared Server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../066-fast-recovery-area/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 66: Quản lý Vùng Phục hồi Nhanh (Fast Recovery Area - FRA)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../067-thuc-hanh-fast-recovery-area/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 67: Thực hành - Quản lý Fast Recovery Area (FRA)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../068-quan-ly-redo-log/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 68: Quản lý Online Redo Log (Managing the Redo Log)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../069-archived-redo-log-files/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 69: Quản lý Archived Redo Log Files (Archive Log)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../070-thuc-hanh-archivelog-mode/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 70: Thực hành Bật Chế độ ARCHIVELOG Mode
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../071-gioi-thieu-backup-recovery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 71: Giới thiệu về Sao lưu và Phục hồi (Backup and Recovery)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../072-gioi-thieu-rman/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 72: Giới thiệu về Oracle Recovery Manager (RMAN)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../073-thuc-hanh-rman-co-ban/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 73: Thực hành Giới thiệu và Khởi chạy RMAN Cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../074-thuc-hien-rman-full-backups-p1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 74: Thực hiện RMAN Full Backups - Phần I
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../075-thuc-hanh-rman-full-backups-p1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 75: Thực hành - Thực hiện RMAN Full Backups - Phần I
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../076-thuc-hien-rman-full-backups-p2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 76: Thực hiện RMAN Full Backups - Phần II
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../077-thuc-hanh-rman-full-backups-p2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 77: Thực hành - Thực hiện RMAN Full Backups - Phần II
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../078-incremental-backups/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 78: Thực hiện Incremental Backups (Sao lưu tăng dần)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../079-thuc-hanh-incremental-backups/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 79: Thực hành - Thực hiện Incremental Backups
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../080-cau-hinh-rman-settings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 80: Cấu hình RMAN Persistent Settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../081-thuc-hanh-rman-settings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 81: Thực hành - Cấu hình RMAN Persistent Settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../082-restore-va-recover/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 82: Giới thiệu lệnh RESTORE và RECOVER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../083-thuc-hien-recovery-p1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 83: Thực hiện Khôi phục (Recovery) Phần I - Thực hiện Khôi phục Toàn bộ (Full Recovery)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../084-thuc-hanh-recovery-p1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 84: Thực hành - Thực hiện Khôi phục (Recovery) Phần I
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../085-phuc-hoi-phan-2-pitr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 85: Khôi phục Phần II - Chuyển sang Image Copies và PITR
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../086-thuc-hanh-recovery-p2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 86: Thực hành - Khôi phục Phần II
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../087-tu-dong-hoa-rman-backup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 87: Tự động hoá RMAN Backup Jobs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../088-thuc-hanh-tu-dong-rman/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 88: Thực hành - Tự động hoá RMAN Backup Jobs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../089-rman-trong-multitenant/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 89: Sử dụng RMAN trong kiến trúc Multitenant (CDB/PDB)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../090-thuc-hanh-rman-multitenant/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 90: Thực hành - Sử dụng RMAN trong kiến trúc Multitenant
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../091-nhan-ban-database-p1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 91: Nhân bản Database bằng RMAN (Phần I)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../092-nhan-ban-database-p2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 92: Nhân bản Database bằng RMAN (Phần II)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../093-thuc-hanh-nhan-ban-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 93: Thực hành - Nhân bản Databases và PDBs bằng RMAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../094-rman-recovery-catalog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 94: Sử dụng RMAN Recovery Catalog Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../095-thuc-hanh-recovery-catalog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 95: Thực hành - Sử dụng RMAN Recovery Catalog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../096-data-recovery-advisor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 96: Data Recovery Advisor (Cố vấn Phục hồi Dữ liệu)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../097-thuc-hanh-recovery-advisor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 97: Thực hành - Sử dụng Data Recovery Advisor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../098-flashback-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 98: Tính năng Flashback Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../099-thuc-hanh-flashback-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 99: Thực hành - Flashback Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../100-using-oracle-data-pump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 100: Sử dụng Oracle Data Pump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../101-practice-oracle-data-pump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 101: Thực hành - Sử dụng Oracle Data Pump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../102-using-sql-loader/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 102: Giới thiệu và Sử dụng SQL*Loader
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../103-practice-using-sql-loader/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 103: Thực hành - Sử dụng SQL*Loader
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../104-using-external-tables/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 104: Sử dụng External Tables (Bảng Ngoài)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../105-practice-using-external-tables/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 105: Thực hành - Sử dụng External Tables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../106-automating-tasks-with-scheduler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 106: Tự động hóa với Oracle Scheduler
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../107-practice-automating-with-scheduler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 107: Thực hành - Tự động hóa tác vụ với Scheduler
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../108-adrci-command-interpreter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 108: Trình thông dịch lệnh ADR (`adrci`)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../109-thuc-hanh-adrci/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 109: Thực hành - Sử dụng ADRCI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../110-patching-oracle-databases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 110: Cập nhật Bản vá (Patching) Oracle Databases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../111-practice-patching-oracle-databases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 111: Thực hành - Áp dụng Bản vá RU lên Cơ sở dữ liệu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../112-introducing-oracle-asm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 112: Giới thiệu Quản lý Lưu trữ Tự động (Oracle ASM)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../113-practice-creating-db-with-asm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 113: Thực hành - Tạo cơ sở dữ liệu trên Oracle ASM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../114-practice-patching-oracle-restart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 114: Thực hành - Cập nhật Bản vá trên Oracle Restart
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../115-upgrading-oracle-databases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 115: Nâng cấp Oracle Databases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../116-practice-upgrading-oracle-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 116: Thực hành - Nâng cấp Oracle Database (19c lên 21c)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../117-practice-upgrading-grid-infrastructure/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 117: Thực hành - Nâng cấp Oracle Grid Infrastructure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../118-bonus-kien-truc-chuyen-sau-asm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 118: Mở rộng - Kiến trúc chuyên sâu của Oracle ASM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../119-bonus-quan-tri-asm-nang-cao/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 119: Mở rộng - Quản trị ASM nâng cao với Tiện ích lệnh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../120-bonus-oracle-grid-infrastructure-rac/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bài 120: Mở rộng - Oracle Grid Infrastructure trong môi trường RAC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    progress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-lich-su-phat-trien-cua-oracle-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Lịch sử phát triển của Oracle Database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-phan-loai-release-lts-vs-innovation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Phân loại Release: LTS vs Innovation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Phân loại Release: LTS vs Innovation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#long-term-support-lts-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Long Term Support (LTS) Release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#innovation-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Innovation Release
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cac-an-ban-editions-cua-oracle-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Các ấn bản (Editions) của Oracle Database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-oracle-database-cloud-services-dich-vu-am-may" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Oracle Database Cloud Services (Dịch vụ Đám mây)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-oracle-support-licensing-ho-tro-ky-thuat-va-ban-quyen" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Oracle Support &amp; Licensing (Hỗ trợ kỹ thuật và Bản quyền)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Oracle Support & Licensing (Hỗ trợ kỹ thuật và Bản quyền)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oracle-support-dich-vu-ho-tro" class="md-nav__link">
+    <span class="md-ellipsis">
+      Oracle Support (Dịch vụ hỗ trợ)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#licensing-ban-quyen-oracle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Licensing (Bản quyền Oracle)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-bai-hoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt bài học
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="bai-02-tong-quan-ve-oracle-database-overview-on-oracle-database">Bài 02: Tổng quan về Oracle Database (Overview on Oracle Database)<a class="headerlink" href="#bai-02-tong-quan-ve-oracle-database-overview-on-oracle-database" title="Permanent link">&para;</a></h1>
+<p><strong>Mục tiêu bài học:</strong>
+- Hiểu được lịch sử phát triển của Oracle Database và các dấu mốc quan trọng.
+- Phân biệt được các loại Release (Long Term Support vs Innovation).
+- Nắm rõ các ấn bản (Editions) của Oracle để tư vấn và lựa chọn phù hợp.
+- Hiểu về các mô hình triển khai trên Oracle Cloud.
+- Nắm bắt cơ bản về chính sách Support và Licensing (bản quyền) của Oracle.</p>
+<blockquote>
+<p>💡 <strong>Tại sao DBA cần biết những điều này?</strong>
+Là một Quản trị viên Cơ sở dữ liệu (DBA), bạn không chỉ gõ lệnh mà còn đóng vai trò "kiến trúc sư". Bạn phải là người tư vấn cho công ty nên mua phiên bản nào, nâng cấp lên bản nào để tối ưu chi phí (vì bản quyền rất đắt) và đảm bảo hệ thống chạy ổn định nhất.</p>
+</blockquote>
+<hr />
+<h2 id="1-lich-su-phat-trien-cua-oracle-database">1. Lịch sử phát triển của Oracle Database<a class="headerlink" href="#1-lich-su-phat-trien-cua-oracle-database" title="Permanent link">&para;</a></h2>
+<p>Oracle Database không phải được xây dựng trong một sớm một chiều. Nó đã trải qua một quá trình tiến hóa dài từ năm 1979 (phiên bản V2 - RDBMS thương mại đầu tiên). Tuy nhiên, chúng ta hãy điểm qua những cột mốc định hình nên Oracle của ngày hôm nay:</p>
+<p><a class="glightbox" href="../007-008-overview-on-oracle-database/images/overview-on-oracle-database-02.jpeg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="Lịch sử phát triển Oracle Database" src="../007-008-overview-on-oracle-database/images/overview-on-oracle-database-02.jpeg" /></a></p>
+<ul>
+<li><strong>V6 (1988) - Row locking &amp; B&amp;R:</strong> Hỗ trợ khóa cấp độ dòng (Row-level locking) và Backup &amp; Recovery. Tính năng này vô cùng quan trọng, giúp nhiều người dùng có thể cập nhật các dòng dữ liệu khác nhau cùng lúc mà không bị treo bảng.</li>
+<li><strong>V7 (1992) - PL/SQL Stored Programs:</strong> Lần đầu tiên Oracle cho phép viết các hàm, thủ tục (procedure) bằng ngôn ngữ PL/SQL và lưu trực tiếp trong database.</li>
+<li><strong>V8 &amp; 8i (1997-1999) - Internet &amp; Objects:</strong> Cập nhật để hỗ trợ các ứng dụng Web (chữ 'i' trong 8i là Internet) và hỗ trợ mô hình hướng đối tượng, phân vùng dữ liệu (Partitioning).</li>
+<li><strong>9i (2001) - Oracle RAC:</strong> Giới thiệu công nghệ Real Application Clusters (RAC), cho phép nhiều server vật lý chạy chung một database. <em>(Ví von: Giống như nhiều động cơ cùng kéo một đoàn tàu, một động cơ hỏng thì tàu vẫn chạy)</em>.</li>
+<li><strong>10g (2004) - Grid Computing:</strong> Chữ 'g' là Grid. Khái niệm gom nhóm tài nguyên máy tính thành lưới để dễ dàng phân bổ, tận dụng tối đa năng lực phần cứng.</li>
+<li><strong>11g (2007) - Diagnosability and availability:</strong> Tập trung vào khả năng tự chẩn đoán lỗi, tăng cường độ sẵn sàng.</li>
+<li><strong>12c (2013) - Multitenancy &amp; Cloud computing:</strong> Cột mốc vĩ đại! Chữ 'c' là Cloud. Oracle giới thiệu kiến trúc Container Database (CDB) và Pluggable Database (PDB) - hiểu nôm na là chứa nhiều DB con độc lập bên trong 1 DB mẹ để dễ dàng di chuyển lên Cloud.</li>
+<li><strong>18c &amp; 19c (2018-2019) - Enhanced Multitenancy &amp; Automatic indexing:</strong> Oracle bắt đầu đổi cách đánh số phiên bản theo năm phát hành. 19c được đánh giá là phiên bản cực kỳ ổn định và được dùng phổ biến nhất hiện nay.</li>
+<li><strong>21c (2021) - Innovation:</strong> Thêm vô vàn tính năng hiện đại như Blockchain tables, máy học (Machine learning) ngay trong DB.</li>
+</ul>
+<hr />
+<h2 id="2-phan-loai-release-lts-vs-innovation">2. Phân loại Release: LTS vs Innovation<a class="headerlink" href="#2-phan-loai-release-lts-vs-innovation" title="Permanent link">&para;</a></h2>
+<p>Khi bạn chuẩn bị cài đặt Oracle cho công ty, câu hỏi đầu tiên là: "Nên cài bản nào?". Từ phiên bản 18c trở đi, Oracle chia thành 2 loại Release chính:</p>
+<h3 id="long-term-support-lts-release">Long Term Support (LTS) Release<a class="headerlink" href="#long-term-support-lts-release" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Đặc điểm:</strong> Được hỗ trợ vòng đời cực lâu (5 năm Premier Support + 3 năm Extended Support).</li>
+<li><strong>Mục đích:</strong> Dành cho môi trường <strong>PRODUCTION</strong> (Hệ thống thật, chạy thực tế).</li>
+<li><strong>Ví dụ:</strong> <strong>19c</strong> (được hỗ trợ tới tận năm 2024 - 2027) và phiên bản tiếp theo là <strong>23c</strong>.</li>
+<li><strong>Tại sao nên chọn?</strong> Vì doanh nghiệp cần sự <strong>ổn định</strong>. Bạn không thể mỗi năm lại đập hệ thống đi cài lại chỉ vì có tính năng mới.</li>
+</ul>
+<h3 id="innovation-release">Innovation Release<a class="headerlink" href="#innovation-release" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Đặc điểm:</strong> Chỉ hỗ trợ 2 năm Premier Support, KHÔNG có Extended Support.</li>
+<li><strong>Mục đích:</strong> Dành cho môi trường <strong>DEVELOPMENT / TESTING</strong> để dùng thử các tính năng mới nhất từ Oracle.</li>
+<li><strong>Ví dụ:</strong> 12c, 18c, và <strong>21c</strong>.</li>
+<li><strong>Lưu ý:</strong> Không dùng bản này cho Production vì vòng đời hỗ trợ quá ngắn. Khi hết hạn, nếu gặp lỗi bảo mật nghiêm trọng, bạn sẽ không được Oracle cung cấp bản vá lỗi.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Lời khuyên DBA:</strong> Luôn luôn tư vấn sếp / khách hàng cài đặt <strong>LTS Release (như 19c)</strong> cho hệ thống Production để đảm bảo "ăn ngon ngủ yên"!</p>
+</blockquote>
+<hr />
+<h2 id="3-cac-an-ban-editions-cua-oracle-database">3. Các ấn bản (Editions) của Oracle Database<a class="headerlink" href="#3-cac-an-ban-editions-cua-oracle-database" title="Permanent link">&para;</a></h2>
+<p>Oracle Database có nhiều "gói" phần mềm khác nhau. Tùy thuộc vào ngân sách và quy mô hệ thống, công ty sẽ mua ấn bản phù hợp.</p>
+<p><a class="glightbox" href="../007-008-overview-on-oracle-database/images/overview-on-oracle-database-09.jpeg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="Oracle Database Editions" src="../007-008-overview-on-oracle-database/images/overview-on-oracle-database-09.jpeg" /></a></p>
+<ol>
+<li><strong>Enterprise Edition (EE):</strong> </li>
+<li><strong>Đặc điểm:</strong> Bản cao cấp nhất, "full đồ", có tất cả mọi tính năng, KHÔNG bị giới hạn phần cứng. Hỗ trợ đầy đủ các tính năng nâng cao (RAC, Data Guard, In-Memory...).</li>
+<li>
+<p><strong>Đối tượng:</strong> Các tập đoàn, ngân hàng lớn với ngân sách khổng lồ và hệ thống lõi quan trọng.</p>
+</li>
+<li>
+<p><strong>Standard Edition 2 (SE2):</strong></p>
+</li>
+<li><strong>Đặc điểm:</strong> Dành cho phòng ban hoặc công ty vừa và nhỏ. Bị giới hạn phần cứng (Tối đa 2 CPU sockets và 16 CPU threads mỗi database). Có hỗ trợ Oracle RAC nhưng là bản giới hạn.</li>
+<li>
+<p><strong>Ví von:</strong> Giống như mua xe ô tô bản "tiêu chuẩn", rẻ hơn khá nhiều nhưng thiếu các option cao cấp.</p>
+</li>
+<li>
+<p><strong>Personal Edition (PE):</strong></p>
+</li>
+<li>
+<p><strong>Đặc điểm:</strong> Dành cho 1 người dùng (cá nhân). Có đầy đủ tính năng của SE2 và EE nhưng KHÔNG có RAC, chỉ cài được trên Linux hoặc Windows.</p>
+</li>
+<li>
+<p><strong>Express Edition (XE):</strong></p>
+</li>
+<li><strong>Đặc điểm:</strong> <strong>MIỄN PHÍ!</strong> Tuy nhiên bị giới hạn ngặt nghèo: tối đa 12GB dữ liệu người dùng, sử dụng tối đa 2GB RAM và 2 CPU threads.</li>
+<li><strong>Đối tượng:</strong> Sinh viên, lập trình viên muốn học tập, nghiên cứu và vọc vạch mà không cần bỏ tiền.</li>
+</ol>
+<hr />
+<h2 id="4-oracle-database-cloud-services-dich-vu-am-may">4. Oracle Database Cloud Services (Dịch vụ Đám mây)<a class="headerlink" href="#4-oracle-database-cloud-services-dich-vu-am-may" title="Permanent link">&para;</a></h2>
+<p>Ngày nay, hệ thống không nhất thiết phải nằm trên máy chủ vật lý ở văn phòng (On-premises). Bạn có thể thuê Database trên nền tảng Oracle Cloud. Có 3 mức độ (mô hình) triển khai chính:</p>
+<p><a class="glightbox" href="../007-008-overview-on-oracle-database/images/overview-on-oracle-database-08.jpeg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="Oracle Cloud Models" src="../007-008-overview-on-oracle-database/images/overview-on-oracle-database-08.jpeg" /></a></p>
+<ol>
+<li><strong>User Managed (Khách hàng tự quản lý):</strong></li>
+<li>Giống như bạn thuê một căn nhà trống hoàn toàn. Oracle Cloud chỉ cấp cho bạn máy ảo (Compute) và Ổ cứng (Storage) qua dịch vụ IaaS.</li>
+<li>
+<p><strong>Nhiệm vụ của DBA:</strong> Bạn phải tự cài hệ điều hành, cài phần mềm Oracle, tự lên lịch patch lỗi, tự cấu hình backup. Cực khổ nhất nhưng đổi lại bạn có quyền kiểm soát hệ thống 100%.</p>
+</li>
+<li>
+<p><strong>Co-Managed - DB Systems (Đồng quản lý):</strong></p>
+</li>
+<li>Giống như thuê căn hộ đã có sẵn nội thất cơ bản. </li>
+<li>
+<p><strong>Nhiệm vụ:</strong> Hệ điều hành và Oracle Database đã được Oracle cài đặt sẵn. Nền tảng Cloud cung cấp sẵn các công cụ (Tool) giao diện web để bạn thao tác. Bạn chỉ cần "click chuột" là hệ thống tự backup, tự vá lỗi, tự thiết lập thảm họa (Disaster Recovery). Tuy nhiên, DBA vẫn là người quyết định <strong>KHI NÀO</strong> thì thực hiện các nút bấm đó.</p>
+</li>
+<li>
+<p><strong>Autonomous (Tự trị):</strong></p>
+</li>
+<li>Giống như thuê phòng khách sạn VIP 5 sao có quản gia phục vụ từ A-Z.</li>
+<li><strong>Nhiệm vụ:</strong> Đây là dịch vụ cao cấp nhất, ứng dụng Machine Learning. Cơ sở dữ liệu sẽ <strong>tự động</strong> tuning (tối ưu hóa), tự động mở rộng (scale) khi có lượng truy cập tăng đột biến, và tự động patch lỗi bảo mật. DBA gần như không phải làm các tác vụ vận hành tẻ nhạt hàng ngày nữa, mà chuyển sang tập trung thiết kế kiến trúc hoặc tối ưu mã nguồn ứng dụng.</li>
+</ol>
+<hr />
+<h2 id="5-oracle-support-licensing-ho-tro-ky-thuat-va-ban-quyen">5. Oracle Support &amp; Licensing (Hỗ trợ kỹ thuật và Bản quyền)<a class="headerlink" href="#5-oracle-support-licensing-ho-tro-ky-thuat-va-ban-quyen" title="Permanent link">&para;</a></h2>
+<h3 id="oracle-support-dich-vu-ho-tro">Oracle Support (Dịch vụ hỗ trợ)<a class="headerlink" href="#oracle-support-dich-vu-ho-tro" title="Permanent link">&para;</a></h3>
+<p>Khi một công ty bỏ hàng tỷ đồng mua phần mềm cốt lõi, họ cần một "đội ngũ bảo kê" khi hệ thống gặp sự cố bất ngờ.
+- <strong>Quyền lợi của Support:</strong> 
+  - Gọi điện trực tiếp nhờ chuyên gia của Oracle giải quyết lỗi kỹ thuật (kể cả lỗi nghiêm trọng khiến hệ thống sập).
+  - Tải các bản vá (patch) bảo mật mới nhất để vá lỗ hổng.
+  - Được quyền nâng cấp miễn phí lên phiên bản Database mới nhất (Ví dụ từ 12c nâng lên 19c).
+- <strong>Cách tính phí:</strong> Miễn phí trong năm đầu tiên mua bản quyền. Từ năm thứ 2 trở đi, công ty phải trả phí gia hạn hàng năm (thường bằng khoảng 22% giá gốc license).
+- <strong>Phân loại:</strong>
+  - <em>Premier Support:</em> Hỗ trợ toàn diện thông thường (thường kéo dài 5 năm đầu).
+  - <em>Extended Support:</em> Gia hạn thêm thời gian hỗ trợ với mức phí đắt hơn khi vòng đời Premier đã hết, giúp công ty có thêm thời gian chuẩn bị chuyển đổi lên phiên bản mới.</p>
+<h3 id="licensing-ban-quyen-oracle">Licensing (Bản quyền Oracle)<a class="headerlink" href="#licensing-ban-quyen-oracle" title="Permanent link">&para;</a></h3>
+<p>Bản quyền Oracle nổi tiếng là đắt đỏ và có luật lệ phức tạp, nhưng về cơ bản được tính theo 2 hình thức:
+- <strong>Named User Plus (NUP):</strong> Tính theo số lượng người dùng cuối (hoặc thiết bị) có kết nối vào cơ sở dữ liệu. Phù hợp cho công ty có số lượng user xác định rõ và ít (Ví dụ: Phần mềm nội bộ dành riêng cho 100 nhân viên phòng Hành chính Nhân sự).
+- <strong>Processor:</strong> Tính tiền dựa trên sức mạnh phần cứng máy chủ (Số lõi CPU - Cores - thực tế chạy Database, nhân với hệ số Core Factor). Phù hợp cho các ứng dụng Web mở ra cho hàng triệu người dùng bên ngoài Internet (Vì không thể đếm được số lượng user cụ thể).</p>
+<hr />
+<h2 id="tom-tat-bai-hoc">Tóm tắt bài học<a class="headerlink" href="#tom-tat-bai-hoc" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Oracle có lịch sử dài từ V6 đến 21c, với tính năng bước ngoặt Multitenancy ở bản 12c.</li>
+<li>Nếu cài đặt cho khách hàng thật để chạy ứng dụng, hãy chọn bản <strong>Long Term Support (19c)</strong>.</li>
+<li>Khi cần môi trường học tập cá nhân: Dùng ấn bản <strong>XE (Express Edition)</strong> vì nó miễn phí.</li>
+<li>Dịch vụ Cloud của Oracle chia làm 3 cấp độ: Tự quản (User Managed), Quản lý chung (Co-Managed) và Tự động hoàn toàn (Autonomous).</li>
+<li>Mua phần mềm Database phải đóng phí Support hằng năm để hệ thống nhận được bản vá lỗi bảo mật và sự trợ giúp kỹ thuật từ hãng khi sập hệ thống.</li>
+</ul>
+<hr />
+<h2 id="cau-hoi-on-tap">❓ Câu hỏi ôn tập<a class="headerlink" href="#cau-hoi-on-tap" title="Permanent link">&para;</a></h2>
+<p>-1. Bạn đang tư vấn cho công ty XYZ cài đặt Oracle Database để chạy phần mềm lõi Kế toán, bạn sẽ khuyên họ cài phiên bản <strong>19c</strong> hay <strong>21c</strong>? Vì sao?
+-2. Bản quyền <strong>Enterprise Edition (EE)</strong> khác biệt cơ bản như thế nào so với <strong>Standard Edition 2 (SE2)</strong>? 
+-3. Hãy mô tả bằng lời văn của bạn: Sự khác nhau giữa dịch vụ <strong>Co-Managed</strong> và <strong>Autonomous</strong> trên Oracle Cloud là gì?
++<strong>1. Bạn đang tư vấn cho công ty XYZ cài đặt Oracle Database để chạy phần mềm lõi Kế toán, bạn sẽ khuyên họ cài phiên bản </strong>19c<strong> hay </strong>21c<strong>? Vì sao?</strong>
++&gt; <strong>Trả lời:</strong>
++&gt; Khuyên họ cài phiên bản <strong>19c</strong>. Vì:
++&gt; - Oracle 19c là bản <strong>Long-Term Support (LTS)</strong> với chu kỳ hỗ trợ ổn định kéo dài nhiều năm (Premier và Extended Support), rất phù hợp cho các hệ thống lõi (Core/Mission-Critical) như Kế toán đòi hỏi tính ổn định tối đa.
++&gt; - Bản 21c chỉ là bản <strong>Innovation Release</strong>, vòng đời hỗ trợ ngắn (khoảng 2 năm), chủ yếu dành cho thử nghiệm tính năng mới, không được khuyến khích dùng cho production quan trọng dài hạn.
++
++<strong>2. Bản quyền Enterprise Edition (EE) khác biệt cơ bản như thế nào so với Standard Edition 2 (SE2)?</strong>
++&gt; <strong>Trả lời:</strong>
++&gt; - <strong>Giới hạn phần cứng:</strong> SE2 bị giới hạn tối đa 2 socket CPU trên server (hoặc tối đa 16 CPU threads chạy đồng thời). EE không bị giới hạn socket hay CPU threads.
++&gt; - <strong>Tính năng cao cấp:</strong> EE hỗ trợ đầy đủ các tùy chọn cao cấp (Options/Packs) như RAC (nhiều node), Active Data Guard, Partitioning, Advanced Compression, In-Memory, Diagnostics &amp; Tuning Pack... mà SE2 không có hoặc bị hạn chế rất nhiều.
++&gt; - <strong>Chi phí:</strong> EE có giá bản quyền và phí duy trì hàng năm cao hơn nhiều so với SE2.
++
++<strong>3. Hãy mô tả bằng lời văn của bạn: Sự khác nhau giữa dịch vụ Co-Managed và Autonomous trên Oracle Cloud là gì?</strong>
++&gt; <strong>Trả lời:</strong>
++&gt; - <strong>Co-Managed (Quản lý chung):</strong> Oracle quản lý phần cứng, hạ tầng mạng, máy ảo (VM) và lưu trữ. Nhưng DBA vẫn có toàn quyền truy cập OS (root/oracle) và Database (SYSDBA) để tự tay cấu hình, sao lưu, chỉnh sửa tham số, vá lỗi (patching).
++&gt; - <strong>Autonomous (Tự động hoàn toàn):</strong> Oracle tự động hóa toàn diện từ provisioning, tuning, sao lưu định kỳ, cập nhật bảo mật, scale tài nguyên mà không cần con người can thiệp. Người dùng không có quyền truy cập OS, chỉ nhận database endpoint để kết nối và đẩy dữ liệu/ứng dụng vào chạy.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>Oracle-Database-Administration-from-Zero-to-Hero/VN/02-tong-quan-ve-oracle-database.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../001-tong-quan-ve-rdbms/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Bài 01: Tổng quan về Hệ quản trị Cơ sở dữ liệu Quan hệ (RDBMS)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Bài 01: Tổng quan về Hệ quản trị Cơ sở dữ liệu Quan hệ (RDBMS)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../003-cong-nghe-oracle-database/" class="md-footer__link md-footer__link--next" aria-label="Sau: Bài 03: Tổng quan các công nghệ Oracle Database">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Bài 03: Tổng quan các công nghệ Oracle Database
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

@@ -1,0 +1,2899 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../../design-notes/performance-analysis/">
+      
+      
+        <link rel="next" href="../../er-diagram/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>ADR-001: Kiến trúc Dữ liệu cho Nền tảng Thanh toán VietPay - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#adr-001-kien-truc-du-lieu-cho-nen-tang-thanh-toan-vietpay" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ADR-001: Kiến trúc Dữ liệu cho Nền tảng Thanh toán VietPay
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            13. VietPay
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Design notes
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_2" id="__nav_11_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Docs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_2">
+            <span class="md-nav__icon md-icon"></span>
+            Docs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_2_1" id="__nav_11_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Adr
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Adr
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    ADR-001: Kiến trúc Dữ liệu cho Nền tảng Thanh toán VietPay
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Kiến trúc Dữ liệu cho Nền tảng Thanh toán VietPay
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-decision-record-data-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Decision Record — Data Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-boi-canh-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Bối cảnh (Context)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Bối cảnh (Context)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#thach-thuc-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thách thức chính
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-yeu-to-quyet-inh-decision-drivers" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Yếu tố Quyết định (Decision Drivers)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-quyet-inh-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Quyết định (Decisions)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Quyết định (Decisions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#decision-1-tieu-chuan-mo-hinh-hoa-du-lieu-modelling-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 1: Tiêu chuẩn Mô hình hóa Dữ liệu (Modelling Standards)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision 1: Tiêu chuẩn Mô hình hóa Dữ liệu (Modelling Standards)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#311-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.1 Naming Conventions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-primary-key-strategy-uuid-vs-bigserial" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.2 Primary Key Strategy: UUID vs BIGSERIAL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313-xu-ly-tien-te-money-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.3 Xử lý Tiền tệ (Money Handling)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#314-timestamp-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.4 Timestamp Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#315-enum-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.5 Enum Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#316-soft-delete-vs-hard-delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.6 Soft Delete vs Hard Delete
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-2-strong-vs-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 2: Strong vs Eventual Consistency
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision 2: Strong vs Eventual Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#321-consistency-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.1 Consistency Map
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322-transaction-isolation-cho-financial-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.2 Transaction Isolation cho Financial Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#323-cqrs-pattern-command-query-responsibility-segregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.3 CQRS Pattern (Command Query Responsibility Segregation)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#324-saga-pattern-cho-distributed-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.4 Saga Pattern cho Distributed Transactions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-3-data-contracts-giua-microservices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 3: Data Contracts giữa Microservices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision 3: Data Contracts giữa Microservices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#331-schema-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.1 Schema Registry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#332-compatibility-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.2 Compatibility Rules
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#333-versioning-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.3 Versioning Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#334-contract-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.4 Contract Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#335-data-contract-definition-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.5 Data Contract Definition Format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#336-migration-playbook-khi-contracts-thay-oi" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.6 Migration Playbook khi Contracts thay đổi
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-he-qua-consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Hệ quả (Consequences)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Hệ quả (Consequences)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-he-qua-tich-cuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Hệ quả tích cực
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-he-qua-tieu-cuc-trade-offs" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Hệ quả tiêu cực (Trade-offs)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-compliance-mapping-tuan-thu-quy-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Compliance Mapping (Tuân thủ Quy định)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Compliance Mapping (Tuân thủ Quy định)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-pci-dss-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 PCI-DSS Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-nhnn-regulations-ngan-hang-nha-nuoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 NHNN Regulations (Ngân hàng Nhà nước)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-tai-lieu-tham-khao-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Tài liệu Tham khảo (References)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../er-diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VietPay — Entity-Relationship Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../observability/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Observability — VietPay Fintech Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../huong-dan-chi-tiet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../mongodb/webhook-events-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongodb
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../neo4j/fraud-detection-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Neo4j
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🏦 VietPay — Enterprise Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../requirements-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📋 Take Home Assessment — Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-decision-record-data-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Decision Record — Data Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-boi-canh-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Bối cảnh (Context)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Bối cảnh (Context)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#thach-thuc-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thách thức chính
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-yeu-to-quyet-inh-decision-drivers" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Yếu tố Quyết định (Decision Drivers)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-quyet-inh-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Quyết định (Decisions)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Quyết định (Decisions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#decision-1-tieu-chuan-mo-hinh-hoa-du-lieu-modelling-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 1: Tiêu chuẩn Mô hình hóa Dữ liệu (Modelling Standards)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision 1: Tiêu chuẩn Mô hình hóa Dữ liệu (Modelling Standards)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#311-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.1 Naming Conventions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-primary-key-strategy-uuid-vs-bigserial" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.2 Primary Key Strategy: UUID vs BIGSERIAL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313-xu-ly-tien-te-money-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.3 Xử lý Tiền tệ (Money Handling)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#314-timestamp-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.4 Timestamp Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#315-enum-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.5 Enum Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#316-soft-delete-vs-hard-delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.6 Soft Delete vs Hard Delete
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-2-strong-vs-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 2: Strong vs Eventual Consistency
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision 2: Strong vs Eventual Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#321-consistency-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.1 Consistency Map
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322-transaction-isolation-cho-financial-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.2 Transaction Isolation cho Financial Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#323-cqrs-pattern-command-query-responsibility-segregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.3 CQRS Pattern (Command Query Responsibility Segregation)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#324-saga-pattern-cho-distributed-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2.4 Saga Pattern cho Distributed Transactions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-3-data-contracts-giua-microservices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 3: Data Contracts giữa Microservices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision 3: Data Contracts giữa Microservices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#331-schema-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.1 Schema Registry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#332-compatibility-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.2 Compatibility Rules
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#333-versioning-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.3 Versioning Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#334-contract-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.4 Contract Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#335-data-contract-definition-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.5 Data Contract Definition Format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#336-migration-playbook-khi-contracts-thay-oi" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.6 Migration Playbook khi Contracts thay đổi
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-he-qua-consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Hệ quả (Consequences)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Hệ quả (Consequences)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-he-qua-tich-cuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Hệ quả tích cực
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-he-qua-tieu-cuc-trade-offs" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Hệ quả tiêu cực (Trade-offs)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-compliance-mapping-tuan-thu-quy-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Compliance Mapping (Tuân thủ Quy định)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Compliance Mapping (Tuân thủ Quy định)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-pci-dss-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 PCI-DSS Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-nhnn-regulations-ngan-hang-nha-nuoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 NHNN Regulations (Ngân hàng Nhà nước)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-tai-lieu-tham-khao-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Tài liệu Tham khảo (References)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="adr-001-kien-truc-du-lieu-cho-nen-tang-thanh-toan-vietpay">ADR-001: Kiến trúc Dữ liệu cho Nền tảng Thanh toán VietPay<a class="headerlink" href="#adr-001-kien-truc-du-lieu-cho-nen-tang-thanh-toan-vietpay" title="Permanent link">&para;</a></h1>
+<h2 id="architecture-decision-record-data-architecture">Architecture Decision Record — Data Architecture<a class="headerlink" href="#architecture-decision-record-data-architecture" title="Permanent link">&para;</a></h2>
+<hr />
+<table>
+<thead>
+<tr>
+<th>Metadata</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Status</strong></td>
+<td>Proposed</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-06-23</td>
+</tr>
+<tr>
+<td><strong>Decision Makers</strong></td>
+<td>Database Architecture Team</td>
+</tr>
+<tr>
+<td><strong>Consulted</strong></td>
+<td>Engineering, Security, Compliance</td>
+</tr>
+<tr>
+<td><strong>Informed</strong></td>
+<td>Product, Operations</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-boi-canh-context">1. Bối cảnh (Context)<a class="headerlink" href="#1-boi-canh-context" title="Permanent link">&para;</a></h2>
+<p>VietPay là nền tảng thanh toán fintech phục vụ hàng triệu người dùng tại Việt Nam. Hệ thống cần xử lý:</p>
+<ul>
+<li><strong>~50 triệu</strong> transactions hiện có, tăng trưởng <strong>~2 triệu/tháng</strong></li>
+<li>Payment processing (transfers, deposits, withdrawals, refunds)</li>
+<li>Double-entry ledger cho tính toàn vẹn tài chính</li>
+<li>Tích hợp với nhiều payment providers (Visa, Mastercard, banking APIs)</li>
+<li>Tuân thủ quy định NHNN (Ngân hàng Nhà nước Việt Nam) và PCI-DSS</li>
+</ul>
+<h3 id="thach-thuc-chinh">Thách thức chính<a class="headerlink" href="#thach-thuc-chinh" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Data Integrity</strong>: Không được mất hay sai lệch số liệu tài chính</li>
+<li><strong>Performance</strong>: Hàng triệu giao dịch/ngày, latency &lt; 100ms</li>
+<li><strong>Compliance</strong>: PCI-DSS, SOX, quy định NHNN</li>
+<li><strong>Scalability</strong>: Tăng trưởng 10x trong 3 năm tới</li>
+<li><strong>Multi-service Architecture</strong>: Nhiều microservices cùng truy cập dữ liệu</li>
+</ol>
+<hr />
+<h2 id="2-yeu-to-quyet-inh-decision-drivers">2. Yếu tố Quyết định (Decision Drivers)<a class="headerlink" href="#2-yeu-to-quyet-inh-decision-drivers" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Driver</th>
+<th>Mức ưu tiên</th>
+<th>Giải thích</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D1</td>
+<td><strong>Financial data correctness</strong></td>
+<td>🔴 Critical</td>
+<td>Sai 1 đồng = vi phạm pháp luật</td>
+</tr>
+<tr>
+<td>D2</td>
+<td><strong>Regulatory compliance</strong></td>
+<td>🔴 Critical</td>
+<td>PCI-DSS, NHNN regulations</td>
+</tr>
+<tr>
+<td>D3</td>
+<td><strong>Performance at scale</strong></td>
+<td>🟡 High</td>
+<td>50M+ rows, ~2000 TPS peak</td>
+</tr>
+<tr>
+<td>D4</td>
+<td><strong>Operational safety</strong></td>
+<td>🟡 High</td>
+<td>Zero-downtime deployments</td>
+</tr>
+<tr>
+<td>D5</td>
+<td><strong>Developer productivity</strong></td>
+<td>🟢 Medium</td>
+<td>Schema evolution, tooling</td>
+</tr>
+<tr>
+<td>D6</td>
+<td><strong>Cost efficiency</strong></td>
+<td>🟢 Medium</td>
+<td>Infrastructure &amp; licensing costs</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-quyet-inh-decisions">3. Quyết định (Decisions)<a class="headerlink" href="#3-quyet-inh-decisions" title="Permanent link">&para;</a></h2>
+<hr />
+<h3 id="decision-1-tieu-chuan-mo-hinh-hoa-du-lieu-modelling-standards">Decision 1: Tiêu chuẩn Mô hình hóa Dữ liệu (Modelling Standards)<a class="headerlink" href="#decision-1-tieu-chuan-mo-hinh-hoa-du-lieu-modelling-standards" title="Permanent link">&para;</a></h3>
+<h4 id="311-naming-conventions">3.1.1 Naming Conventions<a class="headerlink" href="#311-naming-conventions" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Quy tắc</th>
+<th>Ví dụ</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>snake_case</strong> cho tất cả identifiers</td>
+<td><code>wallet_id</code>, <code>created_at</code></td>
+<td>PostgreSQL fold identifiers to lowercase; snake_case tránh cần quoting</td>
+</tr>
+<tr>
+<td><strong>Plural</strong> table names</td>
+<td><code>accounts</code>, <code>transactions</code></td>
+<td>Tập hợp records, nhất quán với Rails/Django conventions</td>
+</tr>
+<tr>
+<td><strong>Verb-noun</strong> cho functions</td>
+<td><code>fn_check_idempotency()</code></td>
+<td>Phân biệt functions với tables</td>
+</tr>
+<tr>
+<td><strong>Prefix</strong> cho indexes</td>
+<td><code>idx_</code>, <code>uq_</code>, <code>chk_</code></td>
+<td>Nhanh chóng nhận diện object type</td>
+</tr>
+<tr>
+<td><strong>Prefix</strong> cho triggers</td>
+<td><code>trg_</code></td>
+<td>Phân biệt triggers</td>
+</tr>
+<tr>
+<td><strong>FK suffix</strong></td>
+<td><code>_id</code></td>
+<td><code>wallet_id</code> → references <code>wallets.id</code></td>
+</tr>
+</tbody>
+</table>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">-- ✅ Đúng chuẩn</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">wallets</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">id</span><span class="w">          </span><span class="n">UUID</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">account_id</span><span class="w">  </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">accounts</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">currency</span><span class="w">    </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="n">balance</span><span class="w">     </span><span class="nb">NUMERIC</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="n">created_at</span><span class="w">  </span><span class="n">TIMESTAMPTZ</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">);</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">-- ❌ Sai chuẩn</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">"Wallets"</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="n">WalletID</span><span class="w">    </span><span class="nb">INT</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="n">AccountID</span><span class="w">   </span><span class="nb">INT</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="n">Balance</span><span class="w">     </span><span class="nb">FLOAT</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="n">CreatedDate</span><span class="w"> </span><span class="n">DATETIME</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="312-primary-key-strategy-uuid-vs-bigserial">3.1.2 Primary Key Strategy: UUID vs BIGSERIAL<a class="headerlink" href="#312-primary-key-strategy-uuid-vs-bigserial" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: UUID v4 (<code>gen_random_uuid()</code>)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>UUID</th>
+<th>BIGSERIAL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Uniqueness across services</strong></td>
+<td>✅ Globally unique</td>
+<td>❌ Only per-table</td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>✅ Non-guessable</td>
+<td>❌ Sequential, predictable</td>
+</tr>
+<tr>
+<td><strong>Distributed generation</strong></td>
+<td>✅ Client-side, no DB roundtrip</td>
+<td>❌ Requires DB sequence</td>
+</tr>
+<tr>
+<td><strong>Storage</strong></td>
+<td>❌ 16 bytes</td>
+<td>✅ 8 bytes</td>
+</tr>
+<tr>
+<td><strong>Index performance</strong></td>
+<td>❌ Random inserts, page splits</td>
+<td>✅ Sequential, append-only</td>
+</tr>
+<tr>
+<td><strong>Merge/migration</strong></td>
+<td>✅ No conflicts</td>
+<td>❌ Conflicts likely</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Mitigation cho UUID performance:</strong>
+- Sử dụng <code>UUIDv7</code> (time-ordered) khi PostgreSQL 17+ hỗ trợ native, hoặc <code>uuid_generate_v7()</code> extension
+- B-tree index trên UUID vẫn hiệu quả cho workload hiện tại (50M rows)
+- Partition by <code>created_at</code> giảm index size per partition</p>
+<p><strong>Lý do chọn UUID cho fintech:</strong>
+- Microservices cần tạo ID trước khi gọi DB (idempotency pattern)
+- Merge data từ nhiều regions/shards trong tương lai
+- PCI-DSS yêu cầu non-predictable identifiers cho financial records</p>
+<h4 id="313-xu-ly-tien-te-money-handling">3.1.3 Xử lý Tiền tệ (Money Handling)<a class="headerlink" href="#313-xu-ly-tien-te-money-handling" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: <code>NUMERIC(19,4)</code> — KHÔNG BAO GIỜ dùng FLOAT/DOUBLE</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- ✅ Đúng</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">amount</span><span class="w">    </span><span class="nb">NUMERIC</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">amount</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">balance</span><span class="w">   </span><span class="nb">NUMERIC</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">-- ❌ SAI — Gây sai lệch tài chính</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">amount</span><span class="w">    </span><span class="nb">FLOAT</span><span class="w">       </span><span class="c1">-- 0.1 + 0.2 = 0.30000000000000004</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">balance</span><span class="w">   </span><span class="n">DOUBLE</span><span class="w">      </span><span class="c1">-- Tương tự</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">amount</span><span class="w">    </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="c1">-- Không đủ precision cho large amounts</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Specification</th>
+<th>Giá trị</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Precision</strong></td>
+<td>19 digits — hỗ trợ đến 999,999,999,999,999.9999 (đủ cho mọi loại tiền)</td>
+</tr>
+<tr>
+<td><strong>Scale</strong></td>
+<td>4 decimal places — hỗ trợ sub-cent calculations, forex rates</td>
+</tr>
+<tr>
+<td><strong>Maximum value</strong></td>
+<td>~10^15 — đủ cho GBP/USD/VND amounts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lý do 4 decimal places thay vì 2:</strong>
+- Forex conversion cần precision cao hơn (1 USD = 24,345.5000 VND)
+- Partial refunds, fee calculations có thể tạo sub-cent amounts
+- ISO 4217 standard: một số currency dùng 3-4 decimal places (KWD, BHD)</p>
+<h4 id="314-timestamp-strategy">3.1.4 Timestamp Strategy<a class="headerlink" href="#314-timestamp-strategy" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: Luôn dùng <code>TIMESTAMPTZ</code> (timestamp with time zone), lưu trữ UTC</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">created_at</span><span class="w">  </span><span class="n">TIMESTAMPTZ</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w">  </span><span class="c1">-- Luôn UTC internally</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">updated_at</span><span class="w">  </span><span class="n">TIMESTAMPTZ</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">-- Application phải SET timezone = 'UTC' khi connect</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1">-- Display timezone conversion ở frontend layer</span>
+</span></code></pre></div>
+<p><strong>Lý do:</strong>
+- PostgreSQL lưu <code>TIMESTAMPTZ</code> nội bộ là UTC, convert khi hiển thị
+- <code>TIMESTAMP</code> (without timezone) KHÔNG convert → nguy hiểm khi server timezone thay đổi
+- Fintech regulations yêu cầu timestamp chính xác cho audit trail
+- Vietnam timezone (ICT, UTC+7) → cần rõ ràng khi đối soát với partners ở timezone khác</p>
+<h4 id="315-enum-handling">3.1.5 Enum Handling<a class="headerlink" href="#315-enum-handling" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: <code>VARCHAR</code> + <code>CHECK</code> constraints (thay vì PostgreSQL <code>ENUM</code> type)</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- ✅ CHECK constraint — dễ evolve</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">status</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">'PENDING'</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'PENDING'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PROCESSING'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SETTLED'</span><span class="p">,</span><span class="w"> </span><span class="s1">'FAILED'</span><span class="p">,</span><span class="w"> </span><span class="s1">'REVERSED'</span><span class="p">))</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">-- ❌ PostgreSQL ENUM — khó thêm/xóa values</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">transaction_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">'PENDING'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PROCESSING'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SETTLED'</span><span class="p">);</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">-- Thêm value: ALTER TYPE ... ADD VALUE (không thể trong transaction!)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">-- Xóa value: Phải tạo type mới, migrate toàn bộ data</span>
+</span></code></pre></div>
+<p><strong>Lý do chọn CHECK constraint:</strong>
+- <code>ALTER TYPE ... ADD VALUE</code> không thể chạy trong transaction → phá vỡ migration workflow
+- <code>DROP VALUE</code> từ ENUM không được support → stuck với stale values
+- CHECK constraint có thể modify trong migration bình thường
+- Trade-off: CHECK không tận dụng được internal enum ID (nhỏ hơn VARCHAR), nhưng với index covering, performance impact minimal</p>
+<h4 id="316-soft-delete-vs-hard-delete">3.1.6 Soft Delete vs Hard Delete<a class="headerlink" href="#316-soft-delete-vs-hard-delete" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: KHÔNG soft delete cho financial records — dùng status-based lifecycle + audit log</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Financial records KHÔNG BAO GIỜ bị DELETE</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">-- Transactions: status lifecycle (PENDING → SETTLED → REVERSED)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1">-- Wallets: status = 'CLOSED' (không xóa)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">-- Accounts: status = 'DEACTIVATED' (không xóa)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">-- Audit log: append-only, KHÔNG thể UPDATE hay DELETE</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="n">prevent_audit_update</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">audit_log</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="k">INSTEAD</span><span class="w"> </span><span class="k">NOTHING</span><span class="p">;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">RULE</span><span class="w"> </span><span class="n">prevent_audit_delete</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">audit_log</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="k">INSTEAD</span><span class="w"> </span><span class="k">NOTHING</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Lý do:</strong>
+- PCI-DSS Section 10: Transaction logs phải được giữ ít nhất 1 năm, accessible trong 3 tháng
+- NHNN quy định: Dữ liệu giao dịch phải lưu giữ tối thiểu 5 năm
+- Soft delete (<code>deleted_at IS NOT NULL</code>) phức tạp hóa mọi query, dễ quên filter → data leak
+- Status-based approach tự nhiên hơn cho financial lifecycle</p>
+<hr />
+<h3 id="decision-2-strong-vs-eventual-consistency">Decision 2: Strong vs Eventual Consistency<a class="headerlink" href="#decision-2-strong-vs-eventual-consistency" title="Permanent link">&para;</a></h3>
+<h4 id="321-consistency-map">3.2.1 Consistency Map<a class="headerlink" href="#321-consistency-map" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>┌─────────────────────────────────────────────────────────────┐
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│              STRONG CONSISTENCY (SERIALIZABLE)                │
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>│  ┌─────────────────────────────────────────────────────────┐ │
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│  │ • Ledger entries creation (double-entry)                 │ │
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│  │ • Wallet balance updates (debit/credit)                  │ │
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│  │ • Idempotency key check + transaction creation           │ │
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│  │ • Settlement batch processing                            │ │
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│  └─────────────────────────────────────────────────────────┘ │
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>├─────────────────────────────────────────────────────────────┤
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│           READ COMMITTED (Default for reads)                 │
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│  ┌─────────────────────────────────────────────────────────┐ │
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>│  │ • Wallet balance display (read from replica OK)          │ │
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>│  │ • Transaction history listing                            │ │
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│  │ • Account profile reads                                  │ │
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│  └─────────────────────────────────────────────────────────┘ │
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>├─────────────────────────────────────────────────────────────┤
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>│            EVENTUAL CONSISTENCY (Async)                       │
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>│  ┌─────────────────────────────────────────────────────────┐ │
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>│  │ • Settlement reporting aggregation                       │ │
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>│  │ • Analytics &amp; dashboards                                 │ │
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>│  │ • Notification delivery                                  │ │
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>│  │ • Webhook event processing                               │ │
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>│  │ • Fraud scoring (near real-time, &lt; 5s delay OK)          │ │
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>│  └─────────────────────────────────────────────────────────┘ │
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>└─────────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<h4 id="322-transaction-isolation-cho-financial-operations">3.2.2 Transaction Isolation cho Financial Operations<a class="headerlink" href="#322-transaction-isolation-cho-financial-operations" title="Permanent link">&para;</a></h4>
+<p><strong>Critical path: Tạo giao dịch mới</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- SERIALIZABLE isolation cho ledger operations</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">BEGIN</span><span class="w"> </span><span class="k">ISOLATION</span><span class="w"> </span><span class="k">LEVEL</span><span class="w"> </span><span class="k">SERIALIZABLE</span><span class="p">;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1">-- 1. Check idempotency key (prevent duplicate)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">idempotency_keys</span><span class="w"> </span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">account_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">idempotency_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="k">key</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">FOR</span><span class="w"> </span><span class="k">UPDATE</span><span class="p">;</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="c1">-- 2. Lock source wallet (ordered by wallet_id to prevent deadlock)</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">wallets</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">source_wallet_id</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">UPDATE</span><span class="p">;</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">wallets</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">dest_wallet_id</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">UPDATE</span><span class="p">;</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="c1">-- 3. Check sufficient balance</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="c1">-- 4. Create transaction record</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="c1">-- 5. Create ledger entries (debit + credit, sum = 0)</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="c1">-- 6. Update wallet balances</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="c1">-- 7. Record idempotency key</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="k">COMMIT</span><span class="p">;</span><span class="w">  </span><span class="c1">-- DEFERRABLE constraint trigger validates zero-sum here</span>
+</span></code></pre></div>
+<p><strong>Lý do dùng SERIALIZABLE:</strong>
+- Double-entry ledger YÊU CẦU tất cả entries trong 1 transaction là atomic
+- Race condition giữa 2 transfers cùng wallet phải được serialized
+- PostgreSQL SSI (Serializable Snapshot Isolation) hiệu quả cho short transactions
+- Retry logic ở application layer cho serialization failures</p>
+<blockquote>
+<p><strong>Lưu ý:</strong> <code>SELECT ... FOR UPDATE</code> dưới SERIALIZABLE có thể xem là dư thừa (SSI đã ngăn write skew). Tuy nhiên, ta vẫn dùng FOR UPDATE để:
+- Đảm bảo <strong>deterministic lock ordering</strong> (tránh deadlock)
+- Là fallback nếu app vô tình dùng READ COMMITTED trong một số code paths
+- Không gây overhead đáng kể cho short transactions</p>
+</blockquote>
+<h4 id="323-cqrs-pattern-command-query-responsibility-segregation">3.2.3 CQRS Pattern (Command Query Responsibility Segregation)<a class="headerlink" href="#323-cqrs-pattern-command-query-responsibility-segregation" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: Áp dụng CQRS cho reporting workload</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>┌──────────────┐     ┌──────────────────┐     ┌─────────────────┐
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>│  Application │────▸│  Primary DB      │────▸│  CDC Stream     │
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>│  (Commands)  │     │  (Write Model)   │     │  (Debezium)     │
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>└──────────────┘     └──────────────────┘     └────────┬────────┘
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>                                                        │
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>                                                        ▼
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>┌──────────────┐     ┌──────────────────┐     ┌─────────────────┐
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>│  Reporting   │◂────│  Read Replicas   │◂────│  Kafka Topics   │
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>│  Dashboard   │     │  + Materialized  │     │  (Events)       │
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>│  (Queries)   │     │    Views         │     │                 │
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>└──────────────┘     └──────────────────┘     └─────────────────┘
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Store</th>
+<th>Consistency</th>
+<th>Use Cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Write Model</strong></td>
+<td>PostgreSQL Primary</td>
+<td>Strong (SERIALIZABLE)</td>
+<td>Transactions, ledger, balance updates</td>
+</tr>
+<tr>
+<td><strong>Read Model (Hot)</strong></td>
+<td>PostgreSQL Replica</td>
+<td>Near real-time (&lt; 1s lag)</td>
+<td>Balance display, transaction history</td>
+</tr>
+<tr>
+<td><strong>Read Model (Warm)</strong></td>
+<td>Materialized Views</td>
+<td>Refreshed every 5 min</td>
+<td>Settlement reports, monthly summaries</td>
+</tr>
+<tr>
+<td><strong>Read Model (Cold)</strong></td>
+<td>Data Warehouse (BigQuery/Redshift)</td>
+<td>Eventual (hourly ETL)</td>
+<td>Analytics, compliance reports, ML features</td>
+</tr>
+</tbody>
+</table>
+<h4 id="324-saga-pattern-cho-distributed-transactions">3.2.4 Saga Pattern cho Distributed Transactions<a class="headerlink" href="#324-saga-pattern-cho-distributed-transactions" title="Permanent link">&para;</a></h4>
+<p>Khi giao dịch liên quan đến nhiều services (ví dụ: VietPay → Bank API → Notification):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Choreography-based Saga (preferred for VietPay):
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>1. Payment Service:  CREATE transaction (status=PENDING)
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        │
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        ▼ Event: payment.initiated
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>2. Bank Gateway:     Call bank API
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>        │
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        ├── Success ──▸ Event: bank.approved
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>        │                  │
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        │                  ▼
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        │              3. Ledger Service: Create ledger entries + update balances
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>        │                  │
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        │                  ▼ Event: ledger.posted
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>        │              4. Payment Service: UPDATE status = SETTLED
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>        │                  │
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>        │                  ▼ Event: payment.settled
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>        │              5. Notification: Send success notification
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>        │
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>        └── Failure ──▸ Event: bank.declined
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>                           │
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>                           ▼
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>                       3. Payment Service: UPDATE status = FAILED
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>                           │
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>                           ▼ Event: payment.failed
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>                       4. Compensation: Reverse any partial changes
+</span></code></pre></div>
+<p><strong>Lý do dùng Choreography over Orchestration:</strong>
+- Decoupled: Mỗi service tự quyết định based on events
+- No single point of failure (orchestrator)
+- Phù hợp với event-driven architecture
+- Trade-off: Harder to trace full flow → cần distributed tracing (Jaeger/Tempo)</p>
+<hr />
+<h3 id="decision-3-data-contracts-giua-microservices">Decision 3: Data Contracts giữa Microservices<a class="headerlink" href="#decision-3-data-contracts-giua-microservices" title="Permanent link">&para;</a></h3>
+<h4 id="331-schema-registry">3.3.1 Schema Registry<a class="headerlink" href="#331-schema-registry" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: Confluent Schema Registry với Avro serialization cho Kafka events</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>│  Producer   │───▸│  Schema      │◂───│  Consumer   │
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>│  Service    │    │  Registry    │    │  Service    │
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>│             │    │              │    │             │
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>│ Serialize   │    │ • Validate   │    │ Deserialize │
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>│ with Avro   │    │ • Version    │    │ with Avro   │
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>│ schema v2   │    │ • Compat     │    │ schema v1+  │
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>└─────────────┘    └──────────────┘    └─────────────┘
+</span></code></pre></div>
+<p><strong>Event Schema Example:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>{
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  "type": "record",
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  "name": "TransactionSettled",
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  "namespace": "vn.vietpay.events.payment",
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>  "version": 2,
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>  "fields": [
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    {"name": "transaction_id", "type": "string", "doc": "UUID of the transaction"},
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    {"name": "wallet_id", "type": "string"},
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    {"name": "amount", "type": {"type": "bytes", "logicalType": "decimal", "precision": 19, "scale": 4}},
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    {"name": "currency", "type": "string"},
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    {"name": "settled_at", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    {"name": "settlement_batch_id", "type": ["null", "string"], "default": null, "doc": "Added in v2"}
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>  ]
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>}
+</span></code></pre></div>
+<h4 id="332-compatibility-rules">3.3.2 Compatibility Rules<a class="headerlink" href="#332-compatibility-rules" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định: BACKWARD compatibility mode (default)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Compatibility Mode</th>
+<th>Cho phép</th>
+<th>Không cho phép</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BACKWARD</strong> (mặc định)</td>
+<td>Thêm field optional (có default)</td>
+<td>Xóa required field</td>
+</tr>
+<tr>
+<td></td>
+<td>Xóa field optional</td>
+<td>Thêm required field không có default</td>
+</tr>
+<tr>
+<td></td>
+<td>Widen type (int → long)</td>
+<td>Narrow type (long → int)</td>
+</tr>
+<tr>
+<td><strong>FULL</strong> (cho critical events)</td>
+<td>Chỉ thêm/xóa optional fields</td>
+<td>Mọi breaking change</td>
+</tr>
+</tbody>
+</table>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Schema Evolution Rules cho VietPay:
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>✅ ALLOWED (non-breaking):
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>   - Thêm field mới với default value
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>   - Thêm optional field (nullable)
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>   - Thêm new enum value (cuối danh sách)
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>   - Deprecate field (giữ lại, thêm @deprecated annotation)
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>❌ FORBIDDEN (breaking):
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>   - Xóa required field
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>   - Rename field
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>   - Thay đổi field type (int → string)
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>   - Thay đổi field semantics (amount cents → amount dollars)
+</span></code></pre></div>
+<h4 id="333-versioning-strategy">3.3.3 Versioning Strategy<a class="headerlink" href="#333-versioning-strategy" title="Permanent link">&para;</a></h4>
+<p><strong>API Versioning: URI-based major versions + header-based minor versions</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a># Major version trong URI (breaking changes)
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>POST /api/v2/transactions
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a># Minor version trong header (non-breaking)
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>Accept: application/vnd.vietpay.v2.3+json
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a># Event versioning trong topic name
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>Topic: vietpay.payments.transaction-settled.v2
+</span></code></pre></div>
+<p><strong>Schema Version Lifecycle:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>┌────────────┐    ┌────────────┐    ┌────────────┐    ┌────────────┐
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>│  DRAFT     │──▸ │  ACTIVE    │──▸ │ DEPRECATED │──▸ │  RETIRED   │
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>│            │    │            │    │            │    │            │
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>│ Dev/Test   │    │ Production │    │ Sunset     │    │ Removed    │
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>│ only       │    │ use        │    │ period     │    │ from       │
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>│            │    │            │    │ (90 days)  │    │ registry   │
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>└────────────┘    └────────────┘    └────────────┘    └────────────┘
+</span></code></pre></div>
+<h4 id="334-contract-testing">3.3.4 Contract Testing<a class="headerlink" href="#334-contract-testing" title="Permanent link">&para;</a></h4>
+<p><strong>Consumer-Driven Contract Testing (Pact framework)</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Workflow:
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>1. Consumer định nghĩa expectations (Pact file)
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>2. Pact file được publish lên Pact Broker
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>3. Provider CI/CD verify contracts
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>4. Breaking changes → CI fails BEFORE deploy
+</span></code></pre></div>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Pact contract example</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="p">{</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="nt">"consumer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notification-service"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nt">"provider"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"payment-service"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="nt">"interactions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">      </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a settled transaction event"</span><span class="p">,</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">      </span><span class="nt">"upon_receiving"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionSettled event"</span><span class="p">,</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">      </span><span class="nt">"with"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">        </span><span class="nt">"body"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">          </span><span class="nt">"transaction_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid-string"</span><span class="p">,</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">          </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"decimal-string"</span><span class="p">,</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">          </span><span class="nt">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VND"</span><span class="p">,</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">          </span><span class="nt">"settled_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"iso-8601-timestamp"</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">      </span><span class="p">},</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">      </span><span class="nt">"will_respond_with"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"consumed"</span><span class="p">,</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">        </span><span class="nt">"required_fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"transaction_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"amount"</span><span class="p">,</span><span class="w"> </span><span class="s2">"currency"</span><span class="p">]</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-15-22"><a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-15-23"><a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="335-data-contract-definition-format">3.3.5 Data Contract Definition Format<a class="headerlink" href="#335-data-contract-definition-format" title="Permanent link">&para;</a></h4>
+<p>Mỗi microservice PHẢI publish data contract document:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># data-contract.yaml — Payment Service</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">datacontract/v1</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DataContract</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="nt">metadata</span><span class="p">:</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">payment-transactions</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">  </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">payment-team</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.1.0</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">  </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">active</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="nt">spec</span><span class="p">:</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">  </span><span class="c1"># Database schema contract</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">  </span><span class="nt">tables</span><span class="p">:</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transactions</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">      </span><span class="nt">classification</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PII</span><span class="w">  </span><span class="c1"># Contains financial data</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">      </span><span class="nt">retention</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 years</span><span class="w">   </span><span class="c1"># NHNN requirement</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="w">      </span><span class="nt">columns</span><span class="p">:</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UUID</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="w">          </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="w">          </span><span class="nt">immutable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">amount</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NUMERIC(19,4)</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a><span class="w">          </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a><span class="w">          </span><span class="nt">constraints</span><span class="p">:</span>
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"amount</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">0"</span>
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">status</span>
+</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a><span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VARCHAR(20)</span>
+</span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a><span class="w">          </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a><span class="w">          </span><span class="nt">allowed_values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">PENDING</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">PROCESSING</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">SETTLED</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">FAILED</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">REVERSED</span><span class="p p-Indicator">]</span>
+</span><span id="__span-16-32"><a id="__codelineno-16-32" name="__codelineno-16-32" href="#__codelineno-16-32"></a>
+</span><span id="__span-16-33"><a id="__codelineno-16-33" name="__codelineno-16-33" href="#__codelineno-16-33"></a><span class="w">  </span><span class="c1"># Event contract</span>
+</span><span id="__span-16-34"><a id="__codelineno-16-34" name="__codelineno-16-34" href="#__codelineno-16-34"></a><span class="w">  </span><span class="nt">events</span><span class="p">:</span>
+</span><span id="__span-16-35"><a id="__codelineno-16-35" name="__codelineno-16-35" href="#__codelineno-16-35"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TransactionSettled</span>
+</span><span id="__span-16-36"><a id="__codelineno-16-36" name="__codelineno-16-36" href="#__codelineno-16-36"></a><span class="w">      </span><span class="nt">topic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vietpay.payments.transaction-settled.v2</span>
+</span><span id="__span-16-37"><a id="__codelineno-16-37" name="__codelineno-16-37" href="#__codelineno-16-37"></a><span class="w">      </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">avro</span>
+</span><span id="__span-16-38"><a id="__codelineno-16-38" name="__codelineno-16-38" href="#__codelineno-16-38"></a><span class="w">      </span><span class="nt">compatibility</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BACKWARD</span>
+</span><span id="__span-16-39"><a id="__codelineno-16-39" name="__codelineno-16-39" href="#__codelineno-16-39"></a>
+</span><span id="__span-16-40"><a id="__codelineno-16-40" name="__codelineno-16-40" href="#__codelineno-16-40"></a><span class="w">  </span><span class="c1"># SLA contract</span>
+</span><span id="__span-16-41"><a id="__codelineno-16-41" name="__codelineno-16-41" href="#__codelineno-16-41"></a><span class="w">  </span><span class="nt">sla</span><span class="p">:</span>
+</span><span id="__span-16-42"><a id="__codelineno-16-42" name="__codelineno-16-42" href="#__codelineno-16-42"></a><span class="w">    </span><span class="nt">availability</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">99.95%</span>
+</span><span id="__span-16-43"><a id="__codelineno-16-43" name="__codelineno-16-43" href="#__codelineno-16-43"></a><span class="w">    </span><span class="nt">latency_p99</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100ms</span>
+</span><span id="__span-16-44"><a id="__codelineno-16-44" name="__codelineno-16-44" href="#__codelineno-16-44"></a><span class="w">    </span><span class="nt">throughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000 TPS</span>
+</span></code></pre></div>
+<h4 id="336-migration-playbook-khi-contracts-thay-oi">3.3.6 Migration Playbook khi Contracts thay đổi<a class="headerlink" href="#336-migration-playbook-khi-contracts-thay-oi" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>1. PROPOSAL PHASE (1 tuần)
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>   - RFC document mô tả thay đổi
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>   - Impact analysis: services nào bị ảnh hưởng
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>   - Review bởi affected team leads
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>2. PREPARATION PHASE (1-2 tuần)  
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>   - Schema Registry: publish new schema version (DRAFT)
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>   - Contract tests: update Pact files
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>   - Consumer services: prepare to handle new + old format
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>3. ROLLOUT PHASE (gradual, 1-2 tuần)
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>   - Producer: dual-write old + new format
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>   - Feature flag: consumers switch to new format
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>   - Monitor error rates per consumer
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>4. CLEANUP PHASE (sau 90 ngày sunset)
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>   - Mark old schema DEPRECATED
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>   - Remove dual-write code
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>   - After sunset: mark RETIRED
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>5. EMERGENCY ROLLBACK (bất kỳ lúc nào)
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a>   - Producer: revert to old schema only
+</span><span id="__span-17-23"><a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a>   - Consumer: rollback feature flag
+</span><span id="__span-17-24"><a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a>   - No data loss (old format always available during transition)
+</span></code></pre></div>
+<hr />
+<h2 id="4-he-qua-consequences">4. Hệ quả (Consequences)<a class="headerlink" href="#4-he-qua-consequences" title="Permanent link">&para;</a></h2>
+<h3 id="41-he-qua-tich-cuc">4.1 Hệ quả tích cực<a class="headerlink" href="#41-he-qua-tich-cuc" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Consequence</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Financial integrity by design</strong></td>
+<td>Schema constraints enforce correctness — không phụ thuộc vào application logic</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Audit compliance built-in</strong></td>
+<td>Append-only audit trail + immutable ledger đáp ứng PCI-DSS, NHNN</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Safe schema evolution</strong></td>
+<td>Expand-contract pattern + Schema Registry cho phép evolve mà không break consumers</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Performance at scale</strong></td>
+<td>Partitioning + covering indexes + CQRS cho phép scale read/write independently</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Polyglot flexibility</strong></td>
+<td>Right tool for each job — PostgreSQL cho OLTP, MongoDB cho events, Neo4j cho fraud</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Observable by default</strong></td>
+<td>Comprehensive metrics + SLOs cho phép proactive incident prevention</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-he-qua-tieu-cuc-trade-offs">4.2 Hệ quả tiêu cực (Trade-offs)<a class="headerlink" href="#42-he-qua-tieu-cuc-trade-offs" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Trade-off</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>UUID performance</strong></td>
+<td>UUIDv7 (time-ordered) + partitioning giảm random I/O</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>SERIALIZABLE overhead</strong></td>
+<td>Chỉ dùng cho financial critical path, retry logic cho serialization failures</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Operational complexity</strong></td>
+<td>Multiple database systems (PG + MongoDB + Neo4j) → cần specialized DBA skills</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Schema Registry dependency</strong></td>
+<td>Schema Registry cluster phải highly available → add Kafka dependency</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Contract testing overhead</strong></td>
+<td>Thêm CI/CD step → chấp nhận slower builds cho safety</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Eventual consistency complexity</strong></td>
+<td>CQRS + Saga pattern phức tạp hơn monolithic transaction → cần distributed tracing</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-compliance-mapping-tuan-thu-quy-inh">5. Compliance Mapping (Tuân thủ Quy định)<a class="headerlink" href="#5-compliance-mapping-tuan-thu-quy-inh" title="Permanent link">&para;</a></h2>
+<h3 id="51-pci-dss-requirements">5.1 PCI-DSS Requirements<a class="headerlink" href="#51-pci-dss-requirements" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>PCI-DSS Section</th>
+<th>Requirement</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>3.4</strong></td>
+<td>Render PAN unreadable</td>
+<td>Encrypt sensitive data at rest (TDE/pgcrypto)</td>
+</tr>
+<tr>
+<td><strong>6.5</strong></td>
+<td>Secure coding</td>
+<td>SQL injection prevention (parameterized queries), input validation</td>
+</tr>
+<tr>
+<td><strong>8.5</strong></td>
+<td>Unique identification</td>
+<td>UUID-based identifiers, audit trail with <code>changed_by</code></td>
+</tr>
+<tr>
+<td><strong>10.1</strong></td>
+<td>Audit trails</td>
+<td><code>audit_log</code> table with trigger-based capture</td>
+</tr>
+<tr>
+<td><strong>10.2</strong></td>
+<td>Log events</td>
+<td>All CRUD operations logged with timestamp, user, IP</td>
+</tr>
+<tr>
+<td><strong>10.5</strong></td>
+<td>Secure audit trails</td>
+<td>Append-only (no UPDATE/DELETE via rules), integrity via checksums</td>
+</tr>
+<tr>
+<td><strong>10.7</strong></td>
+<td>Retain logs 1 year</td>
+<td>Partition-based retention + archival to cold storage</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-nhnn-regulations-ngan-hang-nha-nuoc">5.2 NHNN Regulations (Ngân hàng Nhà nước)<a class="headerlink" href="#52-nhnn-regulations-ngan-hang-nha-nuoc" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Quy định</th>
+<th>Yêu cầu</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Thông tư 35/2016</strong></td>
+<td>Lưu trữ dữ liệu giao dịch ≥ 5 năm</td>
+<td>Partition retention policy, archival to S3/GCS</td>
+</tr>
+<tr>
+<td><strong>Thông tư 39/2014</strong></td>
+<td>Bảo mật dữ liệu khách hàng</td>
+<td>Encryption at rest + transit, column-level access control</td>
+</tr>
+<tr>
+<td><strong>QĐ 630/QĐ-NHNN</strong></td>
+<td>Giao dịch điện tử phải có xác nhận</td>
+<td>Idempotency keys + transaction receipts</td>
+</tr>
+<tr>
+<td><strong>Nghị định 35/2007</strong></td>
+<td>Báo cáo giao dịch đáng ngờ</td>
+<td>Neo4j fraud detection + automated reporting</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-tai-lieu-tham-khao-references">6. Tài liệu Tham khảo (References)<a class="headerlink" href="#6-tai-lieu-tham-khao-references" title="Permanent link">&para;</a></h2>
+<ol>
+<li>PostgreSQL Documentation: Transaction Isolation — https://www.postgresql.org/docs/current/transaction-iso.html</li>
+<li>Martin Kleppmann, "Designing Data-Intensive Applications" (O'Reilly, 2017)</li>
+<li>Pat Helland, "Life beyond Distributed Transactions" (CIDR, 2007)</li>
+<li>PCI Security Standards Council, "PCI DSS v4.0" — https://www.pcisecuritystandards.org</li>
+<li>NHNN Thông tư 35/2016/TT-NHNN</li>
+<li>Confluent Schema Registry Documentation — https://docs.confluent.io/platform/current/schema-registry/</li>
+<li>Michael Nygard, "Documenting Architecture Decisions" (2011)</li>
+</ol>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>vietpay/docs/adr/001-data-architecture.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../../design-notes/performance-analysis/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Phân tích Hiệu năng — Settlement Query Optimization">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Phân tích Hiệu năng — Settlement Query Optimization
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../er-diagram/" class="md-footer__link md-footer__link--next" aria-label="Sau: VietPay — Entity-Relationship Diagram">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                VietPay — Entity-Relationship Diagram
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

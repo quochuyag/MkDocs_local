@@ -1,0 +1,2220 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../006-chapter-3-designing-metrics-guide/">
+      
+      
+        <link rel="next" href="../008-chapter-5-designing-people-improvement-systems-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#huong-dan-hoc-tap-thiet-lap-chuong-trinh-o-luong-phan-mem" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            07. Sach & Tai lieu (PDF da chuyen doi)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../devsecops-in-oracle-cloud-securing-and-automating-oracle-cloud-infrastructure-for-sebastian-hassinger/guide-ai/012-introduction-to-oci-and-devsecops-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Devsecops in oracle cloud securing and automating oracle cloud infrastructure for sebastian hassinger
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../itil-foundation-v5/guide-ai/001-itil-foundation-version5-official-book-en-v50-prpdf-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Itil foundation v5
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Managing it performance to create business value
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_5">
+            <span class="md-nav__icon md-icon"></span>
+            Managing it performance to create business value
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_5_1" id="__nav_7_5_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Guide ai
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_5_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            Guide ai
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-chapter-1-designing-performance-based-strategic-planning-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Hoạch Định Chiến Lược Dựa Trên Hiệu Suất
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../005-chapter-2-designing-performance-management-and-measurement-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Quản Lý và Đo Lường Hiệu Suất
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../006-chapter-3-designing-metrics-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Metrics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-1-ap-dung-gqm-cho-du-an-phan-mem-ngan-hang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 1: Áp dụng GQM cho dự án phần mềm ngân hàng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-2-sei-cmm-trong-thuc-tien-hanh-trinh-tu-level-1-len-level-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 2: SEI CMM trong thực tiễn — Hành trình từ Level 1 lên Level 3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-3-software-measurement-plan-du-an-agile-va-core-measures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 3: Software Measurement Plan — Dự án Agile và core measures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-1-sei-cmm-5-muc-va-metrics-tuong-ung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 1: SEI CMM — 5 Mức và Metrics Tương Ứng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-2-gqm-paradigm-vi-du-ve-o-tin-cay-phan-mem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 2: GQM Paradigm — Ví dụ về Độ Tin Cậy Phần Mềm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#so-o-mo-hinh-ideal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sơ đồ: Mô hình IDEAL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../008-chapter-5-designing-people-improvement-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Cải Tiến Con Người
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../009-chapter-6-knowledge-and-social-enterprising-performance-measurement-and-management-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Đo Lường và Quản Lý Hiệu Suất Tri Thức và Doanh Nghiệp Xã Hội
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../010-chapter-7-designing-performance-based-risk-management-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Quản Lý Rủi Ro Dựa Trên Hiệu Suất
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../011-chapter-8-designing-process-control-and-improvement-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Kiểm Soát và Cải Thiện Quy Trình
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../012-chapter-9-designing-and-measuring-the-it-product-strategy-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế và Đo Lường Chiến Lược Sản Phẩm IT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../013-chapter-10-designing-customer-value-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Giá Trị Khách Hàng
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    STATUS — Managing IT Performance to Create Business Value
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../references/guide-structure/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    References
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../skill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Book Study Guide — Tạo Bài Giảng Từ Sách
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../the-business-value-of-it-managing-risks-optimizing-performance-and-measuring-results-auerbach-publications-2008/guide-ai/003-introduction-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    The business value of it managing risks optimizing performance and measuring results auerbach publications 2008
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-1-ap-dung-gqm-cho-du-an-phan-mem-ngan-hang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 1: Áp dụng GQM cho dự án phần mềm ngân hàng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-2-sei-cmm-trong-thuc-tien-hanh-trinh-tu-level-1-len-level-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 2: SEI CMM trong thực tiễn — Hành trình từ Level 1 lên Level 3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-3-software-measurement-plan-du-an-agile-va-core-measures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 3: Software Measurement Plan — Dự án Agile và core measures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-1-sei-cmm-5-muc-va-metrics-tuong-ung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 1: SEI CMM — 5 Mức và Metrics Tương Ứng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-2-gqm-paradigm-vi-du-ve-o-tin-cay-phan-mem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 2: GQM Paradigm — Ví dụ về Độ Tin Cậy Phần Mềm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#so-o-mo-hinh-ideal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sơ đồ: Mô hình IDEAL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="huong-dan-hoc-tap-thiet-lap-chuong-trinh-o-luong-phan-mem">Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm<a class="headerlink" href="#huong-dan-hoc-tap-thiet-lap-chuong-trinh-o-luong-phan-mem" title="Permanent link">&para;</a></h1>
+<p><strong>Nguồn:</strong> Managing IT Performance to Create Business Value — Chapter 4<br />
+<strong>Ngày tạo:</strong> 2026-04-26<br />
+<strong>Thời gian học ước tính:</strong> 55–65 phút</p>
+<hr />
+<h2 id="muc-tieu-hoc-tap">🎯 Mục tiêu học tập<a class="headerlink" href="#muc-tieu-hoc-tap" title="Permanent link">&para;</a></h2>
+<p>Sau khi hoàn thành chương này, người học có thể:</p>
+<ul>
+<li><strong>Mô tả</strong> 4 bước thiết lập chương trình đo lường phần mềm theo framework toàn diện</li>
+<li><strong>Phân biệt</strong> đo lường trực tiếp (direct) và gián tiếp (indirect/derived) trong bối cảnh phần mềm</li>
+<li><strong>Áp dụng</strong> phương pháp Goal-Question-Metric (GQM) để liên kết mục tiêu tổ chức với metrics cụ thể</li>
+<li><strong>Hiểu</strong> mô hình IDEAL và cách nó tích hợp với SEI CMM để cải thiện quy trình phần mềm liên tục</li>
+<li><strong>Đánh giá</strong> 5 mức độ trưởng thành của SEI CMM và loại metrics phù hợp với từng mức</li>
+<li><strong>Thiết kế</strong> cấu trúc cơ bản của một Software Measurement Plan cho dự án thực tế</li>
+</ul>
+<hr />
+<h2 id="tom-tat-noi-dung-chinh">📋 Tóm tắt nội dung chính<a class="headerlink" href="#tom-tat-noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<p>Chương 4 cung cấp một framework thực tiễn để thiết lập chương trình đo lường phần mềm bền vững — không phải một lần rồi thôi, mà là một hệ thống sống, phát triển cùng mục tiêu tổ chức. Nguyên tắc cốt lõi: <strong>bắt đầu nhỏ, xây dựng dựa trên thành công, và kết hợp đo lường với cải tiến quy trình</strong>.</p>
+<p><strong>4 bước thiết lập:</strong>
+1. Adopt a Software Measurement Program Model — xác định resources, processes, products cần đo
+2. Use a Software Process Improvement Model (IDEAL) — thiết lập baseline, đặt mục tiêu, thực hiện, và leverage
+3. Identify a GQM Structure — liên kết mục tiêu phần mềm với mục tiêu doanh nghiệp qua câu hỏi có thể đo lường
+4. Develop a Software Measurement Plan — tài liệu hóa what, why, who, how, when cho tất cả hoạt động đo lường</p>
+<p><strong>Ba đối tượng đo lường</strong> trong phần mềm: <strong>Resources</strong> (nhân lực, vật liệu, công cụ, phương pháp — attribute quan trọng nhất là cost), <strong>Processes</strong> (bất kỳ hoạt động phần mềm nào — attribute chính là time và effort), và <strong>Products</strong> (đặc tả, code, tài liệu test — attribute chính là size và inherent defects).</p>
+<p><strong>Đo lường trực tiếp</strong> không phụ thuộc attribute khác (ví dụ: SLOC, staff hours). <strong>Đo lường gián tiếp/derived</strong> tính từ 2+ attributes (ví dụ: failure rate = số lỗi / execution time; productivity = output / effort).</p>
+<p><strong>Ba góc nhìn đo lường:</strong> Strategic View (long-term: time to market, cost, trade-off quality factors — quan trọng nhất với senior management), Tactical View (short + long term project: schedule progress, labor cost), và Application View (immediate: product size, complexity, defects — quan trọng với engineers).</p>
+<p><strong>GQM Paradigm</strong> hoạt động top-down: Xác định Goals (what/who/why/when) → Refine thành Questions (quantifiable) → Refine thành Metrics (data collection attributes). Điểm mạnh: đảm bảo mỗi metric đều gắn trực tiếp với mục tiêu có giá trị — không đo lường vô nghĩa.</p>
+<p><strong>SEI CMM</strong> có 5 mức: Level 1 (Initial/Ad hoc — baseline effort/schedule), Level 2 (Repeatable — track effort và schedule theo dự án), Level 3 (Defined — so sánh products/processes across projects), Level 4 (Managed — statistical process control với control boundaries), Level 5 (Optimizing — tự động điều chỉnh trong dự án dựa trên feedback real-time).</p>
+<hr />
+<h2 id="khai-niem-quan-trong">🔑 Khái niệm quan trọng<a class="headerlink" href="#khai-niem-quan-trong" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Khái niệm</th>
+<th>Định nghĩa</th>
+<th>Tại sao quan trọng</th>
+<th>Ví dụ</th>
+<th>Liên quan đến</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GQM (Goal-Question-Metric)</strong></td>
+<td>Phương pháp top-down: từ mục tiêu → câu hỏi cần trả lời → metrics đo lường</td>
+<td>Đảm bảo mọi metric đều có lý do tồn tại gắn với mục tiêu tổ chức — không đo cho có</td>
+<td>Goal: "Cải thiện độ tin cậy phần mềm" → Question: "Tỷ lệ lỗi sau release là bao nhiêu?" → Metric: "Số defect / KLOC trong 3 tháng đầu"</td>
+<td>SEI CMM, Measurement Plan</td>
+</tr>
+<tr>
+<td><strong>IDEAL Model</strong></td>
+<td>Mô hình cải tiến quy trình 5 giai đoạn: Initiate, Diagnose, Establish, Act, Leverage</td>
+<td>Cung cấp framework liên tục để đo lường không bị "một lần rồi thôi" — kết quả được leverage sang dự án tiếp theo</td>
+<td>Initiate: xác định mục tiêu cải tiến. Diagnose: assessment bằng CMM. Act: thu thập metrics. Leverage: chia sẻ bài học học được</td>
+<td>SEI CMM, GQM</td>
+</tr>
+<tr>
+<td><strong>SEI CMM</strong></td>
+<td>Mô hình trưởng thành năng lực phần mềm của Software Engineering Institute — 5 mức từ ad hoc đến optimizing</td>
+<td>Giúp tổ chức biết đang ở đâu và cần đo lường gì ở mức tiếp theo — không skip level</td>
+<td>Level 2: track effort + schedule. Level 4: statistical control với upper/lower bounds cho tất cả core measures</td>
+<td>IDEAL, Measurement Plan</td>
+</tr>
+<tr>
+<td><strong>Direct vs. Indirect Measurement</strong></td>
+<td>Direct: đếm trực tiếp, không phụ thuộc attribute khác (SLOC, staff hours). Indirect/Derived: tính từ 2+ attributes (failure rate = failures/execution time)</td>
+<td>Indirect measures thường mang nhiều ý nghĩa hơn nhưng cần 2 direct measures chính xác làm đầu vào</td>
+<td>Direct: số dòng code. Indirect: productivity = KLOC / person-month</td>
+<td>Resources, Products, Processes</td>
+</tr>
+<tr>
+<td><strong>Software Measurement Plan</strong></td>
+<td>Tài liệu định nghĩa: what data cần thu thập, how data sẽ được phân tích, who chịu trách nhiệm, when thực hiện</td>
+<td>Không có plan, thu thập dữ liệu sẽ hỗn loạn và không nhất quán — "haphazard collection" làm dữ liệu vô nghĩa</td>
+<td>Plan gồm: objectives, users and why, measures to collect, collection method, analysis method, project organization</td>
+<td>GQM, IDEAL</td>
+</tr>
+<tr>
+<td><strong>Strategic/Tactical/Application Views</strong></td>
+<td>3 góc nhìn core measures: Strategic (long-term, time to market), Tactical (schedule + labor cost per project), Application (size, complexity, defects cho engineers)</td>
+<td>Mỗi cấp tổ chức cần loại metrics khác nhau — nhưng tất cả phải nhất quán và có thể tổng hợp lên cấp trên</td>
+<td>Agile: Strategic = value/cost/risk; Tactical = schedule progress; Application = lead time, engineering time, time to deploy</td>
+<td>Measurement Plan, GQM</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vi-du-thuc-te-case-study">🌍 Ví dụ thực tế &amp; Case Study<a class="headerlink" href="#vi-du-thuc-te-case-study" title="Permanent link">&para;</a></h2>
+<h3 id="case-study-1-ap-dung-gqm-cho-du-an-phan-mem-ngan-hang">Case Study 1: Áp dụng GQM cho dự án phần mềm ngân hàng<a class="headerlink" href="#case-study-1-ap-dung-gqm-cho-du-an-phan-mem-ngan-hang" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Một ngân hàng muốn cải thiện độ tin cậy của hệ thống core banking — thường xuyên xảy ra downtime trong giờ cao điểm giao dịch.</p>
+<p><strong>Vấn đề:</strong> Nhóm IT thu thập nhiều loại dữ liệu nhưng không biết nên đo gì để chứng minh cải tiến với ban giám đốc.</p>
+<p><strong>Giải pháp (GQM):</strong>
+- <strong>Goal:</strong> Cải thiện độ tin cậy hệ thống core banking để giảm thiệt hại tài chính và mất lòng tin khách hàng
+- <strong>Questions:</strong> (1) Tần suất hệ thống downtime là bao nhiêu? (2) Thời gian trung bình để phục hồi (MTTR) là bao lâu? (3) Phần trăm giao dịch thất bại do lỗi hệ thống là bao nhiêu?
+- <strong>Metrics:</strong> (1) Số sự cố downtime / tháng, (2) MTTR tính bằng phút, (3) % giao dịch thất bại / tổng giao dịch mỗi ngày</p>
+<p><strong>Kết quả:</strong> Mỗi metric gắn trực tiếp với câu hỏi có ý nghĩa kinh doanh — ban giám đốc hiểu và phê duyệt ngân sách cải tiến.</p>
+<p><strong>Bài học:</strong> GQM biến "chúng tôi muốn đo phần mềm" thành "chúng tôi đang đo cụ thể X để trả lời câu hỏi Y gắn với mục tiêu Z của tổ chức."</p>
+<hr />
+<h3 id="case-study-2-sei-cmm-trong-thuc-tien-hanh-trinh-tu-level-1-len-level-3">Case Study 2: SEI CMM trong thực tiễn — Hành trình từ Level 1 lên Level 3<a class="headerlink" href="#case-study-2-sei-cmm-trong-thuc-tien-hanh-trinh-tu-level-1-len-level-3" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Một công ty phần mềm Việt Nam (~200 nhân viên) nhận dự án outsourcing từ Nhật Bản. Client yêu cầu chứng minh CMM Level 3 hoặc tương đương.</p>
+<p><strong>Vấn đề:</strong> Công ty đang ở Level 1 (ad hoc) — không có quy trình nhất quán, không có measurement data, success phụ thuộc vào effort cá nhân.</p>
+<p><strong>Giải pháp theo framework:</strong>
+- <strong>Diagnose (IDEAL):</strong> Thực hiện CMM assessment — xác nhận Level 1, xác định key process areas cần cải thiện
+- <strong>Level 2 trước:</strong> Bắt đầu track effort và schedule progress mỗi dự án — thu thập baseline data
+- <strong>Level 3:</strong> Chuẩn hóa quy trình đo lường size (Function Points hoặc Story Points), defect density across projects
+- <strong>Action teams:</strong> Nhóm nhỏ phụ trách từng key process area</p>
+<p><strong>Kết quả:</strong> Sau 18 tháng, công ty đạt Level 2 thực chất (không phải "giấy tờ CMM") — có đủ dữ liệu để ước tính dự án chính xác hơn 40%.</p>
+<p><strong>Bài học 🇻🇳:</strong> Nhiều công ty phần mềm Việt Nam muốn "nhảy" lên Level 3-5 ngay — nhưng framework IDEAL cho thấy cần xây dựng nền tảng measurement từ Level 1-2 trước. Dữ liệu không có thì không thể manage.</p>
+<hr />
+<h3 id="case-study-3-software-measurement-plan-du-an-agile-va-core-measures">Case Study 3: Software Measurement Plan — Dự án Agile và core measures<a class="headerlink" href="#case-study-3-software-measurement-plan-du-an-agile-va-core-measures" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Nhóm Agile phát triển ứng dụng di động cho chuỗi bán lẻ. Product Owner muốn đo lường "value" của từng sprint nhưng không biết bắt đầu từ đâu.</p>
+<p><strong>Vấn đề:</strong> Agile metrics khác biệt so với Waterfall — không thể dùng SLOC hay schedule variance truyền thống.</p>
+<p><strong>Giải pháp (điều chỉnh theo Agile direct measures):</strong>
+- <strong>Strategic View:</strong> Value — "Tại sao làm dự án này?" (Business value per sprint), Cost — "Có afford được technical debt không?", Risk — "Execution risk có chấp nhận được không?"
+- <strong>Tactical View:</strong> Lead time (từ idea đến production), Engineering time (giờ code thực tế / sprint)
+- <strong>Application View:</strong> Time to change, Time to deploy, Time to roll back (khi có sự cố)</p>
+<p><strong>Kết quả:</strong> Product Owner và team có ngôn ngữ chung — sprint review không chỉ là "demo features" mà là "đây là value deliver được, đây là metrics của sprint."</p>
+<p><strong>Bài học:</strong> Chương nhấn mạnh: Agile cần điều chỉnh core measures nhưng vẫn giữ nguyên 3 views (Strategic/Tactical/Application) — triết lý không thay đổi, chỉ metrics cụ thể thay đổi.</p>
+<hr />
+<h2 id="so-o-bang-tong-hop">📊 Sơ đồ &amp; Bảng tổng hợp<a class="headerlink" href="#so-o-bang-tong-hop" title="Permanent link">&para;</a></h2>
+<h3 id="bang-1-sei-cmm-5-muc-va-metrics-tuong-ung">Bảng 1: SEI CMM — 5 Mức và Metrics Tương Ứng<a class="headerlink" href="#bang-1-sei-cmm-5-muc-va-metrics-tuong-ung" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Mức</th>
+<th>Tên</th>
+<th>Đặc điểm</th>
+<th>Core Measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Level 1</td>
+<td>Initial (Ad hoc)</td>
+<td>Không có quy trình nhất quán; thành công phụ thuộc cá nhân</td>
+<td>Effort, Schedule progress (pilot)</td>
+</tr>
+<tr>
+<td>Level 2</td>
+<td>Repeatable</td>
+<td>Track và control resources theo từng dự án</td>
+<td>Effort, Schedule progress (mỗi dự án)</td>
+</tr>
+<tr>
+<td>Level 3</td>
+<td>Defined</td>
+<td>Đo và so sánh products/processes xuyên dự án</td>
+<td>Products: Size, Defects. Processes: Effort, Schedule (cross-project)</td>
+</tr>
+<tr>
+<td>Level 4</td>
+<td>Managed</td>
+<td>Statistical process control: upper/lower bounds</td>
+<td>Set statistical control boundaries; estimated vs. actual comparisons</td>
+</tr>
+<tr>
+<td>Level 5</td>
+<td>Optimizing</td>
+<td>Tự điều chỉnh real-time dựa trên statistical control</td>
+<td>Dynamic adjustment sử dụng kết quả Level 4</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bang-2-gqm-paradigm-vi-du-ve-o-tin-cay-phan-mem">Bảng 2: GQM Paradigm — Ví dụ về Độ Tin Cậy Phần Mềm<a class="headerlink" href="#bang-2-gqm-paradigm-vi-du-ve-o-tin-cay-phan-mem" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Cấp độ</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Goal</strong></td>
+<td>Đánh giá độ tin cậy phần mềm X từ góc độ developer để cải thiện quy trình testing</td>
+</tr>
+<tr>
+<td><strong>Question 1</strong></td>
+<td>Tỷ lệ lỗi hiện tại của phần mềm X là bao nhiêu?</td>
+</tr>
+<tr>
+<td><strong>Metric 1.1</strong></td>
+<td>Số lỗi tìm thấy trong testing / số KLOC</td>
+</tr>
+<tr>
+<td><strong>Metric 1.2</strong></td>
+<td>Số lỗi sau release / KLOC trong 3 tháng đầu</td>
+</tr>
+<tr>
+<td><strong>Question 2</strong></td>
+<td>Lỗi được tìm thấy ở phase nào trong SDLC?</td>
+</tr>
+<tr>
+<td><strong>Metric 2.1</strong></td>
+<td>% lỗi phát hiện trong design review</td>
+</tr>
+<tr>
+<td><strong>Metric 2.2</strong></td>
+<td>% lỗi phát hiện trong unit test vs. system test</td>
+</tr>
+</tbody>
+</table>
+<h3 id="so-o-mo-hinh-ideal">Sơ đồ: Mô hình IDEAL<a class="headerlink" href="#so-o-mo-hinh-ideal" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>[INITIATE]              [DIAGNOSE]            [ESTABLISH]
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Xác định mục tiêu  →   Baseline assessment →  Ưu tiên cải tiến
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>&amp; success criteria      (CMM assessment)       &amp; action teams
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>       ↑                                              ↓
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>[LEVERAGE]                                    [ACT]
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>Leverage improvements  ←————————   Thực thi action plan
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>sang tất cả dự án                   + Thu thập measurements
+</span></code></pre></div>
+<hr />
+<h2 id="cau-hoi-on-tap">❓ Câu hỏi ôn tập<a class="headerlink" href="#cau-hoi-on-tap" title="Permanent link">&para;</a></h2>
+<p><strong>Câu 1 (Nhớ lại):</strong> Kể 4 bước thiết lập chương trình đo lường phần mềm và mô tả ngắn gọn mục đích của từng bước.</p>
+<p>💡 <em>Gợi ý: Bắt đầu từ model, sau đó process improvement, rồi GQM, và cuối cùng là plan.</em></p>
+<p>📝 <em>Đáp án:</em> Bốn bước: (1) <strong>Adopt a Software Measurement Program Model</strong> — xác định chính xác software objects cần đo (resources, processes, products), ai là khách hàng của kết quả đo lường, và tại sao kết quả đó quan trọng với họ; (2) <strong>Use a Software Process Improvement Model (IDEAL)</strong> — đặt measurement trong môi trường cải tiến liên tục; nếu không có môi trường này, measures sẽ không được coi là có giá trị và chương trình sẽ không bền vững; (3) <strong>Identify a GQM Structure</strong> — liên kết mục tiêu phần mềm với mục tiêu doanh nghiệp qua câu hỏi có thể đo lường — đảm bảo mỗi metric đều có lý do tồn tại; (4) <strong>Develop a Software Measurement Plan</strong> — tài liệu hóa toàn bộ: data nào cần thu thập, phân tích thế nào, ai chịu trách nhiệm, khi nào thực hiện.</p>
+<hr />
+<p><strong>Câu 2 (Nhớ lại):</strong> Phân biệt đo lường trực tiếp và gián tiếp trong phần mềm. Cho 2 ví dụ mỗi loại.</p>
+<p>💡 <em>Gợi ý: Direct = đếm trực tiếp một attribute. Indirect = tính từ 2 attributes.</em></p>
+<p>📝 <em>Đáp án:</em> <strong>Đo lường trực tiếp</strong> không phụ thuộc vào việc đo attribute nào khác. Ví dụ: (1) SLOC (Source Lines of Code) — chỉ cần đếm; (2) Staff hours — số giờ nhân viên làm việc trên một process. Trong Agile, direct measures bao gồm: lead time, engineering time, time to change, time to deploy. <strong>Đo lường gián tiếp (derived)</strong> tính từ 2+ attributes. Ví dụ: (1) Software failure rate = số lỗi quan sát được / execution time của phần mềm; (2) Productivity = lượng sản phẩm tạo ra / effort hoặc thời gian. Derived measures thường mang nhiều ý nghĩa hơn nhưng cần 2 direct measures chính xác làm đầu vào — sai ở một input sẽ làm sai toàn bộ kết quả.</p>
+<hr />
+<p><strong>Câu 3 (Hiểu):</strong> Tại sao một chương trình đo lường phần mềm phải được đặt trong "môi trường cải tiến quy trình liên tục" (continuous software process improvement)? Điều gì xảy ra nếu không có?</p>
+<p>💡 <em>Gợi ý: Nghĩ về việc ai sẽ dùng kết quả đo lường và liệu họ có thấy nó "có giá trị" không.</em></p>
+<p>📝 <em>Đáp án:</em> Nếu tổ chức không có văn hóa cải tiến quy trình liên tục, measures sẽ không được coi là "value-added" — chúng trở thành gánh nặng thêm thay vì công cụ hỗ trợ. Nhân viên sẽ thu thập dữ liệu một cách hình thức mà không dùng nó để ra quyết định. Chương trình sẽ không bền vững — thường chỉ tồn tại đủ lâu để đáp ứng yêu cầu kiểm toán hoặc chứng nhận, sau đó bị bỏ. Ngược lại, trong môi trường cải tiến liên tục (như IDEAL model), kết quả đo lường ngay lập tức được dùng để: thiết lập baseline, xác định gaps, ưu tiên action plans, và leverage cải tiến sang dự án tiếp theo — tạo ra vòng phản hồi có giá trị thực sự.</p>
+<hr />
+<p><strong>Câu 4 (Hiểu):</strong> So sánh Strategic View, Tactical View, và Application View của core measures. Tại sao chúng phải "nhất quán và có thể tổng hợp lên nhau"?</p>
+<p>💡 <em>Gợi ý: Nếu mỗi cấp dùng metrics khác nhau hoàn toàn, điều gì sẽ xảy ra khi CEO muốn kết nối với kết quả kỹ thuật?</em></p>
+<p>📝 <em>Đáp án:</em> <strong>Strategic View</strong> (senior management): long-term — time to market, product cost, trade-off quality factors. <strong>Tactical View</strong> (project management): short + long term — schedule progress và labor cost cho từng dự án. <strong>Application View</strong> (engineers): immediate — product size, complexity, reliability, defects cụ thể. Lý do phải nhất quán: nếu các views không kết nối, từng dự án sẽ "out of sync" với chiến lược tổ chức. Senior management không thể nhìn thấy tổng quan từ dữ liệu engineering; engineers không hiểu context chiến lược của công việc họ làm. Ví dụ nhất quán: engineer báo cáo defect density → project manager tổng hợp thành schedule risk → senior management thấy ảnh hưởng đến time-to-market. Chuỗi nhân quả này chỉ hoạt động khi 3 views dùng chung ngôn ngữ và định nghĩa nhất quán.</p>
+<hr />
+<p><strong>Câu 5 (Áp dụng):</strong> Một startup fintech Việt Nam (30 nhân viên) đang phát triển ứng dụng vay tiêu dùng. CTO muốn thiết lập chương trình đo lường phần mềm đầu tiên. Sử dụng framework 4 bước trong chương, đề xuất kế hoạch cụ thể cho 3 tháng đầu.</p>
+<p>💡 <em>Gợi ý: Áp dụng nguyên tắc "bắt đầu nhỏ" — không cần triển khai toàn bộ ngay, chỉ cần bắt đầu đúng hướng.</em></p>
+<p>📝 <em>Đáp án:</em> <strong>Tháng 1 — Bước 1 (Program Model):</strong> Xác định software objects: Resources (dev team 20 người, AWS infrastructure), Processes (sprint planning, code review, testing), Products (mobile app, API). Xác định measurement customers: CTO (strategic: time to market), PM (tactical: sprint velocity), Developers (application: defect rate). <strong>Tháng 1–2 — Bước 2 (IDEAL-Initiate):</strong> Assessment hiện trạng bằng CMM Level 1–2 checklist tự đánh giá. Kết quả: xác nhận Level 1, ưu tiên cải tiến: (a) tracking effort bằng Jira, (b) tracking defects bằng bug tracker. <strong>Tháng 2 — Bước 3 (GQM):</strong> Goal: "Giảm time-to-market cho tính năng mới." Questions: Thời gian trung bình từ story approval đến production? % story hoàn thành đúng sprint? Metrics: lead time per story (ngày), sprint completion rate (%). <strong>Tháng 3 — Bước 4 (Plan):</strong> Viết Measurement Plan 1 trang: ai thu thập (PM), khi nào (cuối sprint), lưu ở đâu (Google Sheet/Jira), ai phân tích (CTO monthly), và cách report (bar chart trend theo sprint).</p>
+<hr />
+<h2 id="ghi-nho-nhanh">💡 Ghi nhớ nhanh<a class="headerlink" href="#ghi-nho-nhanh" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ "Bắt đầu nhỏ, xây dựng dựa trên thành công" — đừng cố tạo chương trình đo lường hoàn hảo ngay từ đầu</li>
+<li>✅ GQM đảm bảo mọi metric đều có "visa" rõ ràng: phục vụ goal nào, trả lời question nào</li>
+<li>✅ CMM Level 2 (tracking effort và schedule) là nền tảng tối thiểu — không có dữ liệu lịch sử, không thể ước tính dự án tương lai</li>
+<li>✅ Automated collection tools là hỗ trợ, không phải định nghĩa của quá trình đo lường — đừng để tool quyết định bạn đo gì</li>
+<li>⚠️ "Haphazard collection" (thu thập hỗn loạn không có kế hoạch) tạo ra lượng lớn dữ liệu vô nghĩa — tệ hơn là không có dữ liệu</li>
+<li>⚠️ Không được skip CMM levels — Level 4 và 5 yêu cầu dữ liệu lịch sử từ Level 2 và 3 mới có ý nghĩa</li>
+<li>🔗 Chương tiếp theo (Chapter 5) chuyển từ "đo phần mềm" sang "đo và cải thiện con người" — thiết kế hệ thống cải tiến hiệu suất nhân viên</li>
+</ul>
+<hr />
+<h2 id="giai-thich-thuat-ngu-chuyen-nganh">📖 Giải thích thuật ngữ chuyên ngành<a class="headerlink" href="#giai-thich-thuat-ngu-chuyen-nganh" title="Permanent link">&para;</a></h2>
+<p><strong>Goal-Question-Metric (GQM)</strong> — Mục tiêu-Câu hỏi-Chỉ số<br />
+Phương pháp top-down để liên kết mục tiêu tổ chức với metrics cụ thể: từ Goals → Questions cần trả lời → Metrics để đo. Đảm bảo mỗi metric đều có lý do tồn tại gắn với mục tiêu có giá trị.<br />
+<em>Ví dụ:</em> Goal: giảm lỗi production → Question: lỗi phát sinh ở phase nào? → Metric: % defects found trong code review vs. UAT vs. production.<br />
+<em>Tại sao quan trọng:</em> Tránh việc đo lường vô nghĩa ("chúng tôi đo SLOC vì mọi người đều đo") — mỗi metric phải trả lời một câu hỏi quan trọng.</p>
+<hr />
+<p><strong>IDEAL Model</strong> — Mô hình IDEAL (Initiate, Diagnose, Establish, Act, Leverage)<br />
+Framework 5 giai đoạn cho cải tiến quy trình liên tục, tương tự PDSA cycle nhưng có thêm Leverage — đưa bài học học được từ một dự án vào toàn bộ tổ chức.<br />
+<em>Ví dụ:</em> Initiate: đặt mục tiêu "giảm defect rate 30%". Diagnose: CMM assessment. Establish: ưu tiên action (code review mandatory). Act: thực hiện và đo. Leverage: lan tỏa code review process sang tất cả teams.<br />
+<em>Tại sao quan trọng:</em> Đảm bảo cải tiến không bị lãng quên sau một dự án — knowledge được hệ thống hóa và nhân rộng.</p>
+<hr />
+<p><strong>SEI CMM (Capability Maturity Model)</strong> — Mô hình trưởng thành năng lực<br />
+Framework 5 mức đánh giá và cải thiện quy trình phát triển phần mềm, từ Level 1 (ad hoc, không nhất quán) đến Level 5 (optimizing, tự điều chỉnh dựa trên data real-time).<br />
+<em>Ví dụ:</em> Level 2: sprint tracking mỗi dự án. Level 4: biểu đồ statistical control với upper/lower bounds cho defect rate — trigger alert khi vượt bounds.<br />
+<em>Tại sao quan trọng:</em> Giúp tổ chức biết mình đang ở đâu, cần đo gì tiếp theo, và ưu tiên cải tiến có trình tự hợp lý.</p>
+<hr />
+<p><strong>Software Measurement Plan</strong> — Kế hoạch đo lường phần mềm<br />
+Tài liệu chính thức định nghĩa: data nào cần thu thập, phân tích thế nào, ai chịu trách nhiệm, khi nào thực hiện, và kết quả được lưu trữ và báo cáo ra sao.<br />
+<em>Ví dụ:</em> Plan của một dự án banking: PM thu thập effort data từ Jira mỗi thứ Sáu; Measurement Coordinator phân tích weekly; báo cáo CPI cho Steering Committee mỗi tháng.<br />
+<em>Tại sao quan trọng:</em> Không có plan → "haphazard collection" → dữ liệu không nhất quán, không thể so sánh, và không thể dùng để ra quyết định.</p>
+<hr />
+<p><strong>Direct Measurement</strong> — Đo lường trực tiếp<br />
+Đo một attribute phần mềm mà không phụ thuộc vào việc đo attribute nào khác. Thường là đếm (counting).<br />
+<em>Ví dụ:</em> SLOC (Source Lines of Code), số staff hours, số defects tìm thấy trong testing, số test cases.<br />
+<em>Tại sao quan trọng:</em> Là "nguyên liệu thô" cho derived measures — nếu direct measure không chính xác, mọi derived measure tính từ nó đều sai.</p>
+<hr />
+<p><strong>Indirect (Derived) Measurement</strong> — Đo lường gián tiếp/dẫn xuất<br />
+Đo một attribute bằng cách tính toán từ 2 hoặc nhiều direct measures khác. Thường là tỷ lệ hoặc density.<br />
+<em>Ví dụ:</em> Software failure rate = số lỗi / execution time. Defect density = số defects / KLOC. Productivity = Function Points / person-month.<br />
+<em>Tại sao quan trọng:</em> Derived measures thường mang nhiều ý nghĩa management hơn direct measures — nhưng cần 2+ direct measures chính xác và nhất quán.</p>
+<hr />
+<p><strong>Software Measurement Case</strong> — Hồ sơ đo lường phần mềm<br />
+Tài liệu thực tế ghi lại dữ liệu thu thập được, kết quả phân tích, bài học học được, và các quyết định điều chỉnh dự án dựa trên measurement data — bổ sung cho Measurement Plan.<br />
+<em>Ví dụ:</em> Trong khi Plan nói "collect defect data mỗi sprint," thì Case ghi "Sprint 5: defect rate 2.3/KLOC, vượt target 1.8 → decision: tăng code review từ 30% lên 60% story."<br />
+<em>Tại sao quan trọng:</em> Case là nguồn "lessons learned" thực tế cho dự án tương lai — giúp chuyển kinh nghiệm thành tài sản tổ chức.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>pdf_md/managing-it-performance-to-create-business-value/guide_ai/07_chapter-4-establishing-a-software-measurement-program_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../006-chapter-3-designing-metrics-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Hướng Dẫn Học Tập: Thiết Kế Metrics">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Hướng Dẫn Học Tập: Thiết Kế Metrics
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../008-chapter-5-designing-people-improvement-systems-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Cải Tiến Con Người">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Cải Tiến Con Người
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

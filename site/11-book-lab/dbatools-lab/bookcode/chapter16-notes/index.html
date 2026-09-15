@@ -1,0 +1,2408 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../chapter15-notes/">
+      
+      
+        <link rel="next" href="../chapter17-notes/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Chapter 16 — Copy logins, jobs và các đối tượng instance-level - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-16-copy-logins-jobs-va-cac-oi-tuong-instance-level" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            11. Book Lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Dbatools lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            Dbatools lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1_1" id="__nav_9_1_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Bookcode
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            Bookcode
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 02 — Setting up your PowerShell environment for dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 03 — Dựng lab dbatools: cài instance, restore DB, tạo login & job
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` & xem dịch vụ với `Get-DbaService`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter05-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 07 — Lập inventory host & instance (features, builds, OS, databases)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 08 — Central Management Server (CMS) & Registered Servers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter09-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 09 — Error log, logins và quản trị quyền
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 10 — Backup database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 11 — Restore database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 12 — Database snapshot (tạo, restore, xoá)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter14-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-24-copy-login-cu-the-luu-y-syntax-co-loi-go-trong-sach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18-24 — Copy login cụ thể (lưu ý syntax có lỗi gõ trong sách)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-29-36-liet-ke-database-khong-phai-copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 29-36 — Liệt kê database (không phải copy)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-40-45-copy-tat-ca-login-tru-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 40-45 — Copy tất cả login trừ system
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-50-55-copy-tat-ca-tru-mot-login-cu-the" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 50-55 — Copy tất cả trừ một login cụ thể
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-59-liet-ke-agent-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 59 — Liệt kê Agent job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-64-70-copy-agent-job-va-tat-o-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 64-70 — Copy Agent job và tắt ở source
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-75-80-copy-operator-nguoi-nhan-thong-bao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 75-80 — Copy operator (người nhận thông báo)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-85-91-lap-lai-copy-job-giong-oan-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 85-91 — Lặp lại copy job (giống đoạn 6)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-96-101-copy-custom-error-message" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 96-101 — Copy custom error message
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-106-111-copy-agent-alert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 106-111 — Copy Agent alert
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-116-118-pattern-interactive-chon-job-bang-gui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 116-118 — Pattern interactive: chọn job bằng GUI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-122-126-copy-linked-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 122-126 — Copy linked server
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-131-kham-pha-tat-ca-copy-dba" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 131 — Khám phá tất cả Copy-Dba*
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter17-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 17 — Log Shipping và High Availability cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter20-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 21 — Data masking, PII scan & dữ liệu giả lập (Data tooling)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 22 — DACPAC & schema deployment (Export/Publish DAC Package)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 23 — SQL Trace & Extended Events (XEvents)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 24 — Certificates, Network Encryption & Database Encryption
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter25-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 25 — Backup compression & Data compression (Compression & Storage)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter26-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 26 — dbachecks & Pester validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter27-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 27 — Cloud & Azure SQL với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter28-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 28 — `dbatools` configuration system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter29-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 29 — Thực hành tổng hợp (Bonus lab chapter)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learning-path-vi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lộ trình học dbatools-lab — Hướng dẫn bắt đầu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-24-copy-login-cu-the-luu-y-syntax-co-loi-go-trong-sach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18-24 — Copy login cụ thể (lưu ý syntax có lỗi gõ trong sách)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-29-36-liet-ke-database-khong-phai-copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 29-36 — Liệt kê database (không phải copy)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-40-45-copy-tat-ca-login-tru-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 40-45 — Copy tất cả login trừ system
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-50-55-copy-tat-ca-tru-mot-login-cu-the" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 50-55 — Copy tất cả trừ một login cụ thể
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-59-liet-ke-agent-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 59 — Liệt kê Agent job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-64-70-copy-agent-job-va-tat-o-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 64-70 — Copy Agent job và tắt ở source
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-75-80-copy-operator-nguoi-nhan-thong-bao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 75-80 — Copy operator (người nhận thông báo)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-85-91-lap-lai-copy-job-giong-oan-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 85-91 — Lặp lại copy job (giống đoạn 6)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-96-101-copy-custom-error-message" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 96-101 — Copy custom error message
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-106-111-copy-agent-alert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 106-111 — Copy Agent alert
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-116-118-pattern-interactive-chon-job-bang-gui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 116-118 — Pattern interactive: chọn job bằng GUI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-122-126-copy-linked-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 122-126 — Copy linked server
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-131-kham-pha-tat-ca-copy-dba" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 131 — Khám phá tất cả Copy-Dba*
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-16-copy-logins-jobs-va-cac-oi-tuong-instance-level">Chapter 16 — Copy logins, jobs và các đối tượng instance-level<a class="headerlink" href="#chapter-16-copy-logins-jobs-va-cac-oi-tuong-instance-level" title="Permanent link">&para;</a></h1>
+<h2 id="muc-tieu">Mục tiêu<a class="headerlink" href="#muc-tieu" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Dùng <code>Copy-DbaLogin</code> để chuyển login (Windows và SQL Auth) giữa hai instance, giữ nguyên SID và hash mật khẩu.</li>
+<li>Loại trừ system login hoặc một số login cụ thể khi copy.</li>
+<li>Dùng <code>Copy-DbaAgentJob</code>, <code>Copy-DbaAgentOperator</code>, <code>Copy-DbaAgentAlert</code> để chuyển hệ sinh thái Agent.</li>
+<li>Dùng <code>Copy-DbaCustomError</code> và <code>Copy-DbaLinkedServer</code> cho các object instance-level khác.</li>
+<li>Khám phá toàn bộ họ <code>Copy-Dba*</code> để hiểu phạm vi automation cross-instance.</li>
+</ul>
+<h2 id="tom-tat-3-5-y-chinh">Tóm tắt 3-5 ý chính<a class="headerlink" href="#tom-tat-3-5-y-chinh" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Copy-DbaLogin giữ SID</strong> — đây là điểm quan trọng cho contained-database-style mapping: SID khớp giữa server login và database user, không bị "orphaned user".</li>
+<li><strong>ExcludeSystemLogins / ExcludeLogin / Login</strong> — ba cách filter: lấy hết trừ system, lấy hết trừ một số cụ thể, hoặc chỉ lấy danh sách định trước.</li>
+<li><strong>Họ Copy-DbaAgent*</strong> — <code>Copy-DbaAgentJob</code>, <code>Copy-DbaAgentSchedule</code>, <code>Copy-DbaAgentOperator</code>, <code>Copy-DbaAgentAlert</code>, <code>Copy-DbaAgentJobCategory</code>... Mỗi cái copy một loại object Agent.</li>
+<li><strong><code>DisableOnSource</code> cho cutover</strong> — sau khi copy job sang target, tắt job ở source để tránh chạy trùng (cả hai cùng backup, cùng xoá log, ...).</li>
+<li><strong><code>Out-GridView -Passthru</code> + <code>Copy-DbaAgentJob</code></strong> — pattern interactive: chọn job bằng GUI rồi đẩy thẳng qua pipeline để copy.</li>
+</ol>
+<h2 id="giai-thich-tung-oan-code">Giải thích từng đoạn code<a class="headerlink" href="#giai-thich-tung-oan-code" title="Permanent link">&para;</a></h2>
+<h3 id="oan-1-dong-18-24-copy-login-cu-the-luu-y-syntax-co-loi-go-trong-sach">Đoạn 1: dòng 18-24 — Copy login cụ thể (lưu ý syntax có lỗi gõ trong sách)<a class="headerlink" href="#oan-1-dong-18-24-copy-login-cu-the-luu-y-syntax-co-loi-go-trong-sach" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nv">$copyLoginSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">Source</span>      <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">Destination</span> <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">Login</span>       <span class="p">=</span> <span class="s2">"WWI_Owner"</span><span class="p">,</span><span class="s2">"WWI_ReadWrite"</span><span class="p">,</span><span class="s2">"WWI_ReadOnly"</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="no">[CA]</span><span class="s2">"ad\JaneReeves"</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">Copy-DbaLogin</span> <span class="nv">@copyLoginSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy 4 login cụ thể: 3 SQL login của WideWorldImporters và 1 Windows login. Phần <code>[CA]</code> trong sách là lỗi gõ — phải là chuỗi string <code>"ad\JaneReeves"</code>.
+- <strong>Đổi cho lab:</strong> <code>Source = "dbatoolslab\sql2017"</code>, <code>Destination = "dbatoolslab"</code>, <code>Login = "WWI_Owner","WWI_ReadWrite","WWI_ReadOnly"</code>. Bỏ Windows login vì lab không có AD.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — <code>Copy-DbaLogin</code> tạo login trên target. Nếu target đã có login cùng tên, lệnh sẽ skip (mặc định). Cần <code>-Force</code> để overwrite (rủi ro: thay đổi password hiện hành ở target).</p>
+<h3 id="oan-2-dong-29-36-liet-ke-database-khong-phai-copy">Đoạn 2: dòng 29-36 — Liệt kê database (không phải copy)<a class="headerlink" href="#oan-2-dong-29-36-liet-ke-database-khong-phai-copy" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">$dbSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">SqlInstance</span>   <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">ExcludeSystem</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">OutVariable</span>   <span class="p">=</span> <span class="s2">"databases"</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nb">Get-DbaDatabase</span> <span class="nv">@dbSplat</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nv">$databases</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> <code>Get-DbaDatabase</code> với <code>-OutVariable databases</code> lưu kết quả vào biến <code>$databases</code> đồng thời output. <code>-ExcludeSystem</code> bỏ master/model/msdb/tempdb.
+- <strong>Đổi cho lab:</strong> <code>SqlInstance = "dbatoolslab"</code>.
+- <strong>Lưu ý:</strong> <code>-OutVariable</code> (alias <code>-ov</code>) là feature chung của PowerShell — pipe vào biến mà vẫn không cản trở output. Rất tiện cho scripting.</p>
+<h3 id="oan-3-dong-40-45-copy-tat-ca-login-tru-system">Đoạn 3: dòng 40-45 — Copy tất cả login trừ system<a class="headerlink" href="#oan-3-dong-40-45-copy-tat-ca-login-tru-system" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">$copyLoginSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">Source</span>              <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">Destination</span>         <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">ExcludeSystemLogins</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">Copy-DbaLogin</span> <span class="nv">@copyLoginSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy toàn bộ login trừ system (sa, ##MS_<em>, NT SERVICE..., NT AUTHORITY...).
+- </em><em>Đổi cho lab:</em><em> <code>Source = "dbatoolslab\sql2017"</code>, <code>Destination = "dbatoolslab"</code>.
+- </em><em>Lưu ý:</em><em> </em><em>CẢNH BÁO</em>* — vẫn có thể đè login user-defined ở target nếu trùng tên. Dùng <code>-WhatIf</code> trước để xem danh sách dự kiến.</p>
+<h3 id="oan-4-dong-50-55-copy-tat-ca-tru-mot-login-cu-the">Đoạn 4: dòng 50-55 — Copy tất cả trừ một login cụ thể<a class="headerlink" href="#oan-4-dong-50-55-copy-tat-ca-tru-mot-login-cu-the" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">$copyLoginSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">Source</span>       <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">Destination</span>  <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">ExcludeLogin</span> <span class="p">=</span> <span class="s2">"ad\JaneReeves"</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">}</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nb">Copy-DbaLogin</span> <span class="nv">@copyLoginSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy tất cả login trừ <code>ad\JaneReeves</code>. Hữu ích khi muốn bỏ qua tài khoản đã nghỉ việc hoặc tài khoản dùng cho mục đích khác ở target.
+- <strong>Đổi cho lab:</strong> <code>ExcludeLogin = "WWI_ReadOnly"</code> (chẳng hạn không muốn role này ở target).
+- <strong>Lưu ý:</strong> Có thể combine <code>-ExcludeSystemLogins</code> và <code>-ExcludeLogin</code>.</p>
+<h3 id="oan-5-dong-59-liet-ke-agent-job">Đoạn 5: dòng 59 — Liệt kê Agent job<a class="headerlink" href="#oan-5-dong-59-liet-ke-agent-job" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span> <span class="nb">select-Object</span> <span class="n">SqlInstance</span><span class="p">,</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Category</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> List tên + category các Agent job để biết cái nào nên copy.
+- <strong>Đổi cho lab:</strong> <code>SqlInstance = "dbatoolslab\sql2017"</code>.
+- <strong>Lưu ý:</strong> Category là nhóm logic ("Database Maintenance", "DBA"...). dbatools cũng có <code>Copy-DbaAgentJobCategory</code> để chuyển category trước.</p>
+<h3 id="oan-6-dong-64-70-copy-agent-job-va-tat-o-source">Đoạn 6: dòng 64-70 — Copy Agent job và tắt ở source<a class="headerlink" href="#oan-6-dong-64-70-copy-agent-job-va-tat-o-source" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">$copyJobSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">Source</span>          <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">Destination</span>     <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">Job</span>             <span class="p">=</span> <span class="s1">'dbatools lab job'</span><span class="p">,</span><span class="s1">'dbatools lab job - where am I'</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">DisableOnSource</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">}</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="nb">Copy-DbaAgentJob</span> <span class="nv">@copyJobSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy hai job cụ thể, sau đó tắt chúng ở source. Đây là pattern "migrate job và đảm bảo không chạy trùng".
+- <strong>Đổi cho lab:</strong> Thay tên instance, dùng job thật có trong <code>dbatoolslab\sql2017</code> (chạy đoạn 5 để liệt kê).
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — <code>DisableOnSource</code> thay đổi state job ở source. Nếu cutover thất bại và phải rollback, nhớ enable lại job ở source.</p>
+<h3 id="oan-7-dong-75-80-copy-operator-nguoi-nhan-thong-bao">Đoạn 7: dòng 75-80 — Copy operator (người nhận thông báo)<a class="headerlink" href="#oan-7-dong-75-80-copy-operator-nguoi-nhan-thong-bao" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">$copyJobOperatorSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">Source</span>      <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Destination</span> <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">Operator</span>    <span class="p">=</span> <span class="s1">'dba'</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nb">Copy-DbaAgentOperator</span> <span class="nv">@copyJobOperatorSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy operator có tên <code>dba</code> (định nghĩa email/page/netsend cho cảnh báo). Job ở target sẽ tham chiếu operator này.
+- <strong>Đổi cho lab:</strong> Trong lab có thể chưa có operator. Tạo trước hoặc xem <code>Get-DbaAgentOperator -SqlInstance dbatoolslab\sql2017</code>.
+- <strong>Lưu ý:</strong> Thứ tự copy quan trọng: copy operator trước, sau đó copy job nào tham chiếu operator đó.</p>
+<h3 id="oan-8-dong-85-91-lap-lai-copy-job-giong-oan-6">Đoạn 8: dòng 85-91 — Lặp lại copy job (giống đoạn 6)<a class="headerlink" href="#oan-8-dong-85-91-lap-lai-copy-job-giong-oan-6" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">$copyJobSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">Source</span>          <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">Destination</span>     <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">Job</span>             <span class="p">=</span> <span class="s1">'dbatools lab job'</span><span class="p">,</span><span class="s1">'dbatools lab job - where am I'</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">DisableOnSource</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">}</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nb">Copy-DbaAgentJob</span> <span class="nv">@copyJobSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Y hệt đoạn 6 — sách lặp để minh hoạ workflow tuần tự (đã copy operator ở đoạn 7, giờ copy job mới hoạt động đầy đủ).
+- <strong>Đổi cho lab:</strong> Như đoạn 6.
+- <strong>Lưu ý:</strong> Trong production thường gộp 3 bước (<code>Copy-DbaAgentOperator</code> → <code>Copy-DbaAgentJobCategory</code> → <code>Copy-DbaAgentJob</code>) trong một script.</p>
+<h3 id="oan-9-dong-96-101-copy-custom-error-message">Đoạn 9: dòng 96-101 — Copy custom error message<a class="headerlink" href="#oan-9-dong-96-101-copy-custom-error-message" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">$copyMessageSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">Source</span>      <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">Destination</span> <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">CustomError</span> <span class="p">=</span> <span class="n">50005</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="nb">Copy-DbaCustomError</span> <span class="nv">@copyMessageSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy message ID 50005 từ <code>sys.messages</code> của source sang target. Application code dùng <code>RAISERROR(50005, ...)</code> cần message tồn tại ở instance đích.
+- <strong>Đổi cho lab:</strong> Thay tên instance. Có thể không có message id 50005 — <code>Get-DbaCustomError -SqlInstance dbatoolslab\sql2017</code> để xem.
+- <strong>Lưu ý:</strong> Custom error IDs ≥ 50001. Trùng ID nhưng khác text giữa các instance là nguồn bug khó tìm.</p>
+<h3 id="oan-10-dong-106-111-copy-agent-alert">Đoạn 10: dòng 106-111 — Copy Agent alert<a class="headerlink" href="#oan-10-dong-106-111-copy-agent-alert" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nv">$copyAlertSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">Source</span>      <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">Destination</span> <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">Alert</span>       <span class="p">=</span> <span class="s1">'FactoryApp - Custom Alert'</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">}</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nb">Copy-DbaAgentAlert</span> <span class="nv">@copyAlertSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy một alert (rule kích hoạt khi gặp event/error/performance condition). Alert thường tham chiếu operator (đã copy ở đoạn 7) và message id (đã copy ở đoạn 9).
+- <strong>Đổi cho lab:</strong> Thay tên instance và alert name. <code>Get-DbaAgentAlert -SqlInstance dbatoolslab\sql2017</code> để xem.
+- <strong>Lưu ý:</strong> Alert phụ thuộc vào: (1) custom error / severity, (2) operator. Đảm bảo dependency có trước.</p>
+<h3 id="oan-11-dong-116-118-pattern-interactive-chon-job-bang-gui">Đoạn 11: dòng 116-118 — Pattern interactive: chọn job bằng GUI<a class="headerlink" href="#oan-11-dong-116-118-pattern-interactive-chon-job-bang-gui" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="nb">Out-GridView</span> <span class="n">-Passthru</span> <span class="p">|</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="nb">Copy-DbaAgentJob</span> <span class="n">-Destination</span> <span class="n">dbatoolslab</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Mở GUI grid để chọn job (ctrl-click chọn nhiều), nhấn OK, các job được chọn pipe thẳng qua <code>Copy-DbaAgentJob</code>. Cực kỳ tiện cho ad-hoc.
+- <strong>Đổi cho lab:</strong> <code>Get-DbaAgentJob -SqlInstance dbatoolslab\sql2017 | Out-GridView -Passthru | Copy-DbaAgentJob -Destination dbatoolslab</code>.
+- <strong>Lưu ý:</strong> <code>Out-GridView</code> chỉ chạy trên Windows PowerShell với UI. Trên server không UI hoặc PowerShell Core Linux thì không khả dụng.</p>
+<h3 id="oan-12-dong-122-126-copy-linked-server">Đoạn 12: dòng 122-126 — Copy linked server<a class="headerlink" href="#oan-12-dong-122-126-copy-linked-server" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">$copyLinkedServerSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">Source</span>      <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">Destination</span> <span class="p">=</span> <span class="s2">"sql02"</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">}</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nb">Copy-DbaLinkedServer</span> <span class="nv">@copyLinkedServerSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Copy tất cả linked server (kèm credential nếu có) từ source sang target. dbatools dùng kỹ thuật DPAPI để giải mã password linked server.
+- <strong>Đổi cho lab:</strong> Thay instance. Lab thường không có linked server, có thể chỉ là dry-run.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO BẢO MẬT</strong> — copy linked server gồm cả password đã lưu. Cần SQL service account đặc quyền local admin trên source. Tham khảo <code>Get-Help Copy-DbaLinkedServer -Examples</code>.</p>
+<h3 id="oan-13-dong-131-kham-pha-tat-ca-copy-dba">Đoạn 13: dòng 131 — Khám phá tất cả Copy-Dba*<a class="headerlink" href="#oan-13-dong-131-kham-pha-tat-ca-copy-dba" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">Get-Command</span> <span class="n">-Module</span> <span class="n">dbatools</span> <span class="n">-Verb</span> <span class="nb">Copy</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Liệt kê toàn bộ cmdlet bắt đầu bằng <code>Copy-</code> trong module dbatools. Giúp khám phá phạm vi automation: Copy-DbaCredential, Copy-DbaDataCollector, Copy-DbaPolicyManagement, Copy-DbaResourceGovernor...
+- <strong>Đổi cho lab:</strong> Chạy nguyên.
+- <strong>Lưu ý:</strong> Cách tốt nhất để biết "tôi có thể copy gì giữa hai instance". <code>Get-Command -Module dbatools -Verb Get</code> cũng đáng xem.</p>
+<h2 id="lenh-thay-vao-lab-cua-ban">Lệnh thay vào lab của bạn<a class="headerlink" href="#lenh-thay-vao-lab-cua-ban" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nv">$source</span> <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nv">$target</span> <span class="p">=</span> <span class="s2">"dbatoolslab"</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c"># 1) WhatIf trước cho mọi Copy-Dba* — đặc biệt khi target không trống</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nb">Copy-DbaLogin</span> <span class="n">-Source</span> <span class="nv">$source</span> <span class="n">-Destination</span> <span class="nv">$target</span> <span class="p">`</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">-Login</span> <span class="s2">"WWI_Owner"</span><span class="p">,</span><span class="s2">"WWI_ReadWrite"</span><span class="p">,</span><span class="s2">"WWI_ReadOnly"</span> <span class="n">-WhatIf</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c"># 2) Copy 3 login mẫu của WideWorldImporters</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="nb">Copy-DbaLogin</span> <span class="n">-Source</span> <span class="nv">$source</span> <span class="n">-Destination</span> <span class="nv">$target</span> <span class="p">`</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="n">-Login</span> <span class="s2">"WWI_Owner"</span><span class="p">,</span><span class="s2">"WWI_ReadWrite"</span><span class="p">,</span><span class="s2">"WWI_ReadOnly"</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="c"># 3) Kiểm tra login đã sang</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="nb">Get-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="nv">$target</span> <span class="n">-Login</span> <span class="s2">"WWI_Owner"</span><span class="p">,</span><span class="s2">"WWI_ReadWrite"</span><span class="p">,</span><span class="s2">"WWI_ReadOnly"</span> <span class="p">|</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">LoginType</span><span class="p">,</span> <span class="n">IsDisabled</span><span class="p">,</span> <span class="n">Sid</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="c"># 4) Liệt kê Agent job ở source</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="nv">$source</span> <span class="p">|</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Enabled</span><span class="p">,</span> <span class="n">LastRunDate</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="c"># 5) Copy một job cụ thể (đổi tên job theo lab của bạn)</span>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="nv">$copyJobSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>    <span class="n">Source</span>          <span class="p">=</span> <span class="nv">$source</span>
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>    <span class="n">Destination</span>     <span class="p">=</span> <span class="nv">$target</span>
+</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>    <span class="n">Job</span>             <span class="p">=</span> <span class="s1">'dbatools lab job'</span>
+</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a>    <span class="n">DisableOnSource</span> <span class="p">=</span> <span class="nv">$false</span>   <span class="c"># đặt $false để vẫn chạy ở source khi học</span>
+</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>    <span class="n">WhatIf</span>          <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="p">}</span>
+</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a><span class="nb">Copy-DbaAgentJob</span> <span class="nv">@copyJobSplat</span>
+</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a>
+</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a><span class="c"># 6) Pattern interactive (Windows-only)</span>
+</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="nv">$source</span> <span class="p">|</span>
+</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a>    <span class="nb">Out-GridView</span> <span class="n">-Passthru</span> <span class="p">|</span>
+</span><span id="__span-13-33"><a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a>    <span class="nb">Copy-DbaAgentJob</span> <span class="n">-Destination</span> <span class="nv">$target</span> <span class="n">-WhatIf</span>
+</span><span id="__span-13-34"><a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a>
+</span><span id="__span-13-35"><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a><span class="c"># 7) Khám phá toàn bộ Copy-Dba*</span>
+</span><span id="__span-13-36"><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a><span class="nb">Get-Command</span> <span class="n">-Module</span> <span class="n">dbatools</span> <span class="n">-Verb</span> <span class="nb">Copy </span><span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">Name</span>
+</span></code></pre></div>
+<h2 id="self-check">Self-check<a class="headerlink" href="#self-check" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Định nghĩa:</strong> Vì sao <code>Copy-DbaLogin</code> giữ nguyên SID lại quan trọng với database vừa được restore sang target? (Gợi ý: orphaned user)</li>
+<li><strong>Thực hành:</strong> Sau khi copy 3 login <code>WWI_*</code> sang <code>dbatoolslab</code>, restore <code>WideWorldImporters</code> lên target. Dùng <code>Get-DbaDbOrphanUser -SqlInstance dbatoolslab</code> để kiểm tra: nếu SID đã khớp, không có orphan; nếu không, fix bằng <code>Repair-DbaDbOrphanUser</code>.</li>
+<li><strong>Liên hệ:</strong> Khi nào nên dùng <code>-ExcludeSystemLogins</code> và khi nào dùng <code>-ExcludeLogin "tên cụ thể"</code>? Cho ví dụ tình huống thực tế.</li>
+</ol>
+<h2 id="bai-tap-mo-rong">Bài tập mở rộng<a class="headerlink" href="#bai-tap-mo-rong" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Bài 1:</strong> Xây dựng script "migration checklist" cho lab: tuần tự <code>Copy-DbaCustomError</code> → <code>Copy-DbaAgentOperator</code> → <code>Copy-DbaAgentAlert</code> → <code>Copy-DbaAgentJobCategory</code> → <code>Copy-DbaAgentJob</code> từ <code>dbatoolslab\sql2017</code> sang <code>dbatoolslab</code>, mỗi bước có <code>-WhatIf</code> đầu rồi chạy thật.</li>
+<li><strong>Bài 2:</strong> Dùng <code>Out-GridView -Passthru</code> để chọn ngẫu nhiên một số job và copy. Sau đó so sánh <code>Get-DbaAgentJob</code> trên cả hai instance bằng <code>Compare-Object -Property Name</code> để xác nhận đúng những job được chọn đã sang.</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>book_lab/dbatools-lab/bookcode/chapter16.notes.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../chapter15-notes/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chapter17-notes/" class="md-footer__link md-footer__link--next" aria-label="Sau: Chapter 17 — Log Shipping và High Availability cơ bản">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Chapter 17 — Log Shipping và High Availability cơ bản
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

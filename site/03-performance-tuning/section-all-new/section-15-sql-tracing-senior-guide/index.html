@@ -1,0 +1,2466 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../section-14-database-service-statistics-senior-guide/">
+      
+      
+        <link rel="next" href="../section-16-realtime-monitoring-senior-guide/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#section-15-sql-tracing-voi-dbms_monitor-deep-dive-for-senior-dba" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../ke-hoach/000-index/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            Section all new
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-10-server-generated-alerts-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Server-generated Alerts — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-11-statspack-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Statspack — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-12-addm-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADDM (Automatic Database Diagnostic Monitor) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-13-ash-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ASH (Active Session History) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-14-database-service-statistics-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 14 — Database Service Statistics & Module/Action/Client ID — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Mental Model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-internals-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Internals &amp; Mechanics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-production-realities" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Production Realities
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-decision-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Decision Framework
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-key-sql-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Key SQL / Commands
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-senior-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Senior Checklist
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-16-realtime-monitoring-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 16 — Real-time Database Operation Monitoring: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-17-automated-maintenance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 17 — Automated Maintenance Tasks: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-19-enqueue-waits-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 19 — Handling Enqueue Waits: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-20-latch-mutex-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 20 — Latch & Mutex Contention: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-21-shared-pool-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 21 — Shared Pool Tuning: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-26-disk-io-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 26 — Disk I/O Tuning: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-27-index-defrag-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 27 — Index Defragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-28-row-migration-chaining-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Row Migration & Row Chaining — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-29-table-fragmentation-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 29 — Table Fragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-30-table-compression-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 30 — Table Compression: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-31-in-memory-column-store-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 31 — In-Memory Column Store: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-32-database-connection-optimization-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 32 — Database Connection Optimization: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-34-os-performance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 34 — OS Performance (Linux Utilities & OSWatcher): Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-35-sql-performance-analyzer-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 35 — SQL Performance Analyzer: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-36-database-replay-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 36 — Database Replay: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-6-time-model-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 6 — Time Model Views: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-8-instance-activity-wait-events-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 8 — Instance Activity & Wait Events — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-9-awr-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Mental Model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-internals-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Internals &amp; Mechanics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-production-realities" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Production Realities
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-decision-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Decision Framework
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-key-sql-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Key SQL / Commands
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-senior-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Senior Checklist
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="section-15-sql-tracing-voi-dbms_monitor-deep-dive-for-senior-dba">Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA<a class="headerlink" href="#section-15-sql-tracing-voi-dbms_monitor-deep-dive-for-senior-dba" title="Permanent link">&para;</a></h1>
+<hr />
+<h2 id="1-mental-model">1. Mental Model<a class="headerlink" href="#1-mental-model" title="Permanent link">&para;</a></h2>
+<p>SQL Trace là forensic microscope, không phải dashboard. ASH cho bạn statistical sampling ở 1-second resolution — tốt để identify <em>đâu</em> đang có vấn đề. tkprof cho bạn exact microsecond accounting cho mọi parse/execute/fetch — tốt để answer <em>tại sao</em> một SQL cụ thể chậm.</p>
+<p>Trade-off cốt lõi: SQL Trace là targeted activation, không phải passive collection. Bạn phải biết target, turn it on, chạy workload, turn it off. Overhead không negligible — trace file write là synchronous với foreground process. Kỹ năng senior là biết khi nào cần forensic precision (SQL Trace) vs. khi nào statistical approximation (ASH) là đủ. Trong production, bạn thường chỉ có một cơ hội bật trace trước khi stakeholders yêu cầu bạn dừng lại.</p>
+<hr />
+<h2 id="2-internals-mechanics">2. Internals &amp; Mechanics<a class="headerlink" href="#2-internals-mechanics" title="Permanent link">&para;</a></h2>
+<p><strong>SQL Trace là 10046 event dưới hood</strong>: DBMS_MONITOR chỉ là API đẹp hơn. Underlying mechanism:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Equivalent 10046 level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SESSION_TRACE_ENABLE(WAITS=FALSE, BINDS=FALSE)</td>
+<td>level 1</td>
+</tr>
+<tr>
+<td>SESSION_TRACE_ENABLE(WAITS=TRUE, BINDS=FALSE)</td>
+<td>level 8</td>
+</tr>
+<tr>
+<td>SESSION_TRACE_ENABLE(WAITS=FALSE, BINDS=TRUE)</td>
+<td>level 4</td>
+</tr>
+<tr>
+<td>SESSION_TRACE_ENABLE(WAITS=TRUE, BINDS=TRUE)</td>
+<td>level 12</td>
+</tr>
+</tbody>
+</table>
+<p>Direct event syntax vẫn hoạt động: <code>ALTER SESSION SET EVENTS '10046 trace name context forever, level 12'</code> — nhưng DBA_ENABLED_TRACES <strong>không</strong> capture method này. Nếu developer tự trace session của họ bằng event syntax, bạn sẽ không thấy trong DBA_ENABLED_TRACES.</p>
+<p><strong>Trace file write mechanism</strong>: Khi trace được enable, Oracle ghi trace records trực tiếp vào .trc file trong DIAGNOSTIC_DEST/diag/rdbms/.../trace/ sau mỗi parse, execute, fetch, và wait event completion. Write là synchronous — nếu filesystem I/O chậm, trace itself add overhead vào session được trace. Trên production NFS mounts với high latency, điều này có thể tạo feedback loop.</p>
+<p><strong>TRACEFILE_IDENTIFIER là prefix search key</strong>: <code>ALTER SESSION SET TRACEFILE_IDENTIFIER = 'PORDERS'</code> append chuỗi này vào filename: <code>ORADB_ora_12345_PORDERS.trc</code>. Không có TRACEFILE_IDENTIFIER, bạn phải identify files bằng PID (từ V$PROCESS.SPID) hoặc timestamp. Trong production trace directory với hàng trăm .trc files, không dùng TRACEFILE_IDENTIFIER là tự tra tấn.</p>
+<p><strong>SERV_MOD_ACT_TRACE_ENABLE là persistent</strong>: Stored trong SYSAUX (DBA_ENABLED_TRACES reads từ dictionary). Survives instance restart. Mọi session mới connect với matching SERVICE_NAME + MODULE_NAME sẽ bị trace tự động — kể cả sau reboot. Đây là khác biệt quan trọng với SESSION_TRACE_ENABLE (trace only existing session, dies khi session disconnect).</p>
+<p><strong>ALTER SYSTEM FLUSH SHARED_POOL trước khi enable module trace</strong>: Lý do trong practice là legitimate nhưng thường không được giải thích kỹ. Nếu có sessions đang chạy với MODULE='PROCESS_ORDERS' đã có cursors parsed và cached trong shared pool, Oracle sẽ không re-parse chúng chỉ vì trace được enable — existing hard-parsed cursors không trigger trace setup. Flush shared pool force re-parse của tất cả cursors → subsequent executions được trace. Đây là destructive operation — không làm trên production OLTP mà không cân nhắc cursor invalidation impact.</p>
+<p><strong>PLAN_STATS parameter (12c+)</strong>: Thường bị bỏ qua trong introductory courses.
+- <code>PLAN_STATS=FIRST_EXECUTION</code> (default): chỉ capture execution plan lần đầu
+- <code>PLAN_STATS=ALL_EXECUTIONS</code>: capture plan cho mọi execution</p>
+<p>Khi điều tra plan instability (query có execution plan thay đổi mid-run), dùng ALL_EXECUTIONS để verify. tkprof output với ALL_EXECUTIONS sẽ show multiple row source operation blocks cho cùng SQL_ID.</p>
+<p><strong>tkprof aggregation model</strong>: <code>aggregate=yes</code> group tất cả executions của cùng cursor (same SQL text) và sum tất cả statistics. Với multi-session trace được merge bằng trcsess, tkprof sum elapsed time từ <strong>tất cả sessions</strong>. Nếu 8 sessions song song mỗi session execute 180 giây, tkprof sẽ show <code>elapsed = 1440s</code> — nhưng wall clock chỉ có 180 giây. Senior phải biết divide by session count để có per-session picture.</p>
+<p><strong>trcsess merge là chronological interleave</strong>: trcsess đọc timestamp từ mỗi trace record và merge theo thứ tự thời gian. Nếu system clocks giữa RAC nodes không synchronized, merged trace sẽ có interleaving sai → misleading wait event attribution. Kiểm tra NTP sync trước khi tin vào merged trace từ RAC.</p>
+<hr />
+<h2 id="3-production-realities">3. Production Realities<a class="headerlink" href="#3-production-realities" title="Permanent link">&para;</a></h2>
+<p><strong>Trace file size explosion</strong> là risk số 1: WAITS=TRUE trên một session làm I/O heavy operations (full table scans, direct reads) có thể generate trace file GB/hour. BINDS=TRUE thêm bind value cho mỗi execution — với 10,000 executions/minute, trace file grows rất nhanh. Monitor <code>df -h $DIAGNOSTIC_DEST</code> trước và trong khi trace. Nếu DIAGNOSTIC_DEST filesystem fill lên 100%, toàn bộ Oracle diagnostic infrastructure bị ảnh hưởng — alert log, trace files của mọi sessions, ADR.</p>
+<p><strong>Forgotten module traces</strong> là silent overhead: Sau incident investigation, DBA thường forget disable SERV_MOD_ACT_TRACE_ENABLE. Check DBA_ENABLED_TRACES monthly trên tất cả production instances. Module traces bị bỏ quên có thể chạy months, tích lũy GBs trace files, và add CPU overhead cho mọi matching session.</p>
+<p><strong>BINDS=TRUE và sensitive data</strong>: Trace files là plaintext trên OS filesystem. Nếu ứng dụng pass passwords, PII, credit card numbers, SSN qua bind variables, những giá trị này sẽ plaintext trong .trc file. Đây là compliance issue (PCI-DSS, HIPAA). Verify với security team trước khi enable BINDS=TRUE trên any production system xử lý sensitive data.</p>
+<p><strong>tkprof "Elapsed times" section interpretation trap</strong>: Mục "Elapsed times include waiting on following events" ở cuối mỗi SQL trong tkprof là <strong>subset</strong> của total elapsed. Total elapsed = CPU + all waits. Nếu tổng wait events &lt; total elapsed − CPU, phần còn lại là overhead không classified (scheduler latency, OS context switches, memory pressure). Đây là common confusion point khi số không cộng lại đúng.</p>
+<p><strong>SYS=no trong tkprof là không negotiate</strong>: Default SYS=yes include tất cả recursive SQL từ Oracle internal operations — dictionary lookups, trigger firing, constraint checking. Trong trace của một complex transaction, recursive SQL có thể chiếm 80% total lines. SYS=no filter chúng ra. Nếu bạn đang diagnose space management issues hoặc recursive trigger overhead, SYS=yes mới có ý nghĩa.</p>
+<p><strong>RAC tracing</strong>: Trace file của một session đi vào node mà session đang connect. Trong RAC với load balancing, cùng một MODULE có thể chạy trên nhiều nodes. SERV_MOD_ACT_TRACE_ENABLE phải được run trên tất cả nodes (hoặc via DBMS_MONITOR.DATABASE_TRACE_ENABLE với extreme caution). Trace files sẽ nằm ở các nodes khác nhau — cần collect từ tất cả nodes trước khi trcsess merge.</p>
+<hr />
+<h2 id="4-decision-framework">4. Decision Framework<a class="headerlink" href="#4-decision-framework" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Method</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Debug specific session ngay bây giờ</td>
+<td>SESSION_TRACE_ENABLE(SID, SERIAL#)</td>
+<td>Ngay lập tức, precise; session phải đang active</td>
+</tr>
+<tr>
+<td>Catch session khi nó next connect</td>
+<td>SERV_MOD_ACT_TRACE_ENABLE</td>
+<td>Không cần timing; persistent — nhớ disable</td>
+</tr>
+<tr>
+<td>Trace own session để test</td>
+<td>ALTER SESSION SET SQL_TRACE hoặc event 10046</td>
+<td>Đơn giản nhất; không cần DBA privilege</td>
+</tr>
+<tr>
+<td>Diagnose plan instability</td>
+<td>SESSION/SERV trace với PLAN_STATS=ALL_EXECUTIONS</td>
+<td>Full plan per execution; trace file lớn hơn</td>
+</tr>
+<tr>
+<td>Diagnose bind variable sensitive issue</td>
+<td>BINDS=TRUE</td>
+<td>Security review trước; file size tăng mạnh</td>
+</tr>
+<tr>
+<td>Trace toàn bộ database</td>
+<td>DATABASE_TRACE_ENABLE</td>
+<td>Emergency only; có thể kill production</td>
+</tr>
+<tr>
+<td>Post-incident (session đã disconnect)</td>
+<td>ASH + V$SQL + DBMS_SQLTUNE</td>
+<td>SQL Trace không có retroactive capability</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Khi nào SQL Trace KHÔNG phải đáp án:</strong>
+- Performance issue đã xảy ra và session đã disconnect → ASH
+- Identify <em>which</em> SQL is the problem (not <em>why</em>) → ASH + V$SQL, không cần overhead của trace
+- Wide-scope monitoring (nhiều modules cùng lúc) → DBMS_MONITOR aggregation + CLIENT_ID stats
+- Real-time monitoring → V$SESSION_LONGOPS, V$SQL_MONITOR</p>
+<hr />
+<h2 id="5-key-sql-commands">5. Key SQL / Commands<a class="headerlink" href="#5-key-sql-commands" title="Permanent link">&para;</a></h2>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">-- Tìm trace directory</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">VALUE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$DIAG_INFO</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Diag Trace'</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">-- Tìm trace file của một session đang active</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">-- Dùng ngay sau khi enable trace để ghi lại tên file</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">SID</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="nb">SERIAL</span><span class="o">#</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">USERNAME</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">MODULE</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">       </span><span class="n">P</span><span class="p">.</span><span class="n">SPID</span><span class="p">,</span><span class="w">           </span><span class="c1">-- OS process ID = phần trong tên file</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">       </span><span class="n">P</span><span class="p">.</span><span class="n">TRACEFILE</span><span class="w">       </span><span class="c1">-- full path</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SESSION</span><span class="w"> </span><span class="n">S</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">V$PROCESS</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">PADDR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="p">.</span><span class="n">ADDR</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">SID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">target_sid</span><span class="p">;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1">-- Enable trace cho session cụ thể (với waits, không binds)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">BEGIN</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">SESSION_TRACE_ENABLE</span><span class="p">(</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="n">SESSION_ID</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">:</span><span class="n">sid</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="n">SERIAL_NUM</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">:</span><span class="nb">serial</span><span class="o">#</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="n">WAITS</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="n">BINDS</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="n">PLAN_STATS</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'ALL_EXECUTIONS'</span><span class="w">  </span><span class="c1">-- 12c+: capture plan per execution</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="o">/</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="c1">-- Enable trace cho module (persistent — nhớ disable sau)</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="c1">-- Flush shared pool TRƯỚC để existing cursors được re-parsed</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1">-- Chỉ flush trên non-OLTP environments hoặc trong maintenance window</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">SERV_MOD_ACT_TRACE_ENABLE</span><span class="p">(</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">  </span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">,</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">  </span><span class="n">MODULE_NAME</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'PROCESS_ORDERS'</span><span class="p">,</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">  </span><span class="n">ACTION_NAME</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">ALL_ACTIONS</span><span class="p">,</span><span class="w">  </span><span class="c1">-- NULL cũng được</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">  </span><span class="n">WAITS</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">  </span><span class="n">BINDS</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">FALSE</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="p">);</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="c1">-- Audit: tất cả trace đang active (quan trọng để catch forgotten traces)</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">TRACE_TYPE</span><span class="p">,</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">       </span><span class="n">PRIMARY_ID</span><span class="p">,</span><span class="w">        </span><span class="c1">-- service name</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">       </span><span class="n">QUALIFIER_ID1</span><span class="p">,</span><span class="w">     </span><span class="c1">-- module name</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">       </span><span class="n">QUALIFIER_ID2</span><span class="p">,</span><span class="w">     </span><span class="c1">-- action name</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">       </span><span class="n">WAITS</span><span class="p">,</span><span class="w"> </span><span class="n">BINDS</span><span class="p">,</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w">       </span><span class="n">PLAN_STATS</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_ENABLED_TRACES</span><span class="p">;</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="c1">-- Disable module trace</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">SERV_MOD_ACT_TRACE_DISABLE</span><span class="p">(</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w">  </span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">,</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w">  </span><span class="n">MODULE_NAME</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'PROCESS_ORDERS'</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="p">);</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="c1">-- Tìm trace files lớn nhất trong DIAGNOSTIC_DEST (OS level)</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="c1">-- Chạy từ shell:</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="c1">-- find $ORACLE_BASE/diag/rdbms -name "*.trc" -size +100M -ls | sort -k7 -rn | head -20</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Merge trace files của module — chạy từ $TRACE_DIR</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>trcsess<span class="w"> </span><span class="nv">output</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TRACE_DIR</span><span class="s2">/MODULE_MERGED.trc"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">         </span><span class="nv">module</span><span class="o">=</span><span class="s2">"PROCESS_ORDERS"</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">         </span><span class="c1"># Alternatives: service="...", action="...", session=&lt;sid,serial&gt;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># tkprof production recipe</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># SYS=no: bỏ recursive SQL | waits=yes: include wait events (bắt buộc)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># aggregate=yes: sum multiple executions | sort: worst elapsed first</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>tkprof<span class="w"> </span>MODULE_MERGED.trc<span class="w"> </span>MODULE_MERGED.txt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nv">SYS</span><span class="o">=</span>no<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="nv">waits</span><span class="o">=</span>yes<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nv">aggregate</span><span class="o">=</span>yes<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nv">sort</span><span class="o">=</span><span class="s2">"(exeela,prsela,fchela)"</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1"># Đọc output — tìm:</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1"># 1. Top SQL by elapsed (đã sorted)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># 2. Từng SQL: elapsed &gt;&gt; cpu → wait-bound; elapsed ≈ cpu → CPU-bound</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1"># 3. "Elapsed times include waiting on" section → identify wait event</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1"># 4. Row Source Operation → verify plan</span>
+</span></code></pre></div>
+<hr />
+<h2 id="6-senior-checklist">6. Senior Checklist<a class="headerlink" href="#6-senior-checklist" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Audit DBA_ENABLED_TRACES định kỳ</strong> trước khi bật trace mới — forgotten module traces đang chạy là common; cleanup trước khi add thêm overhead</li>
+<li><strong>Set TRACEFILE_IDENTIFIER</strong> trước khi enable trace — không có nó, trace files trong production directory của hàng trăm .trc files là kim trong đống rơm</li>
+<li><strong>Monitor disk space</strong> tại DIAGNOSTIC_DEST trước và trong khi trace heavy workload — trace file size tỷ lệ với I/O volume của session, không phải wall clock time</li>
+<li><strong>SERV_MOD_ACT_TRACE_ENABLE yêu cầu DISABLE explicit</strong> — không tự-expire; lên lịch reminder để disable ngay sau khi collect đủ data</li>
+<li><strong>Khi đọc tkprof output của merged multi-session trace</strong>: chia elapsed time cho số sessions để có per-session picture thực tế; sum elapsed từ parallel sessions sẽ khiến số bị inflate</li>
+<li><strong>FLUSH SHARED_POOL có impact</strong>: nếu cần flush để catch existing cursors, đảm bảo đang trong maintenance window hoặc hệ thống có thể absorb cursor invalidation + re-parse storm</li>
+<li><strong>Sensitive data check</strong>: verify với security team rằng bind variables của target SQL không chứa PII/credentials trước khi enable BINDS=TRUE trên production</li>
+</ul>
+<hr />
+<hr />
+<h1 id="lab-section-15-sql-tracing-voi-dbms_monitor-hands-on-for-senior-dba">Lab: Section 15 — SQL Tracing với DBMS_MONITOR — Hands-on for Senior DBA<a class="headerlink" href="#lab-section-15-sql-tracing-voi-dbms_monitor-hands-on-for-senior-dba" title="Permanent link">&para;</a></h1>
+<h2 id="lab-overview">Lab Overview<a class="headerlink" href="#lab-overview" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Mục tiêu:</strong> Build end-to-end trace workflow; interpret tkprof output correctly; identify production pitfalls của SERV_MOD_ACT_TRACE_ENABLE</li>
+<li><strong>Môi trường:</strong> Oracle 12c+ / non-CDB, có DIAGNOSTIC_DEST accessible từ OS</li>
+<li><strong>Thời gian ước tính:</strong> 60–75 phút</li>
+<li><strong>Độ khó:</strong> Senior / Expert</li>
+</ul>
+<hr />
+<h2 id="exercise-1-single-session-deep-dive-elapsed-vs-cpu-analysis">Exercise 1 — Single Session Deep-Dive: Elapsed vs. CPU Analysis<a class="headerlink" href="#exercise-1-single-session-deep-dive-elapsed-vs-cpu-analysis" title="Permanent link">&para;</a></h2>
+<h3 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h3>
+<p>Support ticket: "Query <code>SELECT * FROM ORDERS WHERE CUSTOMER_ID = :cid</code> chạy mất 8 giây cho customer_id = 1234, nhưng chỉ 0.1 giây cho customer_id = 5678." Developer đã log SQL_ID nhưng không có execution plan history đủ. Cần xác định root cause và liệu đây là plan problem hay data problem.</p>
+<h3 id="tasks">Tasks<a class="headerlink" href="#tasks" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Identify session của developer (giả lập bằng session SOE), lấy SID và SERIAL#; enable SESSION_TRACE_ENABLE với WAITS=TRUE, BINDS=TRUE, PLAN_STATS=ALL_EXECUTIONS</li>
+<li>Chạy query với customer_id = 1234 (slow) rồi với customer_id = 5678 (fast) trong cùng session; disable trace</li>
+<li>Chạy tkprof với <code>sort="(exeela)"</code> và <code>SYS=no</code>; identify query trong output</li>
+<li>So sánh: (a) elapsed vs. cpu — xác định wait-bound hay CPU-bound, (b) Row Source Operation — plan có khác giữa hai executions không (với ALL_EXECUTIONS), (c) wait events section — event nào chiếm phần lớn elapsed</li>
+</ol>
+<h3 id="expected-findings">Expected Findings<a class="headerlink" href="#expected-findings" title="Permanent link">&para;</a></h3>
+<p>Với BINDS=TRUE, trace file capture giá trị bind variable cho từng execution. Nếu plan giống nhau nhưng elapsed khác xa, likely là data skew (ít rows cho 5678, nhiều rows cho 1234). Nếu Row Source Operation khác nhau giữa 2 executions, đây là adaptive cursor sharing issue. ALL_EXECUTIONS sẽ show multiple plan sections trong tkprof output cho cùng SQL.</p>
+<h3 id="debrief-questions">Debrief Questions<a class="headerlink" href="#debrief-questions" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Nếu query này cũng chậm trên 100 other customer_ids, liệu SQL Trace vẫn là tool phù hợp hay có option tốt hơn?</li>
+<li>BINDS=TRUE capture bind value tại thời điểm nào trong execution lifecycle — parse, execute, hay fetch? Implication gì nếu bind value thay đổi mid-cursor?</li>
+</ul>
+<hr />
+<h2 id="exercise-2-module-trace-lifecycle-va-forgotten-trace-audit">Exercise 2 — Module Trace Lifecycle và Forgotten Trace Audit<a class="headerlink" href="#exercise-2-module-trace-lifecycle-va-forgotten-trace-audit" title="Permanent link">&para;</a></h2>
+<h3 id="scenario_1">Scenario<a class="headerlink" href="#scenario_1" title="Permanent link">&para;</a></h3>
+<p>Bạn join một team mới. Trong tuần đầu, bạn notice disk space của DIAGNOSTIC_DEST tăng 4GB/ngày — bất thường với production throughput hiện tại. Không ai biết tại sao. Bạn cần investigate và remediate mà không interrupt production.</p>
+<h3 id="tasks_1">Tasks<a class="headerlink" href="#tasks_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Query DBA_ENABLED_TRACES để xem tất cả active traces — note TRACE_TYPE, PRIMARY_ID, QUALIFIER_ID1, timestamp enable (nếu có)</li>
+<li>Tìm trace files mới nhất trong $TRACE_DIR — correlate filename patterns với module names trong DBA_ENABLED_TRACES; estimate growth rate bằng <code>ls -lt | head -20</code></li>
+<li>Identify module traces có TRACE_TYPE = 'SERVICE_MODULE' hoặc 'SERVICE_MODULE_ACTION' mà không có owner rõ ràng (no active support ticket, no recent incident); propose remediation</li>
+<li>Disable một forgotten trace; verify DBA_ENABLED_TRACES sau khi disable; estimate disk space saved per day</li>
+</ol>
+<h3 id="expected-findings_1">Expected Findings<a class="headerlink" href="#expected-findings_1" title="Permanent link">&para;</a></h3>
+<p>Forgotten module traces là thường gặp hơn tưởng. Một module trace bật cho batch job đã bị deprecated 3 tháng trước có thể vẫn fire khi code path chạy qua. DBA_ENABLED_TRACES không có timestamp enable — không thể biết ai enable và khi nào mà không có external change log.</p>
+<h3 id="debrief-questions_1">Debrief Questions<a class="headerlink" href="#debrief-questions_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>DBA_ENABLED_TRACES có persistent qua instance restart không? Nếu yes, implication gì cho DR failover (instance restart trên standby)?</li>
+<li>Nếu DIAGNOSTIC_DEST filesystem fill lên 100%, điều gì xảy ra với Oracle alertlog? Với production sessions?</li>
+</ul>
+<hr />
+<h2 id="exercise-3-troubleshooting-scenario-expert-level">Exercise 3 — Troubleshooting Scenario <em>(Expert level)</em><a class="headerlink" href="#exercise-3-troubleshooting-scenario-expert-level" title="Permanent link">&para;</a></h2>
+<h3 id="incident-brief">Incident Brief<a class="headerlink" href="#incident-brief" title="Permanent link">&para;</a></h3>
+<p>Batch job <code>MONTH_END_RPT</code> (module='MONTH_END_RPT') chạy 3.8 giờ tối qua thay vì 22 phút bình thường. Module trace luôn enabled cho module này (theo policy). Sau khi trcsess merge 6 trace files (6 parallel sessions), tkprof processing xong sau 7 phút. File output 14,000 dòng.</p>
+<h3 id="evidence-provided">Evidence Provided<a class="headerlink" href="#evidence-provided" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>-- tkprof output (SYS=no, aggregate=yes, sorted by exeela+fchela) — top 2 SQLs
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>==== SQL #1 (SQL_ID: f7k2p9r) ====
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>SELECT A.ACCT_ID, SUM(T.AMOUNT) TOTAL
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>FROM ACCOUNTS A, TRANSACTIONS T
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>WHERE A.ACCT_ID = T.ACCT_ID
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  AND T.TXN_DATE &gt;= :b_start
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  AND T.TXN_DATE &lt; :b_end
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>GROUP BY A.ACCT_ID
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>call     count     cpu     elapsed    disk      query    current    rows
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>Parse        6    0.00        0.01       0          0          0       0
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>Execute      6    0.00        0.00       0          0          0       0
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>Fetch        6  190.4s   13,680.0s  245,880  5,040,000        0  46,200
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>Elapsed times include waiting on following events:
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>  db file scattered read   30,420 times   0.92s max   13,672s total
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>Row Source Operation:
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>HASH JOIN (cr=5040000 pr=245880 pw=0 time=13680000000 us)
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>  TABLE ACCESS FULL ACCOUNTS (cr=1240 pr=210 ...)
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>  TABLE ACCESS FULL TRANSACTIONS (cr=5038760 pr=245670 ...)
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>==== SQL #2 (SQL_ID: 9xm4v8r) ====
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>UPDATE MONTHLY_SUMMARY SET RPT_TOTAL=:b1 WHERE ACCT_ID=:b2 AND PERIOD=:b3
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>call     count     cpu    elapsed    disk     query   current    rows
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>Execute  46,200  280.0s    280.0s       0  184,800  138,600  46,200
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>Waited on: (none significant)
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>-- Context:
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>-- Wall clock time for the job: ~2,280 seconds (38 minutes × 6)... wait
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>-- Actually wall clock = 3.8 hours = 13,680 seconds
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>-- Last successful run (prior month): 22 minutes wall clock
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>-- DBA_HIST_SQL_STATS for SQL f7k2p9r last month: elapsed=240s, disk=1,200, query=180,000
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>-- Schema stats were refreshed 2 days ago (DBMS_STATS.GATHER_DATABASE_STATS)
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>-- No DDL changes to TRANSACTIONS table
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>-- TRANSACTIONS table rows: 480M rows (same as last month per DBA_SEGMENTS)
+</span></code></pre></div>
+<h3 id="your-mission">Your Mission<a class="headerlink" href="#your-mission" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Reconcile the numbers</strong>: tkprof shows elapsed=13,680s cho SQL #1 với 6 executions, wall clock = 13,680s. Is this coincidence? What does it actually mean about parallelism và session count?</li>
+<li><strong>Explain the plan regression</strong>: prior month disk=1,200, query=180,000. This month disk=245,880, query=5,040,000. Cùng SQL, cùng data volume. Identify chính xác cái gì đã thay đổi và mechanism tại sao stats refresh có thể trigger full scan thay vì index range scan — gợi ý: xem xét bind variable peeking behavior và histogram statistics</li>
+<li><strong>Identify the smoking gun</strong>: với thông tin hiện có trong tkprof output, bạn có thể confirm root cause không? Nếu không, bạn cần thêm evidence gì — và từ nguồn nào (không cần re-run trace)?</li>
+<li><strong>Remediation</strong>: đề xuất ít nhất 2 options với trade-offs về: stability, maintenance overhead, và risk of over-fixing (making things worse for other execution contexts)</li>
+</ol>
+<h3 id="evaluation-criteria">Evaluation Criteria<a class="headerlink" href="#evaluation-criteria" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Number reconciliation phải address cả hai câu hỏi: (1) tại sao elapsed 6 sessions ≈ wall clock, và (2) tại sao tkprof wall clock cho Exercise scenario này không phải 6× wall clock như Exercise 1 pattern</li>
+<li>Plan regression analysis phải connect stats refresh → histogram change → bind variable peeking → plan selection — không chỉ "stats changed so plan changed"</li>
+<li>Evidence gap analysis phải identify specific view/query để confirm (ví dụ: V$SQL_PLAN_STATISTICS_ALL, DBA_HIST_SQL_PLAN, AWR SQL report) và explain tại sao tkprof alone không đủ</li>
+<li>Remediation options phải include trade-off giữa: SQL Plan Baseline (safe, overhead to manage) vs. DBMS_STATS hint/preference (risky, có thể affect other SQLs) vs. dynamic sampling (phù hợp cho ad-hoc, không phải batch)</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/section_all_new/section_15_sql_tracing_senior_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../section-14-database-service-statistics-senior-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Section 14 — Database Service Statistics &amp; Module/Action/Client ID — Deep Dive for Senior DBA">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Section 14 — Database Service Statistics & Module/Action/Client ID — Deep Dive for Senior DBA
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../section-16-realtime-monitoring-senior-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Section 16 — Real-time Database Operation Monitoring: Deep Dive for Senior DBA">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Section 16 — Real-time Database Operation Monitoring: Deep Dive for Senior DBA
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

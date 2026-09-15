@@ -1,0 +1,2265 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../section-29-table-fragmentation-senior-guide/">
+      
+      
+        <link rel="next" href="../section-31-in-memory-column-store-senior-guide/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Section 30 — Table Compression: Senior DBA Guide - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#section-30-table-compression-senior-dba-guide" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 30 — Table Compression: Senior DBA Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../ke-hoach/000-index/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            Section all new
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-10-server-generated-alerts-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Server-generated Alerts — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-11-statspack-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Statspack — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-12-addm-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADDM (Automatic Database Diagnostic Monitor) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-13-ash-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ASH (Active Session History) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-14-database-service-statistics-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 14 — Database Service Statistics & Module/Action/Client ID — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-15-sql-tracing-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-16-realtime-monitoring-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 16 — Real-time Database Operation Monitoring: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-17-automated-maintenance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 17 — Automated Maintenance Tasks: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-19-enqueue-waits-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 19 — Handling Enqueue Waits: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-20-latch-mutex-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 20 — Latch & Mutex Contention: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-21-shared-pool-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 21 — Shared Pool Tuning: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-26-disk-io-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 26 — Disk I/O Tuning: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-27-index-defrag-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 27 — Index Defragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-28-row-migration-chaining-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Row Migration & Row Chaining — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-29-table-fragmentation-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 29 — Table Fragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Section 30 — Table Compression: Senior DBA Guide
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-31-in-memory-column-store-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 31 — In-Memory Column Store: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-32-database-connection-optimization-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 32 — Database Connection Optimization: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-34-os-performance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 34 — OS Performance (Linux Utilities & OSWatcher): Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-35-sql-performance-analyzer-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 35 — SQL Performance Analyzer: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-36-database-replay-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 36 — Database Replay: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-6-time-model-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 6 — Time Model Views: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-8-instance-activity-wait-events-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 8 — Instance Activity & Wait Events — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-9-awr-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="section-30-table-compression-senior-dba-guide">Section 30 — Table Compression: Senior DBA Guide<a class="headerlink" href="#section-30-table-compression-senior-dba-guide" title="Permanent link">&para;</a></h1>
+<p><strong>Nguồn:</strong> Practice 32 (PDF gốc) + section_all guide + Oracle internals
+<strong>Cập nhật:</strong> 2026-07-16
+<strong>Level:</strong> Senior DBA / Production</p>
+<hr />
+<h1 id="lecture-notes">LECTURE NOTES<a class="headerlink" href="#lecture-notes" title="Permanent link">&para;</a></h1>
+<h2 id="1-mental-model">1. Mental Model<a class="headerlink" href="#1-mental-model" title="Permanent link">&para;</a></h2>
+<p>Table compression của Oracle là <strong>de-duplication ở cấp block</strong>, không phải nén kiểu zip toàn bảng. Mỗi data block tự chứa một <strong>symbol table</strong> (bảng ký hiệu) ở đầu block: các giá trị lặp lại trong block được lưu một lần trong symbol table, còn mỗi row chỉ giữ con trỏ ngắn tới ký hiệu đó. Hệ quả kéo theo mọi quyết định:</p>
+<ul>
+<li>Compression ratio phụ thuộc <strong>độ lặp của dữ liệu TRONG cùng một block</strong> — không phải trong toàn bảng. Dữ liệu ngẫu nhiên/unique → gần như không nén được. Dữ liệu lặp nhiều → nén tốt.</li>
+<li>Sắp xếp dữ liệu để gom giá trị giống nhau vào cùng block <strong>làm tăng ratio</strong> (load kèm <code>ORDER BY</code> cột lặp nhiều).</li>
+<li>Nén xảy ra <strong>khi block đầy tới ngưỡng</strong>, không phải từng row — nên cơ chế nạp dữ liệu quyết định có nén hay không.</li>
+</ul>
+<p>Hai câu hỏi senior phải trả lời trước khi bật compression: (1) <em>Dữ liệu có lặp đủ để nén không?</em> (2) <em>Bảng được nạp/sửa bằng cách nào — direct path hay conventional DML?</em> Câu 2 quyết định giữa Basic (miễn phí) và Advanced (có phí license).</p>
+<hr />
+<h2 id="2-internals-mechanics">2. Internals &amp; Mechanics<a class="headerlink" href="#2-internals-mechanics" title="Permanent link">&para;</a></h2>
+<h3 id="symbol-table-cap-block">Symbol Table cấp block<a class="headerlink" href="#symbol-table-cap-block" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Data block (compressed):
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>┌─────────────────────────────────────┐
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│ Block header                        │
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│ Symbol table: [0]="XXXXXX" [1]="CA" │  ← giá trị lặp lưu 1 lần
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│ Row1: cust=1  note1→[0]  state→[1]  │  ← row tham chiếu ký hiệu
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│ Row2: cust=2  note1→[0]  state→[1]  │
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│ ...                                  │
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>└─────────────────────────────────────┘
+</span></code></pre></div>
+<p>Vì symbol table nằm <strong>trong</strong> block, giải nén không cần đọc block khác — mỗi block tự đủ. FTS trên bảng nén đọc <strong>ít block hơn</strong> (dữ liệu dày hơn) nhưng tốn thêm CPU giải nén. Với workload scan-heavy, tiết kiệm I/O thường thắng chi phí CPU.</p>
+<h3 id="basic-vs-advanced-khac-biet-cot-loi-khi-nao-block-uoc-nen">Basic vs Advanced — khác biệt cốt lõi: khi nào block được nén<a class="headerlink" href="#basic-vs-advanced-khac-biet-cot-loi-khi-nao-block-uoc-nen" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ROW STORE COMPRESS BASIC</th>
+<th>ROW STORE COMPRESS ADVANCED (OLTP)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nén khi conventional INSERT</td>
+<td><strong>KHÔNG</strong></td>
+<td><strong>CÓ</strong> (batched)</td>
+</tr>
+<tr>
+<td>Nén khi direct-path load (APPEND/CTAS/SQL*Loader direct)</td>
+<td>CÓ</td>
+<td>CÓ</td>
+</tr>
+<tr>
+<td>Nén khi UPDATE</td>
+<td>không (row thành uncompressed)</td>
+<td>có (batched, khi block đầy lại)</td>
+</tr>
+<tr>
+<td>PCTFREE mặc định</td>
+<td>0</td>
+<td>10</td>
+</tr>
+<tr>
+<td>License</td>
+<td>Miễn phí (kèm EE)</td>
+<td><strong>Advanced Compression Option — có phí riêng</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Basic</strong> chỉ nén ở thời điểm bulk load: block được xây đầy một lần rồi nén. Conventional INSERT chèn từng row → block không bao giờ qua bước nén → dữ liệu nằm <strong>uncompressed</strong> dù bảng khai báo COMPRESS BASIC. Đây là bẫy lớn nhất: khai báo compress không có nghĩa dữ liệu được nén.</p>
+<p><strong>Advanced (OLTP)</strong> dùng cơ chế nén <strong>batched, amortized</strong>: block nạp uncompressed qua conventional DML cho tới khi đầy tới ngưỡng, lúc đó Oracle nén cả block một lần (chi phí nén chia đều cho nhiều row → không phạt từng INSERT). Vì vậy Advanced nén được cả dữ liệu vào bằng INSERT thường.</p>
+<h3 id="direct-path-load-nhanh-hon-tren-bang-nen-nghich-ly">Direct-path load nhanh HƠN trên bảng nén (nghịch lý)<a class="headerlink" href="#direct-path-load-nhanh-hon-tren-bang-nen-nghich-ly" title="Permanent link">&para;</a></h3>
+<p>Practice đo: nạp T3 (APPEND + compress) <strong>nhanh hơn ~70%</strong> so với T1 (nocompress) và T2 (compress + conventional). Lý do: direct-path ghi thẳng block đầy phía trên HWM, không qua buffer cache, không sinh nhiều undo; block nén chứa nhiều row hơn → <strong>ít block phải ghi ra đĩa hơn</strong> → I/O ghi ít hơn. Chi phí CPU nén nhỏ hơn chi phí I/O tiết kiệm được. Nghịch lý "nén mà lại nhanh hơn" chỉ đúng với direct-path; conventional INSERT trên bảng nén (T2) không có lợi thế này.</p>
+<h3 id="update-lam-hong-compression-theo-thoi-gian">UPDATE làm hỏng compression theo thời gian<a class="headerlink" href="#update-lam-hong-compression-theo-thoi-gian" title="Permanent link">&para;</a></h3>
+<p>Row nén khi bị UPDATE lớn hơn có thể không vừa symbol table cũ → Oracle lưu row ở dạng uncompressed hoặc migrate (Section 28). Bảng nén basic chịu nhiều UPDATE sẽ <strong>phình dần</strong> và mất tỷ lệ nén. Advanced xử lý tốt hơn (re-compress block khi đầy) nhưng vẫn suy giảm. Đây là lý do compression hợp với bảng <strong>read-mostly / append-mostly</strong>, không hợp bảng OLTP update nặng (trừ khi có Advanced và chấp nhận overhead).</p>
+<h3 id="hcc-ranh-gioi-phan-cung">HCC — ranh giới phần cứng<a class="headerlink" href="#hcc-ranh-gioi-phan-cung" title="Permanent link">&para;</a></h3>
+<p>Hybrid Columnar Compression (COMPRESS FOR QUERY/ARCHIVE) đạt ratio 10-50x nhưng <strong>chỉ chạy trên Exadata, ZFS Storage Appliance, hoặc Pillar Axiom</strong> — không có trên VM/storage thường. Đừng nhầm HCC với Advanced (OLTP) compression. Trên môi trường non-Exadata, khai báo HCC sẽ báo lỗi hoặc bị bỏ qua.</p>
+<hr />
+<h2 id="3-production-realities">3. Production Realities<a class="headerlink" href="#3-production-realities" title="Permanent link">&para;</a></h2>
+<h3 id="bay-license-advanced-compression">Bẫy license Advanced Compression<a class="headerlink" href="#bay-license-advanced-compression" title="Permanent link">&para;</a></h3>
+<p><code>ROW STORE COMPRESS ADVANCED</code> <strong>chạy được</strong> trên EE mà không bị phần mềm chặn — nhưng nó thuộc <strong>Advanced Compression Option, tính phí riêng</strong>. Một DBA vô tình bật nó trên production → audit license của Oracle phát hiện → phạt phí hồi tố. Luôn kiểm tra <code>DBA_FEATURE_USAGE_STATISTICS</code> (feature "Advanced Compression") trước khi khai báo ADVANCED, và xác nhận hợp đồng license. Basic compression <strong>miễn phí</strong> với EE — an toàn về license.</p>
+<h3 id="bat-compress-khong-co-nghia-du-lieu-a-nen">"Bật compress" không có nghĩa dữ liệu đã nén<a class="headerlink" href="#bat-compress-khong-co-nghia-du-lieu-a-nen" title="Permanent link">&para;</a></h3>
+<p><code>ALTER TABLE t COMPRESS</code> chỉ đặt thuộc tính cho <strong>dữ liệu tương lai nạp bằng direct-path</strong> (với basic). Dữ liệu đang có <strong>không</strong> được nén cho tới khi bạn <code>ALTER TABLE t MOVE</code> (rewrite) hoặc reload. Kiểm tra <code>DBA_TABLES.COMPRESSION='ENABLED'</code> chỉ cho biết thuộc tính, không cho biết dữ liệu thực sự nén. Muốn biết dữ liệu đã nén chưa, so sánh BLOCKS trước/sau hoặc dùng <code>DBMS_COMPRESSION.GET_COMPRESSION_RATIO</code>.</p>
+<h3 id="uoc-luong-ratio-truoc-khi-commit-tai-nguyen">Ước lượng ratio TRƯỚC khi commit tài nguyên<a class="headerlink" href="#uoc-luong-ratio-truoc-khi-commit-tai-nguyen" title="Permanent link">&para;</a></h3>
+<p><code>DBMS_COMPRESSION.GET_COMPRESSION_RATIO</code> lấy mẫu bảng và ước lượng ratio cho từng kiểu compression <strong>mà không cần</strong> nén thật cả bảng. Chạy nó trước để quyết định có đáng nén không — tránh <code>ALTER TABLE MOVE COMPRESS</code> một bảng 500GB rồi phát hiện ratio chỉ 1.1x (dữ liệu unique).</p>
+<h3 id="compression-tuong-tac-voi-cac-tinh-nang-khac">Compression tương tác với các tính năng khác<a class="headerlink" href="#compression-tuong-tac-voi-cac-tinh-nang-khac" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>MOVE ... COMPRESS</code> làm index UNUSABLE (như Section 26/27) → cần rebuild hoặc <code>MOVE ONLINE</code>.</li>
+<li>Bảng nén + partitioning: có thể nén per-partition (nén partition cũ archive, để partition hiện tại nocompress) — chiến lược ILM (Information Lifecycle Management) kinh điển.</li>
+<li>Bảng nén không tương thích một số thao tác: thêm cột có default trên basic-compressed table (phiên bản cũ), một số kiểu DDL — <code>[⚠️ verify with MOS]</code> theo phiên bản.</li>
+</ul>
+<h3 id="cpu-vs-io-trade-off-phai-o-khong-oan">CPU vs I/O trade-off phải đo, không đoán<a class="headerlink" href="#cpu-vs-io-trade-off-phai-o-khong-oan" title="Permanent link">&para;</a></h3>
+<p>Compression đổi I/O lấy CPU. Trên hệ thống <strong>I/O-bound</strong> (scan nhiều, đĩa chậm) → nén thắng lớn. Trên hệ thống <strong>CPU-bound</strong> đã sát trần → thêm chi phí giải nén có thể làm chậm. Đo cả hai phía (logical/physical reads GIẢM vs CPU used TĂNG) trước khi kết luận nén "cải thiện hiệu năng".</p>
+<hr />
+<h2 id="4-decision-framework">4. Decision Framework<a class="headerlink" href="#4-decision-framework" title="Permanent link">&para;</a></h2>
+<p><strong>Dùng Basic Compression khi:</strong>
+- Bảng read-mostly / archive, nạp bằng bulk (ETL, CTAS, SQL*Loader direct)
+- Dữ liệu có độ lặp cao trong cột
+- Muốn tiết kiệm license (Basic miễn phí)
+- Chấp nhận: dữ liệu vào bằng conventional INSERT sẽ KHÔNG nén</p>
+<p><strong>Dùng Advanced (OLTP) Compression khi:</strong>
+- Bảng có DML liên tục (conventional INSERT/UPDATE) nhưng vẫn muốn nén
+- ĐÃ có Advanced Compression Option license (xác nhận trước!)
+- Chấp nhận overhead CPU cho re-compress</p>
+<p><strong>Dùng direct-path load (APPEND) khi:</strong>
+- Nạp khối lượng lớn vào bảng nén → vừa nén được vừa nạp nhanh hơn
+- Chấp nhận: APPEND khóa bảng (exclusive) + row đi trên HWM</p>
+<p><strong>KHÔNG nén khi:</strong>
+- Dữ liệu unique/ngẫu nhiên (ratio ~1x, tốn CPU vô ích)
+- Bảng OLTP update nặng + chỉ có Basic (dữ liệu vào không nén, còn phình do update)
+- Hệ thống đã CPU-bound</p>
+<p><strong>Anti-patterns:</strong>
+- Khai báo <code>COMPRESS ADVANCED</code> mà chưa xác nhận license → rủi ro phạt phí
+- Tưởng <code>ALTER TABLE COMPRESS</code> nén ngay dữ liệu cũ (không — cần MOVE/reload)
+- Nén bảng rồi conventional INSERT vào bảng Basic, tưởng đang nén (không nén)
+- Kết luận "nén nhanh hơn" từ một lần chạy cache nóng — đo logical reads + CPU riêng</p>
+<hr />
+<h2 id="5-key-sql-commands">5. Key SQL / Commands<a class="headerlink" href="#5-key-sql-commands" title="Permanent link">&para;</a></h2>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- 5.1 Tao 3 kieu bang</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">cust_source</span><span class="w">     </span><span class="p">(...)</span><span class="w"> </span><span class="n">NOLOGGING</span><span class="w"> </span><span class="n">PCTFREE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">soetbs</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">cust_bcompressed</span><span class="p">(...)</span><span class="w"> </span><span class="k">ROW</span><span class="w"> </span><span class="n">STORE</span><span class="w"> </span><span class="n">COMPRESS</span><span class="w"> </span><span class="n">BASIC</span><span class="w"> </span><span class="n">NOLOGGING</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">soetbs</span><span class="p">;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">cust_acompressed</span><span class="p">(...)</span><span class="w"> </span><span class="k">ROW</span><span class="w"> </span><span class="n">STORE</span><span class="w"> </span><span class="n">COMPRESS</span><span class="w"> </span><span class="n">ADVANCED</span><span class="w"> </span><span class="n">NOLOGGING</span><span class="w"> </span><span class="n">PCTFREE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">soetbs</span><span class="p">;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">-- 5.2 Trang thai compression + kich thuoc</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">blocks</span><span class="o">*</span><span class="mi">8</span><span class="w"> </span><span class="n">size_kb</span><span class="p">,</span><span class="w"> </span><span class="n">compression</span><span class="p">,</span><span class="w"> </span><span class="n">compress_for</span><span class="p">,</span><span class="w"> </span><span class="n">pct_free</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">FROM</span><span class="w">   </span><span class="n">user_tables</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="k">WHERE</span><span class="w">  </span><span class="k">table_name</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'CUST_SOURCE'</span><span class="p">,</span><span class="s1">'CUST_BCOMPRESSED'</span><span class="p">,</span><span class="s1">'CUST_ACOMPRESSED'</span><span class="p">);</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1">-- 5.3 Conventional vs direct-path (basic chi nen o direct-path)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">cust_bcompressed</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">cust_source</span><span class="p">;</span><span class="w">            </span><span class="c1">-- KHONG nen (basic)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="k">TRUNCATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">cust_bcompressed</span><span class="p">;</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">INSERT</span><span class="w"> </span><span class="cm">/*+ APPEND */</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">cust_bcompressed</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">cust_source</span><span class="p">;</span><span class="w">  </span><span class="c1">-- nen (basic)</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">COMMIT</span><span class="p">;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1">-- 5.4 Uoc luong ratio TRUOC khi nen that (khong nen ca bang)</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="k">SET</span><span class="w"> </span><span class="n">SERVEROUTPUT</span><span class="w"> </span><span class="k">ON</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="k">DECLARE</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="n">v_blkcmp</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_blkuncmp</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_rowcmp</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_rowuncmp</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">  </span><span class="n">v_cmpratio</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_comptype</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">);</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">BEGIN</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="n">DBMS_COMPRESSION</span><span class="p">.</span><span class="n">GET_COMPRESSION_RATIO</span><span class="p">(</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">    </span><span class="n">scratchtbsname</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'SOETBS'</span><span class="p">,</span><span class="w"> </span><span class="n">ownname</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">USER</span><span class="p">,</span><span class="w"> </span><span class="n">objname</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'CUST_SOURCE'</span><span class="p">,</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">    </span><span class="n">subobjname</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">comptype</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DBMS_COMPRESSION</span><span class="p">.</span><span class="n">COMP_ADVANCED</span><span class="p">,</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="n">blkcnt_cmp</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v_blkcmp</span><span class="p">,</span><span class="w"> </span><span class="n">blkcnt_uncmp</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v_blkuncmp</span><span class="p">,</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="n">row_cmp</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v_rowcmp</span><span class="p">,</span><span class="w"> </span><span class="n">row_uncmp</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v_rowuncmp</span><span class="p">,</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="n">cmp_ratio</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v_cmpratio</span><span class="p">,</span><span class="w"> </span><span class="n">comptype_str</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">v_comptype</span><span class="p">);</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">  </span><span class="n">DBMS_OUTPUT</span><span class="p">.</span><span class="n">PUT_LINE</span><span class="p">(</span><span class="s1">'Uoc luong ratio = '</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">v_cmpratio</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">'x'</span><span class="p">);</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="o">/</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="c1">-- 5.5 Nen du lieu DANG CO (thuoc tinh COMPRESS khong nen du lieu cu)</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">cust_bcompressed</span><span class="w"> </span><span class="k">MOVE</span><span class="w"> </span><span class="k">ROW</span><span class="w"> </span><span class="n">STORE</span><span class="w"> </span><span class="n">COMPRESS</span><span class="w"> </span><span class="n">BASIC</span><span class="w"> </span><span class="n">ONLINE</span><span class="p">;</span><span class="w">  </span><span class="c1">-- rewrite + nen</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="c1">-- (ONLINE giu index valid; khong ONLINE thi index UNUSABLE -&gt; rebuild)</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="c1">-- 5.6 Kiem tra su dung feature Advanced Compression (truoc audit license)</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">detected_usages</span><span class="p">,</span><span class="w"> </span><span class="n">currently_used</span><span class="p">,</span><span class="w"> </span><span class="n">last_usage_date</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="k">FROM</span><span class="w">   </span><span class="n">dba_feature_usage_statistics</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="k">WHERE</span><span class="w">  </span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'%Advanced%Compression%'</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'%OLTP Compression%'</span><span class="p">;</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="c1">-- 5.7 Do query benefit (autotrace: consistent gets, physical reads)</span>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="k">SET</span><span class="w"> </span><span class="n">AUTOTRACE</span><span class="w"> </span><span class="n">TRACE</span><span class="w"> </span><span class="k">STATISTICS</span>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">cust_bcompressed</span><span class="p">;</span><span class="w">   </span><span class="c1">-- so consistent gets voi ban nocompress</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="k">SET</span><span class="w"> </span><span class="n">AUTOTRACE</span><span class="w"> </span><span class="k">OFF</span>
+</span></code></pre></div>
+<hr />
+<h2 id="6-senior-checklist">6. Senior Checklist<a class="headerlink" href="#6-senior-checklist" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Xác nhận license trước khi ADVANCED:</strong> <code>DBA_FEATURE_USAGE_STATISTICS</code> + hợp đồng; Basic miễn phí, Advanced tính phí — nhầm là phạt hồi tố</li>
+<li><strong>Kiểm tra dữ liệu có lặp không:</strong> <code>GET_COMPRESSION_RATIO</code> ước lượng trước; dữ liệu unique → ratio ~1x → đừng nén</li>
+<li><strong>Khớp phương pháp nạp với loại nén:</strong> Basic chỉ nén direct-path (APPEND/CTAS/SQL*Loader direct); conventional INSERT vào Basic = KHÔNG nén; cần nén conventional DML → Advanced</li>
+<li><strong>"Bật compress" ≠ dữ liệu đã nén:</strong> thuộc tính chỉ áp cho dữ liệu tương lai; nén dữ liệu cũ cần <code>MOVE</code>/reload; kiểm bằng BLOCKS trước/sau</li>
+<li><strong>Lường UPDATE làm suy giảm nén:</strong> bảng update nặng mất ratio dần; compression hợp read-mostly/append-mostly; cân nhắc re-move định kỳ</li>
+<li><strong>Đo trade-off CPU vs I/O:</strong> logical/physical reads giảm nhưng CPU giải nén tăng; hệ CPU-bound có thể chậm đi — đo cả hai phía</li>
+<li><strong>MOVE COMPRESS làm index UNUSABLE:</strong> dùng <code>MOVE ... ONLINE</code> hoặc rebuild index sau; lường redo khi rewrite bảng lớn</li>
+</ol>
+<hr />
+<h1 id="lab-exercises">LAB EXERCISES<a class="headerlink" href="#lab-exercises" title="Permanent link">&para;</a></h1>
+<h2 id="exercise-1-basic-vs-advanced-ieu-kien-nen-thuc-su-co-hieu-luc">Exercise 1 — Basic vs Advanced: Điều kiện nén thực sự có hiệu lực<a class="headerlink" href="#exercise-1-basic-vs-advanced-ieu-kien-nen-thuc-su-co-hieu-luc" title="Permanent link">&para;</a></h2>
+<p><strong>Scenario:</strong> Team đề xuất "bật compression cho bảng <code>ORDERS</code> để tiết kiệm đĩa". Bảng này nhận dữ liệu chủ yếu qua conventional INSERT từ app. Bạn cần chứng minh Basic compression sẽ <strong>không</strong> nén gì trong tình huống này, và giải thích cần điều kiện gì.</p>
+<p><strong>Tasks:</strong>
+1. Tạo <code>CUST_SOURCE</code> (nocompress), <code>CUST_BCOMPRESSED</code> (basic), <code>CUST_ACOMPRESSED</code> (advanced); populate source bằng dữ liệu <strong>ngẫu nhiên</strong> (ít lặp).
+2. Nạp <code>CUST_BCOMPRESSED</code> bằng <strong>conventional INSERT</strong> → so kích thước với source.
+3. TRUNCATE, nạp lại bằng <strong>direct-path</strong> (<code>INSERT /*+ APPEND */</code>) → so lại.
+4. Nạp <code>CUST_ACOMPRESSED</code> bằng conventional INSERT → so.
+5. Lập bảng đối chiếu: (loại nén × phương pháp nạp) → có nén / không nén.</p>
+<p><strong>Expected Findings:</strong>
+- Basic + conventional INSERT: kích thước = source (KHÔNG nén).
+- Basic + direct-path: nhỏ hơn chút (dữ liệu random, ratio thấp).
+- Advanced + conventional: nhỏ hơn source (Advanced nén cả conventional).
+- Kết luận: với dữ liệu vào bằng INSERT thường, chỉ Advanced nén được — nhưng cần license.</p>
+<p><strong>Debrief Questions:</strong>
+- Vì sao Basic bỏ qua conventional INSERT? Cơ chế "nén khi block đầy" liên quan thế nào?
+- Nếu chỉ có Basic license, cách nào để nén được dữ liệu nạp qua app?
+- <code>DBA_TABLES.COMPRESSION='ENABLED'</code> chứng minh dữ liệu đã nén chưa?</p>
+<hr />
+<h2 id="exercise-2-ratio-phu-thuoc-o-lap-query-benefit-cua-bang-nen">Exercise 2 — Ratio phụ thuộc độ lặp; Query benefit của bảng nén<a class="headerlink" href="#exercise-2-ratio-phu-thuoc-o-lap-query-benefit-cua-bang-nen" title="Permanent link">&para;</a></h2>
+<p><strong>Scenario:</strong> Bạn phải quyết định có nén <code>SALES_ARCHIVE</code> (read-mostly, bulk load) không. Cần chứng minh ratio phụ thuộc dữ liệu, và đo lợi ích query thực tế.</p>
+<p><strong>Tasks:</strong>
+1. Populate source với dữ liệu <strong>lặp nhiều</strong> (<code>NOTE1='XXXXXX'</code>, <code>NOTE2='YYYYYY'</code>), nạp <code>CUST_BCOMPRESSED</code> bằng direct-path → so kích thước (kỳ vọng nhỏ hơn NHIỀU so với Exercise 1 dữ liệu random).
+2. Tạo T1 (nocompress), T2 (basic + conventional), T3 (basic + direct-path); nạp cùng khối dữ liệu lớn; đo <strong>thời gian nạp</strong> từng bảng.
+3. Flush cache; chạy <code>SELECT COUNT(*)</code> từng bảng với <code>AUTOTRACE STATISTICS</code>; ghi <code>consistent gets</code>, <code>physical reads</code>.
+4. So sánh và giải thích nghịch lý "T3 nạp nhanh hơn dù phải nén".</p>
+<p><strong>Expected Findings:</strong>
+- Dữ liệu lặp nhiều → Basic + direct-path nén rất tốt (nhỏ hơn nhiều).
+- T3 (append + compress) nạp <strong>nhanh nhất</strong> (~70% ít thời gian hơn T1 theo course).
+- T3 query: <code>consistent gets</code>/<code>physical reads</code> <strong>ít nhất</strong> (ít block hơn); T2 tốt hơn T1 chút.</p>
+<p><strong>Debrief Questions:</strong>
+- Vì sao direct-path load trên bảng nén lại nhanh hơn cả nạp bảng không nén?
+- Nếu load kèm <code>ORDER BY note1</code> thì ratio thay đổi thế nào? Vì sao (symbol table cấp block)?
+- Query nhanh hơn nhờ ít I/O — khi nào lợi ích này biến mất (hệ thống kiểu gì)?</p>
+<hr />
+<h2 id="exercise-3-troubleshooting-scenario-expert-level">Exercise 3 — Troubleshooting Scenario (Expert Level)<a class="headerlink" href="#exercise-3-troubleshooting-scenario-expert-level" title="Permanent link">&para;</a></h2>
+<p><strong>Incident Brief:</strong>
+Kiểm toán license Oracle sắp diễn ra trong 2 tuần. Manager hỏi: "Chúng ta có dùng tính năng nào tính phí mà không có license không?" Bạn rà soát và phát hiện 6 tháng trước một DBA đã chạy script "tối ưu dung lượng" nén hàng loạt bảng. Đồng thời, một bảng ETL <code>STAGE_TXN</code> được nén nhưng job nạp hàng đêm (conventional INSERT) gần đây chậm dần và đĩa vẫn đầy.</p>
+<p><strong>Evidence Provided:</strong></p>
+<p><code>DBA_FEATURE_USAGE_STATISTICS</code>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>NAME                              DETECTED_USAGES  CURRENTLY_USED  LAST_USAGE
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>--------------------------------  ---------------  --------------  ----------
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Advanced Compression                          142  TRUE            2026-07-15
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>HW (Heap segment compression)                  30  TRUE            2026-07-15
+</span></code></pre></div></p>
+<p><code>DBA_TABLES</code> (trích):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>TABLE_NAME       COMPRESSION  COMPRESS_FOR       NUM_ROWS    BLOCKS
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>---------------  -----------  -----------------  ----------  ---------
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>SALES_ARCHIVE    ENABLED      ADVANCED           88,000,000  1,240,000
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>STAGE_TXN        ENABLED      BASIC              12,400,000  410,000
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>CUST_MASTER      ENABLED      ADVANCED               45,000     1,180
+</span></code></pre></div></p>
+<p><code>GET_COMPRESSION_RATIO</code> chạy thử trên STAGE_TXN (dữ liệu hiện tại):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>COMP_BASIC   ratio uoc luong: 3.4x
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Thuc te BLOCKS hien tai vs uoc luong neu nen: gap ~3x
+</span></code></pre></div></p>
+<p>Job nạp STAGE_TXN hàng đêm: <code>INSERT INTO stage_txn SELECT ... FROM ext_feed;</code> (conventional).</p>
+<p><strong>Your Mission:</strong>
+1. Về license: bảng nào đang tạo rủi ro phí? <code>SALES_ARCHIVE</code> và <code>CUST_MASTER</code> dùng ADVANCED — cả hai có cần license không? Phân biệt vai trò của chúng.
+2. Vì sao <code>STAGE_TXN</code> (COMPRESS BASIC) vẫn tốn đĩa gấp ~3x so với ước lượng nén, dù <code>COMPRESSION=ENABLED</code>? Chỉ ra bằng chứng.
+3. Job nạp STAGE_TXN chậm dần — có liên quan compression không? Giải thích.
+4. Đề xuất hành động cho từng bảng: <code>SALES_ARCHIVE</code>, <code>STAGE_TXN</code>, <code>CUST_MASTER</code> — trước kỳ audit.
+5. <code>HW (Heap segment compression)</code> xuất hiện — nó là gì, có tính phí không?</p>
+<p><strong>Evaluation Criteria:</strong>
+- License: <code>Advanced Compression</code> currently_used=TRUE ⇒ đang phát sinh nghĩa vụ license; cả <code>SALES_ARCHIVE</code> và <code>CUST_MASTER</code> (COMPRESS_FOR ADVANCED) đều cần Advanced Compression Option. Nếu không có license → phải chuyển sang BASIC (<code>MOVE ... COMPRESS BASIC</code>) hoặc mua license trước audit.
+- STAGE_TXN: <code>COMPRESSION=ENABLED</code> chỉ là <strong>thuộc tính</strong>, không đảm bảo dữ liệu nén. Bảng BASIC nạp bằng <strong>conventional INSERT</strong> (job hàng đêm) → dữ liệu vào <strong>KHÔNG nén</strong> → BLOCKS lớn dù thuộc tính bật; bằng chứng: 410k block cho 12.4M row so với ước lượng nén 3.4x.
+- Job chậm dần: một phần vì đĩa đầy (dữ liệu không nén tích tụ) → nhiều block để scan/ghi; compression không giúp vì conventional INSERT không kích hoạt nén basic — nghĩ nhầm "đã nén" nên không xử lý.
+- Hành động: (a) <code>SALES_ARCHIVE</code> read-mostly → chuyển BASIC (miễn phí) bằng <code>MOVE ... COMPRESS BASIC ONLINE</code>, mất chút ratio nhưng bỏ nghĩa vụ license; (b) <code>STAGE_TXN</code> → hoặc đổi job nạp sang <code>INSERT /*+ APPEND */</code> để BASIC nén thực sự, hoặc bỏ compression nếu staging ngắn hạn; (c) <code>CUST_MASTER</code> nhỏ (1180 block) → lợi ích nén không đáng nghĩa vụ license → chuyển nocompress/BASIC.
+- <code>HW</code> là internal heap segment compression (nén block khi bulk load), <strong>không tính phí riêng</strong> — không phải rủi ro license; đừng nhầm với Advanced Compression.
+- <strong>Bonus:</strong> chỉ ra <code>MOVE ... COMPRESS</code> làm index UNUSABLE → dùng ONLINE hoặc rebuild; và lường redo/Data Guard khi re-move 1.24M block của SALES_ARCHIVE.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/section_all_new/section_30_table_compression_senior_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../section-29-table-fragmentation-senior-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Section 29 — Table Fragmentation: Senior DBA Guide">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Section 29 — Table Fragmentation: Senior DBA Guide
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../section-31-in-memory-column-store-senior-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Section 31 — In-Memory Column Store: Senior DBA Guide">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Section 31 — In-Memory Column Store: Senior DBA Guide
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

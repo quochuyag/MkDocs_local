@@ -1,0 +1,3482 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../section-21/readme/">
+      
+      
+        <link rel="next" href="../readme/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Hướng dẫn học Section 22 — Buffer Cache Tuning + KEEP Pool - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#huong-dan-hoc-section-22-buffer-cache-tuning-keep-pool" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hướng dẫn học Section 22 — Buffer Cache Tuning + KEEP Pool
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../ke-hoach/000-index/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            Labs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Frag check
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    labs/ — Phòng thực hành Oracle Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-10/huong-dan-hoc-section-10/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 10
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-11/huong-dan-hoc-section-11/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 11
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-12/huong-dan-hoc-section-12/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 12
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-13/huong-dan-hoc-section-13/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 13
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-14/huong-dan-hoc-section-14/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 14
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-15/huong-dan-hoc-section-15/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 15
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-16/huong-dan-hoc-section-16/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 16
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-17/huong-dan-hoc-section-17/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 17
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-19/huong-dan-hoc-section-19/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 19
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-2/huong-dan-hoc-section-2/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 2
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-20/huong-dan-hoc-section-20/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 20
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-21/huong-dan-hoc-section-21/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 21
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5_15" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_5_15" id="__nav_4_5_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Section 22
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_5_15_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_5_15">
+            <span class="md-nav__icon md-icon"></span>
+            Section 22
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Hướng dẫn học Section 22 — Buffer Cache Tuning + KEEP Pool
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn học Section 22 — Buffer Cache Tuning + KEEP Pool
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-kien-thuc-nen-5-phut-oc-truoc-khi-mo-may" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Kiến thức nền (5 phút — đọc trước khi mở máy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-khoi-ong-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Khởi động môi trường
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-lab-chinh-tung-buoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Lab chính từng bước
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Lab chính từng bước">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-setup-sys-bang-nong-vu-khi-lu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1 — Setup (SYS): bảng nóng + vũ khí lũ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-workload-baseline-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2 — Workload BASELINE (system)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-chan-oan-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3 — Chẩn đoán (system)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-4-fix-bang-keep-pool-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 4 — Fix bằng KEEP pool (system)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phan-mo-rong-tuy-chon-smart-flash-cache-can-2-lan-restart" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Phần mở rộng (tùy chọn — Smart Flash Cache, cần 2 lần RESTART)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-don-dep-bat-buoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Dọn dẹp bắt buộc
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-debrief-tra-loi-khong-nhin-tai-lieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Debrief — trả lời KHÔNG nhìn tài liệu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-su-co-thuong-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Sự cố thường gặp
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-sau-buoi-hoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Sau buổi học
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lab Section 22 — Buffer Cache Tuning + KEEP Pool (+ Smart Flash Cache)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-23/huong-dan-hoc-section-23/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 23
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-24/huong-dan-hoc-section-24/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 24
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-25/huong-dan-hoc-section-25/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 25
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-26/huong-dan-hoc-section-26/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 26
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-27/huong-dan-hoc-section-27/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 27
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-28/huong-dan-hoc-section-28/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 28
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-29/huong-dan-hoc-section-29/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 29
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-30/huong-dan-hoc-section-30/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 30
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-31/huong-dan-hoc-section-31/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 31
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-32/huong-dan-hoc-section-32/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 32
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-34/huong-dan-hoc-section-34/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 34
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-35/huong-dan-hoc-section-35/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 35
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-36/huong-dan-hoc-section-36/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 36
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-6/huong-dan-hoc-section-6/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 6
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-8/huong-dan-hoc-section-8/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 8
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-9/huong-dan-hoc-section-9/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section 9
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../so-tay-chan-doan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SỔ TAY CHẨN ĐOÁN HIỆU NĂNG ORACLE — Tổng hợp toàn khóa học
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../so-tay-mo-hinh-bk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MÔ HÌNH HÓA SỔ TAY CHẨN ĐOÁN — bản đồ tư duy bằng sơ đồ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../so-tay-mo-hinh/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MÔ HÌNH HÓA SỔ TAY CHẨN ĐOÁN — bản đồ tư duy bằng sơ đồ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../section-all-new/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-kien-thuc-nen-5-phut-oc-truoc-khi-mo-may" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Kiến thức nền (5 phút — đọc trước khi mở máy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-khoi-ong-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Khởi động môi trường
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-lab-chinh-tung-buoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Lab chính từng bước
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Lab chính từng bước">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-setup-sys-bang-nong-vu-khi-lu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1 — Setup (SYS): bảng nóng + vũ khí lũ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-workload-baseline-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2 — Workload BASELINE (system)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-chan-oan-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3 — Chẩn đoán (system)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-4-fix-bang-keep-pool-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 4 — Fix bằng KEEP pool (system)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phan-mo-rong-tuy-chon-smart-flash-cache-can-2-lan-restart" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Phần mở rộng (tùy chọn — Smart Flash Cache, cần 2 lần RESTART)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-don-dep-bat-buoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Dọn dẹp bắt buộc
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-debrief-tra-loi-khong-nhin-tai-lieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Debrief — trả lời KHÔNG nhìn tài liệu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-su-co-thuong-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Sự cố thường gặp
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-sau-buoi-hoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Sau buổi học
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="huong-dan-hoc-section-22-buffer-cache-tuning-keep-pool">Hướng dẫn học Section 22 — Buffer Cache Tuning + KEEP Pool<a class="headerlink" href="#huong-dan-hoc-section-22-buffer-cache-tuning-keep-pool" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Lab: <code>labs/section_22/</code> · Nguồn: Practice 23 + 24 (Ahmed Baraka)
+⚠️ <strong>Chưa kiểm chứng trên VM</strong> — mọi "output kỳ vọng" bên dưới là dự tính, KHÔNG phải số đã đo. Buổi chạy đầu: đối chiếu, sửa lệch, điền số thật vào README.</p>
+</blockquote>
+<hr />
+<h2 id="0-kien-thuc-nen-5-phut-oc-truoc-khi-mo-may">0. Kiến thức nền (5 phút — đọc trước khi mở máy)<a class="headerlink" href="#0-kien-thuc-nen-5-phut-oc-truoc-khi-mo-may" title="Permanent link">&para;</a></h2>
+<p>Buffer cache là "bàn làm việc" của DB: block phải nằm trên RAM mới đọc/sửa được. Khi bàn chật, sách ít dùng bị xếp xuống kho (LRU) — và nếu sách đang cần cũng bị xếp xuống thì mỗi lần dùng lại phải chạy xuống kho lấy = <code>physical read</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Khái niệm</th>
+<th>Là gì</th>
+<th>Nhìn ở đâu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logical read</td>
+<td>Đọc block (dù từ RAM hay phải nạp từ disk trước) — đo <strong>khối lượng việc của SQL</strong></td>
+<td><code>session logical reads</code></td>
+</tr>
+<tr>
+<td>Physical read</td>
+<td>Block không có trong cache, phải đọc disk — đo <strong>tình trạng cache</strong></td>
+<td><code>physical reads</code>, <code>db file scattered/sequential read</code></td>
+</tr>
+<tr>
+<td>LRU + cờ CACHE</td>
+<td>FTS bảng lớn bình thường đi direct path/đuôi lạnh LRU; gắn <code>CACHE</code> thì block được ưu ái như bảng nhỏ → chiếm cache</td>
+<td><code>DBA_TABLES.CACHE</code></td>
+</tr>
+<tr>
+<td>Buffer Pool Advisory</td>
+<td>Mô phỏng "nếu cache to/nhỏ hơn X lần thì physical reads còn bao nhiêu"</td>
+<td><code>V$DB_CACHE_ADVICE</code></td>
+</tr>
+<tr>
+<td>KEEP pool</td>
+<td>Ngăn riêng trong buffer cache, LRU riêng — lũ bên ngoài không đẩy được block trong này</td>
+<td><code>V$BUFFER_POOL_STATISTICS</code>, <code>DB_KEEP_CACHE_SIZE</code></td>
+</tr>
+<tr>
+<td>Smart Flash Cache</td>
+<td>Tầng 2 của cache: block ấm rơi xuống flash thay vì mất hẳn</td>
+<td><code>V$FLASHFILESTAT</code>, V$BH status <code>flashcur</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Khác course:</strong> course bóp <code>DB_CACHE_SIZE</code> xuống 10MB rồi restart DB 4 lần. Ta tạo cùng triệu chứng bằng "lũ FTS" (2 bảng lớn gắn CACHE quét liên tục) — không restart, không đổi tham số memory.</p>
+<hr />
+<h2 id="1-khoi-ong-moi-truong">1. Khởi động môi trường<a class="headerlink" href="#1-khoi-ong-moi-truong" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">Dba_project</span><span class="p">\</span><span class="n">vagrant-projects</span><span class="p">\</span><span class="n">OracleDatabase</span><span class="p">\</span><span class="n">19</span><span class="p">.</span><span class="n">3</span><span class="p">.</span><span class="n">0</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">vagrant</span> <span class="n">up</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">Dba_project</span><span class="p">\</span><span class="n">The-Oracle-Database-Performance-Tuning-Course</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">sqlplus</span> <span class="n">-S</span> <span class="n">-L</span> <span class="s2">"system/oracle_4U@//localhost:15210/ORADB"</span> <span class="s2">"@labs\_toolkit\00_env_check.sql"</span>
+</span></code></pre></div>
+<p>8/8 PASS thì tiếp. Lab này cần bộ sinh tải external job hoạt động (đã đặt password OS oracle — xem <a href="../../readme/">labs/README.md</a>).</p>
+<hr />
+<h2 id="2-lab-chinh-tung-buoc">2. Lab chính từng bước<a class="headerlink" href="#2-lab-chinh-tung-buoc" title="Permanent link">&para;</a></h2>
+<h3 id="buoc-1-setup-sys-bang-nong-vu-khi-lu">Bước 1 — Setup (SYS): bảng nóng + vũ khí lũ<a class="headerlink" href="#buoc-1-setup-sys-bang-nong-vu-khi-lu" title="Permanent link">&para;</a></h3>
+<p>🤔 <strong>Dự đoán trước:</strong> DEFAULT buffer cache của VM đang bao nhiêu MB? Bộ 3 bảng lab (~4-5MB) so với nó chiếm bao nhiêu %? Bình thường (không lũ) đọc lại lần 2 có physical read không?</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd </span><span class="n">labs</span><span class="p">\</span><span class="n">section_22</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">sqlplus</span> <span class="s2">"sys/oracle_4U@//localhost:15210/ORADB as sysdba"</span> <span class="s2">"@01_setup.sql"</span>
+</span></code></pre></div>
+<p><strong>Kỳ vọng:</strong> DEFAULT cache cỡ vài trăm MB–1GB+; 3 bảng tạo xong (<code>LAB_EMP</code> ~3-4MB là chính); <code>ORDERS</code>/<code>ORDER_ITEMS</code> chuyển <code>CACHE='Y'</code>; advisory in bảng size_factor 0.1→2.0.</p>
+<p>Ghi lại: <strong>DEFAULT cache MB = ?</strong> và <strong>tổng blocks của LAB_% = ?</strong> (dùng cho bước 3).</p>
+<h3 id="buoc-2-workload-baseline-system">Bước 2 — Workload BASELINE (system)<a class="headerlink" href="#buoc-2-workload-baseline-system" title="Permanent link">&para;</a></h3>
+<p>🤔 <strong>Dự đoán trước:</strong> 2 evictor quét ORDERS+ORDER_ITEMS (tổng vài trăm MB, gắn CACHE) trong 150s — có đủ đẩy 4MB bảng lab ra khỏi cache to hàng trăm MB không? Reader sẽ có physical_reads = 0 hay &gt;&gt; 0?</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>@02_workload.sql        -- ~4 phút, script tự sleep
+</span></code></pre></div>
+<p><strong>Kỳ vọng:</strong></p>
+<ul>
+<li>Mục [2]: thấy 2 session <code>LAB22_EVICT</code> + 3 session <code>CUSTOMER ACCESS/ID 1</code>.</li>
+<li>Mục [3] (query display_stats của course): <code>physical reads</code> của nhóm reader tăng theo thời gian thực.</li>
+<li>Mục [5]: bảng <code>lab_bc_results</code> tag BASELINE — 3 reader, <code>avg_phys_reads</code> hàng nghìn+, <code>avg_elapsed_s</code> vài chục giây.</li>
+</ul>
+<blockquote>
+<p>Nếu <code>avg_phys_reads</code> ≈ 0: cache VM quá to so với lũ → xem mục 6 (Sự cố).</p>
+</blockquote>
+<p><strong>Ghi số BASELINE</strong>: avg_phys_reads = ? · avg_logical_reads = ? · avg_elapsed = ?</p>
+<h3 id="buoc-3-chan-oan-system">Bước 3 — Chẩn đoán (system)<a class="headerlink" href="#buoc-3-chan-oan-system" title="Permanent link">&para;</a></h3>
+<p>🤔 <strong>Dự đoán trước:</strong> trong V$BH, object nào chiếm nhiều block nhất? LAB_EMP còn lại bao nhiêu block trong cache so với tổng của nó? Advisory sẽ khuyên tăng hay nói "đủ rồi"?</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>@03_diagnose.sql
+</span></code></pre></div>
+<p><strong>Kỳ vọng:</strong> ORDERS/ORDER_ITEMS đứng đầu V$BH; LAB_% còn rất ít block; hit% tụt so với bình thường; top User I/O có <code>db file scattered read</code>. Advisory: đường <code>estd_physical_read_factor</code> giảm khi tăng size — <strong>nhưng nhớ 2 cảnh báo</strong>: chỉ nhìn xa 200%, và số đo lúc lũ nhân tạo là số bị nhiễm.</p>
+<h3 id="buoc-4-fix-bang-keep-pool-system">Bước 4 — Fix bằng KEEP pool (system)<a class="headerlink" href="#buoc-4-fix-bang-keep-pool-system" title="Permanent link">&para;</a></h3>
+<p>🤔 <strong>Dự đoán trước:</strong> KEEP 64MB lấy RAM từ đâu? Sau khi mồi + chạy lại đúng workload: physical_reads của reader còn bao nhiêu? logical_reads có đổi không? elapsed?</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>@04_fix.sql             -- ~4 phút
+</span></code></pre></div>
+<p><strong>Kỳ vọng (mục [5] — bảng so sánh bắt buộc):</strong></p>
+<table>
+<thead>
+<tr>
+<th>run_tag</th>
+<th>avg_phys_reads</th>
+<th>avg_logical_reads</th>
+<th>avg_elapsed_s</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BASELINE</td>
+<td>hàng nghìn+</td>
+<td>X</td>
+<td>dài</td>
+</tr>
+<tr>
+<td>KEEP</td>
+<td>≈ 0</td>
+<td>≈ X (bằng nhau!)</td>
+<td>ngắn hơn rõ</td>
+</tr>
+</tbody>
+</table>
+<p>Logical bằng nhau chứng minh cùng khối lượng việc — chỉ physical đổi. Đó là cách chứng minh "fix ăn tiền" đúng chuẩn.</p>
+<hr />
+<h2 id="3-phan-mo-rong-tuy-chon-smart-flash-cache-can-2-lan-restart">3. Phần mở rộng (tùy chọn — Smart Flash Cache, cần 2 lần RESTART)<a class="headerlink" href="#3-phan-mo-rong-tuy-chon-smart-flash-cache-can-2-lan-restart" title="Permanent link">&para;</a></h2>
+<p>Làm <strong>trong VM</strong> cuối buổi, khi các phần trên xong hết:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>vagrant<span class="w"> </span>ssh
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo<span class="w"> </span>-u<span class="w"> </span>oracle<span class="w"> </span>-i
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/home/oracle/vdisk1<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">512</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/home/oracle/vdisk2<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">512</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">cd</span><span class="w"> </span>/labs/section_22
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>sqlplus<span class="w"> </span>/<span class="w"> </span>as<span class="w"> </span>sysdba
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>@05_usecase_flash_cache.sql<span class="w">     </span><span class="c1"># script dừng chờ bạn tự gõ SHUTDOWN/STARTUP</span>
+</span></code></pre></div>
+<p>🤔 <strong>Dự đoán:</strong> block ORDERS sẽ xuất hiện ở status nào trong V$BH sau khi FLASH_CACHE KEEP + FTS vài lượt? Trên VM (file "flash" nằm cùng HDD) tốc độ có cải thiện không?</p>
+<p><strong>Kỳ vọng:</strong> có block <code>flashcur</code>; latency flash ≈ latency disk (VM không có SSD thật — practice chỉ demo cơ chế, course cũng ghi chú vậy). Script tự RESET tham số ở cuối; nhớ restart lần 2 + <code>rm vdisk*</code>.</p>
+<hr />
+<h2 id="4-don-dep-bat-buoc">4. Dọn dẹp bắt buộc<a class="headerlink" href="#4-don-dep-bat-buoc" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>@99_cleanup.sql
+</span></code></pre></div>
+<p>Kiểm tra: KEEP = 0, <code>ORDERS</code>/<code>ORDER_ITEMS</code> cache='N', không còn bảng LAB_% (trừ LAB_STOP_FLAG của toolkit).</p>
+<hr />
+<h2 id="5-debrief-tra-loi-khong-nhin-tai-lieu">5. Debrief — trả lời KHÔNG nhìn tài liệu<a class="headerlink" href="#5-debrief-tra-loi-khong-nhin-tai-lieu" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Logical read và physical read: cái nào đo khối lượng việc của SQL, cái nào đo sức khỏe cache? Vì sao fix của lab làm physical đổi mà logical không đổi?</li>
+<li>Vì sao phải gắn cờ <code>CACHE</code> cho ORDERS thì lũ mới hoạt động?</li>
+<li>Buffer Pool Advisory có 2 giới hạn nào khiến không thể "đọc 1 lần, set 1 lần là xong"?</li>
+<li>KEEP pool giúp được trường hợp nào và vô ích/có hại trường hợp nào?</li>
+<li>Sau khi <code>ALTER TABLE ... STORAGE (BUFFER_POOL KEEP)</code>, block của bảng có lập tức nằm trong KEEP pool không?</li>
+</ol>
+<details>
+<summary>Đáp án (mở sau khi tự trả lời)</summary>
+
+1. Logical = khối lượng việc (SQL đụng bao nhiêu block — muốn giảm phải sửa SQL/plan); physical = sức khỏe cache (bao nhiêu lần phải xuống disk). KEEP pool chỉ thay đổi *nơi block được giữ*, không thay đổi *số block SQL cần đụng* → logical y nguyên, physical về ~0.
+2. FTS bảng lớn mặc định đi **direct path read** (thẳng vào PGA, bỏ qua buffer cache) hoặc xếp block ở đuôi lạnh LRU — cả 2 đều không chiếm cache. Cờ CACHE làm block FTS được đối xử như bảng nhỏ: vào giữa/đầu LRU → tích tụ dần → chiếm chỗ và đẩy bảng khác ra.
+3. (a) Chỉ mô phỏng tối đa **200% size hiện tại** — cache đang quá nhỏ thì lợi ích thật nằm ngoài tầm nhìn, phải tăng dần và đọc lại sau mỗi lần; (b) số liệu phản ánh **workload lúc đo** — đo lúc bất thường (lũ, batch, đêm backup) thì khuyến nghị nhiễm. Cùng bài học với Shared Pool Advisory (lab 21).
+4. Giúp: bảng/index **nhỏ + truy cập thường xuyên + đang bị object lớn chèn ép** — cách ly vào LRU riêng, không tốn thêm RAM tổng. Vô ích/có hại: object lớn (chiếm KEEP mà vẫn không vừa → tự chèn ép chính nó), hoặc khi cache tổng đang thừa chỗ (không ai chèn ai — thêm ngăn chỉ làm giảm linh hoạt của ASMM).
+5. Không. Thuộc tính chỉ áp dụng cho lần **đọc từ disk tiếp theo**; block cũ vẫn ở DEFAULT đến khi bị đẩy ra. Vì thế 04_fix có bước "mồi" — FTS 1 lượt để nạp block vào KEEP.
+
+</details>
+
+<hr />
+<h2 id="6-su-co-thuong-gap">6. Sự cố thường gặp<a class="headerlink" href="#6-su-co-thuong-gap" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Nguyên nhân/Xử lý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BASELINE <code>avg_phys_reads</code> ≈ 0</td>
+<td>Cache VM quá to so với lũ. Tăng liều: sửa job trong <code>02_workload.sql</code> → evictor 3-4, evict_secs 240, reader passes 15; hoặc gắn CACHE thêm <code>soe.inventories</code>. Đo lại từ 02</td>
+</tr>
+<tr>
+<td><code>ORA-02097/ORA-00384</code> khi set <code>DB_KEEP_CACHE_SIZE</code></td>
+<td>Không đủ granule trống để carve động. Thử 32M; vẫn lỗi → <code>SCOPE=SPFILE</code> + restart (đúng cách course làm)</td>
+</tr>
+<tr>
+<td>Reader chạy quá lâu (&gt; 3 phút chưa có kết quả)</td>
+<td>2 vCPU quá tải với 5 session. Giảm reader về 2, passes về 8 — nhớ giảm Ở CẢ 02 và 04 để so sánh công bằng</td>
+</tr>
+<tr>
+<td>Mục [3] của 02 không có dòng nào</td>
+<td>Poll trúng lúc reader chưa spawn (sleep 20s trong bc_demo) hoặc đã xong. Vô hại — số chốt sổ nằm ở [5]</td>
+</tr>
+<tr>
+<td><code>flashcur</code> = 0 ở bước mở rộng</td>
+<td>Buffer cache còn thừa chỗ nên block chưa cần rơi xuống flash — FTS thêm bảng khác gắn CACHE để ép, hoặc chấp nhận (cơ chế chỉ kích hoạt khi RAM đầy)</td>
+</tr>
+<tr>
+<td>Job không chạy (<code>LAB22_BC</code> FAILED)</td>
+<td>Kiểm tra credential: <code>SELECT credential_name FROM dba_credentials;</code> phải có <code>LAB_OS_CRED</code> của SYSTEM; password OS oracle đã đặt chưa (labs/README)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-sau-buoi-hoc">7. Sau buổi học<a class="headerlink" href="#7-sau-buoi-hoc" title="Permanent link">&para;</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Điền cột "Số thật" trong <code>README.md</code> (BASELINE vs KEEP), bỏ banner "chưa kiểm chứng" nếu chạy trọn vẹn</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Trả lời 5 câu debrief không nhìn tài liệu — chỗ nào bí, đọc lại phần tương ứng</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Đã chạy <code>@99_cleanup.sql</code> (KEEP=0, NOCACHE 2 bảng lớn)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Nếu làm phần flash cache: đã RESET tham số + restart + xóa vdisk</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Cập nhật <code>progress.md</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>vagrant halt</code></li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/labs/section_22/HUONG_DAN_HOC_SECTION_22.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../section-21/readme/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Lab Section 21 — Shared Pool Tuning + Session Cursors + Result Cache">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Lab Section 21 — Shared Pool Tuning + Session Cursors + Result Cache
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../readme/" class="md-footer__link md-footer__link--next" aria-label="Sau: Lab Section 22 — Buffer Cache Tuning + KEEP Pool (+ Smart Flash Cache)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Lab Section 22 — Buffer Cache Tuning + KEEP Pool (+ Smart Flash Cache)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

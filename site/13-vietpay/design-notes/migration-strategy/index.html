@@ -1,0 +1,3504 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../integrity-guarantees/">
+      
+      
+        <link rel="next" href="../performance-analysis/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Chiến Lược Migration: Thêm Cột `settlement_batch_id` vào Bảng `transactions` - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chien-luoc-migration-them-cot-settlement_batch_id-vao-bang-transactions" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chiến Lược Migration: Thêm Cột `settlement_batch_id` vào Bảng `transactions`
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            13. VietPay
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_1" id="__nav_11_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design notes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_1">
+            <span class="md-nav__icon md-icon"></span>
+            Design notes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrity-guarantees/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Đảm bảo Toàn vẹn Dữ liệu — VietPay Wallet Platform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chiến Lược Migration: Thêm Cột `settlement_batch_id` vào Bảng `transactions`
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chiến Lược Migration: Thêm Cột `settlement_batch_id` vào Bảng `transactions`
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục Lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tong-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Tổng Quan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Tổng Quan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#expand-contract-pattern-la-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expand-Contract Pattern là gì?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-khong-dung-alter-table-add-column-not-null-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao không dùng ALTER TABLE ADD COLUMN ... NOT NULL DEFAULT?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-so-o-cac-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Sơ Đồ Các Phase
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Sơ Đồ Các Phase">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tong-quan-lock-types-qua-cac-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tổng quan Lock Types qua các Phase
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phase-1-expand" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Phase 1 — Expand
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Phase 1 — Expand">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-migrationsv001__add_settlement_batch_id_expandsql" class="md-nav__link">
+    <span class="md-ellipsis">
+      File: migrations/V001__add_settlement_batch_id_expand.sql
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-buoc-thuc-hien" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các bước thực hiện
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-add-column-la-instant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao ADD COLUMN là instant?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-dung-foreign-key-not-valid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao dùng FOREIGN KEY NOT VALID?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#app-behavior-trong-phase-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      App behavior trong Phase 1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-van-e-can-luu-y" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các vấn đề cần lưu ý
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-phase-2-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Phase 2 — Backfill
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Phase 2 — Backfill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-migrationsv002__backfill_settlement_batch_idsql" class="md-nav__link">
+    <span class="md-ellipsis">
+      File: migrations/V002__backfill_settlement_batch_id.sql
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chien-luoc-batch-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chiến lược Batch Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thong-so-cau-hinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thông số cấu hình
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-dung-for-update-skip-locked" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao dùng FOR UPDATE SKIP LOCKED?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uoc-tinh-performance-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ước tính Performance Impact
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrent-insert-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concurrent Insert Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-phase-3-dual-write-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Phase 3 — Dual-Write Window
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Phase 3 — Dual-Write Window">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dual-write-la-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dual-Write là gì?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chien-luoc-deploy-app-v2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chiến lược Deploy App v2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#luu-y-quan-trong-ve-blue-green-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lưu ý quan trọng về Blue-Green Deploy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiem-tra-truoc-khi-roi-dual-write-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kiểm tra trước khi rời Dual-Write Window
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-phase-4-constraint-promotion" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Phase 4 — Constraint Promotion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Phase 4 — Constraint Promotion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-migrationsv003__promote_not_null_constraintsql" class="md-nav__link">
+    <span class="md-ellipsis">
+      File: migrations/V003__promote_not_null_constraint.sql
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ky-thuat-not-valid-validate-pg-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kỹ thuật: NOT VALID + VALIDATE (PG 12+)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phan-tich-lock-chi-tiet" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phân tích Lock chi tiết
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-set-not-null-la-instant-voi-pg-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao SET NOT NULL là instant với PG 12+?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shareupdateexclusivelock-vs-accessexclusivelock" class="md-nav__link">
+    <span class="md-ellipsis">
+      ShareUpdateExclusiveLock vs AccessExclusiveLock
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-phase-5-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Phase 5 — Cleanup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Phase 5 — Cleanup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sau-khi-v003-thanh-cong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sau khi V003 thành công
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-ke-hoach-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Kế Hoạch Rollback
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Kế Hoạch Rollback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nguyen-tac-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nguyên tắc Rollback
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-cho-tung-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback cho từng Phase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chi-tiet-tung-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chi tiết từng Rollback
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chi tiết từng Rollback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#u003-rollback-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      U003 — Rollback Constraint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#u002-rollback-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      U002 — Rollback Backfill
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#u001-rollback-expand" class="md-nav__link">
+    <span class="md-ellipsis">
+      U001 — Rollback Expand
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-monitoring-trong-qua-trinh-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Monitoring Trong Quá Trình Migration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Monitoring Trong Quá Trình Migration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard Metrics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dashboard Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-database-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.1 Database Metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-application-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.2 Application Metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-backfill-progress-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.3 Backfill Progress Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-anh-gia-rui-ro" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Đánh Giá Rủi Ro
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Đánh Giá Rủi Ro">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#risk-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Risk Matrix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contingency-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contingency Plan
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-uoc-tinh-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Ước Tính Timeline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Ước Tính Timeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timeline-cho-50m-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Timeline cho 50M rows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recommended Schedule
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ieu-kien-tien-quyet-pre-flight-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Điều kiện tiên quyết (Pre-flight Checklist)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ Lục
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phụ Lục">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-cau-truc-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Cấu trúc file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-schema-truoc-va-sau-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. Schema trước và sau Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-tham-khao" class="md-nav__link">
+    <span class="md-ellipsis">
+      C. Tham khảo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../performance-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Phân tích Hiệu năng — Settlement Query Optimization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../docs/adr/001-data-architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Docs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../huong-dan-chi-tiet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../mongodb/webhook-events-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongodb
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../neo4j/fraud-detection-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Neo4j
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🏦 VietPay — Enterprise Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../requirements-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📋 Take Home Assessment — Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục Lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tong-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Tổng Quan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Tổng Quan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#expand-contract-pattern-la-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expand-Contract Pattern là gì?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-khong-dung-alter-table-add-column-not-null-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao không dùng ALTER TABLE ADD COLUMN ... NOT NULL DEFAULT?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-so-o-cac-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Sơ Đồ Các Phase
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Sơ Đồ Các Phase">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tong-quan-lock-types-qua-cac-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tổng quan Lock Types qua các Phase
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phase-1-expand" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Phase 1 — Expand
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Phase 1 — Expand">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-migrationsv001__add_settlement_batch_id_expandsql" class="md-nav__link">
+    <span class="md-ellipsis">
+      File: migrations/V001__add_settlement_batch_id_expand.sql
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-buoc-thuc-hien" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các bước thực hiện
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-add-column-la-instant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao ADD COLUMN là instant?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-dung-foreign-key-not-valid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao dùng FOREIGN KEY NOT VALID?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#app-behavior-trong-phase-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      App behavior trong Phase 1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-van-e-can-luu-y" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các vấn đề cần lưu ý
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-phase-2-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Phase 2 — Backfill
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Phase 2 — Backfill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-migrationsv002__backfill_settlement_batch_idsql" class="md-nav__link">
+    <span class="md-ellipsis">
+      File: migrations/V002__backfill_settlement_batch_id.sql
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chien-luoc-batch-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chiến lược Batch Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thong-so-cau-hinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thông số cấu hình
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-dung-for-update-skip-locked" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao dùng FOR UPDATE SKIP LOCKED?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uoc-tinh-performance-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ước tính Performance Impact
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrent-insert-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concurrent Insert Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-phase-3-dual-write-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Phase 3 — Dual-Write Window
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Phase 3 — Dual-Write Window">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dual-write-la-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dual-Write là gì?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chien-luoc-deploy-app-v2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chiến lược Deploy App v2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#luu-y-quan-trong-ve-blue-green-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lưu ý quan trọng về Blue-Green Deploy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiem-tra-truoc-khi-roi-dual-write-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kiểm tra trước khi rời Dual-Write Window
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-phase-4-constraint-promotion" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Phase 4 — Constraint Promotion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Phase 4 — Constraint Promotion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-migrationsv003__promote_not_null_constraintsql" class="md-nav__link">
+    <span class="md-ellipsis">
+      File: migrations/V003__promote_not_null_constraint.sql
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ky-thuat-not-valid-validate-pg-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kỹ thuật: NOT VALID + VALIDATE (PG 12+)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phan-tich-lock-chi-tiet" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phân tích Lock chi tiết
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-set-not-null-la-instant-voi-pg-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao SET NOT NULL là instant với PG 12+?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shareupdateexclusivelock-vs-accessexclusivelock" class="md-nav__link">
+    <span class="md-ellipsis">
+      ShareUpdateExclusiveLock vs AccessExclusiveLock
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-phase-5-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Phase 5 — Cleanup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Phase 5 — Cleanup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sau-khi-v003-thanh-cong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sau khi V003 thành công
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-ke-hoach-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Kế Hoạch Rollback
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Kế Hoạch Rollback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nguyen-tac-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nguyên tắc Rollback
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-cho-tung-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback cho từng Phase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chi-tiet-tung-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chi tiết từng Rollback
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chi tiết từng Rollback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#u003-rollback-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      U003 — Rollback Constraint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#u002-rollback-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      U002 — Rollback Backfill
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#u001-rollback-expand" class="md-nav__link">
+    <span class="md-ellipsis">
+      U001 — Rollback Expand
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-monitoring-trong-qua-trinh-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Monitoring Trong Quá Trình Migration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Monitoring Trong Quá Trình Migration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard Metrics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dashboard Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-database-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.1 Database Metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-application-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.2 Application Metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-backfill-progress-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.3 Backfill Progress Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-anh-gia-rui-ro" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Đánh Giá Rủi Ro
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Đánh Giá Rủi Ro">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#risk-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Risk Matrix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contingency-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contingency Plan
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-uoc-tinh-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Ước Tính Timeline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Ước Tính Timeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timeline-cho-50m-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Timeline cho 50M rows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recommended Schedule
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ieu-kien-tien-quyet-pre-flight-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Điều kiện tiên quyết (Pre-flight Checklist)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phu-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phụ Lục
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phụ Lục">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-cau-truc-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Cấu trúc file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-schema-truoc-va-sau-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. Schema trước và sau Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-tham-khao" class="md-nav__link">
+    <span class="md-ellipsis">
+      C. Tham khảo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chien-luoc-migration-them-cot-settlement_batch_id-vao-bang-transactions">Chiến Lược Migration: Thêm Cột <code>settlement_batch_id</code> vào Bảng <code>transactions</code><a class="headerlink" href="#chien-luoc-migration-them-cot-settlement_batch_id-vao-bang-transactions" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Dự án:</strong> VietPay — Hệ thống thanh toán<br />
+<strong>Bảng mục tiêu:</strong> <code>transactions</code> (50M rows, ~2M rows/tháng)<br />
+<strong>Thay đổi:</strong> Thêm cột <code>settlement_batch_id UUID NOT NULL</code><br />
+<strong>Pattern:</strong> Expand-Contract (Zero-Downtime Migration)<br />
+<strong>Database:</strong> PostgreSQL 15+<br />
+<strong>Ngày tạo:</strong> 2026-06-23<br />
+<strong>Tác giả:</strong> DBA Team — VietPay</p>
+</blockquote>
+<hr />
+<h2 id="muc-luc">Mục Lục<a class="headerlink" href="#muc-luc" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-tổng-quan">Tổng Quan</a></li>
+<li><a href="#2-sơ-đồ-các-phase">Sơ Đồ Các Phase</a></li>
+<li><a href="#3-phase-1--expand">Phase 1 — Expand</a></li>
+<li><a href="#4-phase-2--backfill">Phase 2 — Backfill</a></li>
+<li><a href="#5-phase-3--dual-write-window">Phase 3 — Dual-Write Window</a></li>
+<li><a href="#6-phase-4--constraint-promotion">Phase 4 — Constraint Promotion</a></li>
+<li><a href="#7-phase-5--cleanup">Phase 5 — Cleanup</a></li>
+<li><a href="#8-kế-hoạch-rollback">Kế Hoạch Rollback</a></li>
+<li><a href="#9-monitoring-trong-quá-trình-migration">Monitoring Trong Quá Trình Migration</a></li>
+<li><a href="#10-đánh-giá-rủi-ro">Đánh Giá Rủi Ro</a></li>
+<li><a href="#11-ước-tính-timeline">Ước Tính Timeline</a></li>
+</ol>
+<hr />
+<h2 id="1-tong-quan">1. Tổng Quan<a class="headerlink" href="#1-tong-quan" title="Permanent link">&para;</a></h2>
+<h3 id="expand-contract-pattern-la-gi">Expand-Contract Pattern là gì?<a class="headerlink" href="#expand-contract-pattern-la-gi" title="Permanent link">&para;</a></h3>
+<p>Expand-Contract (còn gọi là Parallel Change) là pattern migration cho phép thay đổi schema database <strong>mà không cần downtime</strong>. Ý tưởng cốt lõi:</p>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Nguyên tắc vàng:</strong> Schema mới phải tương thích ngược (backward-compatible) với code cũ tại MỌI thời điểm trong quá trình migration.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Giai đoạn</th>
+<th>Mô tả</th>
+<th>Schema</th>
+<th>App Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Expand</strong></td>
+<td>Thêm cột mới (nullable)</td>
+<td>Old + New</td>
+<td>Old</td>
+</tr>
+<tr>
+<td><strong>Migrate</strong></td>
+<td>Backfill dữ liệu cũ</td>
+<td>Old + New</td>
+<td>Dual-write</td>
+</tr>
+<tr>
+<td><strong>Contract</strong></td>
+<td>Enforce constraint</td>
+<td>New</td>
+<td>New</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-sao-khong-dung-alter-table-add-column-not-null-default">Tại sao không dùng <code>ALTER TABLE ADD COLUMN ... NOT NULL DEFAULT</code>?<a class="headerlink" href="#tai-sao-khong-dung-alter-table-add-column-not-null-default" title="Permanent link">&para;</a></h3>
+<p>Trong PostgreSQL 11+, <code>ADD COLUMN ... DEFAULT</code> là metadata-only (không rewrite table). Tuy nhiên:</p>
+<ul>
+<li><strong><code>NOT NULL</code> + <code>DEFAULT</code> cho UUID:</strong> PG cần verify rằng tất cả existing rows thỏa mãn NOT NULL. Với 50M rows, điều này yêu cầu <strong>full table scan</strong> dưới <strong>AccessExclusiveLock</strong> — block toàn bộ read/write trong vài phút.</li>
+<li><strong>Giá trị DEFAULT cho UUID:</strong> Không có giá trị mặc định hợp lý cho <code>settlement_batch_id</code>. Mỗi transaction phải thuộc về một batch cụ thể.</li>
+<li><strong>Không thể rollback:</strong> Nếu có lỗi, không có cách an toàn để revert.</li>
+</ul>
+<p><strong>Expand-Contract giải quyết tất cả vấn đề trên</strong> bằng cách chia migration thành nhiều bước nhỏ, mỗi bước đều an toàn và có thể rollback.</p>
+<hr />
+<h2 id="2-so-o-cac-phase">2. Sơ Đồ Các Phase<a class="headerlink" href="#2-so-o-cac-phase" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A["Phase 1: EXPAND&lt;br/&gt;V001 — Add nullable column&lt;br/&gt;⏱ &lt; 5 giây&lt;br/&gt;🔒 Instant metadata change"] --&gt; B["Deploy: App v2&lt;br/&gt;Enable DUAL-WRITE&lt;br/&gt;App writes to both old + new columns"]
+    B --&gt; C["Phase 2: BACKFILL&lt;br/&gt;V002 — Fill 50M rows&lt;br/&gt;⏱ ~17-30 phút&lt;br/&gt;🔒 Row-level locks only"]
+    C --&gt; D["Verify: 0 NULL rows&lt;br/&gt;Monitor replication lag&lt;br/&gt;VACUUM transactions"]
+    D --&gt; E["Deploy: App v3&lt;br/&gt;Remove OLD read paths&lt;br/&gt;App reads NEW shape only"]
+    E --&gt; F["Phase 3: CONTRACT&lt;br/&gt;V003 — Enforce NOT NULL&lt;br/&gt;⏱ ~5-10 phút&lt;br/&gt;🔒 ShareUpdateExclusiveLock"]
+    F --&gt; G["Phase 4: CLEANUP&lt;br/&gt;Remove dual-write code&lt;br/&gt;Drop partial index&lt;br/&gt;Update documentation"]
+
+    style A fill:#4CAF50,color:#fff
+    style B fill:#FF9800,color:#fff
+    style C fill:#2196F3,color:#fff
+    style D fill:#9C27B0,color:#fff
+    style E fill:#FF9800,color:#fff
+    style F fill:#f44336,color:#fff
+    style G fill:#607D8B,color:#fff</code></pre>
+<h3 id="tong-quan-lock-types-qua-cac-phase">Tổng quan Lock Types qua các Phase<a class="headerlink" href="#tong-quan-lock-types-qua-cac-phase" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>gantt
+    title Lock Timeline — Tác Động Lên Production
+    dateFormat X
+    axisFormat %s
+
+    section Phase 1
+    ADD COLUMN (AccessExclusive - instant)     :crit, 0, 1
+    CREATE INDEX CONCURRENTLY (ShareUpdateExcl) :active, 1, 600
+
+    section Phase 2
+    Batch UPDATE (RowExclusive per batch)       :active, 700, 2500
+
+    section Phase 3
+    ADD CHECK NOT VALID (AccessExclusive - instant) :crit, 2600, 2601
+    VALIDATE CHECK (ShareUpdateExclusive)           :active, 2601, 2900
+    SET NOT NULL (AccessExclusive - instant)         :crit, 2900, 2901</code></pre>
+<hr />
+<h2 id="3-phase-1-expand">3. Phase 1 — Expand<a class="headerlink" href="#3-phase-1-expand" title="Permanent link">&para;</a></h2>
+<h3 id="file-migrationsv001__add_settlement_batch_id_expandsql">File: <code>migrations/V001__add_settlement_batch_id_expand.sql</code><a class="headerlink" href="#file-migrationsv001__add_settlement_batch_id_expandsql" title="Permanent link">&para;</a></h3>
+<h3 id="cac-buoc-thuc-hien">Các bước thực hiện<a class="headerlink" href="#cac-buoc-thuc-hien" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Bước</th>
+<th>SQL</th>
+<th>Lock</th>
+<th>Thời gian</th>
+<th>Block DML?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>CREATE TABLE IF NOT EXISTS settlement_batches</code></td>
+<td>AccessExclusiveLock trên pg_class</td>
+<td>Instant</td>
+<td>❌ (bảng mới)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>ALTER TABLE transactions ADD COLUMN settlement_batch_id UUID</code></td>
+<td>AccessExclusiveLock</td>
+<td>Instant (metadata-only)</td>
+<td>⚡ microseconds</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>ADD CONSTRAINT ... FOREIGN KEY ... NOT VALID</code></td>
+<td>AccessExclusiveLock</td>
+<td>Instant</td>
+<td>⚡ microseconds</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>CREATE INDEX CONCURRENTLY idx_transactions_settlement_batch_id</code></td>
+<td>ShareUpdateExclusiveLock</td>
+<td>5-15 phút</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>CREATE INDEX CONCURRENTLY idx_transactions_settlement_batch_id_null</code></td>
+<td>ShareUpdateExclusiveLock</td>
+<td>2-5 phút</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-sao-add-column-la-instant">Tại sao <code>ADD COLUMN</code> là instant?<a class="headerlink" href="#tai-sao-add-column-la-instant" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>PostgreSQL 11+ optimization:
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>┌──────────────────────────────────────────────────────────┐
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│  Khi thêm cột NULLABLE không có DEFAULT:                 │
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  - PG chỉ cập nhật system catalog (pg_attribute)         │
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  - KHÔNG rewrite table                                   │
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  - KHÔNG scan rows                                       │
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  - Existing rows "thấy" NULL qua metadata                │
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  - Thời gian: O(1), không phụ thuộc vào số rows          │
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>└──────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<h3 id="tai-sao-dung-foreign-key-not-valid">Tại sao dùng <code>FOREIGN KEY NOT VALID</code>?<a class="headerlink" href="#tai-sao-dung-foreign-key-not-valid" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>NOT VALID</strong> có nghĩa PG sẽ enforce FK cho <strong>NEW</strong> inserts/updates ngay lập tức</li>
+<li>Nhưng PG <strong>KHÔNG</strong> scan existing rows để validate (vì tất cả đều NULL → tự động hợp lệ)</li>
+<li>Chúng ta sẽ VALIDATE FK sau khi backfill xong (trong V003)</li>
+</ul>
+<h3 id="app-behavior-trong-phase-1">App behavior trong Phase 1<a class="headerlink" href="#app-behavior-trong-phase-1" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!NOTE]
+<strong>Không cần deploy app mới cho Phase 1.</strong> App hiện tại tiếp tục hoạt động bình thường. Cột mới bị bỏ qua bởi tất cả các query.</p>
+</blockquote>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>App Code (v1 — OLD shape):
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  SELECT id, reference_number, amount, ... FROM transactions;  -- ✅ Works, ignores new column
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  INSERT INTO transactions (id, amount, ...) VALUES (...);      -- ✅ Works, settlement_batch_id = NULL
+</span></code></pre></div>
+<h3 id="cac-van-e-can-luu-y">Các vấn đề cần lưu ý<a class="headerlink" href="#cac-van-e-can-luu-y" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!WARNING]
+<strong>CREATE INDEX CONCURRENTLY có thể thất bại.</strong> Nếu thất bại giữa chừng, sẽ để lại một <strong>invalid index</strong>. Kiểm tra:
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">indexrelid</span><span class="p">::</span><span class="n">regclass</span><span class="p">,</span><span class="w"> </span><span class="n">indisvalid</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_index</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="n">indisvalid</span><span class="p">;</span>
+</span></code></pre></div>
+Nếu tìm thấy invalid index, drop và re-create.</p>
+</blockquote>
+<hr />
+<h2 id="4-phase-2-backfill">4. Phase 2 — Backfill<a class="headerlink" href="#4-phase-2-backfill" title="Permanent link">&para;</a></h2>
+<h3 id="file-migrationsv002__backfill_settlement_batch_idsql">File: <code>migrations/V002__backfill_settlement_batch_id.sql</code><a class="headerlink" href="#file-migrationsv002__backfill_settlement_batch_idsql" title="Permanent link">&para;</a></h3>
+<h3 id="chien-luoc-batch-processing">Chiến lược Batch Processing<a class="headerlink" href="#chien-luoc-batch-processing" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    A["SELECT batch&lt;br/&gt;(10K rows)&lt;br/&gt;WHERE NULL&lt;br/&gt;FOR UPDATE&lt;br/&gt;SKIP LOCKED"] --&gt; B["UPDATE batch&lt;br/&gt;SET batch_id&lt;br/&gt;= historical UUID"]
+    B --&gt; C{"Rows updated&lt;br/&gt;&gt; 0?"}
+    C --&gt;|Yes| D["pg_sleep(0.1s)"]
+    D --&gt; A
+    C --&gt;|No| E["✅ Done"]</code></pre>
+<h3 id="thong-so-cau-hinh">Thông số cấu hình<a class="headerlink" href="#thong-so-cau-hinh" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th>Giá trị</th>
+<th>Giải thích</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v_batch_size</code></td>
+<td>10,000</td>
+<td>Số rows mỗi batch. Giảm nếu replication lag tăng.</td>
+</tr>
+<tr>
+<td><code>v_sleep_seconds</code></td>
+<td>0.1</td>
+<td>Giây nghỉ giữa các batch. Tăng nếu CPU &gt; 80%.</td>
+</tr>
+<tr>
+<td><code>v_advisory_lock_id</code></td>
+<td>2024062301</td>
+<td>ID duy nhất, ngăn chạy backfill song song.</td>
+</tr>
+<tr>
+<td>Historical batch UUID</td>
+<td><code>00000000-...001</code></td>
+<td>UUID cố định cho tất cả rows lịch sử.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-sao-dung-for-update-skip-locked">Tại sao dùng <code>FOR UPDATE SKIP LOCKED</code>?<a class="headerlink" href="#tai-sao-dung-for-update-skip-locked" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Scenario: App đang INSERT/UPDATE transaction X
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>          Backfill đang cố UPDATE transaction X
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  ❌ Không có SKIP LOCKED:
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>     Backfill CHỜN → Deadlock potential → Timeout → Batch fail
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  ✅ Với SKIP LOCKED:
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>     Backfill BỎ QUA transaction X → Xử lý ở batch sau → Không deadlock
+</span></code></pre></div>
+<h3 id="uoc-tinh-performance-impact">Ước tính Performance Impact<a class="headerlink" href="#uoc-tinh-performance-impact" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Giá trị ước tính</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tổng batch</strong></td>
+<td>~5,000</td>
+<td>50M / 10K</td>
+</tr>
+<tr>
+<td><strong>Thời gian/batch</strong></td>
+<td>~50-200ms</td>
+<td>Tùy thuộc I/O</td>
+</tr>
+<tr>
+<td><strong>Sleep/batch</strong></td>
+<td>100ms</td>
+<td>Configurable</td>
+</tr>
+<tr>
+<td><strong>Tổng thời gian</strong></td>
+<td>~17-30 phút</td>
+<td>Với sleep</td>
+</tr>
+<tr>
+<td><strong>WAL generated</strong></td>
+<td>~2-4 GB</td>
+<td>Chỉ 1 UUID column/row</td>
+</tr>
+<tr>
+<td><strong>CPU impact</strong></td>
+<td>&lt; 10%</td>
+<td>Với sleep giữa batches</td>
+</tr>
+<tr>
+<td><strong>Replication lag</strong></td>
+<td>&lt; 1s</td>
+<td>Monitor liên tục</td>
+</tr>
+</tbody>
+</table>
+<h3 id="concurrent-insert-handling">Concurrent Insert Handling<a class="headerlink" href="#concurrent-insert-handling" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Trước khi chạy V002, PHẢI deploy app v2 (dual-write).</strong> App v2:
+- <code>INSERT</code> mới PHẢI bao gồm <code>settlement_batch_id</code>
+- <code>SELECT</code> PHẢI handle cả NULL (old rows) và non-NULL (new rows)
+- Nếu không deploy app v2 trước, rows mới sẽ có <code>settlement_batch_id = NULL</code></p>
+</blockquote>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Timeline:
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  T0: V001 chạy xong (column exists, nullable)
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  T1: Deploy app v2 (dual-write) ← BẮT BUỘC trước V002
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  T2: Chạy V002 (backfill existing rows)
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  T3: V002 hoàn thành (0 NULL rows)
+</span></code></pre></div>
+<hr />
+<h2 id="5-phase-3-dual-write-window">5. Phase 3 — Dual-Write Window<a class="headerlink" href="#5-phase-3-dual-write-window" title="Permanent link">&para;</a></h2>
+<h3 id="dual-write-la-gi">Dual-Write là gì?<a class="headerlink" href="#dual-write-la-gi" title="Permanent link">&para;</a></h3>
+<p>Trong giai đoạn này, app phải <strong>đọc và ghi cả hai schema shape</strong> đồng thời:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>App v2 (Dual-Write):
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  INSERT INTO transactions (
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    id, reference_number, amount, ...,
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    settlement_batch_id  ← NEW: Luôn cung cấp giá trị
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  ) VALUES (...);
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>  SELECT id, reference_number, amount, ...,
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    COALESCE(settlement_batch_id, NULL) as settlement_batch_id  ← Handle NULL
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>  FROM transactions;
+</span></code></pre></div>
+<h3 id="chien-luoc-deploy-app-v2">Chiến lược Deploy App v2<a class="headerlink" href="#chien-luoc-deploy-app-v2" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DBA as DBA Team
+    participant App as App Server
+    participant DB as PostgreSQL
+    participant LB as Load Balancer
+
+    Note over DBA,DB: Phase 1 Complete — Column exists, nullable
+    DBA-&gt;&gt;App: Request deploy app v2 (dual-write)
+    App-&gt;&gt;LB: Rolling update (blue-green)
+    Note over LB: Old pods: write old shape&lt;br/&gt;New pods: write old + new
+    LB-&gt;&gt;App: All pods updated to v2
+    App-&gt;&gt;DBA: Dual-write confirmed ✅
+    DBA-&gt;&gt;DB: Execute V002 (backfill)
+    Note over DB: Backfilling 50M rows...
+    DB-&gt;&gt;DBA: Backfill complete ✅
+    DBA-&gt;&gt;App: Request deploy app v3 (new shape only)
+    App-&gt;&gt;LB: Rolling update
+    LB-&gt;&gt;App: All pods updated to v3
+    App-&gt;&gt;DBA: New shape confirmed ✅
+    DBA-&gt;&gt;DB: Execute V003 (enforce NOT NULL)</code></pre>
+<h3 id="luu-y-quan-trong-ve-blue-green-deploy">Lưu ý quan trọng về Blue-Green Deploy<a class="headerlink" href="#luu-y-quan-trong-ve-blue-green-deploy" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!CAUTION]
+Trong quá trình rolling update từ app v1 → v2:
+- Một số pod chạy v1 (không ghi <code>settlement_batch_id</code>)
+- Một số pod chạy v2 (ghi <code>settlement_batch_id</code>)
+- Điều này <strong>HOÀN TOÀN AN TOÀN</strong> vì cột vẫn NULLABLE
+- Rows từ pod v1 sẽ có <code>settlement_batch_id = NULL</code> → backfill xử lý sau</p>
+</blockquote>
+<h3 id="kiem-tra-truoc-khi-roi-dual-write-window">Kiểm tra trước khi rời Dual-Write Window<a class="headerlink" href="#kiem-tra-truoc-khi-roi-dual-write-window" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- Chạy query này SAU khi V002 xong và TRƯỚC khi deploy app v3:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">null_rows</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">settlement_batch_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1">-- Kết quả PHẢI = 0</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">-- Kiểm tra rows gần đây (concurrent inserts):</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">recent_null_rows</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">settlement_batch_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">interval</span><span class="w"> </span><span class="s1">'1 hour'</span><span class="p">;</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="c1">-- Kết quả NÊN = 0 (nếu &gt; 0, có pod v1 còn sót)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="6-phase-4-constraint-promotion">6. Phase 4 — Constraint Promotion<a class="headerlink" href="#6-phase-4-constraint-promotion" title="Permanent link">&para;</a></h2>
+<h3 id="file-migrationsv003__promote_not_null_constraintsql">File: <code>migrations/V003__promote_not_null_constraint.sql</code><a class="headerlink" href="#file-migrationsv003__promote_not_null_constraintsql" title="Permanent link">&para;</a></h3>
+<h3 id="ky-thuat-not-valid-validate-pg-12">Kỹ thuật: NOT VALID + VALIDATE (PG 12+)<a class="headerlink" href="#ky-thuat-not-valid-validate-pg-12" title="Permanent link">&para;</a></h3>
+<p>Đây là kỹ thuật cốt lõi cho zero-downtime NOT NULL enforcement:</p>
+<pre class="mermaid"><code>flowchart TD
+    A["Step 1: ADD CHECK NOT VALID&lt;br/&gt;AccessExclusiveLock — instant&lt;br/&gt;Enforce cho NEW rows ngay"] --&gt; B["Step 2: VALIDATE CONSTRAINT&lt;br/&gt;ShareUpdateExclusiveLock&lt;br/&gt;Full scan nhưng KHÔNG block DML"]
+    B --&gt; C["Step 3: SET NOT NULL&lt;br/&gt;AccessExclusiveLock — instant&lt;br/&gt;PG thấy validated CHECK → skip scan"]
+    C --&gt; D["Step 4: DROP CHECK&lt;br/&gt;AccessExclusiveLock — instant&lt;br/&gt;NOT NULL đã ở column-level"]
+    D --&gt; E["Step 5: VALIDATE FK&lt;br/&gt;ShareUpdateExclusiveLock&lt;br/&gt;Validate foreign key"]
+    E --&gt; F["Step 6: DROP partial index&lt;br/&gt;CONCURRENTLY&lt;br/&gt;Không còn cần thiết"]</code></pre>
+<h3 id="phan-tich-lock-chi-tiet">Phân tích Lock chi tiết<a class="headerlink" href="#phan-tich-lock-chi-tiet" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Lệnh SQL</th>
+<th>Lock Type</th>
+<th>Block DML?</th>
+<th>Thời gian</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>ADD CONSTRAINT CHECK ... NOT VALID</code></td>
+<td>AccessExclusiveLock</td>
+<td>⚡ microseconds</td>
+<td>Instant</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>VALIDATE CONSTRAINT</code></td>
+<td><strong>ShareUpdateExclusiveLock</strong></td>
+<td>❌ <strong>Không</strong></td>
+<td>2-5 phút</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>ALTER COLUMN SET NOT NULL</code></td>
+<td>AccessExclusiveLock</td>
+<td>⚡ microseconds</td>
+<td>Instant (PG 12+)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>DROP CONSTRAINT (CHECK)</code></td>
+<td>AccessExclusiveLock</td>
+<td>⚡ microseconds</td>
+<td>Instant</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>VALIDATE CONSTRAINT (FK)</code></td>
+<td><strong>ShareUpdateExclusiveLock</strong></td>
+<td>❌ <strong>Không</strong></td>
+<td>2-5 phút</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>DROP INDEX CONCURRENTLY</code></td>
+<td>ShareUpdateExclusiveLock</td>
+<td>❌ <strong>Không</strong></td>
+<td>Vài giây</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-sao-set-not-null-la-instant-voi-pg-12">Tại sao <code>SET NOT NULL</code> là instant với PG 12+?<a class="headerlink" href="#tai-sao-set-not-null-la-instant-voi-pg-12" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>PostgreSQL 12+ optimization:
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>┌─────────────────────────────────────────────────────────────┐
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>│  Khi chạy ALTER TABLE ... SET NOT NULL, PG kiểm tra:        │
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>│                                                              │
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>│  1. Có CHECK (col IS NOT NULL) đã VALIDATED không?           │
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>│     → CÓ: Skip full table scan, chỉ cập nhật metadata       │
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>│     → KHÔNG: Full table scan dưới AccessExclusiveLock 😱     │
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>│                                                              │
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>│  Vì vậy, workflow của chúng ta:                              │
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>│    ADD CHECK NOT VALID → VALIDATE → SET NOT NULL (instant)   │
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>│                                                              │
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>│  Reference: pg_constraint.convalidated = true                │
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>└─────────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<h3 id="shareupdateexclusivelock-vs-accessexclusivelock">ShareUpdateExclusiveLock vs AccessExclusiveLock<a class="headerlink" href="#shareupdateexclusivelock-vs-accessexclusivelock" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ShareUpdateExclusiveLock</th>
+<th>AccessExclusiveLock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SELECT</strong></td>
+<td>✅ Cho phép</td>
+<td>❌ Block</td>
+</tr>
+<tr>
+<td><strong>INSERT</strong></td>
+<td>✅ Cho phép</td>
+<td>❌ Block</td>
+</tr>
+<tr>
+<td><strong>UPDATE</strong></td>
+<td>✅ Cho phép</td>
+<td>❌ Block</td>
+</tr>
+<tr>
+<td><strong>DELETE</strong></td>
+<td>✅ Cho phép</td>
+<td>❌ Block</td>
+</tr>
+<tr>
+<td><strong>VACUUM</strong></td>
+<td>❌ Block</td>
+<td>❌ Block</td>
+</tr>
+<tr>
+<td><strong>Dùng ở đâu</strong></td>
+<td>VALIDATE, CONCURRENTLY</td>
+<td>ADD COLUMN, SET NOT NULL</td>
+</tr>
+<tr>
+<td><strong>Tác động Production</strong></td>
+<td>Không đáng kể</td>
+<td>Phải instant, nếu không → downtime</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-phase-5-cleanup">7. Phase 5 — Cleanup<a class="headerlink" href="#7-phase-5-cleanup" title="Permanent link">&para;</a></h2>
+<h3 id="sau-khi-v003-thanh-cong">Sau khi V003 thành công<a class="headerlink" href="#sau-khi-v003-thanh-cong" title="Permanent link">&para;</a></h3>
+<p>Các việc cần làm sau khi migration hoàn tất:</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>App code cleanup:</strong> Xóa tất cả dual-write logic, COALESCE fallbacks</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Remove feature flags:</strong> Tắt và xóa các feature flags liên quan</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>VACUUM:</strong> Chạy <code>VACUUM (VERBOSE) transactions</code> để thu hồi dead tuples từ backfill</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>ANALYZE:</strong> Chạy <code>ANALYZE transactions</code> để cập nhật statistics cho query planner</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Documentation:</strong> Cập nhật ERD, data dictionary, API docs</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Monitoring:</strong> Xóa các alert tạm thời, thêm alert cho NOT NULL violations</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Flyway:</strong> Đánh dấu migration đã hoàn tất trong schema_history</li>
+</ul>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">-- Post-migration maintenance</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">VACUUM</span><span class="w"> </span><span class="p">(</span><span class="k">VERBOSE</span><span class="p">)</span><span class="w"> </span><span class="n">transactions</span><span class="p">;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">ANALYZE</span><span class="w"> </span><span class="n">transactions</span><span class="p">;</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1">-- Verify final schema</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="err">\</span><span class="n">d</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1">-- settlement_batch_id | uuid | not null</span>
+</span></code></pre></div>
+<hr />
+<h2 id="8-ke-hoach-rollback">8. Kế Hoạch Rollback<a class="headerlink" href="#8-ke-hoach-rollback" title="Permanent link">&para;</a></h2>
+<h3 id="nguyen-tac-rollback">Nguyên tắc Rollback<a class="headerlink" href="#nguyen-tac-rollback" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!CAUTION]
+<strong>Rollback PHẢI được thực hiện theo thứ tự ngược lại:</strong><br />
+U003 → U002 → U001<br />
+Nếu chỉ cần rollback Phase 3, chỉ chạy U003.</p>
+</blockquote>
+<h3 id="rollback-cho-tung-phase">Rollback cho từng Phase<a class="headerlink" href="#rollback-cho-tung-phase" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    subgraph "Nếu Phase 3 thất bại"
+        R3["U003: Drop NOT NULL&lt;br/&gt;+ Drop CHECK&lt;br/&gt;→ Column trở lại NULLABLE"]
+    end
+
+    subgraph "Nếu Phase 2 thất bại"
+        R2["U002: Nullify backfilled rows&lt;br/&gt;→ Tất cả rows = NULL&lt;br/&gt;(hoặc skip nếu sẽ chạy U001)"]
+    end
+
+    subgraph "Nếu Phase 1 thất bại"
+        R1["U001: Drop index + column&lt;br/&gt;+ Drop settlement_batches&lt;br/&gt;→ Schema trở về ban đầu"]
+    end
+
+    R3 --&gt; R2
+    R2 --&gt; R1</code></pre>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Rollback File</th>
+<th>Khi nào dùng</th>
+<th>Thời gian</th>
+<th>Cần deploy app?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 3</td>
+<td><code>U003__rollback_constraint.sql</code></td>
+<td>NOT NULL gây lỗi cho app</td>
+<td>Instant</td>
+<td>✅ Rollback app → v2 (dual-write)</td>
+</tr>
+<tr>
+<td>Phase 2</td>
+<td><code>U002__rollback_backfill.sql</code></td>
+<td>Cần undo backfill data</td>
+<td>~17-30 phút</td>
+<td>Không bắt buộc</td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>U001__rollback_expand.sql</code></td>
+<td>Abort toàn bộ migration</td>
+<td>&lt; 1 phút</td>
+<td>✅ Rollback app → v1 (old shape)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chi-tiet-tung-rollback">Chi tiết từng Rollback<a class="headerlink" href="#chi-tiet-tung-rollback" title="Permanent link">&para;</a></h3>
+<h4 id="u003-rollback-constraint">U003 — Rollback Constraint<a class="headerlink" href="#u003-rollback-constraint" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">-- Chạy khi: V003 thất bại hoặc cần revert NOT NULL</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1">-- Pre-condition: App đã rollback về v2 (handles NULL)</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="k">ALTER</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="n">settlement_batch_id</span><span class="w"> </span><span class="k">DROP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="k">DROP</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">chk_transactions_settlement_batch_id_not_null</span><span class="p">;</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1">-- Kết quả: Column là NULLABLE, app v2 (dual-write) hoạt động bình thường</span>
+</span></code></pre></div>
+<h4 id="u002-rollback-backfill">U002 — Rollback Backfill<a class="headerlink" href="#u002-rollback-backfill" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">-- Chạy khi: Cần nullify dữ liệu backfill</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1">-- Batch-update SET NULL cho historical rows</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1">-- CHỈ nullify rows với batch_id = '00000000-...001' (historical)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">-- KHÔNG ảnh hưởng rows do app v2 tạo</span>
+</span></code></pre></div>
+<h4 id="u001-rollback-expand">U001 — Rollback Expand<a class="headerlink" href="#u001-rollback-expand" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">-- Chạy khi: Abort toàn bộ migration</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1">-- Pre-condition: App đã rollback về v1</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">DROP</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">CONCURRENTLY</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">idx_transactions_settlement_batch_id_null</span><span class="p">;</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">DROP</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">CONCURRENTLY</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">idx_transactions_settlement_batch_id</span><span class="p">;</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="k">DROP</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">settlement_batch_id</span><span class="p">;</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">settlement_batches</span><span class="p">;</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1">-- Kết quả: Schema giống 100% trước migration</span>
+</span></code></pre></div>
+<hr />
+<h2 id="9-monitoring-trong-qua-trinh-migration">9. Monitoring Trong Quá Trình Migration<a class="headerlink" href="#9-monitoring-trong-qua-trinh-migration" title="Permanent link">&para;</a></h2>
+<h3 id="dashboard-metrics">Dashboard Metrics<a class="headerlink" href="#dashboard-metrics" title="Permanent link">&para;</a></h3>
+<p>Tạo dashboard Grafana/DataDog với các panels sau:</p>
+<h4 id="91-database-metrics">9.1 Database Metrics<a class="headerlink" href="#91-database-metrics" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">-- 1. Replication Lag (CRITICAL — monitor liên tục)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">client_addr</span><span class="p">,</span><span class="w"> </span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">       </span><span class="k">state</span><span class="p">,</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">       </span><span class="n">pg_wal_lsn_diff</span><span class="p">(</span><span class="n">sent_lsn</span><span class="p">,</span><span class="w"> </span><span class="n">replay_lsn</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">replication_lag_bytes</span><span class="p">,</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">       </span><span class="n">pg_wal_lsn_diff</span><span class="p">(</span><span class="n">sent_lsn</span><span class="p">,</span><span class="w"> </span><span class="n">replay_lsn</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">replication_lag_mb</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_replication</span><span class="p">;</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1">-- ⚠️ Alert nếu &gt; 100MB hoặc &gt; 5 giây</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1">-- 2. Lock Waits (giám sát lock contention)</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">usename</span><span class="p">,</span><span class="w"> </span><span class="k">state</span><span class="p">,</span><span class="w"> </span><span class="n">wait_event_type</span><span class="p">,</span><span class="w"> </span><span class="n">wait_event</span><span class="p">,</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">       </span><span class="n">pg_blocking_pids</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">blocked_by</span><span class="p">,</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">       </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">query_start</span><span class="p">,</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">       </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">query_start</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duration</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_activity</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">wait_event_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Lock'</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="c1">-- 3. Active Connections</span>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">state</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span>
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_activity</span><span class="w"> </span>
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">datname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_database</span><span class="p">()</span>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">state</span><span class="p">;</span>
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="c1">-- 4. Table Bloat (sau backfill)</span>
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">schemaname</span><span class="p">,</span><span class="w"> </span><span class="n">relname</span><span class="p">,</span><span class="w"> </span>
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="w">       </span><span class="n">n_live_tup</span><span class="p">,</span><span class="w"> </span><span class="n">n_dead_tup</span><span class="p">,</span>
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n_dead_tup</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">n_live_tup</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n_dead_tup</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">dead_pct</span><span class="p">,</span>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="w">       </span><span class="n">last_autovacuum</span><span class="p">,</span><span class="w"> </span><span class="n">last_autoanalyze</span>
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_user_tables</span><span class="w"> </span>
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">relname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'transactions'</span><span class="p">;</span>
+</span><span id="__span-12-31"><a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a>
+</span><span id="__span-12-32"><a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a><span class="c1">-- 5. WAL Generation Rate</span>
+</span><span id="__span-12-33"><a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">pg_wal_lsn_diff</span><span class="p">(</span><span class="n">pg_current_wal_lsn</span><span class="p">(),</span><span class="w"> </span><span class="s1">'0/0'</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_wal_mb</span><span class="p">;</span>
+</span><span id="__span-12-34"><a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a><span class="c1">-- Sample mỗi 30 giây, tính rate</span>
+</span></code></pre></div>
+<h4 id="92-application-metrics">9.2 Application Metrics<a class="headerlink" href="#92-application-metrics" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Alert Threshold</th>
+<th>Hành động</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API Response Time (p99)</td>
+<td>&gt; 2x baseline</td>
+<td>Tăng <code>v_sleep_seconds</code>, giảm <code>v_batch_size</code></td>
+</tr>
+<tr>
+<td>Error Rate (5xx)</td>
+<td>&gt; 0.1%</td>
+<td>Pause migration, check locks</td>
+</tr>
+<tr>
+<td>Transaction Throughput</td>
+<td>&lt; 80% baseline</td>
+<td>Pause migration</td>
+</tr>
+<tr>
+<td>Connection Pool Usage</td>
+<td>&gt; 85%</td>
+<td>Reduce batch size</td>
+</tr>
+</tbody>
+</table>
+<h4 id="93-backfill-progress-monitoring">9.3 Backfill Progress Monitoring<a class="headerlink" href="#93-backfill-progress-monitoring" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">-- Track backfill progress in real-time</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">SELECT</span><span class="w"> </span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">settlement_batch_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">filled</span><span class="p">,</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">settlement_batch_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">remaining</span><span class="p">,</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">        </span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">settlement_batch_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span><span class="w"> </span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">        </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span><span class="p">),</span><span class="w"> </span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">        </span><span class="mi">2</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pct_complete</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="10-anh-gia-rui-ro">10. Đánh Giá Rủi Ro<a class="headerlink" href="#10-anh-gia-rui-ro" title="Permanent link">&para;</a></h2>
+<h3 id="risk-matrix">Risk Matrix<a class="headerlink" href="#risk-matrix" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Rủi ro</th>
+<th>Xác suất</th>
+<th>Tác động</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Replication lag spike</strong> trong backfill</td>
+<td>Trung bình</td>
+<td>Cao</td>
+<td>Giảm batch_size, tăng sleep. Monitor pg_stat_replication.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Lock timeout</strong> khi ADD COLUMN</td>
+<td>Thấp</td>
+<td>Trung bình</td>
+<td><code>SET lock_timeout = '5s'</code>. Retry ở off-peak.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Invalid index</strong> sau CREATE INDEX CONCURRENTLY thất bại</td>
+<td>Thấp</td>
+<td>Thấp</td>
+<td>Kiểm tra <code>pg_index.indisvalid</code>. Drop &amp; recreate.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>App v1 pods</strong> vẫn running khi V002 chạy</td>
+<td>Trung bình</td>
+<td>Thấp</td>
+<td>Idempotent backfill sẽ pick up NULL rows ở batch sau.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Disk space</strong> không đủ cho WAL</td>
+<td>Thấp</td>
+<td>Cao</td>
+<td>Pre-check: cần ~4-8GB WAL headroom. Monitor <code>pg_wal_lsn_diff</code>.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Autovacuum blocked</strong> bởi long-running backfill transaction</td>
+<td>Trung bình</td>
+<td>Trung bình</td>
+<td>Dùng shell-script approach (mỗi batch = 1 transaction) cho large tables.</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>FK violation</strong> khi VALIDATE FK</td>
+<td>Rất thấp</td>
+<td>Trung bình</td>
+<td>NOT VALID đã enforce cho new writes. Pre-check trước VALIDATE.</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>App deployment failure</strong> (v2 rollback)</td>
+<td>Thấp</td>
+<td>Cao</td>
+<td>Column là NULLABLE → app v1 hoạt động bình thường nếu rollback.</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Network partition</strong> giữa app và DB</td>
+<td>Rất thấp</td>
+<td>Cao</td>
+<td>PG transaction sẽ rollback. Backfill idempotent → re-run an toàn.</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Table bloat</strong> sau backfill 50M rows</td>
+<td>Cao</td>
+<td>Trung bình</td>
+<td>Chạy <code>VACUUM (VERBOSE) transactions</code> sau backfill.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="contingency-plan">Contingency Plan<a class="headerlink" href="#contingency-plan" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    A{"Vấn đề xảy ra&lt;br/&gt;ở Phase nào?"} --&gt; B["Phase 1&lt;br/&gt;(Expand)"]
+    A --&gt; C["Phase 2&lt;br/&gt;(Backfill)"]
+    A --&gt; D["Phase 3&lt;br/&gt;(Contract)"]
+
+    B --&gt; B1["Lock timeout?&lt;br/&gt;→ Retry off-peak"]
+    B --&gt; B2["Index invalid?&lt;br/&gt;→ DROP &amp; recreate"]
+    B --&gt; B3["Nghiêm trọng?&lt;br/&gt;→ Chạy U001"]
+
+    C --&gt; C1["Repl lag?&lt;br/&gt;→ Tăng sleep"]
+    C --&gt; C2["CPU cao?&lt;br/&gt;→ Giảm batch"]
+    C --&gt; C3["Nghiêm trọng?&lt;br/&gt;→ Kill, chạy U002 + U001"]
+
+    D --&gt; D1["VALIDATE lâu?&lt;br/&gt;→ Chờ, không block DML"]
+    D --&gt; D2["SET NOT NULL lỗi?&lt;br/&gt;→ Còn NULL rows, re-run V002"]
+    D --&gt; D3["Nghiêm trọng?&lt;br/&gt;→ Chạy U003"]</code></pre>
+<hr />
+<h2 id="11-uoc-tinh-timeline">11. Ước Tính Timeline<a class="headerlink" href="#11-uoc-tinh-timeline" title="Permanent link">&para;</a></h2>
+<h3 id="timeline-cho-50m-rows">Timeline cho 50M rows<a class="headerlink" href="#timeline-cho-50m-rows" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Giai đoạn</th>
+<th>Thời gian thực thi</th>
+<th>Thời gian chuẩn bị</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phase 1: Expand</strong></td>
+<td>&lt; 15 phút</td>
+<td>1 ngày</td>
+<td>Review, test on staging</td>
+</tr>
+<tr>
+<td><strong>App v2 Deploy</strong></td>
+<td>30-60 phút</td>
+<td>2-3 ngày</td>
+<td>Develop, test dual-write code</td>
+</tr>
+<tr>
+<td><strong>Phase 2: Backfill</strong></td>
+<td>17-30 phút</td>
+<td>1 ngày</td>
+<td>Test batch size on staging</td>
+</tr>
+<tr>
+<td><strong>Verify + VACUUM</strong></td>
+<td>15-30 phút</td>
+<td>—</td>
+<td>Automated checks</td>
+</tr>
+<tr>
+<td><strong>App v3 Deploy</strong></td>
+<td>30-60 phút</td>
+<td>1-2 ngày</td>
+<td>Remove old code paths</td>
+</tr>
+<tr>
+<td><strong>Phase 3: Contract</strong></td>
+<td>5-10 phút</td>
+<td>1 ngày</td>
+<td>Review, test on staging</td>
+</tr>
+<tr>
+<td><strong>Cleanup</strong></td>
+<td>30 phút</td>
+<td>1 ngày</td>
+<td>Documentation, monitoring</td>
+</tr>
+<tr>
+<td><strong>Tổng</strong></td>
+<td><strong>~2-3 giờ thực thi</strong></td>
+<td><strong>~7-10 ngày chuẩn bị</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommended-schedule">Recommended Schedule<a class="headerlink" href="#recommended-schedule" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Tuần 1 (Thứ 2-4):
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>  ├─ Develop app v2 (dual-write)
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>  ├─ Test trên staging environment
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>  └─ Review migration scripts
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>Tuần 1 (Thứ 5):
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>  ├─ 09:00 — Execute V001 (Phase 1: Expand)
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>  ├─ 09:15 — Verify indexes, column, FK
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>  └─ 14:00 — Deploy app v2 (dual-write)
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>Tuần 1 (Thứ 6):
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>  ├─ 09:00 — Execute V002 (Phase 2: Backfill)
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>  ├─ 09:30 — Verify 0 NULL rows
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>  ├─ 09:45 — VACUUM transactions
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>  └─ 10:00 — Monitor 24h
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>Tuần 2 (Thứ 2):
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>  ├─ 09:00 — Final NULL check
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>  ├─ 09:05 — Deploy app v3 (new shape only)
+</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>  ├─ 10:00 — Execute V003 (Phase 3: Contract)
+</span><span id="__span-14-21"><a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>  ├─ 10:10 — Verify NOT NULL enforced
+</span><span id="__span-14-22"><a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>  └─ 14:00 — Cleanup, documentation
+</span></code></pre></div>
+<blockquote>
+<p>[!TIP]
+<strong>Best practice:</strong> Chạy các migration vào <strong>giờ thấp tải</strong> (09:00-11:00 sáng, không phải cuối tháng khi xử lý lương). Tránh thứ 6 chiều cho Phase 3 (contract) — nếu có vấn đề, sẽ khó xử lý cuối tuần.</p>
+</blockquote>
+<h3 id="ieu-kien-tien-quyet-pre-flight-checklist">Điều kiện tiên quyết (Pre-flight Checklist)<a class="headerlink" href="#ieu-kien-tien-quyet-pre-flight-checklist" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Staging test thành công (cả 3 phases + rollback)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Backup database mới nhất (&lt; 1h)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Replication lag &lt; 10MB trước khi bắt đầu</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Disk space &gt; 20GB free (cho WAL)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> On-call DBA available</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> App team on standby cho deploy</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Monitoring dashboard ready</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Rollback scripts tested on staging</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Communication sent to stakeholders</li>
+</ul>
+<hr />
+<h2 id="phu-luc">Phụ Lục<a class="headerlink" href="#phu-luc" title="Permanent link">&para;</a></h2>
+<h3 id="a-cau-truc-file">A. Cấu trúc file<a class="headerlink" href="#a-cau-truc-file" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>migrations/
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>├── V001__add_settlement_batch_id_expand.sql      # Phase 1: Expand
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>├── V002__backfill_settlement_batch_id.sql         # Phase 2: Backfill
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>├── V003__promote_not_null_constraint.sql          # Phase 3: Contract
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>└── rollback/
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    ├── U001__rollback_expand.sql                  # Undo Phase 1
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    ├── U002__rollback_backfill.sql                # Undo Phase 2
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    └── U003__rollback_constraint.sql              # Undo Phase 3
+</span></code></pre></div>
+<h3 id="b-schema-truoc-va-sau-migration">B. Schema trước và sau Migration<a class="headerlink" href="#b-schema-truoc-va-sau-migration" title="Permanent link">&para;</a></h3>
+<div class="language-diff highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="w"> </span>CREATE TABLE transactions (
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w"> </span>    id                    UUID PRIMARY KEY,
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w"> </span>    reference_number      VARCHAR NOT NULL,
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w"> </span>    idempotency_key_id    UUID,
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w"> </span>    source_wallet_id      UUID,
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w"> </span>    destination_wallet_id UUID,
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w"> </span>    type                  VARCHAR,
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w"> </span>    amount                NUMERIC(19,4),
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w"> </span>    currency              VARCHAR(3),
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w"> </span>    fee_amount            NUMERIC(19,4),
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w"> </span>    status                VARCHAR,
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w"> </span>    description           TEXT,
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w"> </span>    metadata              JSONB,
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w"> </span>    created_at            TIMESTAMPTZ,
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w"> </span>    updated_at            TIMESTAMPTZ,
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="gd">-    settled_at            TIMESTAMPTZ</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="gi">+    settled_at            TIMESTAMPTZ,</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="gi">+    settlement_batch_id   UUID NOT NULL</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="gi">+        REFERENCES settlement_batches(id)</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="w"> </span>);
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a><span class="gi">+</span>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="gi">+CREATE TABLE settlement_batches (</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="gi">+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a><span class="gi">+    batch_reference VARCHAR(64) NOT NULL UNIQUE,</span>
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a><span class="gi">+    status          VARCHAR(32) NOT NULL DEFAULT 'PENDING',</span>
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="gi">+    currency        VARCHAR(3) NOT NULL,</span>
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a><span class="gi">+    total_amount    NUMERIC(19,4) NOT NULL DEFAULT 0,</span>
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a><span class="gi">+    total_count     INTEGER NOT NULL DEFAULT 0,</span>
+</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a><span class="gi">+    settled_at      TIMESTAMPTZ,</span>
+</span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a><span class="gi">+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),</span>
+</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a><span class="gi">+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()</span>
+</span><span id="__span-16-32"><a id="__codelineno-16-32" name="__codelineno-16-32" href="#__codelineno-16-32"></a><span class="gi">+);</span>
+</span></code></pre></div>
+<h3 id="c-tham-khao">C. Tham khảo<a class="headerlink" href="#c-tham-khao" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="https://www.postgresql.org/docs/current/sql-altertable.html">PostgreSQL ALTER TABLE Documentation</a></li>
+<li><a href="https://www.postgresql.org/docs/11/release-11.html">PG 11: ADD COLUMN instant for nullable columns</a></li>
+<li><a href="https://www.postgresql.org/docs/12/release-12.html">PG 12: SET NOT NULL skips scan with validated CHECK</a></li>
+<li><a href="https://flywaydb.org/documentation/concepts/migrations#naming">Flyway Migration Naming Convention</a></li>
+<li><a href="https://martinfowler.com/bliki/ParallelChange.html">Expand-Contract Pattern — Martin Fowler</a></li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>vietpay/design-notes/migration-strategy.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../integrity-guarantees/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Đảm bảo Toàn vẹn Dữ liệu — VietPay Wallet Platform">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Đảm bảo Toàn vẹn Dữ liệu — VietPay Wallet Platform
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../performance-analysis/" class="md-footer__link md-footer__link--next" aria-label="Sau: Phân tích Hiệu năng — Settlement Query Optimization">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Phân tích Hiệu năng — Settlement Query Optimization
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

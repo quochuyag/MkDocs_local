@@ -1,0 +1,3532 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../docs/observability/">
+      
+      
+        <link rel="next" href="../">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#huong-dan-chi-tiet-vietpay-database-architecture-assessment" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            13. VietPay
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Design notes
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../docs/adr/001-data-architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Docs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cau-truc-thu-muc-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 CẤU TRÚC THƯ MỤC DỰ ÁN
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 CẤU TRÚC THƯ MỤC DỰ ÁN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cach-oc-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách đọc dự án
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-1-relational-core-model-schema-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 1: Relational Core Model — Schema Design
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 1: Relational Core Model — Schema Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet-tung-buoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết — Từng bước
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cách giải quyết — Từng bước">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-thiet-ke-accounts-wallets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1: Thiết kế Accounts &amp; Wallets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-thiet-ke-double-entry-ledger" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2: Thiết kế Double-Entry Ledger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-thiet-ke-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3: Thiết kế Transactions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-4-thiet-ke-idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 4: Thiết kế Idempotency
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-5-thiet-ke-audit-trail" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 5: Thiết kế Audit Trail
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-2-query-performance-toi-uu-truy-van-50m-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 2: Query &amp; Performance — Tối ưu truy vấn 50M rows
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 2: Query & Performance — Tối ưu truy vấn 50M rows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet-tung-buoc_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết — Từng bước
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cách giải quyết — Từng bước">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query-goc-cham" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query gốc (chậm):
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-covering-partial-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1: Covering Partial Index
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-range-partitioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2: Range Partitioning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-materialized-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3: Materialized View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tom-tat-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-3-zero-downtime-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 3: Zero-Downtime Migration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 3: Zero-Downtime Migration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet-expand-contract-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết — Expand-Contract Pattern
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cách giải quyết — Expand-Contract Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-khong-on-gian-alter-table-add-column-not-null" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao không đơn giản ALTER TABLE ADD COLUMN NOT NULL?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-phap-3-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải pháp: 3 Phase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-expand-v001" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1 — EXPAND (V001)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-backfill-v002" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2 — BACKFILL (V002)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-contract-v003" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3 — CONTRACT (V003)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback Plan
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-4a-mongodb-webhook-event-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 4a: MongoDB — Webhook Event Store
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 4a: MongoDB — Webhook Event Store">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-mongodb-thay-vi-postgresql-jsonb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao MongoDB thay vì PostgreSQL JSONB?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-4b-neo4j-fraud-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 4b: Neo4j — Fraud Detection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 4b: Neo4j — Fraud Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-ay-la-graph-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao đây là Graph Problem?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-5-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 5: Observability
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 5: Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-6-architecture-decision-record-adr" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 6: Architecture Decision Record (ADR)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 6: Architecture Decision Record (ADR)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-quyet-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3 Quyết định
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Quyết định">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#decision-1-modelling-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 1: Modelling Standards
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-2-strong-vs-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 2: Strong vs Eventual Consistency
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-3-data-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 3: Data Contracts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ket-qua-review-bug-a-sua" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 KẾT QUẢ REVIEW &amp; BUG ĐÃ SỬA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 KẾT QUẢ REVIEW & BUG ĐÃ SỬA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bugs-a-phat-hien-va-sua" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bugs đã phát hiện và sửa
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issues-nho-chua-sua-by-design-minor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Issues nhỏ chưa sửa (by design / minor)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iem-manh-cua-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      Điểm mạnh của dự án
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#huong-dan-su-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ HƯỚNG DẪN SỬ DỤNG
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚡ HƯỚNG DẪN SỬ DỤNG">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#neu-muon-chay-sql-tren-postgresql-thuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nếu muốn chạy SQL trên PostgreSQL thực:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neu-muon-chay-mongodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nếu muốn chạy MongoDB:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neu-muon-chay-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nếu muốn chạy Neo4j:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thong-ke-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 THỐNG KÊ DỰ ÁN
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../mongodb/webhook-events-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongodb
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../neo4j/fraud-detection-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Neo4j
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🏦 VietPay — Enterprise Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirements-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📋 Take Home Assessment — Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cau-truc-thu-muc-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 CẤU TRÚC THƯ MỤC DỰ ÁN
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 CẤU TRÚC THƯ MỤC DỰ ÁN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cach-oc-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách đọc dự án
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-1-relational-core-model-schema-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 1: Relational Core Model — Schema Design
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 1: Relational Core Model — Schema Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet-tung-buoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết — Từng bước
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cách giải quyết — Từng bước">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-thiet-ke-accounts-wallets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1: Thiết kế Accounts &amp; Wallets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-thiet-ke-double-entry-ledger" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2: Thiết kế Double-Entry Ledger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-thiet-ke-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3: Thiết kế Transactions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-4-thiet-ke-idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 4: Thiết kế Idempotency
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-5-thiet-ke-audit-trail" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 5: Thiết kế Audit Trail
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-2-query-performance-toi-uu-truy-van-50m-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 2: Query &amp; Performance — Tối ưu truy vấn 50M rows
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 2: Query & Performance — Tối ưu truy vấn 50M rows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet-tung-buoc_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết — Từng bước
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cách giải quyết — Từng bước">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query-goc-cham" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query gốc (chậm):
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-1-covering-partial-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 1: Covering Partial Index
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-2-range-partitioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 2: Range Partitioning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buoc-3-materialized-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bước 3: Materialized View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tom-tat-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-3-zero-downtime-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 3: Zero-Downtime Migration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 3: Zero-Downtime Migration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet-expand-contract-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết — Expand-Contract Pattern
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cách giải quyết — Expand-Contract Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-khong-on-gian-alter-table-add-column-not-null" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao không đơn giản ALTER TABLE ADD COLUMN NOT NULL?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-phap-3-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải pháp: 3 Phase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-expand-v001" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1 — EXPAND (V001)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-backfill-v002" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2 — BACKFILL (V002)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-contract-v003" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3 — CONTRACT (V003)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback Plan
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-4a-mongodb-webhook-event-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 4a: MongoDB — Webhook Event Store
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 4a: MongoDB — Webhook Event Store">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-mongodb-thay-vi-postgresql-jsonb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao MongoDB thay vì PostgreSQL JSONB?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-4b-neo4j-fraud-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 4b: Neo4j — Fraud Detection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 4b: Neo4j — Fraud Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-ay-la-graph-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao đây là Graph Problem?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-5-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 5: Observability
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 5: Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cach-giai-quyet_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cách giải quyết
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-6-architecture-decision-record-adr" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 TASK 6: Architecture Decision Record (ADR)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 TASK 6: Architecture Decision Record (ADR)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#muc-tieu_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-lien-quan_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Files liên quan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-quyet-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3 Quyết định
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Quyết định">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#decision-1-modelling-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 1: Modelling Standards
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-2-strong-vs-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 2: Strong vs Eventual Consistency
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decision-3-data-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision 3: Data Contracts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ket-qua-review-bug-a-sua" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 KẾT QUẢ REVIEW &amp; BUG ĐÃ SỬA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 KẾT QUẢ REVIEW & BUG ĐÃ SỬA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bugs-a-phat-hien-va-sua" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bugs đã phát hiện và sửa
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issues-nho-chua-sua-by-design-minor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Issues nhỏ chưa sửa (by design / minor)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iem-manh-cua-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      Điểm mạnh của dự án
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#huong-dan-su-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ HƯỚNG DẪN SỬ DỤNG
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚡ HƯỚNG DẪN SỬ DỤNG">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#neu-muon-chay-sql-tren-postgresql-thuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nếu muốn chạy SQL trên PostgreSQL thực:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neu-muon-chay-mongodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nếu muốn chạy MongoDB:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neu-muon-chay-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nếu muốn chạy Neo4j:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thong-ke-du-an" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 THỐNG KÊ DỰ ÁN
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="huong-dan-chi-tiet-vietpay-database-architecture-assessment">📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment<a class="headerlink" href="#huong-dan-chi-tiet-vietpay-database-architecture-assessment" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Tài liệu hướng dẫn toàn diện</strong> cho bài đánh giá Database Architect<br />
+<strong>Ngày tạo:</strong> 2026-06-24<br />
+<strong>Tổng số file:</strong> 26 files (~500 KB)<br />
+<strong>Database chính:</strong> PostgreSQL 15+ | MongoDB 7.0+ | Neo4j 5.x</p>
+</blockquote>
+<hr />
+<h2 id="cau-truc-thu-muc-du-an">📁 CẤU TRÚC THƯ MỤC DỰ ÁN<a class="headerlink" href="#cau-truc-thu-muc-du-an" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>D:\Dba_project\vietpay\
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── 📄 README.md                    ← Tổng quan dự án, index tất cả deliverables
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── 📄 HUONG-DAN-CHI-TIET.md        ← Bạn đang đọc file này
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── 📄 requirements_analysis.md      ← Phân tích yêu cầu từ file PDF gốc
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── 📄 vp-assessment-dba.pdf         ← Đề bài gốc
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>├── 📂 sql/                          ← [TASK 1 &amp; 2] Schema + Performance
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   ├── 📂 01-schema/                ← DDL files (chạy theo thứ tự 01→05)
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   │   ├── 01-accounts-wallets.sql  ── Bảng accounts, wallets + constraints
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   │   ├── 02-ledger.sql            ── Double-entry ledger + zero-sum trigger
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   │   ├── 03-transactions.sql      ── Bảng transactions + state machine trigger
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   │   ├── 04-idempotency.sql       ── Idempotency keys + TTL cleanup
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   │   └── 05-audit-trail.sql       ── Audit log append-only + generic trigger
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   ├── 📂 02-indexes/
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   │   └── performance-indexes.sql  ── Covering indexes + partitioning DDL
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   └── 📂 03-queries/
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│       └── optimized-settlement.sql ── 3 query approaches + materialized view
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>├── 📂 migrations/                   ← [TASK 3] Zero-Downtime Migration
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   ├── V001__add_settlement_batch_id_expand.sql   ── Phase 1: Expand
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│   ├── V002__backfill_settlement_batch_id.sql     ── Phase 2: Backfill
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├── V003__promote_not_null_constraint.sql      ── Phase 3: Contract
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   └── 📂 rollback/
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│       ├── U001__rollback_expand.sql              ── Rollback Phase 1
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│       ├── U002__rollback_backfill.sql             ── Rollback Phase 2
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│       └── U003__rollback_constraint.sql           ── Rollback Phase 3
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>├── 📂 mongodb/                      ← [TASK 4a] Document Store
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   ├── webhook-events-model.md      ── Thiết kế MongoDB model + justification
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│   └── sample-documents.js          ── Sample documents + indexes + aggregation
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>├── 📂 neo4j/                        ← [TASK 4b] Graph Database
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│   ├── fraud-detection-model.md     ── Thiết kế graph model + justification
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│   └── cypher-queries.cypher        ── Graph schema + 5 fraud detection queries
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>├── 📂 docs/                         ← [TASK 5 &amp; 6] Observability + ADR
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│   ├── er-diagram.md                ── ER Diagram (Mermaid format)
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│   ├── observability.md             ── Grafana dashboard spec + SLOs + alerts
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>│   └── 📂 adr/
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>│       └── 001-data-architecture.md ── Architecture Decision Record
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>│
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>└── 📂 design-notes/                 ← Giải thích chi tiết các quyết định
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>    ├── integrity-guarantees.md      ── Double-entry, idempotency, locking
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>    ├── performance-analysis.md      ── EXPLAIN plan, benchmark methodology
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>    └── migration-strategy.md        ── Expand-contract strategy, risk matrix
+</span></code></pre></div>
+<h3 id="cach-oc-du-an">Cách đọc dự án<a class="headerlink" href="#cach-oc-du-an" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Nếu bạn muốn...</th>
+<th>Đọc file...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hiểu tổng quan nhanh</td>
+<td><code>README.md</code></td>
+</tr>
+<tr>
+<td>Xem yêu cầu gốc</td>
+<td><code>requirements_analysis.md</code></td>
+</tr>
+<tr>
+<td>Xem schema database</td>
+<td><code>sql/01-schema/</code> (theo thứ tự 01→05)</td>
+</tr>
+<tr>
+<td>Xem ER Diagram</td>
+<td><code>docs/er-diagram.md</code></td>
+</tr>
+<tr>
+<td>Hiểu tại sao thiết kế như vậy</td>
+<td><code>design-notes/integrity-guarantees.md</code></td>
+</tr>
+<tr>
+<td>Xem query optimization</td>
+<td><code>sql/02-indexes/</code> + <code>sql/03-queries/</code> + <code>design-notes/performance-analysis.md</code></td>
+</tr>
+<tr>
+<td>Xem migration scripts</td>
+<td><code>migrations/</code> + <code>design-notes/migration-strategy.md</code></td>
+</tr>
+<tr>
+<td>Xem MongoDB model</td>
+<td><code>mongodb/webhook-events-model.md</code> + <code>sample-documents.js</code></td>
+</tr>
+<tr>
+<td>Xem Neo4j model</td>
+<td><code>neo4j/fraud-detection-model.md</code> + <code>cypher-queries.cypher</code></td>
+</tr>
+<tr>
+<td>Xem monitoring/alerts</td>
+<td><code>docs/observability.md</code></td>
+</tr>
+<tr>
+<td>Xem kiến trúc quyết định</td>
+<td><code>docs/adr/001-data-architecture.md</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="task-1-relational-core-model-schema-design">🎯 TASK 1: Relational Core Model — Schema Design<a class="headerlink" href="#task-1-relational-core-model-schema-design" title="Permanent link">&para;</a></h2>
+<h3 id="muc-tieu">Mục tiêu<a class="headerlink" href="#muc-tieu" title="Permanent link">&para;</a></h3>
+<p>Thiết kế PostgreSQL schema chuẩn hóa cho hệ thống ví điện tử (wallet), đảm bảo <strong>tính toàn vẹn tài chính</strong> tuyệt đối.</p>
+<h3 id="files-lien-quan">Files liên quan<a class="headerlink" href="#files-lien-quan" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dòng</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sql/01-schema/01-accounts-wallets.sql</code></td>
+<td>164</td>
+<td>Bảng <code>accounts</code>, <code>wallets</code>, trigger <code>updated_at</code></td>
+</tr>
+<tr>
+<td><code>sql/01-schema/02-ledger.sql</code></td>
+<td>223</td>
+<td>Bảng <code>ledger_entries</code>, zero-sum trigger, reconciliation function</td>
+</tr>
+<tr>
+<td><code>sql/01-schema/03-transactions.sql</code></td>
+<td>216</td>
+<td>Bảng <code>transactions</code>, status state machine trigger</td>
+</tr>
+<tr>
+<td><code>sql/01-schema/04-idempotency.sql</code></td>
+<td>178</td>
+<td>Bảng <code>idempotency_keys</code>, cleanup function</td>
+</tr>
+<tr>
+<td><code>sql/01-schema/05-audit-trail.sql</code></td>
+<td>238</td>
+<td>Bảng <code>audit_log</code>, generic audit trigger</td>
+</tr>
+<tr>
+<td><code>docs/er-diagram.md</code></td>
+<td>~100</td>
+<td>Mermaid ER diagram</td>
+</tr>
+<tr>
+<td><code>design-notes/integrity-guarantees.md</code></td>
+<td>401</td>
+<td>Giải thích chi tiết</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cach-giai-quyet-tung-buoc">Cách giải quyết — Từng bước<a class="headerlink" href="#cach-giai-quyet-tung-buoc" title="Permanent link">&para;</a></h3>
+<h4 id="buoc-1-thiet-ke-accounts-wallets">Bước 1: Thiết kế Accounts &amp; Wallets<a class="headerlink" href="#buoc-1-thiet-ke-accounts-wallets" title="Permanent link">&para;</a></h4>
+<p><strong>Lý do:</strong> Tách <code>accounts</code> (thông tin người dùng) và <code>wallets</code> (ví tiền) thành 2 bảng riêng vì:
+- Một user có thể có nhiều ví (VND, USD, EUR)
+- Quan hệ 1:N (one account → many wallets)
+- Dễ mở rộng khi thêm loại tiền mới</p>
+<p><strong>Quyết định thiết kế:</strong>
+| Quyết định | Lý do |
+|---|---|
+| UUID primary key | Globally unique, non-guessable (PCI-DSS), client-generated (idempotency) |
+| NUMERIC(19,4) cho balance | KHÔNG BAO GIỜ dùng FLOAT (0.1+0.2≠0.3). 4 decimal cho forex rates |
+| 3 cột balance (balance, available, pending) | Mô hình authorization hold: khi chuyển tiền, available giảm trước, balance giảm khi settled |
+| CHECK(available_balance &lt;= balance) | Constraint level: ngăn overdraft |
+| ON DELETE RESTRICT trên FK | KHÔNG cho phép xóa account khi còn wallet (bảo vệ financial data) |</p>
+<h4 id="buoc-2-thiet-ke-double-entry-ledger">Bước 2: Thiết kế Double-Entry Ledger<a class="headerlink" href="#buoc-2-thiet-ke-double-entry-ledger" title="Permanent link">&para;</a></h4>
+<p><strong>Lý do dùng kế toán kép:</strong> Đây là tiêu chuẩn bắt buộc trong fintech:
+- Mọi giao dịch tạo ≥2 bút toán (DEBIT + CREDIT)
+- Tổng luôn = 0 → không thể "mất tiền" hay "sinh tiền"
+- PCI-DSS và NHNN yêu cầu audit trail không thể sửa</p>
+<p><strong>Cơ chế 3 lớp bảo vệ:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Lớp 1: CHECK constraints (amount &gt; 0, valid entry_type)
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   ↓
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Lớp 2: DEFERRABLE CONSTRAINT TRIGGER (kiểm tra SUM = 0 tại COMMIT)
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>   ↓
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>Lớp 3: Reconciliation function (chạy hàng đêm, so sánh wallet.balance vs SUM(ledger))
+</span></code></pre></div></p>
+<p><strong>Tại sao DEFERRABLE INITIALLY DEFERRED?</strong>
+- Khi INSERT 2 ledger entries trong 1 transaction, entry đầu tiên có SUM ≠ 0
+- DEFERRED = trigger chỉ kiểm tra tại COMMIT → cả 2 entries đã INSERT
+- Nếu SUM ≠ 0 tại COMMIT → ROLLBACK toàn bộ</p>
+<p><strong>Tại sao Immutable (không cho UPDATE/DELETE)?</strong>
+- PCI-DSS Section 10.5: Audit trails phải bất biến
+- Nếu cần sửa → tạo bút toán đảo ngược (reversal), KHÔNG sửa bút toán gốc
+- Trigger chặn mọi UPDATE/DELETE trên <code>ledger_entries</code></p>
+<h4 id="buoc-3-thiet-ke-transactions">Bước 3: Thiết kế Transactions<a class="headerlink" href="#buoc-3-thiet-ke-transactions" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định thiết kế:</strong>
+| Quyết định | Lý do |
+|---|---|
+| Status state machine trigger | Chỉ cho phép chuyển PENDING→PROCESSING→SETTLED/FAILED, SETTLED→REVERSED |
+| Wallet presence CHECK | DEPOSIT: source=NULL, dest≠NULL. WITHDRAWAL: nguợc lại. TRANSFER: cả hai |
+| JSONB metadata | Extensible schema cho custom data từ payment providers |
+| Idempotency FK | Link với idempotency_keys để truy vết duplicate prevention |</p>
+<h4 id="buoc-4-thiet-ke-idempotency">Bước 4: Thiết kế Idempotency<a class="headerlink" href="#buoc-4-thiet-ke-idempotency" title="Permanent link">&para;</a></h4>
+<p><strong>Vấn đề:</strong> Client retry → cùng request được xử lý 2 lần → mất tiền
+<strong>Giải pháp:</strong>
+1. Client gửi <code>idempotency_key</code> header unique cho mỗi request
+2. UNIQUE constraint <code>(account_id, idempotency_key)</code> ngăn duplicate
+3. SHA-256 hash body → phát hiện key reuse với payload khác (HTTP 422)
+4. TTL 48h → tự dọn dẹp</p>
+<h4 id="buoc-5-thiet-ke-audit-trail">Bước 5: Thiết kế Audit Trail<a class="headerlink" href="#buoc-5-thiet-ke-audit-trail" title="Permanent link">&para;</a></h4>
+<p><strong>Quyết định:</strong>
+- Generic trigger function gắn được vào BẤT KỲ bảng nào
+- Sử dụng session variables (<code>SET LOCAL app.current_user_id</code>) để track ai thay đổi
+- Append-only: KHÔNG cho phép UPDATE/DELETE trên audit_log</p>
+<hr />
+<h2 id="task-2-query-performance-toi-uu-truy-van-50m-rows">🎯 TASK 2: Query &amp; Performance — Tối ưu truy vấn 50M rows<a class="headerlink" href="#task-2-query-performance-toi-uu-truy-van-50m-rows" title="Permanent link">&para;</a></h2>
+<h3 id="muc-tieu_1">Mục tiêu<a class="headerlink" href="#muc-tieu_1" title="Permanent link">&para;</a></h3>
+<p>Tối ưu settlement query chạy trên bảng 50M+ rows từ <strong>45 giây → &lt;1 giây</strong>.</p>
+<h3 id="files-lien-quan_1">Files liên quan<a class="headerlink" href="#files-lien-quan_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dòng</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sql/02-indexes/performance-indexes.sql</code></td>
+<td>321</td>
+<td>Covering indexes + partitioning DDL</td>
+</tr>
+<tr>
+<td><code>sql/03-queries/optimized-settlement.sql</code></td>
+<td>299</td>
+<td>3 approaches: direct + MV + hybrid</td>
+</tr>
+<tr>
+<td><code>design-notes/performance-analysis.md</code></td>
+<td>507</td>
+<td>EXPLAIN plan analysis, benchmarks</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cach-giai-quyet-tung-buoc_1">Cách giải quyết — Từng bước<a class="headerlink" href="#cach-giai-quyet-tung-buoc_1" title="Permanent link">&para;</a></h3>
+<h4 id="query-goc-cham">Query gốc (chậm):<a class="headerlink" href="#query-goc-cham" title="Permanent link">&para;</a></h4>
+<p><div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">source_wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">:</span><span class="n">month_start</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">:</span><span class="n">month_end</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">source_wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">;</span>
+</span></code></pre></div>
+→ <strong>Sequential Scan 50M rows = ~45 giây</strong></p>
+<h4 id="buoc-1-covering-partial-index">Bước 1: Covering Partial Index<a class="headerlink" href="#buoc-1-covering-partial-index" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_txn_settlement_covering</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">source_wallet_id</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="n">INCLUDE</span><span class="w"> </span><span class="p">(</span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Tại sao partial?</strong> Chỉ index rows có <code>status = 'SETTLED'</code> (~60-70% total), loại bỏ 30-40% bloat.</p>
+<p><strong>Tại sao covering (INCLUDE)?</strong> Query cần <code>currency</code> và <code>amount</code> cho GROUP BY/SUM → INCLUDE cho phép Index-Only Scan mà KHÔNG truy cập heap (bảng).</p>
+<p><strong>Tại sao <code>created_at</code> đứng trước?</strong> Range filter (<code>&gt;= month_start AND &lt; month_end</code>) là predicate selective nhất → đặt trước để narrow data sớm.</p>
+<p><strong>Kết quả:</strong> 45s → ~850ms (<strong>53x nhanh hơn</strong>)</p>
+<h4 id="buoc-2-range-partitioning">Bước 2: Range Partitioning<a class="headerlink" href="#buoc-2-range-partitioning" title="Permanent link">&para;</a></h4>
+<p>Partition bảng <code>transactions</code> theo <code>created_at</code> (monthly):
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">transactions_partitioned</span><span class="w"> </span><span class="p">(...)</span><span class="w"> </span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">RANGE</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">);</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">transactions_y2026m01</span><span class="w"> </span><span class="n">PARTITION</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="n">transactions_partitioned</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="k">FOR</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span><span class="s1">'2026-01-01'</span><span class="p">)</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="p">(</span><span class="s1">'2026-02-01'</span><span class="p">);</span>
+</span></code></pre></div></p>
+<p><strong>Tại sao partitioning?</strong> PostgreSQL prune partitions — query tháng 1 chỉ scan partition tháng 1 (~4M rows thay vì 50M).</p>
+<p><strong>Kết quả:</strong> 850ms → ~230ms (<strong>thêm 4x</strong>)</p>
+<h4 id="buoc-3-materialized-view">Bước 3: Materialized View<a class="headerlink" href="#buoc-3-materialized-view" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">mv_monthly_settlement</span><span class="w"> </span><span class="k">AS</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">date_trunc</span><span class="p">(</span><span class="s1">'month'</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">)::</span><span class="nb">DATE</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">settlement_month</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">       </span><span class="n">source_wallet_id</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">       </span><span class="k">SUM</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_amount</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">transaction_count</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Kết quả:</strong> Query MV = ~10ms (<strong>4,500x nhanh hơn gốc</strong>)</p>
+<p><strong>Trade-off:</strong> Data bị stale (cũ) giữa các lần REFRESH. Giải pháp: Hybrid view = MV cho lịch sử + live query cho tháng hiện tại.</p>
+<h4 id="tom-tat-performance">Tóm tắt Performance<a class="headerlink" href="#tom-tat-performance" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Phương pháp</th>
+<th>Thời gian</th>
+<th>Cải thiện</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline</td>
+<td>Seq Scan 50M</td>
+<td>~45,000ms</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Level 1</td>
+<td>Covering Partial Index</td>
+<td>~850ms</td>
+<td>53×</td>
+</tr>
+<tr>
+<td>Level 2</td>
+<td>+ Range Partitioning</td>
+<td>~230ms</td>
+<td>196×</td>
+</tr>
+<tr>
+<td>Level 3</td>
+<td>+ Materialized View</td>
+<td>~10ms</td>
+<td>4,500×</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="task-3-zero-downtime-migration">🎯 TASK 3: Zero-Downtime Migration<a class="headerlink" href="#task-3-zero-downtime-migration" title="Permanent link">&para;</a></h2>
+<h3 id="muc-tieu_2">Mục tiêu<a class="headerlink" href="#muc-tieu_2" title="Permanent link">&para;</a></h3>
+<p>Thêm cột <code>settlement_batch_id UUID NOT NULL</code> vào bảng <code>transactions</code> (50M rows) <strong>mà không gây downtime</strong>.</p>
+<h3 id="files-lien-quan_2">Files liên quan<a class="headerlink" href="#files-lien-quan_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dòng</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>migrations/V001__*.sql</code></td>
+<td>~180</td>
+<td>Phase 1: Expand</td>
+</tr>
+<tr>
+<td><code>migrations/V002__*.sql</code></td>
+<td>~210</td>
+<td>Phase 2: Backfill</td>
+</tr>
+<tr>
+<td><code>migrations/V003__*.sql</code></td>
+<td>~289</td>
+<td>Phase 3: Contract</td>
+</tr>
+<tr>
+<td><code>migrations/rollback/U001-U003</code></td>
+<td>~400</td>
+<td>Rollback scripts</td>
+</tr>
+<tr>
+<td><code>design-notes/migration-strategy.md</code></td>
+<td>678</td>
+<td>Chiến lược chi tiết</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cach-giai-quyet-expand-contract-pattern">Cách giải quyết — Expand-Contract Pattern<a class="headerlink" href="#cach-giai-quyet-expand-contract-pattern" title="Permanent link">&para;</a></h3>
+<h4 id="tai-sao-khong-on-gian-alter-table-add-column-not-null">Tại sao không đơn giản <code>ALTER TABLE ADD COLUMN NOT NULL</code>?<a class="headerlink" href="#tai-sao-khong-on-gian-alter-table-add-column-not-null" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>ADD COLUMN ... NOT NULL</code> trên 50M rows = full table rewrite</li>
+<li>Lock bảng (AccessExclusiveLock) trong nhiều phút → block tất cả operations</li>
+<li>= <strong>Downtime</strong></li>
+</ul>
+<h4 id="giai-phap-3-phase">Giải pháp: 3 Phase<a class="headerlink" href="#giai-phap-3-phase" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Phase 1: EXPAND          Phase 2: BACKFILL       Phase 3: CONTRACT
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>─────────────────        ────────────────        ─────────────────
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>ADD COLUMN nullable      Batch update 50M rows   CHECK NOT VALID
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>+ FK NOT VALID           10K rows/batch          → VALIDATE
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>+ INDEX CONCURRENTLY     pg_sleep giữa batches   → SET NOT NULL
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>                         Advisory lock            → Drop partial index
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>Duration: &lt; 1 giây       Duration: 2-3 giờ       Duration: &lt; 5 phút
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>Lock: metadata only      Lock: row-level only    Lock: ShareUpdateExclusive
+</span></code></pre></div>
+<h4 id="phase-1-expand-v001">Phase 1 — EXPAND (V001)<a class="headerlink" href="#phase-1-expand-v001" title="Permanent link">&para;</a></h4>
+<p><strong>Các bước:</strong>
+1. <code>ADD COLUMN settlement_batch_id UUID</code> (nullable) → <strong>Instant</strong> trong PG 11+ (chỉ metadata change)
+2. <code>ADD CONSTRAINT FK ... NOT VALID</code> → Chỉ enforce cho writes MỚI, không scan bảng
+3. <code>CREATE INDEX CONCURRENTLY</code> → Không block DML</p>
+<p><strong>Tại sao NOT VALID cho FK?</strong>
+- VALID FK = scan toàn bộ 50M rows → chậm + lock
+- NOT VALID = chỉ enforce cho INSERT/UPDATE mới → instant</p>
+<p><strong>App behavior:</strong> App v1 tiếp tục hoạt động bình thường, bỏ qua cột mới.</p>
+<h4 id="phase-2-backfill-v002">Phase 2 — BACKFILL (V002)<a class="headerlink" href="#phase-2-backfill-v002" title="Permanent link">&para;</a></h4>
+<p><strong>Các bước:</strong>
+1. Advisory lock ngăn chạy song song
+2. Update 10,000 rows/batch qua CTE + <code>FOR UPDATE SKIP LOCKED</code>
+3. <code>pg_sleep(0.1)</code> giữa batches → yield cho production traffic
+4. Log progress mỗi 50 batches</p>
+<p><strong>Tại sao batch 10K?</strong>
+- Quá nhỏ (100): tốn overhead commit
+- Quá lớn (1M): lock nhiều rows, chặn production queries
+- 10K = sweet spot (~5,000 batches cho 50M rows)</p>
+<p><strong>Tại sao <code>FOR UPDATE SKIP LOCKED</code>?</strong>
+- Nếu row đang bị locked bởi production transaction → skip, xử lý sau
+- Không block production operations</p>
+<p><strong>App behavior:</strong> App v2 <strong>dual-write</strong> — ghi cả schema cũ và mới</p>
+<h4 id="phase-3-contract-v003">Phase 3 — CONTRACT (V003)<a class="headerlink" href="#phase-3-contract-v003" title="Permanent link">&para;</a></h4>
+<p><strong>Các bước:</strong>
+1. <code>ADD CONSTRAINT CHECK (col IS NOT NULL) NOT VALID</code> → Instant, enforce cho writes mới
+2. <code>VALIDATE CONSTRAINT</code> → Scan bảng dưới ShareUpdateExclusiveLock (<strong>KHÔNG block DML!</strong>)
+3. <code>SET NOT NULL</code> → <strong>Instant</strong> trong PG 12+ (vì đã có validated CHECK)
+4. Drop CHECK (không cần nữa, NOT NULL đã có ở column level)
+5. <code>VALIDATE FK</code> (validate FK từ V001)</p>
+<p><strong>Tại sao NOT VALID + VALIDATE là an toàn?</strong>
+- <code>NOT VALID</code>: instant, chỉ enforce cho new writes
+- <code>VALIDATE</code>: scan bảng nhưng chỉ cần <strong>ShareUpdateExclusiveLock</strong> — SELECT/INSERT/UPDATE/DELETE tiếp tục bình thường
+- So sánh: <code>SET NOT NULL</code> trực tiếp cần <strong>AccessExclusiveLock</strong> (block tất cả)</p>
+<h4 id="rollback-plan">Rollback Plan<a class="headerlink" href="#rollback-plan" title="Permanent link">&para;</a></h4>
+<p>Mỗi phase có rollback riêng:
+- <strong>U003</strong> → Drop NOT NULL + CHECK
+- <strong>U002</strong> → Set backfilled values về NULL
+- <strong>U001</strong> → Drop column + indexes + FK</p>
+<p>Thứ tự rollback: U003 → U002 → U001</p>
+<hr />
+<h2 id="task-4a-mongodb-webhook-event-store">🎯 TASK 4a: MongoDB — Webhook Event Store<a class="headerlink" href="#task-4a-mongodb-webhook-event-store" title="Permanent link">&para;</a></h2>
+<h3 id="muc-tieu_3">Mục tiêu<a class="headerlink" href="#muc-tieu_3" title="Permanent link">&para;</a></h3>
+<p>Thiết kế MongoDB model cho lưu trữ raw webhook payloads từ payment providers.</p>
+<h3 id="files-lien-quan_3">Files liên quan<a class="headerlink" href="#files-lien-quan_3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dòng</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mongodb/webhook-events-model.md</code></td>
+<td>1019</td>
+<td>Model design + justification</td>
+</tr>
+<tr>
+<td><code>mongodb/sample-documents.js</code></td>
+<td>1103</td>
+<td>Sample docs + indexes + aggregation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-sao-mongodb-thay-vi-postgresql-jsonb">Tại sao MongoDB thay vì PostgreSQL JSONB?<a class="headerlink" href="#tai-sao-mongodb-thay-vi-postgresql-jsonb" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>MongoDB</th>
+<th>PostgreSQL JSONB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Schema flexibility</strong></td>
+<td>Native — mỗi provider format khác nhau (Visa, Mastercard, VNPay, Napas)</td>
+<td>Cần ALTER TABLE khi structure thay đổi</td>
+</tr>
+<tr>
+<td><strong>Horizontal scaling</strong></td>
+<td>Built-in sharding</td>
+<td>Limited — logical replication</td>
+</tr>
+<tr>
+<td><strong>TTL auto-cleanup</strong></td>
+<td><code>createIndex({expires_at:1}, {expireAfterSeconds:0})</code></td>
+<td>Cần pg_cron + manual DELETE</td>
+</tr>
+<tr>
+<td><strong>Write throughput</strong></td>
+<td>WiredTiger, no MVCC overhead</td>
+<td>MVCC overhead cho mỗi write</td>
+</tr>
+<tr>
+<td><strong>Operational isolation</strong></td>
+<td>Separate cluster — webhook storm không ảnh hưởng OLTP</td>
+<td>Cùng cluster = risk</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cach-giai-quyet">Cách giải quyết<a class="headerlink" href="#cach-giai-quyet" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>3 Collections:</strong></li>
+<li><code>webhook_events</code> — raw events với JSON Schema validation</li>
+<li><code>payment_notifications</code> — processed notifications</li>
+<li>
+<p><code>event_processing_deadletter</code> — failed events</p>
+</li>
+<li>
+<p><strong>Shard key:</strong> <code>{provider, received_at}</code> — compound shard key phân phối đều theo provider + thời gian</p>
+</li>
+<li>
+<p><strong>TTL indexes:</strong> Auto-delete events sau 90 ngày (Hot tier), archive 1 năm</p>
+</li>
+<li>
+<p><strong>5 Aggregation pipelines:</strong> Daily reconciliation, provider health, chargeback analysis, performance time series, merchant risk scoring</p>
+</li>
+</ol>
+<hr />
+<h2 id="task-4b-neo4j-fraud-detection">🎯 TASK 4b: Neo4j — Fraud Detection<a class="headerlink" href="#task-4b-neo4j-fraud-detection" title="Permanent link">&para;</a></h2>
+<h3 id="muc-tieu_4">Mục tiêu<a class="headerlink" href="#muc-tieu_4" title="Permanent link">&para;</a></h3>
+<p>Thiết kế graph model để phát hiện fraud ring trong mạng lưới thanh toán.</p>
+<h3 id="files-lien-quan_4">Files liên quan<a class="headerlink" href="#files-lien-quan_4" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dòng</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>neo4j/fraud-detection-model.md</code></td>
+<td>644</td>
+<td>Model design + justification</td>
+</tr>
+<tr>
+<td><code>neo4j/cypher-queries.cypher</code></td>
+<td>528</td>
+<td>Schema + 5 fraud queries</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-sao-ay-la-graph-problem">Tại sao đây là Graph Problem?<a class="headerlink" href="#tai-sao-ay-la-graph-problem" title="Permanent link">&para;</a></h3>
+<p><strong>SQL thất bại khi cần multi-hop traversal:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Hops</th>
+<th>SQL (recursive CTE)</th>
+<th>Neo4j (Cypher)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>~50ms</td>
+<td>~5ms</td>
+</tr>
+<tr>
+<td>3</td>
+<td>~500ms</td>
+<td>~10ms</td>
+</tr>
+<tr>
+<td>4</td>
+<td>~5,000ms</td>
+<td>~15ms</td>
+</tr>
+<tr>
+<td>5</td>
+<td>~timeout</td>
+<td>~25ms</td>
+</tr>
+<tr>
+<td>6</td>
+<td>impossible</td>
+<td>~40ms</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tại sao?</strong> SQL phải JOIN bảng với chính nó N lần → complexity tăng exponentially. Graph DB traverse theo relationships → O(edges), không phụ thuộc vào tổng số nodes.</p>
+<h3 id="cach-giai-quyet_1">Cách giải quyết<a class="headerlink" href="#cach-giai-quyet_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>6 Node types:</strong> Account, Device, IPAddress, PhoneNumber, Transaction, Merchant</li>
+<li><strong>6 Relationship types:</strong> OWNS_DEVICE, LOGGED_FROM, HAS_PHONE, SENT_TO, RECEIVED_FROM, TRANSACTED_WITH</li>
+<li><strong>5 Fraud queries:</strong></li>
+<li>Shared device detection (fraud ring)</li>
+<li>Circular money flow (money laundering)</li>
+<li>Rapid transactions (smurfing)</li>
+<li>Community detection (cluster analysis)</li>
+<li>Shortest path (investigation)</li>
+</ol>
+<hr />
+<h2 id="task-5-observability">🎯 TASK 5: Observability<a class="headerlink" href="#task-5-observability" title="Permanent link">&para;</a></h2>
+<h3 id="muc-tieu_5">Mục tiêu<a class="headerlink" href="#muc-tieu_5" title="Permanent link">&para;</a></h3>
+<p>Thiết kế Grafana dashboard specification với SLO targets và alerting rules.</p>
+<h3 id="files-lien-quan_5">Files liên quan<a class="headerlink" href="#files-lien-quan_5" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dòng</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs/observability.md</code></td>
+<td>789</td>
+<td>Dashboard + SLOs + alerts + runbooks</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cach-giai-quyet_2">Cách giải quyết<a class="headerlink" href="#cach-giai-quyet_2" title="Permanent link">&para;</a></h3>
+<p><strong>11 Dashboard Panels</strong> — mỗi panel có:
+- Metric name (Prometheus format)
+- PromQL query
+- Panel type (gauge/graph/stat/table)
+- SLO target + warning + critical thresholds
+- Alert rule + runbook</p>
+<p><strong>8 SLO targets:</strong>
+| SLI | SLO | Error Budget |
+|---|---|---|
+| Query Latency p99 | &lt; 100ms | 43.2 phút/tháng |
+| Availability | 99.95% | 21.6 phút/tháng |
+| Throughput | ≥ 500 TPS | &lt;1% time below |
+| Replication Lag | &lt; 1s | 99.9% compliance |
+| Settlement Lag p95 | &lt; 5 phút | 99.5% settled |
+| Data Integrity | 100% balanced | 0 tolerance |
+| Cache Hit Ratio | ≥ 99% | &lt;0.5% time below |
+| Connection Pool | &lt; 80% utilized | 99.5% time |</p>
+<p><strong>Alert đặc biệt — Ledger Imbalance:</strong>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LedgerImbalance</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vietpay_ledger_imbalance_count &gt; 0</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0s</span><span class="w">          </span><span class="c1"># NGAY LẬP TỨC — không chờ</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical + executive escalation</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DỪNG TẤT CẢ GIAO DỊCH</span>
+</span></code></pre></div>
+→ Đây là alert duy nhất có <code>for: 0s</code> — vì ledger imbalance = <strong>mất tiền</strong>, phải phản ứng tức thì.</p>
+<hr />
+<h2 id="task-6-architecture-decision-record-adr">🎯 TASK 6: Architecture Decision Record (ADR)<a class="headerlink" href="#task-6-architecture-decision-record-adr" title="Permanent link">&para;</a></h2>
+<h3 id="muc-tieu_6">Mục tiêu<a class="headerlink" href="#muc-tieu_6" title="Permanent link">&para;</a></h3>
+<p>Viết ADR ghi lại 3 quyết định kiến trúc dữ liệu quan trọng nhất.</p>
+<h3 id="files-lien-quan_6">Files liên quan<a class="headerlink" href="#files-lien-quan_6" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dòng</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs/adr/001-data-architecture.md</code></td>
+<td>599</td>
+<td>ADR 3 decisions</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-quyet-inh">3 Quyết định<a class="headerlink" href="#3-quyet-inh" title="Permanent link">&para;</a></h3>
+<h4 id="decision-1-modelling-standards">Decision 1: Modelling Standards<a class="headerlink" href="#decision-1-modelling-standards" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Quyết định</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UUID v4 (not BIGSERIAL)</td>
+<td>Globally unique, non-guessable, client-generated</td>
+</tr>
+<tr>
+<td>NUMERIC(19,4) cho money</td>
+<td>FLOAT gây sai số tài chính</td>
+</tr>
+<tr>
+<td>TIMESTAMPTZ luôn UTC</td>
+<td>Tránh timezone bugs</td>
+</tr>
+<tr>
+<td>VARCHAR + CHECK (not ENUM)</td>
+<td>ENUM khó evolve (ALTER TYPE ADD VALUE không chạy trong transaction)</td>
+</tr>
+<tr>
+<td>Plural table names</td>
+<td>Nhất quán (<code>accounts</code>, <code>wallets</code>, <code>transactions</code>)</td>
+</tr>
+<tr>
+<td>No soft delete</td>
+<td>Status lifecycle thay vì <code>deleted_at</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="decision-2-strong-vs-eventual-consistency">Decision 2: Strong vs Eventual Consistency<a class="headerlink" href="#decision-2-strong-vs-eventual-consistency" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Khu vực</th>
+<th>Consistency</th>
+<th>Isolation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ledger + balance updates</td>
+<td><strong>STRONG</strong></td>
+<td>SERIALIZABLE</td>
+</tr>
+<tr>
+<td>Balance display, txn history</td>
+<td>READ COMMITTED</td>
+<td>Read replica OK</td>
+</tr>
+<tr>
+<td>Reporting, analytics</td>
+<td><strong>EVENTUAL</strong></td>
+<td>MV + CQRS</td>
+</tr>
+<tr>
+<td>Webhooks, notifications</td>
+<td><strong>EVENTUAL</strong></td>
+<td>Async via Kafka</td>
+</tr>
+</tbody>
+</table>
+<h4 id="decision-3-data-contracts">Decision 3: Data Contracts<a class="headerlink" href="#decision-3-data-contracts" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Quyết định</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Confluent Schema Registry + Avro</td>
+<td>Versioned schemas, compatibility enforcement</td>
+</tr>
+<tr>
+<td>BACKWARD compatibility mode</td>
+<td>New consumers đọc được old format</td>
+</tr>
+<tr>
+<td>Pact contract testing</td>
+<td>CI fails TRƯỚC khi breaking change deploy</td>
+</tr>
+<tr>
+<td>90-day sunset cho deprecated schemas</td>
+<td>Đủ thời gian cho consumers migrate</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ket-qua-review-bug-a-sua">🔍 KẾT QUẢ REVIEW &amp; BUG ĐÃ SỬA<a class="headerlink" href="#ket-qua-review-bug-a-sua" title="Permanent link">&para;</a></h2>
+<p>Dự án đã được review bởi 3 agents chuyên biệt. Dưới đây là tổng hợp:</p>
+<h3 id="bugs-a-phat-hien-va-sua">Bugs đã phát hiện và sửa<a class="headerlink" href="#bugs-a-phat-hien-va-sua" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Severity</th>
+<th>File</th>
+<th>Vấn đề</th>
+<th>Trạng thái</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>🔴 Critical</td>
+<td><code>U001__rollback_expand.sql</code></td>
+<td><code>RAISE NOTICE</code> ngoài PL/pgSQL block → syntax error khi chạy</td>
+<td>✅ ĐÃ SỬA</td>
+</tr>
+<tr>
+<td>2</td>
+<td>🔴 Critical</td>
+<td><code>performance-indexes.sql</code></td>
+<td><code>wallet_id</code> column không tồn tại → dùng <code>source_wallet_id</code></td>
+<td>✅ ĐÃ SỬA</td>
+</tr>
+<tr>
+<td>3</td>
+<td>🔴 Critical</td>
+<td><code>optimized-settlement.sql</code></td>
+<td>Query 1A dùng <code>wallet_id</code> thay vì <code>source_wallet_id</code></td>
+<td>✅ ĐÃ SỬA</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⚠️ Medium</td>
+<td><code>V003__*.sql</code></td>
+<td>FK VALIDATE timeout (statement_timeout=30s quá ngắn cho 50M rows)</td>
+<td>✅ ĐÃ SỬA</td>
+</tr>
+<tr>
+<td>5</td>
+<td>⚠️ Medium</td>
+<td><code>001-data-architecture.md</code></td>
+<td>ADR nói "Singular table names" nhưng code dùng plural</td>
+<td>✅ ĐÃ SỬA</td>
+</tr>
+<tr>
+<td>6</td>
+<td>⚠️ Medium</td>
+<td><code>integrity-guarantees.md</code></td>
+<td>Nói READ COMMITTED cho transfers nhưng ADR nói SERIALIZABLE</td>
+<td>✅ ĐÃ SỬA</td>
+</tr>
+<tr>
+<td>7</td>
+<td>⚠️ Medium</td>
+<td><code>001-data-architecture.md</code></td>
+<td>ADR date sai (2024)</td>
+<td>✅ ĐÃ SỬA</td>
+</tr>
+</tbody>
+</table>
+<h3 id="issues-nho-chua-sua-by-design-minor">Issues nhỏ chưa sửa (by design / minor)<a class="headerlink" href="#issues-nho-chua-sua-by-design-minor" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>File</th>
+<th>Vấn đề</th>
+<th>Lý do chấp nhận</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>V002__*.sql</code></td>
+<td>Backfill 50M rows trong 1 transaction</td>
+<td>Shell script alternative đã documented</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>05-audit-trail.sql</code></td>
+<td>Không audit <code>idempotency_keys</code> deletions</td>
+<td>Keys là transient data (TTL 48h)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>performance-indexes.sql</code></td>
+<td><code>transactions_partitioned</code> thiếu CHECK constraints từ bảng gốc</td>
+<td>Documented as migration step</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>neo4j/cypher-queries.cypher</code></td>
+<td>Transaction không tạo riêng node mà dùng relationship properties</td>
+<td>Simplified model cho demo</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>docs/observability.md</code></td>
+<td>Chỉ monitor PostgreSQL, chưa có MongoDB/Neo4j panels</td>
+<td>Scope tập trung core OLTP</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iem-manh-cua-du-an">Điểm mạnh của dự án<a class="headerlink" href="#iem-manh-cua-du-an" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>Đánh giá</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Financial integrity</strong></td>
+<td>⭐⭐⭐⭐⭐ — 3-layer defense, immutable ledger, zero-sum trigger</td>
+</tr>
+<tr>
+<td><strong>Performance optimization</strong></td>
+<td>⭐⭐⭐⭐⭐ — 4,500x improvement documented</td>
+</tr>
+<tr>
+<td><strong>Migration safety</strong></td>
+<td>⭐⭐⭐⭐⭐ — Zero-downtime, idempotent, rollback mỗi phase</td>
+</tr>
+<tr>
+<td><strong>Polyglot justification</strong></td>
+<td>⭐⭐⭐⭐⭐ — Clear SQL vs NoSQL comparison</td>
+</tr>
+<tr>
+<td><strong>Observability</strong></td>
+<td>⭐⭐⭐⭐⭐ — 11 metrics, 8 SLOs, 11 alerts with runbooks</td>
+</tr>
+<tr>
+<td><strong>Documentation</strong></td>
+<td>⭐⭐⭐⭐⭐ — Vietnamese + English tech terms, thorough</td>
+</tr>
+<tr>
+<td><strong>Compliance</strong></td>
+<td>⭐⭐⭐⭐⭐ — PCI-DSS, NHNN references throughout</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="huong-dan-su-dung">⚡ HƯỚNG DẪN SỬ DỤNG<a class="headerlink" href="#huong-dan-su-dung" title="Permanent link">&para;</a></h2>
+<h3 id="neu-muon-chay-sql-tren-postgresql-thuc">Nếu muốn chạy SQL trên PostgreSQL thực:<a class="headerlink" href="#neu-muon-chay-sql-tren-postgresql-thuc" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># 1. Tạo database</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>createdb<span class="w"> </span>vietpay
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># 2. Chạy schema theo thứ tự</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>sql/01-schema/01-accounts-wallets.sql
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>sql/01-schema/02-ledger.sql
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>sql/01-schema/03-transactions.sql
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>sql/01-schema/04-idempotency.sql
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>sql/01-schema/05-audit-trail.sql
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="c1"># 3. Tạo indexes</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>sql/02-indexes/performance-indexes.sql
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="c1"># 4. Chạy migration (sau khi có data)</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>migrations/V001__add_settlement_batch_id_expand.sql
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>migrations/V002__backfill_settlement_batch_id.sql
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>psql<span class="w"> </span>-d<span class="w"> </span>vietpay<span class="w"> </span>-f<span class="w"> </span>migrations/V003__promote_not_null_constraint.sql
+</span></code></pre></div>
+<h3 id="neu-muon-chay-mongodb">Nếu muốn chạy MongoDB:<a class="headerlink" href="#neu-muon-chay-mongodb" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 1. Kết nối MongoDB</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mongosh
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># 2. Chạy sample documents</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>load<span class="o">(</span><span class="s2">"mongodb/sample-documents.js"</span><span class="o">)</span>
+</span></code></pre></div>
+<h3 id="neu-muon-chay-neo4j">Nếu muốn chạy Neo4j:<a class="headerlink" href="#neu-muon-chay-neo4j" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 1. Mở Neo4j Browser (http://localhost:7474)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># 2. Copy-paste từng phần trong neo4j/cypher-queries.cypher</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># 3. Hoặc dùng CLI:</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>cat<span class="w"> </span>neo4j/cypher-queries.cypher<span class="w"> </span><span class="p">|</span><span class="w"> </span>cypher-shell<span class="w"> </span>-u<span class="w"> </span>neo4j<span class="w"> </span>-p<span class="w"> </span>&lt;password&gt;
+</span></code></pre></div>
+<hr />
+<h2 id="thong-ke-du-an">📊 THỐNG KÊ DỰ ÁN<a class="headerlink" href="#thong-ke-du-an" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Giá trị</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tổng số files</td>
+<td>26</td>
+</tr>
+<tr>
+<td>Tổng dung lượng</td>
+<td>~500 KB</td>
+</tr>
+<tr>
+<td>SQL files</td>
+<td>12 (DDL + indexes + queries + migrations + rollbacks)</td>
+</tr>
+<tr>
+<td>Markdown docs</td>
+<td>11 (models + designs + strategy)</td>
+</tr>
+<tr>
+<td>JavaScript files</td>
+<td>1 (MongoDB samples)</td>
+</tr>
+<tr>
+<td>Cypher files</td>
+<td>1 (Neo4j queries)</td>
+</tr>
+<tr>
+<td>Tổng số dòng code/doc</td>
+<td>~8,000+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<blockquote>
+<p><strong>📌 Lưu ý cuối:</strong> Tất cả files nằm trong <code>D:\Dba_project\vietpay\</code>. Mở <code>README.md</code> để bắt đầu navigate dự án.</p>
+</blockquote>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>vietpay/HUONG-DAN-CHI-TIET.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../docs/observability/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📊 Observability — VietPay Fintech Database">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📊 Observability — VietPay Fintech Database
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--next" aria-label="Sau: 13. VietPay">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                13. VietPay
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

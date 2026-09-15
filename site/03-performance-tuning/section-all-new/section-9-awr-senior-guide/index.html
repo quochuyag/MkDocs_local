@@ -1,0 +1,2472 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../section-8-instance-activity-wait-events-senior-guide/">
+      
+      
+        <link rel="next" href="../../../04-rac-administration/claude/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#section-9-awr-automatic-workload-repository-deep-dive-for-senior-dba" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../ke-hoach/000-index/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            Section all new
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-10-server-generated-alerts-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Server-generated Alerts — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-11-statspack-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Statspack — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-12-addm-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADDM (Automatic Database Diagnostic Monitor) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-13-ash-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ASH (Active Session History) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-14-database-service-statistics-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 14 — Database Service Statistics & Module/Action/Client ID — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-15-sql-tracing-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-16-realtime-monitoring-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 16 — Real-time Database Operation Monitoring: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-17-automated-maintenance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 17 — Automated Maintenance Tasks: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-19-enqueue-waits-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 19 — Handling Enqueue Waits: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-20-latch-mutex-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 20 — Latch & Mutex Contention: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-21-shared-pool-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 21 — Shared Pool Tuning: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-26-disk-io-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 26 — Disk I/O Tuning: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-27-index-defrag-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 27 — Index Defragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-28-row-migration-chaining-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Row Migration & Row Chaining — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-29-table-fragmentation-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 29 — Table Fragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-30-table-compression-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 30 — Table Compression: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-31-in-memory-column-store-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 31 — In-Memory Column Store: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-32-database-connection-optimization-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 32 — Database Connection Optimization: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-34-os-performance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 34 — OS Performance (Linux Utilities & OSWatcher): Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-35-sql-performance-analyzer-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 35 — SQL Performance Analyzer: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-36-database-replay-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 36 — Database Replay: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-6-time-model-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 6 — Time Model Views: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-8-instance-activity-wait-events-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 8 — Instance Activity & Wait Events — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="section-9-awr-automatic-workload-repository-deep-dive-for-senior-dba">Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA<a class="headerlink" href="#section-9-awr-automatic-workload-repository-deep-dive-for-senior-dba" title="Permanent link">&para;</a></h1>
+<hr />
+<h1 id="output-1-lecture-notes">OUTPUT 1 — LECTURE NOTES<a class="headerlink" href="#output-1-lecture-notes" title="Permanent link">&para;</a></h1>
+<h2 id="1-mental-model">1. Mental Model<a class="headerlink" href="#1-mental-model" title="Permanent link">&para;</a></h2>
+<p>AWR giải quyết đúng limitation mà Section 8 để lộ: V$ views là volatile, cumulative từ startup, không có time dimension. AWR là một <strong>performance data warehouse nhúng trong Oracle</strong> — không phải "logging" thêm vào, mà là sampling có kiến trúc riêng với persistence, retention policy, và indexing. Cách frame đúng: khi bạn nhìn <code>DBA_HIST_*</code>, bạn đang query các delta snapshot của V$ views, được MMON chụp định kỳ và flush vào SYSAUX. Hiểu cơ chế này là hiểu tại sao AWR data có độ trễ, tại sao nó bỏ sót sự kiện ngắn, và tại sao interval setting là một trong những quyết định quan trọng nhất trong AWR management.</p>
+<hr />
+<h2 id="2-internals-mechanics">2. Internals &amp; Mechanics<a class="headerlink" href="#2-internals-mechanics" title="Permanent link">&para;</a></h2>
+<h3 id="mmon-the-awr-engine">MMON — The AWR Engine<a class="headerlink" href="#mmon-the-awr-engine" title="Permanent link">&para;</a></h3>
+<p>AWR không phải một feature bật/tắt — nó chạy qua background process <strong>MMON</strong> (Manageability Monitor) và slave process <strong>MMNL</strong> (MMON Lite):</p>
+<ul>
+<li><strong>MMON</strong> wakes mỗi <code>INTERVAL</code> phút, kiểm tra xem có cần chụp snapshot không</li>
+<li><strong>MMNL</strong> thực sự thực hiện snapshot capture — flush data từ X$ fixed tables vào WRH$_* tables trong SYSAUX</li>
+<li>MMON cũng chạy ADDM tự động sau mỗi snapshot pair (Section 12)</li>
+<li>Khi MMNL đang chạy, có thể thấy trong <code>V$SESSION</code> với <code>PROGRAM = 'oracle@host (MMNL)'</code></li>
+</ul>
+<h3 id="data-path-v-dba_hist_">Data Path: V$ → DBA_HIST_*<a class="headerlink" href="#data-path-v-dba_hist_" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>SGA (in-memory)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    │
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    ├── X$ fixed tables (kernel memory structures)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    │       │
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    │       └── V$ views (virtual views over X$)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    │                   │ (snapshot at interval)
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    │                   ▼
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    └── MMNL process flushes delta to:
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>            WRH$_SYSTEM_EVENT     → DBA_HIST_SYSTEM_EVENT
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>            WRH$_SYSSTAT          → DBA_HIST_SYSSTAT
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>            WRH$_SQL_PLAN         → DBA_HIST_SQL_PLAN
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            WRH$_SQLSTAT          → DBA_HIST_SQLSTAT
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            WRH$_ACTIVE_SESS_HISTORY → DBA_HIST_ACTIVE_SESS_HISTORY
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            ...
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>            WRM$_SNAPSHOT         → DBA_HIST_SNAPSHOT (metadata)
+</span></code></pre></div>
+<p>Naming convention: <code>WRH$_*</code> = historical data tables, <code>WRM$_*</code> = repository metadata, <code>WRI$_*</code> = internal AWR infrastructure.</p>
+<h3 id="snap_level-typical-vs-all">SNAP_LEVEL: TYPICAL vs ALL<a class="headerlink" href="#snap_level-typical-vs-all" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Trigger</th>
+<th>Thêm so với TYPICAL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 (TYPICAL)</td>
+<td>Default / STATISTICS_LEVEL=TYPICAL</td>
+<td>Standard statistics set</td>
+</tr>
+<tr>
+<td>2 (ALL)</td>
+<td><code>FLUSH_LEVEL=&gt;'ALL'</code> / STATISTICS_LEVEL=ALL</td>
+<td>OS timed statistics + <strong>row source execution stats</strong> từ <code>V$SQL_PLAN_STATISTICS_ALL</code></td>
+</tr>
+</tbody>
+</table>
+<p>Level 2 quan trọng vì cho phép AWR SQL Report hiển thị per-row-source execution statistics — cần thiết khi debugging execution plan regressions. Cost: snapshot chạy lâu hơn, data volume lớn hơn.</p>
+<h3 id="topnsql-it-nguoi-e-y-hay-gay-van-e">TOPNSQL — Ít người để ý, hay gây vấn đề<a class="headerlink" href="#topnsql-it-nguoi-e-y-hay-gay-van-e" title="Permanent link">&para;</a></h3>
+<p>TOPNSQL xác định <strong>số lượng top SQL statements</strong> được capture vào <code>DBA_HIST_SQLSTAT</code> mỗi snapshot, ranked theo 5 criteria: elapsed time, CPU time, buffer gets, disk reads, parse calls. Default = 30 (per criteria, per snapshot).</p>
+<p><strong>Production reality:</strong> Hệ thống OLTP với 5000+ distinct SQL statements chạy mỗi giờ → top 30 per criteria theo một snapshot có thể bỏ sót SQL quan trọng. Trong incident window, set <code>TOPNSQL = MAXIMUM</code> (capture tất cả eligible SQL) rồi reset về sau.</p>
+<h3 id="system_moving_window-baseline">SYSTEM_MOVING_WINDOW Baseline<a class="headerlink" href="#system_moving_window-baseline" title="Permanent link">&para;</a></h3>
+<p>Đây là baseline tự động Oracle duy trì, luôn cover đúng <code>RETENTION</code> days từ thời điểm hiện tại. Không thể manually modify. Mục đích chính: cung cấp dữ liệu cho <strong>Adaptive Threshold</strong> trong Server-generated Alerts (Section 10). Oracle dùng statistics trong moving window để tự động tính ngưỡng cảnh báo thay vì hardcode.</p>
+<h3 id="cdbpdb-consideration-12c">CDB/PDB Consideration (12c+)<a class="headerlink" href="#cdbpdb-consideration-12c" title="Permanent link">&para;</a></h3>
+<p>Trên Oracle 12c–18c: AWR chỉ tồn tại ở <strong>CDB root level</strong>. PDB statistics được aggregate vào root. Senior DBA không thể generate PDB-specific AWR report riêng.</p>
+<p>Từ Oracle <strong>19c</strong>: có <code>AWR_PDB_AUTOFLUSH_ENABLED</code> parameter — khi set TRUE ở PDB level, Oracle capture AWR data riêng cho PDB. <code>@?/rdbms/admin/awrrpt.sql</code> khi connected vào PDB sẽ generate PDB-scoped report.</p>
+<hr />
+<h2 id="3-production-realities">3. Production Realities<a class="headerlink" href="#3-production-realities" title="Permanent link">&para;</a></h2>
+<p><strong>Interval 60 phút là quá thô cho OLTP troubleshooting.</strong> Một performance incident kéo dài 20 phút trong interval 60 phút sẽ bị diluted: data bị trộn với 40 phút trước và sau issue. Standard practice: 15 phút cho critical OLTP, 30 phút cho hầu hết systems. Trade-off: SYSAUX growth ~2–4x so với 60-minute default.</p>
+<p><strong>SYSAUX sizing — rough formula:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Daily AWR growth (MB) ≈ (Active Sessions) × (Metrics per session) × (24 × 60 / INTERVAL) × row_size / 1024
+</span></code></pre></div>
+<p>Thực tế đơn giản hơn: chạy <code>@?/rdbms/admin/awrinfo.sql</code> sau khi hệ thống đã chạy 1 tuần, xem "Estimated Weekly Growth". Nhân với 4 để ước tính tháng, đặt SYSAUX datafile với autoextend đủ cho RETENTION × monthly_growth.</p>
+<p><strong>Optimizer statistics retention (SM/OPTSTAT) thường chiếm nhiều hơn AWR (SM/AWR)</strong> trên hệ thống già. Default 31 ngày optstat retention là quá dài — không có use case thực tế nào cần flash back optimizer stats về hơn 7 ngày trước. Giảm xuống 7 ngày trước khi lo về AWR data.</p>
+<p><strong>Baseline templates unreliable — author nói thẳng trong Practice 7.</strong> Dùng Oracle Scheduler job thay thế:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">-- Thay baseline template bằng scheduler job</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">BEGIN</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="n">DBMS_SCHEDULER</span><span class="p">.</span><span class="n">CREATE_JOB</span><span class="p">(</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">job_name</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'CAPTURE_OLTP_BASELINE'</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">job_type</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'PLSQL_BLOCK'</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">job_action</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">q</span><span class="s1">'[</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s1">      DECLARE</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s1">        l_begin  NUMBER := (SELECT MAX(SNAP_ID)-1 FROM DBA_HIST_SNAPSHOT);</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s1">        l_end    NUMBER := (SELECT MAX(SNAP_ID) FROM DBA_HIST_SNAPSHOT);</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s1">      BEGIN</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s1">        DBMS_WORKLOAD_REPOSITORY.CREATE_BASELINE(</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s1">          start_snap_id =&gt; l_begin,</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s1">          end_snap_id   =&gt; l_end,</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="s1">          baseline_name =&gt; '</span><span class="n">OLTP_</span><span class="s1">' || TO_CHAR(SYSDATE,'</span><span class="n">YYYYMMDD_HH24MI</span><span class="s1">'),</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="s1">          expiration    =&gt; 365);</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="s1">      END;]'</span><span class="p">,</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="n">start_date</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">SYSTIMESTAMP</span><span class="p">,</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="n">repeat_interval</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'FREQ=WEEKLY;BYDAY=MON;BYHOUR=8;BYMINUTE=0'</span><span class="p">,</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="n">enabled</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">TRUE</span><span class="p">);</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="o">/</span>
+</span></code></pre></div>
+<p><strong>AWR report reading order — không phải top-to-bottom.</strong> Senior DBA đọc theo priority:
+1. <strong>Top 10 Foreground Events</strong> — xác định wait class chủ đạo
+2. <strong>Wait Classes by Total Wait Time</strong> — confirm distribution
+3. <strong>Load Profile</strong> — DB Time/sec, Hard Parses/sec, Logical Reads/sec
+4. <strong>Instance Efficiency</strong> — nếu top events gợi ý library cache issue
+5. <strong>Top SQL by...</strong> section tương ứng với wait class đã xác định</p>
+<p><strong>DB Time / CPU Time ratio:</strong> Nếu <code>DB Time ≈ num_cpus × Elapsed Time</code>, đây là CPU-saturated workload. Nếu <code>DB Time &gt;&gt; num_cpus × Elapsed Time</code>, workload bị dominated bởi waits. Công thức này từ AWR header giúp phân loại ngay lập tức.</p>
+<p><strong>AWR data không tự di chuyển khi clone database.</strong> Khi làm Data Guard failover test hay RMAN clone, DBA_HIST_* data của primary không có trong standby (nếu standby là physical) hoặc bị reset (logical standby). Cho post-mortem trên clone: phải dùng <code>DBMS_SWRF_INTERNAL.AWR_EXTRACT</code> / <code>AWR_LOAD</code> để transport AWR data.</p>
+<hr />
+<h2 id="4-decision-framework">4. Decision Framework<a class="headerlink" href="#4-decision-framework" title="Permanent link">&para;</a></h2>
+<h3 id="chon-awr-tool-theo-use-case">Chọn AWR Tool theo use case<a class="headerlink" href="#chon-awr-tool-theo-use-case" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Tool</th>
+<th>Script</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System-wide performance window</td>
+<td>AWR Report</td>
+<td><code>awrrpt.sql</code></td>
+</tr>
+<tr>
+<td>So sánh healthy vs faulty period</td>
+<td>AWR Compare Report</td>
+<td><code>awrddrpt.sql</code></td>
+</tr>
+<tr>
+<td>SQL statement history + plan changes</td>
+<td>AWR SQL Report</td>
+<td><code>awrsqrpt.sql</code></td>
+</tr>
+<tr>
+<td>SYSAUX space planning</td>
+<td>AWR Info Report</td>
+<td><code>awrinfo.sql</code></td>
+</tr>
+<tr>
+<td>Query AWR data programmatically</td>
+<td>DBA_HIST_* direct</td>
+<td>Custom SQL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="interval-sizing">Interval Sizing<a class="headerlink" href="#interval-sizing" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Recommended Interval</th>
+<th>Reasoning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Critical OLTP (banking, telco)</td>
+<td>15 min</td>
+<td>Issues often &lt; 30 min duration</td>
+</tr>
+<tr>
+<td>General OLTP</td>
+<td>30 min</td>
+<td>Balances granularity vs space</td>
+</tr>
+<tr>
+<td>Batch / warehouse</td>
+<td>60 min</td>
+<td>Issues are longer-duration</td>
+</tr>
+<tr>
+<td>Post-incident investigation</td>
+<td>Manual snapshots</td>
+<td>Supplement auto snapshots</td>
+</tr>
+</tbody>
+</table>
+<h3 id="retention-sizing">Retention Sizing<a class="headerlink" href="#retention-sizing" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Minimum Retention</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekly pattern analysis</td>
+<td>10 days</td>
+</tr>
+<tr>
+<td>Monthly trend analysis</td>
+<td>35 days</td>
+</tr>
+<tr>
+<td>Quarterly capacity planning</td>
+<td>95 days</td>
+</tr>
+<tr>
+<td>Regulatory / audit</td>
+<td>Per policy (up to 1 year, use baselines)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="anti-patterns">Anti-patterns<a class="headerlink" href="#anti-patterns" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>❌ Tạo manual snapshot không label</strong> — sau 3 ngày không nhớ snapshot đó capture cái gì; tạo baseline ngay nếu snapshot quan trọng</li>
+<li><strong>❌ TOPNSQL mặc định trong incident window</strong> — top 30 SQL quá ít; set MAXIMUM rồi reset</li>
+<li><strong>❌ Dùng baseline templates</strong> — unreliable; dùng Scheduler job</li>
+<li><strong>❌ Delete manual snapshot ngay sau dùng</strong> — nếu cần re-analyze sau này phải recreate workload; giữ lại ít nhất 1 tuần</li>
+<li><strong>❌ Chỉ đọc AWR report top-to-bottom</strong> — mất thời gian; đọc theo priority (Foreground Events trước)</li>
+</ul>
+<hr />
+<h2 id="5-key-sql-commands">5. Key SQL / Commands<a class="headerlink" href="#5-key-sql-commands" title="Permanent link">&para;</a></h2>
+<h3 id="awr-delta-cho-wait-events-ieu-vsystem_event-khong-lam-uoc">AWR Delta cho Wait Events — Điều V$SYSTEM_EVENT không làm được<a class="headerlink" href="#awr-delta-cho-wait-events-ieu-vsystem_event-khong-lam-uoc" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- Delta wait events giữa 2 snapshots cụ thể</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">-- Đây là core query mà AWR report dùng internally</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">SELECT</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">EVENT_NAME</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">WAIT_CLASS</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">TOTAL_WAITS</span><span class="w">     </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">TOTAL_WAITS</span><span class="p">)</span><span class="w">                    </span><span class="n">delta_waits</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">((</span><span class="n">e</span><span class="p">.</span><span class="n">TIME_WAITED_MICRO</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">TIME_WAITED_MICRO</span><span class="p">)</span><span class="o">/</span><span class="mi">1</span><span class="n">e6</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">delta_sec</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">TIME_WAITED_MICRO</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">TIME_WAITED_MICRO</span><span class="p">)</span><span class="w"> </span><span class="o">/</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="k">NULLIF</span><span class="p">((</span><span class="n">e</span><span class="p">.</span><span class="n">TOTAL_WAITS</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">TOTAL_WAITS</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="p">)</span><span class="w">                                                       </span><span class="n">avg_wait_ms</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_HIST_SYSTEM_EVENT</span><span class="w"> </span><span class="n">e</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">DBA_HIST_SYSTEM_EVENT</span><span class="w"> </span><span class="n">b</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="k">ON</span><span class="w">  </span><span class="n">e</span><span class="p">.</span><span class="n">EVENT_NAME</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">EVENT_NAME</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">DBID</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">DBID</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">INSTANCE_NUMBER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">INSTANCE_NUMBER</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">end_snap</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">begin_snap</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">WAIT_CLASS</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="s1">'Idle'</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">TIME_WAITED_MICRO</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">TIME_WAITED_MICRO</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">delta_sec</span><span class="w"> </span><span class="k">DESC</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="k">FETCH</span><span class="w"> </span><span class="k">FIRST</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="k">ROWS</span><span class="w"> </span><span class="k">ONLY</span><span class="p">;</span>
+</span></code></pre></div>
+<blockquote>
+<p>Đây chính xác là bài toán Section 8 không giải được: TWO thời điểm cụ thể, không phải cumulative từ startup.</p>
+</blockquote>
+<h3 id="sql-performance-regression-detection">SQL Performance Regression Detection<a class="headerlink" href="#sql-performance-regression-detection" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- SQL statements có elapsed time tăng đột ngột giữa 2 snapshot windows</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">-- Useful để detect plan regression sau stats gathering hoặc patch</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">SELECT</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">s1</span><span class="p">.</span><span class="n">SQL_ID</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="n">s1</span><span class="p">.</span><span class="n">PLAN_HASH_VALUE</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">ELAPSED_TIME_TOTAL</span><span class="o">/</span><span class="mi">1</span><span class="n">e6</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="n">avg_sec_current</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="n">s0</span><span class="p">.</span><span class="n">ELAPSED_TIME_TOTAL</span><span class="o">/</span><span class="mi">1</span><span class="n">e6</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">s0</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="n">avg_sec_baseline</span><span class="p">,</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">        </span><span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">ELAPSED_TIME_TOTAL</span><span class="o">/</span><span class="k">NULLIF</span><span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="o">/</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">s0</span><span class="p">.</span><span class="n">ELAPSED_TIME_TOTAL</span><span class="o">/</span><span class="k">NULLIF</span><span class="p">(</span><span class="n">s0</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="p">)</span><span class="w">                                                                       </span><span class="n">regression_ratio</span><span class="p">,</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">s1</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="w">                                                     </span><span class="n">exec_count</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_HIST_SQLSTAT</span><span class="w"> </span><span class="n">s1</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">DBA_HIST_SQLSTAT</span><span class="w"> </span><span class="n">s0</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">SQL_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s0</span><span class="p">.</span><span class="n">SQL_ID</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">DBID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s0</span><span class="p">.</span><span class="n">DBID</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="o">&amp;</span><span class="n">issue_begin</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="o">&amp;</span><span class="n">issue_end</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">s0</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="o">&amp;</span><span class="n">normal_begin</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="o">&amp;</span><span class="n">normal_end</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">10</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">ELAPSED_TIME_TOTAL</span><span class="o">/</span><span class="k">NULLIF</span><span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">      </span><span class="n">s0</span><span class="p">.</span><span class="n">ELAPSED_TIME_TOTAL</span><span class="o">/</span><span class="k">NULLIF</span><span class="p">(</span><span class="n">s0</span><span class="p">.</span><span class="n">EXECUTIONS_TOTAL</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w">  </span><span class="c1">-- 2x regression threshold</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">regression_ratio</span><span class="w"> </span><span class="k">DESC</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="k">FETCH</span><span class="w"> </span><span class="k">FIRST</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="k">ROWS</span><span class="w"> </span><span class="k">ONLY</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="awr-settings-audit-space-projection">AWR Settings Audit + Space Projection<a class="headerlink" href="#awr-settings-audit-space-projection" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">-- Settings hiện tại + SYSAUX usage by component</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">SELECT</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">w</span><span class="p">.</span><span class="n">SNAP_INTERVAL</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="n">w</span><span class="p">.</span><span class="n">RETENTION</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="n">w</span><span class="p">.</span><span class="n">TOPNSQL</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">SPACE_USAGE_KBYTES</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w">  </span><span class="n">awr_mb</span><span class="p">,</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">SPACE_USAGE_KBYTES</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w">  </span><span class="n">optstat_mb</span><span class="p">,</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_HIST_SNAPSHOT</span><span class="p">)</span><span class="w">  </span><span class="n">total_snapshots</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_HIST_WR_CONTROL</span><span class="w"> </span><span class="n">w</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="k">CROSS</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">SPACE_USAGE_KBYTES</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$SYSAUX_OCCUPANTS</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">OCCUPANT_NAME</span><span class="o">=</span><span class="s1">'SM/AWR'</span><span class="p">)</span><span class="w"> </span><span class="n">a</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">CROSS</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">SPACE_USAGE_KBYTES</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$SYSAUX_OCCUPANTS</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">OCCUPANT_NAME</span><span class="o">=</span><span class="s1">'SM/OPTSTAT'</span><span class="p">)</span><span class="w"> </span><span class="n">o</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="snapshot-inventory-xem-khoang-trong-hoac-restart">Snapshot Inventory — Xem khoảng trống hoặc restart<a class="headerlink" href="#snapshot-inventory-xem-khoang-trong-hoac-restart" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- Phát hiện gap trong AWR snapshots (restart hoặc snapshot failure)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="n">s1</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="p">,</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="n">s1</span><span class="p">.</span><span class="n">END_INTERVAL_TIME</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="n">s2</span><span class="p">.</span><span class="n">BEGIN_INTERVAL_TIME</span><span class="p">,</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">((</span><span class="n">s2</span><span class="p">.</span><span class="n">BEGIN_INTERVAL_TIME</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">END_INTERVAL_TIME</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">gap_minutes</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="n">s2</span><span class="p">.</span><span class="n">STARTUP_TIME</span><span class="w">  </span><span class="c1">-- restart nếu khác s1</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_HIST_SNAPSHOT</span><span class="w"> </span><span class="n">s1</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">DBA_HIST_SNAPSHOT</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">s2</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">                          </span><span class="k">AND</span><span class="w"> </span><span class="n">s2</span><span class="p">.</span><span class="n">DBID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">DBID</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">                          </span><span class="k">AND</span><span class="w"> </span><span class="n">s2</span><span class="p">.</span><span class="n">INSTANCE_NUMBER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">INSTANCE_NUMBER</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="n">s2</span><span class="p">.</span><span class="n">BEGIN_INTERVAL_TIME</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">END_INTERVAL_TIME</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">90</span><span class="w">  </span><span class="c1">-- gap &gt; 1.5x interval</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="6-senior-checklist">6. Senior Checklist<a class="headerlink" href="#6-senior-checklist" title="Permanent link">&para;</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>STATISTICS_LEVEL</strong>: verify TYPICAL minimum; nếu cần row source execution stats cho SQL plan analysis → set ALL (SCOPE=BOTH, không chỉ MEMORY)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Interval ≤ 30 phút</strong>: 60-minute default quá coarse cho OLTP; tính SYSAUX growth trước khi commit</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>TOPNSQL</strong>: tăng lên MAXIMUM trong incident window; reset về 30 sau; script này nên trong runbook</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>SYSAUX monitoring</strong>: đặt alert ở 80% full; kiểm tra SM/OPTSTAT trước SM/AWR — thường optstat lớn hơn và dễ thu nhỏ hơn</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Baseline creation</strong>: create baseline ngay sau khi confirm "normal period" — đừng đợi; một khi snapshot bị purge thì mất</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>CDB/PDB</strong>: trên 19c+ confirm <code>AWR_PDB_AUTOFLUSH_ENABLED</code> = TRUE nếu cần PDB-level AWR report</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Snapshot gaps</strong>: query inventory sau restart hoặc MMON issue — gap trong AWR data làm AWR compare report vô nghĩa nếu không biết</li>
+</ul>
+<h2 id="-">---<a class="headerlink" href="#-" title="Permanent link">&para;</a></h2>
+<h1 id="output-2-lab-exercises">OUTPUT 2 — LAB EXERCISES<a class="headerlink" href="#output-2-lab-exercises" title="Permanent link">&para;</a></h1>
+<h1 id="lab-awr-hands-on-for-senior-dba">Lab: AWR — Hands-on for Senior DBA<a class="headerlink" href="#lab-awr-hands-on-for-senior-dba" title="Permanent link">&para;</a></h1>
+<h2 id="lab-overview">Lab Overview<a class="headerlink" href="#lab-overview" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Mục tiêu:</strong> Build production-grade AWR management workflow; implement delta analysis mà V$ views không làm được; develop AWR report reading strategy</li>
+<li><strong>Môi trường:</strong> Oracle 12c–19c / non-CDB hoặc CDB (note CDB considerations khi applicable)</li>
+<li><strong>Thời gian ước tính:</strong> 60–90 phút</li>
+<li><strong>Độ khó:</strong> Senior / Expert</li>
+</ul>
+<hr />
+<h2 id="exercise-1-awr-configuration-audit-right-sizing">Exercise 1 — AWR Configuration Audit &amp; Right-sizing<a class="headerlink" href="#exercise-1-awr-configuration-audit-right-sizing" title="Permanent link">&para;</a></h2>
+<h3 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h3>
+<p>Bạn vừa join một team mới. Database này đã chạy 3 năm, SYSAUX đang ở 87% full, monitoring đã trigger alert. DBA cũ không để lại runbook. <code>DBA_HIST_WR_CONTROL</code> shows: INTERVAL=60, RETENTION=35 days, TOPNSQL=30. <code>V$SYSAUX_OCCUPANTS</code> shows SM/AWR=42GB, SM/OPTSTAT=38GB.</p>
+<h3 id="tasks">Tasks<a class="headerlink" href="#tasks" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Audit current AWR configuration: assess xem INTERVAL và RETENTION có phù hợp với workload pattern không (hint: check <code>DBA_HIST_SNAPSHOT</code> để xem có bao nhiêu snapshots/day và gap nào không)</li>
+<li>Tính projected SYSAUX growth nếu giảm INTERVAL xuống 30 phút mà giữ RETENTION 35 days. Công thức: <code>new_size ≈ current_AWR_size × (60/new_interval)</code></li>
+<li>Propose và implement một configuration change plan: phải resolve SYSAUX issue mà không mất historical data quan trọng</li>
+<li>Implement SM/OPTSTAT reduction: giảm retention từ default xuống 7 ngày, purge dữ liệu cũ. Ước tính space được giải phóng trước khi chạy purge</li>
+</ol>
+<h3 id="expected-findings">Expected Findings<a class="headerlink" href="#expected-findings" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Giảm OPTSTAT retention giải phóng 60–80% SM/OPTSTAT space ngay lập tức (38GB → ~8GB)</li>
+<li>Điều này thường giải quyết SYSAUX crisis mà không cần chạm vào AWR retention</li>
+<li>Nếu giảm INTERVAL: RETENTION phải giảm tương ứng để giữ footprint tương đương</li>
+</ul>
+<h3 id="debrief-questions">Debrief Questions<a class="headerlink" href="#debrief-questions" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Tại sao giảm AWR RETENTION trước khi giảm OPTSTAT retention là sai thứ tự ưu tiên?</li>
+<li>Hệ quả của SYSAUX 100% full là gì? (Hint: không chỉ ảnh hưởng AWR)</li>
+</ul>
+<hr />
+<h2 id="exercise-2-delta-analysis-implementing-what-section-8-couldnt">Exercise 2 — Delta Analysis: Implementing What Section 8 Couldn't<a class="headerlink" href="#exercise-2-delta-analysis-implementing-what-section-8-couldnt" title="Permanent link">&para;</a></h2>
+<h3 id="scenario_1">Scenario<a class="headerlink" href="#scenario_1" title="Permanent link">&para;</a></h3>
+<p>Operations team báo cáo: database chậm mỗi ngày thứ Hai 09:00–10:00 (batch job chạy). Bạn đã có AWR snapshots cho thứ Hai vừa rồi (snap_id 1240–1244, covering 08:00–10:00). Bạn cũng có snapshots cho thứ Năm bình thường (snap_id 1180–1184, cùng time window). Cần xác định wait event nào thay đổi nhiều nhất giữa thứ Năm và thứ Hai.</p>
+<h3 id="tasks_1">Tasks<a class="headerlink" href="#tasks_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Implement delta query trên <code>DBA_HIST_SYSTEM_EVENT</code> cho 2 window snapshots trên. Calculate: delta_waits, delta_seconds, avg_wait_ms, percentage của DB Time</li>
+<li>Implement delta query trên <code>DBA_HIST_SYSSTAT</code> cho cùng 2 windows: focus vào statistics liên quan đến top 3 wait events từ bước 1 (ví dụ: nếu top wait là <code>log file sync</code> → look at <code>user commits</code>, <code>redo writes</code>; nếu là <code>db file sequential read</code> → look at <code>physical reads</code>, <code>consistent gets</code>)</li>
+<li>Dùng <code>DBA_HIST_SQLSTAT</code> để identify top 5 SQL statements trong window thứ Hai theo <code>ELAPSED_TIME_TOTAL</code>, cùng với <code>PLAN_HASH_VALUE</code> và execution count. So sánh với thứ Năm để xem có SQL nào mới xuất hiện không</li>
+<li>Generate AWR Compare Report (<code>awrddrpt.sql</code>) cho cùng 2 windows. So sánh kết quả của script với kết quả query thủ công của bạn</li>
+</ol>
+<h3 id="expected-findings_1">Expected Findings<a class="headerlink" href="#expected-findings_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Direct query trên <code>DBA_HIST_*</code> và AWR report phải cho cùng top events (minor formatting differences)</li>
+<li>Batch job thường gây: tăng <code>db file sequential read</code> hoặc <code>direct path read</code> tùy plan, tăng <code>log file sync</code> nếu heavy DML</li>
+<li>SQL mới xuất hiện trong batch window thường là culprit</li>
+</ul>
+<h3 id="debrief-questions_1">Debrief Questions<a class="headerlink" href="#debrief-questions_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Tại sao AWR Compare Report đòi hỏi "cùng elapsed time" mới cho meaningful comparison?</li>
+<li><code>DBA_HIST_SYSTEM_EVENT.TIME_WAITED_MICRO</code> có accuracy cao hơn <code>TIME_WAITED</code> (centiseconds) — khi nào điều này actually matters trong real analysis?</li>
+</ul>
+<hr />
+<h2 id="exercise-3-troubleshooting-scenario-expert-level">Exercise 3 — Troubleshooting Scenario <em>(Expert level)</em><a class="headerlink" href="#exercise-3-troubleshooting-scenario-expert-level" title="Permanent link">&para;</a></h2>
+<h3 id="incident-brief">Incident Brief<a class="headerlink" href="#incident-brief" title="Permanent link">&para;</a></h3>
+<p>Production OLTP database, Oracle 19c, 24-CPU NUMA (2 sockets × 12 cores), 192GB RAM, AWR interval 30 minutes. Thứ Sáu 15:30: users bắt đầu báo cáo application timeout. Incident kéo dài 47 phút, tự recover lúc 16:17. On-call DBA chỉ kịp tạo manual snapshot lúc 15:45 (snap_id 8831), ngoài ra có auto snapshots tại 15:30 (8829) và 16:00 (8832). Không có deployment hay maintenance trong ngày.</p>
+<h3 id="evidence-provided">Evidence Provided<a class="headerlink" href="#evidence-provided" title="Permanent link">&para;</a></h3>
+<p><strong>AWR Report: snap 8829–8832 (15:30–16:00, 30 min)</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Load Profile                               Per Second     Per Transaction
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>~~~~~~~~~                                  ----------     ---------------
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>DB Time(s):                                     24.3              0.22
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>DB CPU(s):                                      21.8              0.20
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Logical reads:                              84,234.1            762.4
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>Block changes:                               4,112.3             37.2
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>Physical reads:                                891.2              8.1
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>Executes:                                    3,892.1             35.2
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>Hard parses:                                     2.3
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>Transactions:                                  110.4
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>Instance Efficiency Percentages
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>Buffer Nowait %:  99.97       Redo NoWait %:  100.00
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>Buffer  Hit   %:  98.94       In-memory Sort %:  100.00
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>Library Hit   %:  99.98       Soft Parse %:    99.94
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>Execute to Parse %: 84.21     Latch Hit %:     99.99
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>Parse CPU to Parse Elapsed %:  91.23
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>Top 10 Foreground Events by Total Wait Time
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>Event                          Waits     Time(s)  Avg(ms)  % DB Time  Wait Class
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>------------------------------ --------- -------- -------- ---------- ----------
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>DB CPU                                    39,240             26.9%
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>read by other session          234,441    8,412    35.9      5.8%      User I/O
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>db file sequential read         89,221    2,341     26.2     1.6%      User I/O
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>log file sync                   44,112    1,892     42.9     1.3%      Commit
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>cursor: pin S wait on X             441      831  1,882.1    0.6%      Concurrency
+</span></code></pre></div>
+<p><strong>Top SQL by CPU Time (trong snap 8829–8832):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>SQL_ID         CPU_TIME(s)  EXEC  ELAPSED(s)  PLAN_HASH
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>-------------- ------------ ----- ----------- ----------
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>3x4mnp7qq8w1a       31,441   122    31,892    2847291034
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>8f2kl9mnb3p2q       4,221    44     4,441     1923847102
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>vn9x2pq1r7t5w       2,112  8,441    2,341     3892014567
+</span></code></pre></div></p>
+<p><strong>SQL Text of 3x4mnp7qq8w1a:</strong>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">CUSTOMER_ID</span><span class="p">,</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">CUSTOMER_NAME</span><span class="p">,</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">       </span><span class="k">SUM</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">ORDER_TOTAL</span><span class="p">)</span><span class="w"> </span><span class="n">TOTAL_ORDERS</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">       </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">PRODUCT_ID</span><span class="p">)</span><span class="w"> </span><span class="n">DISTINCT_PRODUCTS</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">FROM</span><span class="w"> </span><span class="n">CUSTOMERS</span><span class="w"> </span><span class="k">c</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">ORDERS</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">CUSTOMER_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">CUSTOMER_ID</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">ORDER_ITEMS</span><span class="w"> </span><span class="n">oi</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">ORDER_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">oi</span><span class="p">.</span><span class="n">ORDER_ID</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">PRODUCTS</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">oi</span><span class="p">.</span><span class="n">PRODUCT_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">PRODUCT_ID</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">REGION_CODE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">b1</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">CUSTOMER_ID</span><span class="p">,</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">CUSTOMER_NAME</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">TOTAL_ORDERS</span><span class="w"> </span><span class="k">DESC</span>
+</span></code></pre></div></p>
+<p><strong>V$SQL (lúc 15:47, captured by on-call DBA):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>SQL_ID: 3x4mnp7qq8w1a
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>PLAN_HASH_VALUE: 2847291034
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>CHILD_NUMBER: 0
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>LOADS: 1
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>INVALIDATIONS: 0
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>EXECUTIONS: 89
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>ELAPSED_TIME: 23,441,221 microseconds
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>CPU_TIME: 23,112,441 microseconds
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>BUFFER_GETS: 4,234,112
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>ROWS_PROCESSED: 45,221
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>LAST_ACTIVE_TIME: 15:47:02
+</span></code></pre></div></p>
+<p><strong>DBA_HIST_SQLSTAT cho cùng SQL_ID, snapshot 2 tuần trước (normal Friday):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>SNAP_ID: 8571  (Friday same time window)
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>EXECUTIONS_TOTAL: 98
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>ELAPSED_TIME_TOTAL: 1,892,441 microseconds (total, not per exec)
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>CPU_TIME_TOTAL: 1,771,221 microseconds
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>BUFFER_GETS_TOTAL: 312,441
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>PLAN_HASH_VALUE: 3910284751   ← DIFFERENT
+</span></code></pre></div></p>
+<h3 id="your-mission">Your Mission<a class="headerlink" href="#your-mission" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Xác định root cause của incident — cụ thể đến level component/mechanism</li>
+<li>Explain tại sao <code>read by other session</code> chiếm 5.8% DB Time đồng thời với top SQL chiếm 26.9% CPU — hai điều này có liên quan không?</li>
+<li><code>cursor: pin S wait on X</code> với average 1,882ms là signal gì? Liên quan đến root cause như thế nào?</li>
+<li>Đề xuất immediate action (trong 15 phút khi incident đang diễn ra) và permanent fix — phải khác nhau rõ ràng</li>
+<li>Xác định data nào còn thiếu để confirm root cause hoàn toàn — và làm thế nào để capture nó trong lần sau</li>
+</ol>
+<h3 id="evaluation-criteria">Evaluation Criteria<a class="headerlink" href="#evaluation-criteria" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Root cause phải chỉ đến cụ thể hơn "plan change" — senior sẽ explain tại sao plan thay đổi vào thứ Sáu 15:30 cụ thể (hint: Friday batch + stats gathering schedule là một hypothesis, nhưng không phải duy nhất)</li>
+<li><code>read by other session</code> analysis: phải differentiate giữa "shared buffer pool hot blocks" vs "parallel query slaves racing" — AWR data có đủ để phân biệt không?</li>
+<li><code>cursor: pin S wait on X</code> thường có 2 root causes khác nhau — senior phải name cả hai và assess which is more likely given this evidence</li>
+<li>Immediate action không được là "kill session" — phải có justification và risk assessment</li>
+<li>Missing data: senior checklist phải include ASH (Section 13) và execution plan history (<code>DBA_HIST_SQL_PLAN</code>) — hai thứ AWR report không cho thấy đủ</li>
+</ul>
+<hr />
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/section_all_new/section_9_awr_senior_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../section-8-instance-activity-wait-events-senior-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Section 8 — Instance Activity &amp; Wait Events — Deep Dive for Senior DBA">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Section 8 — Instance Activity & Wait Events — Deep Dive for Senior DBA
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../../04-rac-administration/claude/" class="md-footer__link md-footer__link--next" aria-label="Sau: Hướng dẫn tiếp tục cho khoá học Oracle RAC">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Hướng dẫn tiếp tục cho khoá học Oracle RAC
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

@@ -1,0 +1,2636 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../chapter04-notes/">
+      
+      
+        <link rel="next" href="../chapter06-notes/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-05-xuat-nhap-du-lieu-bang-csv-voi-dbatools" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            11. Book Lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Dbatools lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            Dbatools lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1_1" id="__nav_9_1_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Bookcode
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            Bookcode
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 02 — Setting up your PowerShell environment for dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 03 — Dựng lab dbatools: cài instance, restore DB, tạo login & job
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` & xem dịch vụ với `Get-DbaService`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-23-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 23-24
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-29-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 29-30
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-34-38" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 34-38
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-42-43" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 42-43
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-48-49" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 48-49
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-54-55" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 54-55
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-60-61" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 60-61
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-65-66" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 65-66
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-70-71" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 70-71
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-75" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 75
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-79-81" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 79-81
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-85-86" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 85-86
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-90-91" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 90-91
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-15-dong-96-98" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 15: dòng 96-98
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-16-dong-102-103" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 16: dòng 102-103
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-17-dong-107-109" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 17: dòng 107-109
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-18-dong-114-115" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 18: dòng 114-115
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-19-dong-119" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 19: dòng 119
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-20-dong-124" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 20: dòng 124
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-21-dong-129" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 21: dòng 129
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-22-dong-133-138" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 22: dòng 133-138
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-23-dong-143-163" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 23: dòng 143-163
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check-3-cau" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check (3 câu)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 07 — Lập inventory host & instance (features, builds, OS, databases)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 08 — Central Management Server (CMS) & Registered Servers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter09-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 09 — Error log, logins và quản trị quyền
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 10 — Backup database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 11 — Restore database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 12 — Database snapshot (tạo, restore, xoá)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter14-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter16-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter17-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 17 — Log Shipping và High Availability cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter20-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 21 — Data masking, PII scan & dữ liệu giả lập (Data tooling)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 22 — DACPAC & schema deployment (Export/Publish DAC Package)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 23 — SQL Trace & Extended Events (XEvents)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 24 — Certificates, Network Encryption & Database Encryption
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter25-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 25 — Backup compression & Data compression (Compression & Storage)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter26-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 26 — dbachecks & Pester validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter27-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 27 — Cloud & Azure SQL với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter28-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 28 — `dbatools` configuration system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter29-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 29 — Thực hành tổng hợp (Bonus lab chapter)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learning-path-vi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lộ trình học dbatools-lab — Hướng dẫn bắt đầu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-23-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 23-24
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-29-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 29-30
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-34-38" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 34-38
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-42-43" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 42-43
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-48-49" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 48-49
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-54-55" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 54-55
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-60-61" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 60-61
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-65-66" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 65-66
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-70-71" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 70-71
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-75" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 75
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-79-81" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 79-81
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-85-86" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 85-86
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-90-91" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 90-91
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-15-dong-96-98" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 15: dòng 96-98
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-16-dong-102-103" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 16: dòng 102-103
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-17-dong-107-109" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 17: dòng 107-109
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-18-dong-114-115" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 18: dòng 114-115
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-19-dong-119" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 19: dòng 119
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-20-dong-124" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 20: dòng 124
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-21-dong-129" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 21: dòng 129
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-22-dong-133-138" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 22: dòng 133-138
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-23-dong-143-163" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 23: dòng 143-163
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check-3-cau" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check (3 câu)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-05-xuat-nhap-du-lieu-bang-csv-voi-dbatools">Chapter 05 — Xuất / nhập dữ liệu bảng &amp; CSV với dbatools<a class="headerlink" href="#chapter-05-xuat-nhap-du-lieu-bang-csv-voi-dbatools" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Tham chiếu code gốc: <a href="../chapter05.ps1">chapter05.ps1</a></p>
+</blockquote>
+<h2 id="muc-tieu">Mục tiêu<a class="headerlink" href="#muc-tieu" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Xuất kết quả <code>Get-DbaDatabase</code> ra <strong>clipboard</strong> và <strong>CSV</strong> (<code>clip</code>, <code>Export-Csv</code>).</li>
+<li>Nhập CSV vào SQL bằng 2 cmdlet <strong><code>Import-DbaCsv</code></strong> (BCP nhanh, file-based) và <strong><code>Write-DbaDataTable</code></strong> (object pipeline, flexible hơn).</li>
+<li>Hiểu khi nào dùng <code>-AutoCreateTable</code> và rủi ro của nó.</li>
+<li>Truy vấn lại dữ liệu vừa import bằng <code>Invoke-DbaQuery</code> và <code>Get-DbaDbTable</code>.</li>
+<li>So sánh <strong>type information</strong> giữa CSV (<code>Get-Member</code> cho thấy toàn string) và object dbatools (kiểu mạnh — int, long, datetime).</li>
+<li>Copy bảng giữa 2 instance bằng <code>Copy-DbaDbTableData</code>.</li>
+</ul>
+<h2 id="tom-tat-5-y-chinh">Tóm tắt 5 ý chính<a class="headerlink" href="#tom-tat-5-y-chinh" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Pipeline xuất:</strong> <code>Get-DbaDatabase | Select | Export-Csv</code> là pattern reporting căn bản. Output property của dbatools rất "PowerShell-friendly" — Format/Select/Sort hoạt động tự nhiên.</li>
+<li><strong><code>Import-DbaCsv</code> ≠ <code>Write-DbaDataTable</code>:</strong> </li>
+<li><code>Import-DbaCsv</code> đọc file CSV qua <strong>SqlBulkCopy</strong> — nhanh, ít memory, nhưng cứng (toàn string).</li>
+<li><code>Write-DbaDataTable</code> nhận <strong>mọi object pipeline</strong> — flexible (datetime, decimal, nested), nhưng load vào memory.</li>
+<li><strong><code>-AutoCreateTable</code></strong> tự sinh <code>CREATE TABLE</code> từ schema input. Tiện cho prototype nhưng <strong>kiểu thường rộng quá</strong> (<code>NVARCHAR(MAX)</code> mặc định) → đừng dùng cho production table.</li>
+<li><strong><code>Get-DbaDbTable</code> + <code>.Columns</code></strong> là cách kiểm tra schema thực tế sau khi import — luôn verify type trước khi build report.</li>
+<li><strong><code>Copy-DbaDbTableData</code></strong> = SqlBulkCopy giữa 2 instance, không qua file trung gian. Hỗ trợ schema mapping nguồn/đích khác nhau qua splat.</li>
+</ol>
+<h2 id="giai-thich-tung-oan-code">Giải thích từng đoạn code<a class="headerlink" href="#giai-thich-tung-oan-code" title="Permanent link">&para;</a></h2>
+<h3 id="oan-1-dong-18">Đoạn 1: dòng 18<a class="headerlink" href="#oan-1-dong-18" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-ExcludeSystem</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Liệt kê user database (loại trừ <code>master</code>, <code>model</code>, <code>msdb</code>, <code>tempdb</code>).
+- <strong>Đổi cho lab:</strong> <code>Get-DbaDatabase -SqlInstance dbatoolslab\sql2017 -ExcludeSystem</code>.</p>
+<h3 id="oan-2-dong-23-24">Đoạn 2: dòng 23-24<a class="headerlink" href="#oan-2-dong-23-24" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-ExcludeSystem</span> <span class="p">|</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>        <span class="nb">Select </span><span class="n">Name</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">LastFullBackup</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Chỉ giữ 3 property thường dùng nhất khi báo cáo. Output sạch hơn, dễ đọc.
+- <strong>Đổi cho lab:</strong> <code>Get-DbaDatabase -SqlInstance dbatoolslab\sql2017 -ExcludeSystem | Select Name, Size, LastFullBackup</code>.</p>
+<h3 id="oan-3-dong-29-30">Đoạn 3: dòng 29-30<a class="headerlink" href="#oan-3-dong-29-30" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-ExcludeSystem</span> <span class="p">|</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">Select </span><span class="n">Name</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">LastFullBackup</span> <span class="p">|</span> <span class="n">clip</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Đẩy kết quả <strong>vào clipboard</strong> (<code>clip</code> chỉ có trên Windows). Sau đó paste sang Excel/email.
+- <strong>Đổi cho lab:</strong> Trên Linux/devcontainer thay <code>clip</code> bằng <code>Set-Clipboard</code> (nếu có), hoặc đơn giản pipe vào <code>Out-File</code>.</p>
+<h3 id="oan-4-dong-34-38">Đoạn 4: dòng 34-38<a class="headerlink" href="#oan-4-dong-34-38" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-ExcludeSystem</span> <span class="p">|</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">Select </span><span class="n">Name</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">LastFullBackup</span> <span class="p">|</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">Export-Csv</span> <span class="n">-Path</span> <span class="n">Databaseinfo</span><span class="p">.</span><span class="n">csv</span> <span class="n">-NoTypeInformation</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">Get-Content</span> <span class="n">DatabaseInfo</span><span class="p">.</span><span class="n">csv</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Lưu kết quả ra CSV (không có dòng <code>#TYPE</code> header dư thừa), sau đó <code>Get-Content</code> để check file.
+- <strong>Đổi cho lab:</strong> <code>Get-DbaDatabase -SqlInstance dbatoolslab\sql2017 -ExcludeSystem | Select Name, Size, LastFullBackup | Export-Csv .\Databaseinfo.csv -NoTypeInformation</code>.
+- <strong>Lưu ý:</strong> PowerShell 7 có <code>-UseQuotes AsNeeded</code> để CSV ngắn hơn.</p>
+<h3 id="oan-5-dong-42-43">Đoạn 5: dòng 42-43<a class="headerlink" href="#oan-5-dong-42-43" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">Get-ChildItem</span> <span class="n">-Path</span> <span class="n">E</span><span class="p">:\</span><span class="n">csvs</span><span class="p">\</span><span class="n">top</span><span class="p">.</span><span class="n">csv</span> <span class="p">|</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">Import-DbaCsv</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">top</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Pipe <code>FileInfo</code> (từ <code>Get-ChildItem</code>) vào <code>Import-DbaCsv</code>. dbatools đọc <code>.FullName</code> của FileInfo tự động.
+- <strong>Đổi cho lab:</strong> <code>Get-ChildItem .\Databaseinfo.csv | Import-DbaCsv -SqlInstance dbatoolslab\sql2017 -Database tempdb -Table dbinfo</code>.
+- <strong>Side-effect:</strong> <strong>Ghi data vào tempdb.</strong> Bảng <code>top</code> phải <strong>tồn tại trước</strong> (đoạn này không có <code>-AutoCreateTable</code>). Chạy <code>-WhatIf</code> trước.</p>
+<h3 id="oan-6-dong-48-49">Đoạn 6: dòng 48-49<a class="headerlink" href="#oan-6-dong-48-49" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">Get-ChildItem</span> <span class="n">E</span><span class="p">:\</span><span class="n">csv</span><span class="p">\</span><span class="n">top</span><span class="p">*.</span><span class="n">csv</span> <span class="p">|</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">Import-DbaCsv</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-AutoCreateTable</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Wildcard <code>top*.csv</code> → mỗi file thành 1 bảng. <code>-AutoCreateTable</code> tự tạo bảng từ header CSV (cột = string nvarchar(max)).
+- <strong>Side-effect:</strong> <strong>Tạo bảng + ghi data.</strong> Tên bảng = tên file (không có <code>.csv</code>). <code>-WhatIf</code> để xem mapping trước.</p>
+<h3 id="oan-7-dong-54-55">Đoạn 7: dòng 54-55<a class="headerlink" href="#oan-7-dong-54-55" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">Import-Csv</span> <span class="n">-Path</span> <span class="n">E</span><span class="p">:\</span><span class="n">csv</span><span class="p">\</span><span class="n">top-tracks</span><span class="p">.</span><span class="n">csv</span> <span class="p">|</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">Select </span><span class="n">Rank</span><span class="p">,</span> <span class="n">Plays</span><span class="p">,</span> <span class="n">Artist</span><span class="p">,</span> <span class="n">Title</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Demo đọc CSV thuần PowerShell (không vào SQL) — show property kiểu object. Mọi cột đều là <code>[string]</code>.</p>
+<h3 id="oan-8-dong-60-61">Đoạn 8: dòng 60-61<a class="headerlink" href="#oan-8-dong-60-61" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">Import-Csv</span> <span class="n">-Path</span> <span class="p">.\</span><span class="n">Databaseinfo</span><span class="p">.</span><span class="n">csv</span> <span class="p">|</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span> <span class="n">-AutoCreateTable</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Đọc CSV → object PowerShell → ghi vào SQL qua <code>Write-DbaDataTable</code>. Khác <code>Import-DbaCsv</code> ở chỗ chấp nhận <strong>mọi object</strong>, không chỉ file.
+- <strong>Đổi cho lab:</strong> <code>Import-Csv .\Databaseinfo.csv | Write-DbaDataTable -SqlInstance dbatoolslab\sql2017 -Database tempdb -Table Databases -AutoCreateTable</code>.
+- <strong>Side-effect:</strong> <strong>Tạo bảng + ghi data</strong>. <code>-WhatIf</code> trước. Bảng sẽ toàn cột <code>nvarchar</code> vì input đến từ <code>Import-Csv</code> (string).</p>
+<h3 id="oan-9-dong-65-66">Đoạn 9: dòng 65-66<a class="headerlink" href="#oan-9-dong-65-66" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">$csv</span> <span class="p">=</span> <span class="nb">Import-Csv</span> <span class="p">\\</span><span class="n">server</span><span class="p">\</span><span class="n">bigdataset</span><span class="p">.</span><span class="n">csv</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="n">sql2014</span> <span class="n">-InputObject</span> <span class="nv">$csv</span> <span class="n">-Database</span> <span class="n">mydb</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Truyền dữ liệu qua <strong><code>-InputObject</code></strong> (không qua pipeline). Hữu ích khi cần tái sử dụng <code>$csv</code> nhiều lần.
+- <strong>Đổi cho lab:</strong> <code>Write-DbaDataTable -SqlInstance dbatoolslab\sql2017 -InputObject $csv -Database tempdb -Table Databases</code>.</p>
+<h3 id="oan-10-dong-70-71">Đoạn 10: dòng 70-71<a class="headerlink" href="#oan-10-dong-70-71" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nv">$query</span> <span class="p">=</span> <span class="s2">"Select * from Databases"</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">Invoke-DbaQuery</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Query</span> <span class="nv">$query</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Verify dữ liệu vừa import bằng <code>SELECT *</code>. Output là PSCustomObject — column = property.
+- <strong>Đổi cho lab:</strong> <code>Invoke-DbaQuery -SqlInstance dbatoolslab\sql2017 -Database tempdb -Query "select * from Databases"</code>.</p>
+<h3 id="oan-11-dong-75">Đoạn 11: dòng 75<a class="headerlink" href="#oan-11-dong-75" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">Remove-DbaDbTable</span> <span class="n">SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">databases</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> <strong>Xoá bảng</strong> — cleanup giữa các lần demo.
+- <strong>Bug code gốc:</strong> Thiếu dấu <code>-</code> trước <code>SqlInstance</code>. Cú pháp đúng:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">Remove-DbaDbTable</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">databases</span>
+</span></code></pre></div>
+- <strong>Đổi cho lab:</strong> <code>Remove-DbaDbTable -SqlInstance dbatoolslab\sql2017 -Database tempdb -Table Databases -Confirm:$false</code>.
+- <strong>Side-effect:</strong> <strong>DESTRUCTIVE.</strong> <strong>Bắt buộc <code>-WhatIf</code> lần đầu</strong>:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">Remove-DbaDbTable</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span> <span class="n">-WhatIf</span>
+</span></code></pre></div></p>
+<h3 id="oan-12-dong-79-81">Đoạn 12: dòng 79-81<a class="headerlink" href="#oan-12-dong-79-81" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-ExcludeSystem</span> <span class="p">|</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">Select </span><span class="n">Name</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">LastFullBackUp</span> <span class="p">|</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span> <span class="n">-AutoCreateTable</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> <strong>Bypass CSV hoàn toàn</strong> — pipe trực tiếp object dbatools vào <code>Write-DbaDataTable</code>. Lúc này column <strong>giữ đúng kiểu</strong> (datetime cho <code>LastFullBackup</code>, decimal cho <code>Size</code>).
+- <strong>Đổi cho lab:</strong> <code>Get-DbaDatabase -SqlInstance dbatoolslab\sql2017 -ExcludeSystem | Select Name, Size, LastFullBackup | Write-DbaDataTable -SqlInstance dbatoolslab\sql2017 -Database tempdb -Table Databases -AutoCreateTable</code>.
+- <strong>Side-effect:</strong> Ghi data vào tempdb. <code>-WhatIf</code> trước.</p>
+<h3 id="oan-13-dong-85-86">Đoạn 13: dòng 85-86<a class="headerlink" href="#oan-13-dong-85-86" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">$query</span> <span class="p">=</span> <span class="s2">"Select * from Databases"</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">Invoke-DbaQuery</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Query</span> <span class="nv">$query</span> <span class="n">-Database</span> <span class="n">tempdb</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Verify lần 2. So sánh với đoạn 10 — nội dung số liệu giống, nhưng schema bảng giờ có kiểu chính xác hơn (xem đoạn 14).</p>
+<h3 id="oan-14-dong-90-91">Đoạn 14: dòng 90-91<a class="headerlink" href="#oan-14-dong-90-91" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">(</span><span class="nb">Get-DbaDbTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span><span class="p">).</span><span class="n">Columns</span> <span class="p">|</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">Select-Object</span> <span class="n">Parent</span><span class="p">,</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Datatype</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> <strong>Xem schema bảng</strong> sau import. Đây là cách kiểm chứng <code>-AutoCreateTable</code> đã sinh kiểu gì.
+- <strong>Đổi cho lab:</strong> <code>(Get-DbaDbTable -SqlInstance dbatoolslab\sql2017 -Database tempdb -Table Databases).Columns | Select Parent, Name, Datatype</code>.</p>
+<h3 id="oan-15-dong-96-98">Đoạn 15: dòng 96-98<a class="headerlink" href="#oan-15-dong-96-98" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">Import-Csv</span> <span class="n">-Path</span> <span class="p">.\</span><span class="n">Databaseinfo</span><span class="p">.</span><span class="n">csv</span> <span class="p">|</span> <span class="nb">Get-Member</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-ExcludeSystem</span> <span class="p">|</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nb">Select </span><span class="n">Name</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">LastFullBackup</span> <span class="p">|</span> <span class="nb">Get-Member</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> So sánh <strong>TypeName</strong> của 2 nguồn:
+  - <code>Import-Csv</code> → <code>PSCustomObject</code> với mọi property là <code>[string]</code>.
+  - <code>Get-DbaDatabase | Select</code> → <code>PSCustomObject</code> với property kiểu mạnh (datetime, decimal).
+- <strong>Bài học:</strong> Type ở nguồn quyết định type ở bảng SQL đích.</p>
+<h3 id="oan-16-dong-102-103">Đoạn 16: dòng 102-103<a class="headerlink" href="#oan-16-dong-102-103" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">Import-Csv</span> <span class="n">-Path</span> <span class="p">.\</span><span class="n">Databaseinfo</span><span class="p">.</span><span class="n">csv</span> <span class="p">|</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Lần này <strong>không có <code>-AutoCreateTable</code></strong> — yêu cầu bảng <code>Databases</code> đã tồn tại với schema khớp.
+- <strong>Side-effect:</strong> Ghi data. Sẽ lỗi nếu bảng chưa có hoặc schema lệch.</p>
+<h3 id="oan-17-dong-107-109">Đoạn 17: dòng 107-109<a class="headerlink" href="#oan-17-dong-107-109" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">Import-Csv</span> <span class="n">-Path</span> <span class="p">.\</span><span class="n">Databaseinfo</span><span class="p">.</span><span class="n">csv</span> <span class="p">|</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="nb">Invoke-DbaQuery</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Query</span> <span class="s2">"select * from Databases"</span> <span class="n">-Database</span> <span class="n">tempdb</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Import rồi verify ngay. Pattern "load + read" chuẩn.</p>
+<h3 id="oan-18-dong-114-115">Đoạn 18: dòng 114-115<a class="headerlink" href="#oan-18-dong-114-115" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">Get-Process</span> <span class="p">|</span> <span class="nb">Select </span><span class="n">-Last</span> <span class="n">10</span> <span class="p">|</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">processes</span> <span class="n">-AutoCreateTable</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Demo thú vị — bất kỳ output PowerShell nào cũng đổ vào SQL được. Ở đây là 10 process gần nhất.
+- <strong>Đổi cho lab:</strong> <code>Get-Process | Select -Last 10 | Write-DbaDataTable -SqlInstance dbatoolslab\sql2017 -Database tempdb -Table processes -AutoCreateTable</code>.
+- <strong>Bài học:</strong> Mọi monitoring / inventory script có thể đẩy thẳng kết quả vào DB để build report sau.</p>
+<h3 id="oan-19-dong-119">Đoạn 19: dòng 119<a class="headerlink" href="#oan-19-dong-119" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="p">(</span><span class="nb">Get-DbaDbTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">processes</span><span class="p">).</span><span class="n">Columns</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">Parent</span><span class="p">,</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Datatype</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Kiểm tra schema bảng <code>processes</code> vừa auto-create.</p>
+<h3 id="oan-20-dong-124">Đoạn 20: dòng 124<a class="headerlink" href="#oan-20-dong-124" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">Connect-AzAccount</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Đăng nhập Azure (mở popup browser hoặc device code).
+- <strong>Lưu ý lab:</strong> Không bắt buộc cho lab cơ bản. Skip nếu không có Azure subscription.</p>
+<h3 id="oan-21-dong-129">Đoạn 21: dòng 129<a class="headerlink" href="#oan-21-dong-129" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">Get-AzVM</span> <span class="n">-Status</span> <span class="p">|</span> <span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">AzureVMs</span> <span class="n">-AutoCreateTable</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Đổ inventory Azure VM sang SQL — minh hoạ "PowerShell pipeline = ETL nhẹ".
+- <strong>Đổi cho lab:</strong> Skip nếu không có Azure.</p>
+<h3 id="oan-22-dong-133-138">Đoạn 22: dòng 133-138<a class="headerlink" href="#oan-22-dong-133-138" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nv">$query</span> <span class="p">=</span> <span class="s2">"SELECT [Name]</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="s2">        ,[Location]</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="s2">        ,[PowerState]</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="s2">        ,[StatusCode]</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="s2">        FROM [AzureVMs]"</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="nb">Invoke-DbaQuery</span> <span class="n">-SqlInstance</span> <span class="n">SQLDEV01</span> <span class="n">-Query</span> <span class="nv">$query</span> <span class="n">-Database</span> <span class="n">tempdb</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Query lại bảng <code>AzureVMs</code> vừa tạo từ đoạn 21.</p>
+<h3 id="oan-23-dong-143-163">Đoạn 23: dòng 143-163<a class="headerlink" href="#oan-23-dong-143-163" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nv">$copyDbaDbTableDataSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"SQLDEV01"</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>    <span class="n">Database</span> <span class="p">=</span> <span class="s2">"WideWorldImporters"</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>    <span class="n">Table</span> <span class="p">=</span> <span class="s1">'[Purchasing].[PurchaseOrders]'</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>    <span class="n">Destination</span> <span class="p">=</span> <span class="s2">"SQLDEV02,15591"</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>    <span class="n">DestinationDatabase</span> <span class="p">=</span> <span class="s1">'WIP'</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>    <span class="n">DestinationTable</span> <span class="p">=</span> <span class="s1">'dbo.PurchaseOrders'</span>
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>    <span class="n">AutoCreateTable</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="p">}</span>
+</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="nb">Copy-DbaDbTableData</span> <span class="nv">@copyDbaDbTableDataSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> <strong>Copy bảng</strong> giữa 2 instance khác nhau (kể cả khác schema/tên bảng/port). Dùng SqlBulkCopy bên dưới — nhanh.
+- <strong>Đổi cho lab:</strong> Lab chỉ có 1 instance chính <code>dbatoolslab\sql2017</code>. Có thể demo copy cùng instance, khác database:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nv">$copyArgs</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>    <span class="n">SqlInstance</span>         <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>    <span class="n">Database</span>            <span class="p">=</span> <span class="s2">"WideWorldImporters"</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>    <span class="n">Table</span>               <span class="p">=</span> <span class="s2">"[Purchasing].[PurchaseOrders]"</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>    <span class="n">Destination</span>         <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>    <span class="n">DestinationDatabase</span> <span class="p">=</span> <span class="s2">"tempdb"</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>    <span class="n">DestinationTable</span>    <span class="p">=</span> <span class="s2">"dbo.PurchaseOrders_copy"</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>    <span class="n">AutoCreateTable</span>     <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="p">}</span>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="nb">Copy-DbaDbTableData</span> <span class="nv">@copyArgs</span> <span class="n">-WhatIf</span>   <span class="c"># luôn -WhatIf trước</span>
+</span></code></pre></div>
+- <strong>Side-effect:</strong> <strong>Ghi data + tạo bảng đích.</strong> <code>-WhatIf</code> bắt buộc.</p>
+<h2 id="lenh-thay-vao-lab-cua-ban">Lệnh thay vào lab của bạn<a class="headerlink" href="#lenh-thay-vao-lab-cua-ban" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c"># Phiên bản đã đổi instance name cho lab dbatoolslab\sql2017</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="nv">$srv</span> <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="c"># 1) Xuất danh sách DB ra CSV</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="nv">$srv</span> <span class="n">-ExcludeSystem</span> <span class="p">|</span>
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">LastFullBackup</span> <span class="p">|</span>
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>    <span class="nb">Export-Csv</span> <span class="n">-Path</span> <span class="p">.\</span><span class="n">Databaseinfo</span><span class="p">.</span><span class="n">csv</span> <span class="n">-NoTypeInformation</span>
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="c"># 2) Import CSV → bảng SQL (Import-DbaCsv — nhanh, file-based)</span>
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="nb">Get-ChildItem</span> <span class="p">.\</span><span class="n">Databaseinfo</span><span class="p">.</span><span class="n">csv</span> <span class="p">|</span>
+</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a>    <span class="nb">Import-DbaCsv</span> <span class="n">-SqlInstance</span> <span class="nv">$srv</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">dbinfo</span> <span class="n">-AutoCreateTable</span> <span class="n">-WhatIf</span>
+</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>
+</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="c"># 3) Pipe object → bảng SQL (Write-DbaDataTable — type-preserving)</span>
+</span><span id="__span-26-15"><a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="nv">$srv</span> <span class="n">-ExcludeSystem</span> <span class="p">|</span>
+</span><span id="__span-26-16"><a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a>    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">LastFullBackup</span> <span class="p">|</span>
+</span><span id="__span-26-17"><a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a>    <span class="nb">Write-DbaDataTable</span> <span class="n">-SqlInstance</span> <span class="nv">$srv</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span> <span class="n">-AutoCreateTable</span> <span class="n">-WhatIf</span>
+</span><span id="__span-26-18"><a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a>
+</span><span id="__span-26-19"><a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="c"># 4) Kiểm tra schema bảng vừa tạo</span>
+</span><span id="__span-26-20"><a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="p">(</span><span class="nb">Get-DbaDbTable</span> <span class="n">-SqlInstance</span> <span class="nv">$srv</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span><span class="p">).</span><span class="n">Columns</span> <span class="p">|</span>
+</span><span id="__span-26-21"><a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a>    <span class="nb">Select-Object</span> <span class="n">Parent</span><span class="p">,</span> <span class="n">Name</span><span class="p">,</span> <span class="n">DataType</span>
+</span><span id="__span-26-22"><a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a>
+</span><span id="__span-26-23"><a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a><span class="c"># 5) Đọc lại</span>
+</span><span id="__span-26-24"><a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a><span class="nb">Invoke-DbaQuery</span> <span class="n">-SqlInstance</span> <span class="nv">$srv</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Query</span> <span class="s2">"SELECT TOP 5 * FROM Databases"</span>
+</span><span id="__span-26-25"><a id="__codelineno-26-25" name="__codelineno-26-25" href="#__codelineno-26-25"></a>
+</span><span id="__span-26-26"><a id="__codelineno-26-26" name="__codelineno-26-26" href="#__codelineno-26-26"></a><span class="c"># 6) Cleanup (DESTRUCTIVE — luôn -WhatIf trước)</span>
+</span><span id="__span-26-27"><a id="__codelineno-26-27" name="__codelineno-26-27" href="#__codelineno-26-27"></a><span class="nb">Remove-DbaDbTable</span> <span class="n">-SqlInstance</span> <span class="nv">$srv</span> <span class="n">-Database</span> <span class="n">tempdb</span> <span class="n">-Table</span> <span class="n">Databases</span><span class="p">,</span> <span class="n">dbinfo</span> <span class="n">-WhatIf</span>
+</span><span id="__span-26-28"><a id="__codelineno-26-28" name="__codelineno-26-28" href="#__codelineno-26-28"></a><span class="c"># Khi đã chắc chắn:</span>
+</span><span id="__span-26-29"><a id="__codelineno-26-29" name="__codelineno-26-29" href="#__codelineno-26-29"></a><span class="c"># Remove-DbaDbTable -SqlInstance $srv -Database tempdb -Table Databases, dbinfo -Confirm:$false</span>
+</span><span id="__span-26-30"><a id="__codelineno-26-30" name="__codelineno-26-30" href="#__codelineno-26-30"></a>
+</span><span id="__span-26-31"><a id="__codelineno-26-31" name="__codelineno-26-31" href="#__codelineno-26-31"></a><span class="c"># 7) Copy bảng (cùng instance, khác DB) — demo Copy-DbaDbTableData</span>
+</span><span id="__span-26-32"><a id="__codelineno-26-32" name="__codelineno-26-32" href="#__codelineno-26-32"></a><span class="nv">$copyArgs</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-26-33"><a id="__codelineno-26-33" name="__codelineno-26-33" href="#__codelineno-26-33"></a>    <span class="n">SqlInstance</span>         <span class="p">=</span> <span class="nv">$srv</span>
+</span><span id="__span-26-34"><a id="__codelineno-26-34" name="__codelineno-26-34" href="#__codelineno-26-34"></a>    <span class="n">Database</span>            <span class="p">=</span> <span class="s2">"WideWorldImporters"</span>
+</span><span id="__span-26-35"><a id="__codelineno-26-35" name="__codelineno-26-35" href="#__codelineno-26-35"></a>    <span class="n">Table</span>               <span class="p">=</span> <span class="s2">"[Purchasing].[PurchaseOrders]"</span>
+</span><span id="__span-26-36"><a id="__codelineno-26-36" name="__codelineno-26-36" href="#__codelineno-26-36"></a>    <span class="n">Destination</span>         <span class="p">=</span> <span class="nv">$srv</span>
+</span><span id="__span-26-37"><a id="__codelineno-26-37" name="__codelineno-26-37" href="#__codelineno-26-37"></a>    <span class="n">DestinationDatabase</span> <span class="p">=</span> <span class="s2">"tempdb"</span>
+</span><span id="__span-26-38"><a id="__codelineno-26-38" name="__codelineno-26-38" href="#__codelineno-26-38"></a>    <span class="n">DestinationTable</span>    <span class="p">=</span> <span class="s2">"dbo.PurchaseOrders_copy"</span>
+</span><span id="__span-26-39"><a id="__codelineno-26-39" name="__codelineno-26-39" href="#__codelineno-26-39"></a>    <span class="n">AutoCreateTable</span>     <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-26-40"><a id="__codelineno-26-40" name="__codelineno-26-40" href="#__codelineno-26-40"></a><span class="p">}</span>
+</span><span id="__span-26-41"><a id="__codelineno-26-41" name="__codelineno-26-41" href="#__codelineno-26-41"></a><span class="nb">Copy-DbaDbTableData</span> <span class="nv">@copyArgs</span> <span class="n">-WhatIf</span>
+</span></code></pre></div>
+<h2 id="self-check-3-cau">Self-check (3 câu)<a class="headerlink" href="#self-check-3-cau" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Định nghĩa:</strong> <code>Import-DbaCsv</code> và <code>Write-DbaDataTable</code> đều ghi vào bảng SQL — khác nhau ở <strong>input type</strong> và <strong>performance</strong> thế nào?</li>
+<li><strong>Thực hành:</strong> Chạy <code>Import-Csv .\Databaseinfo.csv | Get-Member</code> rồi chạy <code>Get-DbaDatabase -SqlInstance dbatoolslab\sql2017 | Select Name, Size, LastFullBackup | Get-Member</code>. So sánh <strong>TypeName</strong> của property <code>LastFullBackup</code> ở 2 lần — vì sao khác?</li>
+<li><strong>Liên hệ:</strong> Chapter 04 dạy <code>Invoke-DbaQuery -SqlInstance $server</code> (truyền SMO object). Chapter này dùng <code>Invoke-DbaQuery -SqlInstance "..."</code> (truyền string). Cả 2 cách đều chạy được — lợi/hại từng cách là gì?</li>
+</ol>
+<h2 id="bai-tap-mo-rong">Bài tập mở rộng<a class="headerlink" href="#bai-tap-mo-rong" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Bài 1 (~5 phút):</strong> Tạo bảng <code>tempdb.dbo.HostInfo</code> chứa kết quả <code>Get-DbaComputerSystem -ComputerName dbatoolslab</code> qua pipeline + <code>Write-DbaDataTable -AutoCreateTable</code>. Sau đó verify schema bằng <code>Get-DbaDbTable</code>.</li>
+<li><strong>Bài 2 (sâu hơn):</strong> Viết script <code>Export-DbInventory.ps1</code> nhận <code>-SqlInstance</code> và <code>-DestinationCsvFolder</code>, xuất 4 CSV: <code>databases.csv</code>, <code>tables.csv</code>, <code>users.csv</code>, <code>agentjobs.csv</code>. Mỗi file là output của 1 cmdlet (<code>Get-DbaDatabase</code>, <code>Get-DbaDbTable</code>, <code>Get-DbaDbUser</code>, <code>Get-DbaAgentJob</code>). Bonus: thêm tham số <code>-AlsoToSql</code> đẩy luôn vào bảng <code>Inventory.dbo.*</code>.</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>book_lab/dbatools-lab/bookcode/chapter05.notes.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../chapter04-notes/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` &amp; xem dịch vụ với `Get-DbaService`">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` & xem dịch vụ với `Get-DbaService`
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chapter06-notes/" class="md-footer__link md-footer__link--next" aria-label="Sau: Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

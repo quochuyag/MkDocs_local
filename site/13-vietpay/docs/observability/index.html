@@ -1,0 +1,3023 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../er-diagram/">
+      
+      
+        <link rel="next" href="../../huong-dan-chi-tiet/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📊 Observability — VietPay Fintech Database - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#observability-vietpay-fintech-database" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📊 Observability — VietPay Fintech Database
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            13. VietPay
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Design notes
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_2" id="__nav_11_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Docs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_2">
+            <span class="md-nav__icon md-icon"></span>
+            Docs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../adr/001-data-architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Adr
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../er-diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VietPay — Entity-Relationship Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📊 Observability — VietPay Fintech Database
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📊 Observability — VietPay Fintech Database
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#grafana-dashboard-slo-specification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grafana Dashboard &amp; SLO Specification
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tong-quan-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Tổng quan (Overview)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Tổng quan (Overview)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stack-cong-nghe-giam-sat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stack Công nghệ Giám sát
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nguon-metrics-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nguồn Metrics chính
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-dashboard-panels" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Dashboard Panels
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Dashboard Panels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-query-latency-o-tre-truy-van" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Query Latency (Độ trễ truy vấn)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-transaction-throughput-thong-luong-giao-dich" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Transaction Throughput (Thông lượng giao dịch)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-replication-lag-o-tre-replica" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Replication Lag (Độ trễ replica)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-lock-contention-tranh-chap-khoa" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Lock Contention (Tranh chấp khóa)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-settlement-processing-lag-o-tre-settlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Settlement Processing Lag (Độ trễ settlement)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-connection-pool-quan-ly-ket-noi" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 Connection Pool (Quản lý kết nối)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-disk-io-hoat-ong-ocghi" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7 Disk I/O (Hoạt động đọc/ghi)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-cache-hit-ratio-ty-le-cache-hit" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.8 Cache Hit Ratio (Tỷ lệ cache hit)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#29-wal-generation-rate-toc-o-sinh-wal" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.9 WAL Generation Rate (Tốc độ sinh WAL)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#210-table-bloat-autovacuum-phinh-bang" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.10 Table Bloat &amp; Autovacuum (Phình bảng)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#211-capacity-planning-quy-hoach-nang-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.11 Capacity Planning (Quy hoạch năng lực)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-slo-definitions-inh-nghia-slo" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. SLO Definitions (Định nghĩa SLO)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. SLO Definitions (Định nghĩa SLO)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-bang-slo-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Bảng SLO tổng hợp
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-error-budget-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Error Budget Policy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-alerting-rules-quy-tac-canh-bao" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Alerting Rules (Quy tắc cảnh báo)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Alerting Rules (Quy tắc cảnh báo)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-critical-alerts-pagerduty-anh-thuc-on-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Critical Alerts — PagerDuty (đánh thức on-call)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-warning-alerts-slack-notification" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Warning Alerts — Slack notification
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-dashboard-layout-bo-cuc-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Dashboard Layout (Bố cục Dashboard)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Dashboard Layout (Bố cục Dashboard)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-executive-overview-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Executive Overview Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-dba-deep-dive-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 DBA Deep-Dive Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-custom-business-metrics-metrics-nghiep-vu-tuy-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Custom Business Metrics (Metrics nghiệp vụ tùy chỉnh)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-monitoring-during-operations-giam-sat-trong-van-hanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Monitoring During Operations (Giám sát trong vận hành)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Monitoring During Operations (Giám sát trong vận hành)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-migration-monitoring-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Migration Monitoring Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-on-call-runbook-quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2 On-Call Runbook Quick Reference
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../huong-dan-chi-tiet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../mongodb/webhook-events-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongodb
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../neo4j/fraud-detection-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Neo4j
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🏦 VietPay — Enterprise Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../requirements-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📋 Take Home Assessment — Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#grafana-dashboard-slo-specification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grafana Dashboard &amp; SLO Specification
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tong-quan-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Tổng quan (Overview)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Tổng quan (Overview)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stack-cong-nghe-giam-sat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stack Công nghệ Giám sát
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nguon-metrics-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nguồn Metrics chính
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-dashboard-panels" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Dashboard Panels
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Dashboard Panels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-query-latency-o-tre-truy-van" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Query Latency (Độ trễ truy vấn)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-transaction-throughput-thong-luong-giao-dich" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Transaction Throughput (Thông lượng giao dịch)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-replication-lag-o-tre-replica" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Replication Lag (Độ trễ replica)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-lock-contention-tranh-chap-khoa" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Lock Contention (Tranh chấp khóa)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-settlement-processing-lag-o-tre-settlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Settlement Processing Lag (Độ trễ settlement)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-connection-pool-quan-ly-ket-noi" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 Connection Pool (Quản lý kết nối)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-disk-io-hoat-ong-ocghi" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7 Disk I/O (Hoạt động đọc/ghi)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-cache-hit-ratio-ty-le-cache-hit" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.8 Cache Hit Ratio (Tỷ lệ cache hit)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#29-wal-generation-rate-toc-o-sinh-wal" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.9 WAL Generation Rate (Tốc độ sinh WAL)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#210-table-bloat-autovacuum-phinh-bang" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.10 Table Bloat &amp; Autovacuum (Phình bảng)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#211-capacity-planning-quy-hoach-nang-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.11 Capacity Planning (Quy hoạch năng lực)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-slo-definitions-inh-nghia-slo" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. SLO Definitions (Định nghĩa SLO)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. SLO Definitions (Định nghĩa SLO)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-bang-slo-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Bảng SLO tổng hợp
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-error-budget-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Error Budget Policy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-alerting-rules-quy-tac-canh-bao" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Alerting Rules (Quy tắc cảnh báo)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Alerting Rules (Quy tắc cảnh báo)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-critical-alerts-pagerduty-anh-thuc-on-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Critical Alerts — PagerDuty (đánh thức on-call)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-warning-alerts-slack-notification" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Warning Alerts — Slack notification
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-dashboard-layout-bo-cuc-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Dashboard Layout (Bố cục Dashboard)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Dashboard Layout (Bố cục Dashboard)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-executive-overview-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Executive Overview Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-dba-deep-dive-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 DBA Deep-Dive Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-custom-business-metrics-metrics-nghiep-vu-tuy-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Custom Business Metrics (Metrics nghiệp vụ tùy chỉnh)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-monitoring-during-operations-giam-sat-trong-van-hanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Monitoring During Operations (Giám sát trong vận hành)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Monitoring During Operations (Giám sát trong vận hành)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-migration-monitoring-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Migration Monitoring Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-on-call-runbook-quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2 On-Call Runbook Quick Reference
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="observability-vietpay-fintech-database">📊 Observability — VietPay Fintech Database<a class="headerlink" href="#observability-vietpay-fintech-database" title="Permanent link">&para;</a></h1>
+<h2 id="grafana-dashboard-slo-specification">Grafana Dashboard &amp; SLO Specification<a class="headerlink" href="#grafana-dashboard-slo-specification" title="Permanent link">&para;</a></h2>
+<hr />
+<h2 id="1-tong-quan-overview">1. Tổng quan (Overview)<a class="headerlink" href="#1-tong-quan-overview" title="Permanent link">&para;</a></h2>
+<p>Tài liệu này định nghĩa <strong>key metrics, SLOs, và alerting rules</strong> cho hệ thống database của nền tảng thanh toán VietPay. Mục tiêu là cung cấp <strong>full visibility</strong> vào hiệu suất, độ tin cậy, và sức khỏe của PostgreSQL cluster phục vụ workload fintech.</p>
+<h3 id="stack-cong-nghe-giam-sat">Stack Công nghệ Giám sát<a class="headerlink" href="#stack-cong-nghe-giam-sat" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Công cụ</th>
+<th>Vai trò</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metrics Collection</strong></td>
+<td>Prometheus + <code>postgres_exporter</code></td>
+<td>Thu thập metrics từ PostgreSQL</td>
+</tr>
+<tr>
+<td><strong>Visualization</strong></td>
+<td>Grafana</td>
+<td>Dashboard hiển thị real-time</td>
+</tr>
+<tr>
+<td><strong>Alerting</strong></td>
+<td>Grafana Alerting / Alertmanager</td>
+<td>Cảnh báo khi vượt ngưỡng</td>
+</tr>
+<tr>
+<td><strong>Log Aggregation</strong></td>
+<td>Loki + <code>promtail</code></td>
+<td>Centralized query logs</td>
+</tr>
+<tr>
+<td><strong>Tracing</strong></td>
+<td>Tempo / Jaeger</td>
+<td>Distributed tracing cho transactions</td>
+</tr>
+</tbody>
+</table>
+<h3 id="nguon-metrics-chinh">Nguồn Metrics chính<a class="headerlink" href="#nguon-metrics-chinh" title="Permanent link">&para;</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># postgres_exporter config</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">postgres_exporter</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">data_source_name</span><span class="p">:</span><span class="w"> </span><span class="s">"postgresql://monitor:***@primary:5432/vietpay?sslmode=require"</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="c1"># Custom queries cho business metrics</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">custom_queries</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">settlement_lag</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transaction_throughput</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ledger_balance_check</span>
+</span></code></pre></div>
+<hr />
+<h2 id="2-dashboard-panels">2. Dashboard Panels<a class="headerlink" href="#2-dashboard-panels" title="Permanent link">&para;</a></h2>
+<h3 id="21-query-latency-o-tre-truy-van">2.1 Query Latency (Độ trễ truy vấn)<a class="headerlink" href="#21-query-latency-o-tre-truy-van" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Theo dõi thời gian phản hồi của các OLTP queries — chỉ số quan trọng nhất cho trải nghiệm người dùng.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>pg_stat_statements_mean_time_seconds</code>, <code>pg_stat_statements_calls_total</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Time Series Graph (multi-line: p50, p95, p99)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>p99 &lt; 100ms cho OLTP, p99 &lt; 5s cho reporting</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>p99 &gt; 80ms</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>p99 &gt; 150ms</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># P50 latency (median)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kr">histogram_quantile</span><span class="o">(</span><span class="mf">0.50</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_statements_seconds_bucket</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="o">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># P95 latency</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kr">histogram_quantile</span><span class="o">(</span><span class="mf">0.95</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_statements_seconds_bucket</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="o">)</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># P99 latency</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="kr">histogram_quantile</span><span class="o">(</span><span class="mf">0.99</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_statements_seconds_bucket</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="o">)</span>
+</span></code></pre></div>
+<p><strong>Tại sao chọn ngưỡng này:</strong>
+- <strong>100ms p99</strong>: Fintech payment flows cần phản hồi nhanh. Người dùng chờ quá 200ms sẽ cảm nhận delay. API gateway timeout thường 500ms-1s, nên DB cần &lt; 100ms để chừa overhead cho app logic.
+- <strong>80ms warning</strong>: Cảnh báo sớm trước khi vi phạm SLO, cho team ~20% headroom để phản ứng.</p>
+<hr />
+<h3 id="22-transaction-throughput-thong-luong-giao-dich">2.2 Transaction Throughput (Thông lượng giao dịch)<a class="headerlink" href="#22-transaction-throughput-thong-luong-giao-dich" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Đo lường số giao dịch tài chính xử lý mỗi giây — capacity indicator chính.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>vietpay_transactions_total</code>, <code>pg_stat_user_tables_n_tup_ins</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Stat Panel (current TPS) + Time Series (trend)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>≥ 500 TPS sustained, ≥ 2,000 TPS peak</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>&lt; 400 TPS sustained (possible degradation)</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>&lt; 200 TPS sustained (service impact)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Current TPS (transactions per second)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">vietpay_transactions_total</span><span class="p">{</span><span class="nl">status</span><span class="o">=</span><span class="p">"</span><span class="s">SETTLED</span><span class="p">"}[</span><span class="s">1m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># TPS từ PostgreSQL insert rate trên bảng transactions</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_user_tables_n_tup_ins</span><span class="p">{</span><span class="nl">relname</span><span class="o">=</span><span class="p">"</span><span class="s">transactions</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># TPS trend (smoothed)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">vietpay_transactions_total</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span></code></pre></div>
+<p><strong>Custom SQL metric cho <code>postgres_exporter</code>:</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- Custom query: vietpay_transaction_throughput</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">SELECT</span><span class="w"> </span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'1 minute'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">tps_1m</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'5 minutes'</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">5</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">tps_5m_avg</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'1 minute'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">settled_tps_1m</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'5 minutes'</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Tại sao chọn ngưỡng này:</strong>
+- <strong>500 TPS sustained</strong>: Với ~2M giao dịch/tháng = ~0.77 TPS trung bình. Nhưng traffic distribution không đều — peak hours (11h-14h, 18h-21h) có thể gấp 10-50x. 500 TPS đảm bảo hệ thống handle peak bình thường.
+- <strong>&lt; 200 TPS critical</strong>: Dưới mức này, queue backlog sẽ tích lũy, gây cascade failure.</p>
+<hr />
+<h3 id="23-replication-lag-o-tre-replica">2.3 Replication Lag (Độ trễ replica)<a class="headerlink" href="#23-replication-lag-o-tre-replica" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Giám sát streaming replication giữa primary và standby — critical cho DR và read scaling.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>pg_replication_lag_seconds</code>, <code>pg_stat_replication_replay_lag</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Gauge (current lag) + Time Series (trend)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>&lt; 1 giây</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>&gt; 3 giây</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>&gt; 10 giây</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Replication lag in seconds</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">pg_replication_lag_seconds</span><span class="p">{</span><span class="nl">instance</span><span class="o">=~</span><span class="p">"</span><span class="s">replica.*</span><span class="p">"}</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Lag in bytes (WAL)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nv">pg_stat_replication_pg_wal_lsn_diff</span><span class="p">{</span><span class="nl">state</span><span class="o">=</span><span class="p">"</span><span class="s">streaming</span><span class="p">"}</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Write lag vs Replay lag (chi tiết hơn)</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nv">pg_stat_replication_write_lag_seconds</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="nv">pg_stat_replication_replay_lag_seconds</span>
+</span></code></pre></div>
+<p><strong>Tại sao chọn ngưỡng này:</strong>
+- <strong>&lt; 1s</strong>: Read replicas phục vụ balance queries. Nếu lag &gt; 1s, user có thể thấy stale balance — unacceptable cho fintech.
+- <strong>&gt; 10s critical</strong>: Tại mức này, failover sẽ mất data. WAL backlog có thể tràn <code>wal_keep_size</code>, gây replica disconnect.</p>
+<hr />
+<h3 id="24-lock-contention-tranh-chap-khoa">2.4 Lock Contention (Tranh chấp khóa)<a class="headerlink" href="#24-lock-contention-tranh-chap-khoa" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Phát hiện lock waits và deadlocks — dấu hiệu của bottleneck concurrency.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>pg_locks_count</code>, <code>pg_stat_activity_max_wait_seconds</code>, <code>pg_stat_database_deadlocks_total</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Time Series (lock waits) + Stat (deadlocks counter)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>&lt; 0.1% queries bị block &gt; 100ms; 0 deadlocks/giờ</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>&gt; 5 lock waits &gt; 1s / phút</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>&gt; 20 lock waits &gt; 1s / phút HOẶC &gt; 3 deadlocks / giờ</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Số lượng locks hiện tại theo mode</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nv">pg_locks_count</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Lock waits kéo dài &gt; 1 giây</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">count</span><span class="o">(</span><span class="nv">pg_stat_activity_wait_event_type</span><span class="p">{</span><span class="nl">wait_event_type</span><span class="o">=</span><span class="p">"</span><span class="s">Lock</span><span class="p">",</span><span class="w"> </span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span><span class="o">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Deadlock rate</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_database_deadlocks_total</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}[</span><span class="s">1h</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1"># Longest current wait</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">max</span><span class="o">(</span><span class="nv">pg_stat_activity_seconds_since_last_msg</span><span class="p">{</span><span class="nl">state</span><span class="o">=</span><span class="p">"</span><span class="s">active</span><span class="p">",</span><span class="w"> </span><span class="nl">wait_event_type</span><span class="o">=</span><span class="p">"</span><span class="s">Lock</span><span class="p">"}</span><span class="o">)</span>
+</span></code></pre></div>
+<p><strong>Custom SQL metric:</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- Lock contention monitoring</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_lock_waits</span><span class="p">,</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">wait_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'1 second'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">long_waits</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="k">MAX</span><span class="p">(</span><span class="k">EXTRACT</span><span class="p">(</span><span class="n">EPOCH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">query_start</span><span class="p">)))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">max_wait_seconds</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_activity</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">wait_event_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Lock'</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'active'</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Tại sao chọn ngưỡng này:</strong>
+- <strong>0 deadlocks/giờ</strong>: Double-entry ledger với ordered lock acquisition KHÔNG nên có deadlocks. Nếu có = bug trong lock ordering.
+- <strong>&gt; 20 waits/phút</strong>: Cho thấy hot-spot contention (ví dụ: cùng wallet bị update đồng thời), cần investigation ngay.</p>
+<hr />
+<h3 id="25-settlement-processing-lag-o-tre-settlement">2.5 Settlement Processing Lag (Độ trễ settlement)<a class="headerlink" href="#25-settlement-processing-lag-o-tre-settlement" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Đo thời gian từ khi transaction <code>PENDING</code> đến <code>SETTLED</code> — business-critical metric.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>vietpay_settlement_lag_seconds</code> (custom)</td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Heatmap + Stat (p95 lag)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>p95 &lt; 5 phút</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>p95 &gt; 3 phút</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>p95 &gt; 10 phút</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Settlement lag - p95</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kr">histogram_quantile</span><span class="o">(</span><span class="mf">0.95</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="kr">rate</span><span class="o">(</span><span class="nv">vietpay_settlement_lag_seconds_bucket</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="o">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># Average settlement lag</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">vietpay_settlement_lag_seconds_sum</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span><span class="w"> </span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="kr">rate</span><span class="o">(</span><span class="nv">vietpay_settlement_lag_seconds_count</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1"># Pending transactions older than 5 minutes</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="nv">vietpay_pending_transactions_count</span><span class="p">{</span><span class="nl">age_bucket</span><span class="o">=</span><span class="p">"</span><span class="s">&gt;5m</span><span class="p">"}</span>
+</span></code></pre></div>
+<p><strong>Custom SQL metric:</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">-- Settlement lag monitoring</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">SELECT</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="n">percentile_cont</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="n">WITHIN</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">        </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">EXTRACT</span><span class="p">(</span><span class="n">EPOCH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span><span class="n">settled_at</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">created_at</span><span class="p">))</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">p50_settlement_seconds</span><span class="p">,</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="n">percentile_cont</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">95</span><span class="p">)</span><span class="w"> </span><span class="n">WITHIN</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">        </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">EXTRACT</span><span class="p">(</span><span class="n">EPOCH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span><span class="n">settled_at</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">created_at</span><span class="p">))</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">p95_settlement_seconds</span><span class="p">,</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="n">percentile_cont</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">99</span><span class="p">)</span><span class="w"> </span><span class="n">WITHIN</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">        </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">EXTRACT</span><span class="p">(</span><span class="n">EPOCH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span><span class="n">settled_at</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">created_at</span><span class="p">))</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">p99_settlement_seconds</span><span class="p">,</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'PENDING'</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'5 minutes'</span><span class="p">)</span><span class="w"> </span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">        </span><span class="k">AS</span><span class="w"> </span><span class="n">stale_pending_count</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'1 hour'</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Tại sao chọn ngưỡng này:</strong>
+- <strong>&lt; 5 phút</strong>: Quy định NHNN (Ngân hàng Nhà nước) yêu cầu giao dịch điện tử phải được xử lý trong thời gian hợp lý. 5 phút là tiêu chuẩn ngành cho real-time payments.
+- <strong>&gt; 10 phút critical</strong>: Ảnh hưởng trải nghiệm người dùng nghiêm trọng, có thể vi phạm SLA với merchants.</p>
+<hr />
+<h3 id="26-connection-pool-quan-ly-ket-noi">2.6 Connection Pool (Quản lý kết nối)<a class="headerlink" href="#26-connection-pool-quan-ly-ket-noi" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Giám sát utilization connection pool — exhaustion gây service outage ngay lập tức.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>pg_stat_activity_count</code>, <code>pgbouncer_pools_*</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Stacked Bar (active/idle/waiting) + Gauge (utilization %)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>Utilization &lt; 70%; 0 waiting connections</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>Utilization &gt; 70% HOẶC waiting &gt; 0</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>Utilization &gt; 90% HOẶC waiting &gt; 10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Connection utilization</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nv">pg_stat_activity_count</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nv">pg_settings_max_connections</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Active vs Idle vs Idle-in-transaction</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nv">pg_stat_activity_count</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">",</span><span class="w"> </span><span class="nl">state</span><span class="o">=</span><span class="p">"</span><span class="s">active</span><span class="p">"}</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nv">pg_stat_activity_count</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">",</span><span class="w"> </span><span class="nl">state</span><span class="o">=</span><span class="p">"</span><span class="s">idle</span><span class="p">"}</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="nv">pg_stat_activity_count</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">",</span><span class="w"> </span><span class="nl">state</span><span class="o">=</span><span class="p">"</span><span class="s">idle in transaction</span><span class="p">"}</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1"># PgBouncer pool stats (nếu dùng PgBouncer)</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="nv">pgbouncer_pools_server_active</span><span class="p">{</span><span class="nl">database</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="nv">pgbouncer_pools_client_waiting</span><span class="p">{</span><span class="nl">database</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="c1"># Idle-in-transaction timeout detection</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="k">count</span><span class="o">(</span><span class="nv">pg_stat_activity</span><span class="p">{</span><span class="nl">state</span><span class="o">=</span><span class="p">"</span><span class="s">idle in transaction</span><span class="p">",</span><span class="w"> </span>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">  </span><span class="err">query_start</span><span class="w"> </span><span class="err">&lt;</span><span class="w"> </span><span class="err">(now()</span><span class="w"> </span><span class="err">-</span><span class="w"> </span><span class="err">interval</span><span class="w"> </span><span class="err">'5</span><span class="w"> </span><span class="err">minutes')</span><span class="p">}</span><span class="o">)</span>
+</span></code></pre></div>
+<p><strong>Tại sao chọn ngưỡng này:</strong>
+- <strong>&lt; 70%</strong>: PostgreSQL default <code>max_connections = 100</code>. Mỗi connection chiếm ~5-10MB RAM. Cần headroom cho connection spikes (ví dụ: app deploy, batch jobs).
+- <strong>waiting &gt; 0 warning</strong>: Bất kỳ client nào phải chờ connection = dấu hiệu pool exhaustion sắp xảy ra.</p>
+<hr />
+<h3 id="27-disk-io-hoat-ong-ocghi">2.7 Disk I/O (Hoạt động đọc/ghi)<a class="headerlink" href="#27-disk-io-hoat-ong-ocghi" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Theo dõi I/O để phát hiện bottleneck storage — đặc biệt quan trọng cho OLTP workload.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>node_disk_io_time_seconds_total</code>, <code>pg_stat_bgwriter_*</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Time Series (IOPS, throughput, latency)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>Disk latency p99 &lt; 5ms (NVMe SSD)</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>Disk latency p99 &gt; 5ms</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>Disk latency p99 &gt; 20ms</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Disk IOPS</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">node_disk_reads_completed_total</span><span class="p">{</span><span class="nl">device</span><span class="o">=</span><span class="p">"</span><span class="s">nvme0n1</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">node_disk_writes_completed_total</span><span class="p">{</span><span class="nl">device</span><span class="o">=</span><span class="p">"</span><span class="s">nvme0n1</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1"># Disk throughput (MB/s)</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">node_disk_read_bytes_total</span><span class="p">{</span><span class="nl">device</span><span class="o">=</span><span class="p">"</span><span class="s">nvme0n1</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">node_disk_written_bytes_total</span><span class="p">{</span><span class="nl">device</span><span class="o">=</span><span class="p">"</span><span class="s">nvme0n1</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># Average disk latency</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">node_disk_io_time_seconds_total</span><span class="p">{</span><span class="nl">device</span><span class="o">=</span><span class="p">"</span><span class="s">nvme0n1</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="kr">rate</span><span class="o">(</span><span class="nv">node_disk_io_now</span><span class="p">{</span><span class="nl">device</span><span class="o">=</span><span class="p">"</span><span class="s">nvme0n1</span><span class="p">"}[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="c1"># PostgreSQL checkpoint I/O</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_bgwriter_buffers_checkpoint_total</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_bgwriter_checkpoint_write_time_total</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span></code></pre></div>
+<hr />
+<h3 id="28-cache-hit-ratio-ty-le-cache-hit">2.8 Cache Hit Ratio (Tỷ lệ cache hit)<a class="headerlink" href="#28-cache-hit-ratio-ty-le-cache-hit" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Buffer cache hit ratio thấp = đọc từ disk quá nhiều = latency tăng.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>pg_stat_database_blks_hit</code>, <code>pg_stat_database_blks_read</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Gauge (percentage) + Time Series (trend)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>&gt; 99% cho OLTP database</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>&lt; 98%</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>&lt; 95%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Buffer cache hit ratio</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nv">pg_stat_database_blks_hit</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span><span class="w"> </span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="o">(</span><span class="nv">pg_stat_database_blks_hit</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span><span class="w"> </span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">     </span><span class="o">+</span><span class="w"> </span><span class="nv">pg_stat_database_blks_read</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span><span class="o">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># Index hit ratio (nên &gt; 99%)</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="nv">pg_stat_user_indexes_idx_blks_hit</span><span class="w"> </span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="o">(</span><span class="nv">pg_stat_user_indexes_idx_blks_hit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">pg_stat_user_indexes_idx_blks_read</span><span class="o">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># Table hit ratio per table</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="nv">pg_statio_user_tables_heap_blks_hit</span><span class="p">{</span><span class="nl">relname</span><span class="o">=~</span><span class="p">"</span><span class="s">transactions|ledger_entries</span><span class="p">"}</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="o">(</span><span class="nv">pg_statio_user_tables_heap_blks_hit</span><span class="p">{</span><span class="nl">relname</span><span class="o">=~</span><span class="p">"</span><span class="s">transactions|ledger_entries</span><span class="p">"}</span><span class="w"> </span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">     </span><span class="o">+</span><span class="w"> </span><span class="nv">pg_statio_user_tables_heap_blks_read</span><span class="p">{</span><span class="nl">relname</span><span class="o">=~</span><span class="p">"</span><span class="s">transactions|ledger_entries</span><span class="p">"}</span><span class="o">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</span></code></pre></div>
+<p><strong>Tại sao chọn ngưỡng này:</strong>
+- <strong>&gt; 99%</strong>: PostgreSQL OLTP workload với <code>shared_buffers</code> đúng cấu hình phải đạt 99%+. Dưới 98% cho thấy <code>shared_buffers</code> quá nhỏ hoặc có full table scan query.</p>
+<hr />
+<h3 id="29-wal-generation-rate-toc-o-sinh-wal">2.9 WAL Generation Rate (Tốc độ sinh WAL)<a class="headerlink" href="#29-wal-generation-rate-toc-o-sinh-wal" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: WAL (Write-Ahead Log) volume ảnh hưởng trực tiếp đến disk space, replication lag, và backup time.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>pg_stat_wal_wal_bytes_total</code> (PG14+)</td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Time Series (MB/s) + Stat (daily total)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>&lt; 500 MB/giờ sustained</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>&gt; 1 GB/giờ sustained</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>&gt; 5 GB/giờ sustained (possible runaway backfill/migration)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># WAL generation rate (bytes/sec)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_wal_wal_bytes_total</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># WAL generation rate (MB/hour)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_wal_wal_bytes_total</span><span class="p">[</span><span class="s">1h</span><span class="p">]</span><span class="o">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">3600</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># WAL records per second</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="kr">rate</span><span class="o">(</span><span class="nv">pg_stat_wal_wal_records_total</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span></code></pre></div>
+<hr />
+<h3 id="210-table-bloat-autovacuum-phinh-bang">2.10 Table Bloat &amp; Autovacuum (Phình bảng)<a class="headerlink" href="#210-table-bloat-autovacuum-phinh-bang" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Dead tuples tích lũy gây bloat → index scan chậm, disk waste. Autovacuum health = database health.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>pg_stat_user_tables_n_dead_tup</code>, <code>pg_stat_user_tables_last_autovacuum</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Table (top 10 bloated tables) + Time Series (dead tuples trend)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>Dead tuple ratio &lt; 10% cho bất kỳ bảng nào</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>Dead tuple ratio &gt; 10%</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>Dead tuple ratio &gt; 25% HOẶC autovacuum chưa chạy &gt; 24h trên bảng active</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Dead tuple ratio per table</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nv">pg_stat_user_tables_n_dead_tup</span><span class="p">{</span><span class="nl">relname</span><span class="o">=~</span><span class="p">"</span><span class="s">transactions|ledger_entries|wallets</span><span class="p">"}</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="o">(</span><span class="nv">pg_stat_user_tables_n_live_tup</span><span class="p">{</span><span class="nl">relname</span><span class="o">=~</span><span class="p">"</span><span class="s">transactions|ledger_entries|wallets</span><span class="p">"}</span><span class="w"> </span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">     </span><span class="o">+</span><span class="w"> </span><span class="nv">pg_stat_user_tables_n_dead_tup</span><span class="p">{</span><span class="nl">relname</span><span class="o">=~</span><span class="p">"</span><span class="s">transactions|ledger_entries|wallets</span><span class="p">"}</span><span class="o">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="c1"># Time since last autovacuum (seconds)</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="kr">time</span><span class="o">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">pg_stat_user_tables_last_autovacuum</span><span class="p">{</span><span class="nl">relname</span><span class="o">=~</span><span class="p">"</span><span class="s">transactions|ledger_entries</span><span class="p">"}</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="c1"># Autovacuum currently running</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="nv">pg_stat_activity_count</span><span class="p">{</span><span class="nl">query</span><span class="o">=~</span><span class="p">"</span><span class="s">autovacuum:.*</span><span class="p">",</span><span class="w"> </span><span class="nl">state</span><span class="o">=</span><span class="p">"</span><span class="s">active</span><span class="p">"}</span>
+</span></code></pre></div>
+<p><strong>Custom SQL metric:</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">-- Table bloat estimation</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">SELECT</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="n">schemaname</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">'.'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">relname</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">table_name</span><span class="p">,</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="n">n_live_tup</span><span class="p">,</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="n">n_dead_tup</span><span class="p">,</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="n">n_dead_tup</span><span class="p">::</span><span class="nb">numeric</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">n_live_tup</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n_dead_tup</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">dead_pct</span><span class="p">,</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="n">last_autovacuum</span><span class="p">,</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="n">last_autoanalyze</span><span class="p">,</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="n">autovacuum_count</span><span class="p">,</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span><span class="n">pg_size_pretty</span><span class="p">(</span><span class="n">pg_total_relation_size</span><span class="p">(</span><span class="n">relid</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_size</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_user_tables</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">n_live_tup</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10000</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">n_dead_tup</span><span class="w"> </span><span class="k">DESC</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h3 id="211-capacity-planning-quy-hoach-nang-luc">2.11 Capacity Planning (Quy hoạch năng lực)<a class="headerlink" href="#211-capacity-planning-quy-hoach-nang-luc" title="Permanent link">&para;</a></h3>
+<p><strong>Mục đích</strong>: Dự đoán khi nào cần tăng tài nguyên — tránh outage do resource exhaustion.</p>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Name</strong></td>
+<td><code>node_filesystem_avail_bytes</code>, <code>pg_database_size_bytes</code></td>
+</tr>
+<tr>
+<td><strong>Panel Type</strong></td>
+<td>Gauge (current %) + Time Series (trend + linear prediction)</td>
+</tr>
+<tr>
+<td><strong>SLO Target</strong></td>
+<td>Disk usage &lt; 70%, luôn có ≥ 60 ngày headroom</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>Disk usage &gt; 70% HOẶC &lt; 30 ngày headroom</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>Disk usage &gt; 85% HOẶC &lt; 7 ngày headroom</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PromQL Queries:</strong></p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Disk usage percentage</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="o">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">node_filesystem_avail_bytes</span><span class="p">{</span><span class="nl">mountpoint</span><span class="o">=</span><span class="p">"</span><span class="s">/data</span><span class="p">"}</span><span class="w"> </span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="nv">node_filesystem_size_bytes</span><span class="p">{</span><span class="nl">mountpoint</span><span class="o">=</span><span class="p">"</span><span class="s">/data</span><span class="p">"}</span><span class="o">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1"># Database size</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="nv">pg_database_size_bytes</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w">  </span><span class="o">--</span><span class="w"> </span><span class="nv">GB</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="c1"># Growth rate prediction (linear regression, dự đoán khi nào full)</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="kr">predict_linear</span><span class="o">(</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">  </span><span class="nv">node_filesystem_avail_bytes</span><span class="p">{</span><span class="nl">mountpoint</span><span class="o">=</span><span class="p">"</span><span class="s">/data</span><span class="p">"}[</span><span class="s">30d</span><span class="p">],</span><span class="w"> </span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">  </span><span class="mi">86400</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="w">  </span><span class="o">--</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="nv">ng</span><span class="err">ày</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="o">)</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="c1"># Bảng lớn nhất</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="k">topk</span><span class="o">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nv">pg_total_relation_size_bytes</span><span class="p">{</span><span class="nl">datname</span><span class="o">=</span><span class="p">"</span><span class="s">vietpay</span><span class="p">"}</span><span class="o">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="3-slo-definitions-inh-nghia-slo">3. SLO Definitions (Định nghĩa SLO)<a class="headerlink" href="#3-slo-definitions-inh-nghia-slo" title="Permanent link">&para;</a></h2>
+<h3 id="31-bang-slo-tong-hop">3.1 Bảng SLO tổng hợp<a class="headerlink" href="#31-bang-slo-tong-hop" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>SLI (Service Level Indicator)</th>
+<th>SLO Target</th>
+<th>Error Budget (30 ngày)</th>
+<th>Measurement Window</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Query Latency</strong> — p99 OLTP query time</td>
+<td>&lt; 100ms</td>
+<td>43.2 phút downtime (99.9%)</td>
+<td>Rolling 30 days</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Availability</strong> — Database uptime</td>
+<td>99.95%</td>
+<td>21.6 phút/tháng</td>
+<td>Calendar month</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Transaction Throughput</strong> — Min sustained TPS</td>
+<td>≥ 500 TPS</td>
+<td>&lt; 1% time below target</td>
+<td>Rolling 7 days</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Replication Lag</strong> — Streaming rep delay</td>
+<td>&lt; 1 giây</td>
+<td>99.9% of time within target</td>
+<td>Rolling 30 days</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Settlement Lag</strong> — PENDING → SETTLED</td>
+<td>p95 &lt; 5 phút</td>
+<td>99.5% settled within 5m</td>
+<td>Rolling 7 days</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Data Integrity</strong> — Ledger balance</td>
+<td>100% balanced</td>
+<td>0 tolerance</td>
+<td>Continuous</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Cache Hit Ratio</strong> — Buffer cache</td>
+<td>&gt; 99%</td>
+<td>99.5% of time within target</td>
+<td>Rolling 30 days</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Durability</strong> — Zero data loss</td>
+<td>RPO = 0 (sync rep)</td>
+<td>0 tolerance</td>
+<td>Continuous</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-error-budget-policy">3.2 Error Budget Policy<a class="headerlink" href="#32-error-budget-policy" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Khi error budget còn:
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  &gt; 50%  → Normal operations, deploy bình thường
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>  25-50% → Tăng cường monitoring, giảm tần suất deploy
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  10-25% → Freeze feature deployments, chỉ fix bugs
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  &lt; 10%  → Incident mode, toàn bộ team focus reliability
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  0%     → Complete deployment freeze cho đến khi budget reset
+</span></code></pre></div>
+<hr />
+<h2 id="4-alerting-rules-quy-tac-canh-bao">4. Alerting Rules (Quy tắc cảnh báo)<a class="headerlink" href="#4-alerting-rules-quy-tac-canh-bao" title="Permanent link">&para;</a></h2>
+<h3 id="41-critical-alerts-pagerduty-anh-thuc-on-call">4.1 Critical Alerts — PagerDuty (đánh thức on-call)<a class="headerlink" href="#41-critical-alerts-pagerduty-anh-thuc-on-call" title="Permanent link">&para;</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Alert 1: Database Down</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PostgresDatabaseDown</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pg_up{datname="vietpay"} == 0</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30s</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="nt">team</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dba</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"PostgreSQL</span><span class="nv"> </span><span class="s">database</span><span class="nv"> </span><span class="s">vietpay</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">DOWN"</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">      </span><span class="no">1. Kiểm tra pg_isready -h &lt;host&gt; -p 5432</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">      </span><span class="no">2. Check systemctl status postgresql</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">      </span><span class="no">3. Review /var/log/postgresql/postgresql-*.log</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">      </span><span class="no">4. Nếu primary down → trigger failover via Patroni</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">      </span><span class="no">5. Notify business team về potential transaction impact</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="c1"># Alert 2: Replication Lag Critical</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReplicationLagCritical</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pg_replication_lag_seconds &gt; 10</span>
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2m</span>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+</span><span id="__span-17-23"><a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-17-24"><a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Replication</span><span class="nv"> </span><span class="s">lag</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">}}s</span><span class="nv"> </span><span class="s">exceeds</span><span class="nv"> </span><span class="s">10s</span><span class="nv"> </span><span class="s">threshold"</span>
+</span><span id="__span-17-25"><a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-17-26"><a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a><span class="w">      </span><span class="no">1. Check pg_stat_replication on primary</span>
+</span><span id="__span-17-27"><a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="w">      </span><span class="no">2. Verify network bandwidth between primary/replica</span>
+</span><span id="__span-17-28"><a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="w">      </span><span class="no">3. Check if heavy write workload (backfill, migration)</span>
+</span><span id="__span-17-29"><a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="w">      </span><span class="no">4. Nếu lag &gt; 30s → consider pausing non-essential writes</span>
+</span><span id="__span-17-30"><a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a><span class="w">      </span><span class="no">5. Nếu replica disconnect → re-create from pg_basebackup</span>
+</span><span id="__span-17-31"><a id="__codelineno-17-31" name="__codelineno-17-31" href="#__codelineno-17-31"></a>
+</span><span id="__span-17-32"><a id="__codelineno-17-32" name="__codelineno-17-32" href="#__codelineno-17-32"></a><span class="c1"># Alert 3: Connection Pool Exhaustion</span>
+</span><span id="__span-17-33"><a id="__codelineno-17-33" name="__codelineno-17-33" href="#__codelineno-17-33"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConnectionPoolExhaustion</span>
+</span><span id="__span-17-34"><a id="__codelineno-17-34" name="__codelineno-17-34" href="#__codelineno-17-34"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pg_stat_activity_count{datname="vietpay"} / pg_settings_max_connections &gt; 0.9</span>
+</span><span id="__span-17-35"><a id="__codelineno-17-35" name="__codelineno-17-35" href="#__codelineno-17-35"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2m</span>
+</span><span id="__span-17-36"><a id="__codelineno-17-36" name="__codelineno-17-36" href="#__codelineno-17-36"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-17-37"><a id="__codelineno-17-37" name="__codelineno-17-37" href="#__codelineno-17-37"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+</span><span id="__span-17-38"><a id="__codelineno-17-38" name="__codelineno-17-38" href="#__codelineno-17-38"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-17-39"><a id="__codelineno-17-39" name="__codelineno-17-39" href="#__codelineno-17-39"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Connection</span><span class="nv"> </span><span class="s">utilization</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">humanizePercentage</span><span class="nv"> </span><span class="s">}}"</span>
+</span><span id="__span-17-40"><a id="__codelineno-17-40" name="__codelineno-17-40" href="#__codelineno-17-40"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-17-41"><a id="__codelineno-17-41" name="__codelineno-17-41" href="#__codelineno-17-41"></a><span class="w">      </span><span class="no">1. Check for idle-in-transaction: SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction'</span>
+</span><span id="__span-17-42"><a id="__codelineno-17-42" name="__codelineno-17-42" href="#__codelineno-17-42"></a><span class="w">      </span><span class="no">2. Kill long-running idle connections: SELECT pg_terminate_backend(pid)</span>
+</span><span id="__span-17-43"><a id="__codelineno-17-43" name="__codelineno-17-43" href="#__codelineno-17-43"></a><span class="w">      </span><span class="no">3. Review PgBouncer pool settings</span>
+</span><span id="__span-17-44"><a id="__codelineno-17-44" name="__codelineno-17-44" href="#__codelineno-17-44"></a><span class="w">      </span><span class="no">4. Check application connection pool configuration</span>
+</span><span id="__span-17-45"><a id="__codelineno-17-45" name="__codelineno-17-45" href="#__codelineno-17-45"></a><span class="w">      </span><span class="no">5. Nếu cần ngay → ALTER SYSTEM SET max_connections = 200 (requires restart)</span>
+</span><span id="__span-17-46"><a id="__codelineno-17-46" name="__codelineno-17-46" href="#__codelineno-17-46"></a>
+</span><span id="__span-17-47"><a id="__codelineno-17-47" name="__codelineno-17-47" href="#__codelineno-17-47"></a><span class="c1"># Alert 4: Disk Space Critical</span>
+</span><span id="__span-17-48"><a id="__codelineno-17-48" name="__codelineno-17-48" href="#__codelineno-17-48"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DiskSpaceCritical</span>
+</span><span id="__span-17-49"><a id="__codelineno-17-49" name="__codelineno-17-49" href="#__codelineno-17-49"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(1 - node_filesystem_avail_bytes{mountpoint="/data"} / node_filesystem_size_bytes{mountpoint="/data"}) &gt; 0.85</span>
+</span><span id="__span-17-50"><a id="__codelineno-17-50" name="__codelineno-17-50" href="#__codelineno-17-50"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span>
+</span><span id="__span-17-51"><a id="__codelineno-17-51" name="__codelineno-17-51" href="#__codelineno-17-51"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-17-52"><a id="__codelineno-17-52" name="__codelineno-17-52" href="#__codelineno-17-52"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+</span><span id="__span-17-53"><a id="__codelineno-17-53" name="__codelineno-17-53" href="#__codelineno-17-53"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-17-54"><a id="__codelineno-17-54" name="__codelineno-17-54" href="#__codelineno-17-54"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Disk</span><span class="nv"> </span><span class="s">usage</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">humanizePercentage</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">/data"</span>
+</span><span id="__span-17-55"><a id="__codelineno-17-55" name="__codelineno-17-55" href="#__codelineno-17-55"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-17-56"><a id="__codelineno-17-56" name="__codelineno-17-56" href="#__codelineno-17-56"></a><span class="w">      </span><span class="no">1. Check largest tables: SELECT pg_size_pretty(pg_total_relation_size(oid)) FROM pg_class ORDER BY pg_total_relation_size(oid) DESC LIMIT 10</span>
+</span><span id="__span-17-57"><a id="__codelineno-17-57" name="__codelineno-17-57" href="#__codelineno-17-57"></a><span class="w">      </span><span class="no">2. Run VACUUM FULL on bloated tables (requires maintenance window)</span>
+</span><span id="__span-17-58"><a id="__codelineno-17-58" name="__codelineno-17-58" href="#__codelineno-17-58"></a><span class="w">      </span><span class="no">3. Archive old partitions to cold storage</span>
+</span><span id="__span-17-59"><a id="__codelineno-17-59" name="__codelineno-17-59" href="#__codelineno-17-59"></a><span class="w">      </span><span class="no">4. Drop unused indexes</span>
+</span><span id="__span-17-60"><a id="__codelineno-17-60" name="__codelineno-17-60" href="#__codelineno-17-60"></a><span class="w">      </span><span class="no">5. Emergency: expand volume (AWS EBS resize)</span>
+</span><span id="__span-17-61"><a id="__codelineno-17-61" name="__codelineno-17-61" href="#__codelineno-17-61"></a>
+</span><span id="__span-17-62"><a id="__codelineno-17-62" name="__codelineno-17-62" href="#__codelineno-17-62"></a><span class="c1"># Alert 5: Ledger Imbalance (CRITICAL — data integrity)</span>
+</span><span id="__span-17-63"><a id="__codelineno-17-63" name="__codelineno-17-63" href="#__codelineno-17-63"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LedgerImbalance</span>
+</span><span id="__span-17-64"><a id="__codelineno-17-64" name="__codelineno-17-64" href="#__codelineno-17-64"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vietpay_ledger_imbalance_count &gt; 0</span>
+</span><span id="__span-17-65"><a id="__codelineno-17-65" name="__codelineno-17-65" href="#__codelineno-17-65"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0s</span><span class="w">  </span><span class="c1"># Immediately!</span>
+</span><span id="__span-17-66"><a id="__codelineno-17-66" name="__codelineno-17-66" href="#__codelineno-17-66"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-17-67"><a id="__codelineno-17-67" name="__codelineno-17-67" href="#__codelineno-17-67"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+</span><span id="__span-17-68"><a id="__codelineno-17-68" name="__codelineno-17-68" href="#__codelineno-17-68"></a><span class="w">    </span><span class="nt">escalation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">executive</span>
+</span><span id="__span-17-69"><a id="__codelineno-17-69" name="__codelineno-17-69" href="#__codelineno-17-69"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-17-70"><a id="__codelineno-17-70" name="__codelineno-17-70" href="#__codelineno-17-70"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"CRITICAL:</span><span class="nv"> </span><span class="s">Ledger</span><span class="nv"> </span><span class="s">imbalance</span><span class="nv"> </span><span class="s">detected!</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">transactions</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">non-zero</span><span class="nv"> </span><span class="s">sum"</span>
+</span><span id="__span-17-71"><a id="__codelineno-17-71" name="__codelineno-17-71" href="#__codelineno-17-71"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-17-72"><a id="__codelineno-17-72" name="__codelineno-17-72" href="#__codelineno-17-72"></a><span class="w">      </span><span class="no">1. NGAY LẬP TỨC: Dừng mọi giao dịch mới (circuit breaker)</span>
+</span><span id="__span-17-73"><a id="__codelineno-17-73" name="__codelineno-17-73" href="#__codelineno-17-73"></a><span class="w">      </span><span class="no">2. Run: SELECT * FROM check_ledger_balance()</span>
+</span><span id="__span-17-74"><a id="__codelineno-17-74" name="__codelineno-17-74" href="#__codelineno-17-74"></a><span class="w">      </span><span class="no">3. Identify affected transactions</span>
+</span><span id="__span-17-75"><a id="__codelineno-17-75" name="__codelineno-17-75" href="#__codelineno-17-75"></a><span class="w">      </span><span class="no">4. Notify compliance team</span>
+</span><span id="__span-17-76"><a id="__codelineno-17-76" name="__codelineno-17-76" href="#__codelineno-17-76"></a><span class="w">      </span><span class="no">5. Begin forensic analysis — DO NOT modify any data</span>
+</span><span id="__span-17-77"><a id="__codelineno-17-77" name="__codelineno-17-77" href="#__codelineno-17-77"></a><span class="w">      </span><span class="no">6. File incident report per PCI-DSS requirements</span>
+</span><span id="__span-17-78"><a id="__codelineno-17-78" name="__codelineno-17-78" href="#__codelineno-17-78"></a>
+</span><span id="__span-17-79"><a id="__codelineno-17-79" name="__codelineno-17-79" href="#__codelineno-17-79"></a><span class="c1"># Alert 6: Settlement Lag Critical</span>
+</span><span id="__span-17-80"><a id="__codelineno-17-80" name="__codelineno-17-80" href="#__codelineno-17-80"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SettlementLagCritical</span>
+</span><span id="__span-17-81"><a id="__codelineno-17-81" name="__codelineno-17-81" href="#__codelineno-17-81"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">histogram_quantile(0.95, rate(vietpay_settlement_lag_seconds_bucket[5m])) &gt; 600</span>
+</span><span id="__span-17-82"><a id="__codelineno-17-82" name="__codelineno-17-82" href="#__codelineno-17-82"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span>
+</span><span id="__span-17-83"><a id="__codelineno-17-83" name="__codelineno-17-83" href="#__codelineno-17-83"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-17-84"><a id="__codelineno-17-84" name="__codelineno-17-84" href="#__codelineno-17-84"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+</span><span id="__span-17-85"><a id="__codelineno-17-85" name="__codelineno-17-85" href="#__codelineno-17-85"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-17-86"><a id="__codelineno-17-86" name="__codelineno-17-86" href="#__codelineno-17-86"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Settlement</span><span class="nv"> </span><span class="s">p95</span><span class="nv"> </span><span class="s">lag</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">}}s</span><span class="nv"> </span><span class="s">(&gt;</span><span class="nv"> </span><span class="s">10</span><span class="nv"> </span><span class="s">minutes)"</span>
+</span><span id="__span-17-87"><a id="__codelineno-17-87" name="__codelineno-17-87" href="#__codelineno-17-87"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-17-88"><a id="__codelineno-17-88" name="__codelineno-17-88" href="#__codelineno-17-88"></a><span class="w">      </span><span class="no">1. Check settlement batch processor status</span>
+</span><span id="__span-17-89"><a id="__codelineno-17-89" name="__codelineno-17-89" href="#__codelineno-17-89"></a><span class="w">      </span><span class="no">2. Verify payment provider API availability</span>
+</span><span id="__span-17-90"><a id="__codelineno-17-90" name="__codelineno-17-90" href="#__codelineno-17-90"></a><span class="w">      </span><span class="no">3. Check for lock contention on transactions table</span>
+</span><span id="__span-17-91"><a id="__codelineno-17-91" name="__codelineno-17-91" href="#__codelineno-17-91"></a><span class="w">      </span><span class="no">4. Review settlement_batches for stuck batches</span>
+</span><span id="__span-17-92"><a id="__codelineno-17-92" name="__codelineno-17-92" href="#__codelineno-17-92"></a><span class="w">      </span><span class="no">5. Manual intervention: re-trigger failed settlement batches</span>
+</span></code></pre></div>
+<h3 id="42-warning-alerts-slack-notification">4.2 Warning Alerts — Slack notification<a class="headerlink" href="#42-warning-alerts-slack-notification" title="Permanent link">&para;</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Alert 7: High Query Latency</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HighQueryLatency</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">histogram_quantile(0.99, rate(pg_stat_statements_seconds_bucket{datname="vietpay"}[5m])) &gt; 0.08</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Query</span><span class="nv"> </span><span class="s">p99</span><span class="nv"> </span><span class="s">latency</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">}}s</span><span class="nv"> </span><span class="s">approaching</span><span class="nv"> </span><span class="s">SLO</span><span class="nv"> </span><span class="s">threshold"</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">      </span><span class="no">1. Check pg_stat_statements for slow queries</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">      </span><span class="no">2. Review EXPLAIN ANALYZE for top queries</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">      </span><span class="no">3. Check if missing indexes or stale statistics</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">      </span><span class="no">4. Run ANALYZE on affected tables</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="c1"># Alert 8: Cache Hit Ratio Low</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CacheHitRatioLow</span>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="w">    </span><span class="no">pg_stat_database_blks_hit{datname="vietpay"} </span>
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="w">    </span><span class="no">/ (pg_stat_database_blks_hit{datname="vietpay"} + pg_stat_database_blks_read{datname="vietpay"}) &lt; 0.98</span>
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10m</span>
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+</span><span id="__span-18-23"><a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-18-24"><a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Buffer</span><span class="nv"> </span><span class="s">cache</span><span class="nv"> </span><span class="s">hit</span><span class="nv"> </span><span class="s">ratio</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">humanizePercentage</span><span class="nv"> </span><span class="s">}}"</span>
+</span><span id="__span-18-25"><a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-18-26"><a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a><span class="w">      </span><span class="no">1. Check for recent query pattern changes</span>
+</span><span id="__span-18-27"><a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a><span class="w">      </span><span class="no">2. Consider increasing shared_buffers</span>
+</span><span id="__span-18-28"><a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a><span class="w">      </span><span class="no">3. Look for sequential scan queries: SELECT * FROM pg_stat_user_tables WHERE seq_scan &gt; 0</span>
+</span><span id="__span-18-29"><a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a>
+</span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a><span class="c1"># Alert 9: Deadlock Detected</span>
+</span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DeadlockDetected</span>
+</span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate(pg_stat_database_deadlocks_total{datname="vietpay"}[1h]) &gt; 0</span>
+</span><span id="__span-18-33"><a id="__codelineno-18-33" name="__codelineno-18-33" href="#__codelineno-18-33"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0s</span>
+</span><span id="__span-18-34"><a id="__codelineno-18-34" name="__codelineno-18-34" href="#__codelineno-18-34"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-18-35"><a id="__codelineno-18-35" name="__codelineno-18-35" href="#__codelineno-18-35"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+</span><span id="__span-18-36"><a id="__codelineno-18-36" name="__codelineno-18-36" href="#__codelineno-18-36"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-18-37"><a id="__codelineno-18-37" name="__codelineno-18-37" href="#__codelineno-18-37"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Deadlock</span><span class="nv"> </span><span class="s">detected</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">vietpay</span><span class="nv"> </span><span class="s">database"</span>
+</span><span id="__span-18-38"><a id="__codelineno-18-38" name="__codelineno-18-38" href="#__codelineno-18-38"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-18-39"><a id="__codelineno-18-39" name="__codelineno-18-39" href="#__codelineno-18-39"></a><span class="w">      </span><span class="no">1. Check PostgreSQL logs for deadlock details</span>
+</span><span id="__span-18-40"><a id="__codelineno-18-40" name="__codelineno-18-40" href="#__codelineno-18-40"></a><span class="w">      </span><span class="no">2. Review application lock ordering</span>
+</span><span id="__span-18-41"><a id="__codelineno-18-41" name="__codelineno-18-41" href="#__codelineno-18-41"></a><span class="w">      </span><span class="no">3. Verify double-entry ledger uses ordered wallet_id locking</span>
+</span><span id="__span-18-42"><a id="__codelineno-18-42" name="__codelineno-18-42" href="#__codelineno-18-42"></a>
+</span><span id="__span-18-43"><a id="__codelineno-18-43" name="__codelineno-18-43" href="#__codelineno-18-43"></a><span class="c1"># Alert 10: Table Bloat</span>
+</span><span id="__span-18-44"><a id="__codelineno-18-44" name="__codelineno-18-44" href="#__codelineno-18-44"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TableBloat</span>
+</span><span id="__span-18-45"><a id="__codelineno-18-45" name="__codelineno-18-45" href="#__codelineno-18-45"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-18-46"><a id="__codelineno-18-46" name="__codelineno-18-46" href="#__codelineno-18-46"></a><span class="w">    </span><span class="no">pg_stat_user_tables_n_dead_tup </span>
+</span><span id="__span-18-47"><a id="__codelineno-18-47" name="__codelineno-18-47" href="#__codelineno-18-47"></a><span class="w">    </span><span class="no">/ (pg_stat_user_tables_n_live_tup + pg_stat_user_tables_n_dead_tup) &gt; 0.1</span>
+</span><span id="__span-18-48"><a id="__codelineno-18-48" name="__codelineno-18-48" href="#__codelineno-18-48"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30m</span>
+</span><span id="__span-18-49"><a id="__codelineno-18-49" name="__codelineno-18-49" href="#__codelineno-18-49"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-18-50"><a id="__codelineno-18-50" name="__codelineno-18-50" href="#__codelineno-18-50"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+</span><span id="__span-18-51"><a id="__codelineno-18-51" name="__codelineno-18-51" href="#__codelineno-18-51"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-18-52"><a id="__codelineno-18-52" name="__codelineno-18-52" href="#__codelineno-18-52"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"Table</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$labels.relname</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">has</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">humanizePercentage</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">dead</span><span class="nv"> </span><span class="s">tuples"</span>
+</span><span id="__span-18-53"><a id="__codelineno-18-53" name="__codelineno-18-53" href="#__codelineno-18-53"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-18-54"><a id="__codelineno-18-54" name="__codelineno-18-54" href="#__codelineno-18-54"></a><span class="w">      </span><span class="no">1. Check autovacuum status for this table</span>
+</span><span id="__span-18-55"><a id="__codelineno-18-55" name="__codelineno-18-55" href="#__codelineno-18-55"></a><span class="w">      </span><span class="no">2. Consider manual VACUUM if autovacuum is behind</span>
+</span><span id="__span-18-56"><a id="__codelineno-18-56" name="__codelineno-18-56" href="#__codelineno-18-56"></a><span class="w">      </span><span class="no">3. Review autovacuum_vacuum_threshold settings</span>
+</span><span id="__span-18-57"><a id="__codelineno-18-57" name="__codelineno-18-57" href="#__codelineno-18-57"></a>
+</span><span id="__span-18-58"><a id="__codelineno-18-58" name="__codelineno-18-58" href="#__codelineno-18-58"></a><span class="c1"># Alert 11: WAL Generation Spike</span>
+</span><span id="__span-18-59"><a id="__codelineno-18-59" name="__codelineno-18-59" href="#__codelineno-18-59"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WALGenerationSpike</span>
+</span><span id="__span-18-60"><a id="__codelineno-18-60" name="__codelineno-18-60" href="#__codelineno-18-60"></a><span class="w">  </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate(pg_stat_wal_wal_bytes_total[5m]) / 1024 / 1024 &gt; 100</span><span class="w">  </span><span class="c1"># &gt; 100 MB/s</span>
+</span><span id="__span-18-61"><a id="__codelineno-18-61" name="__codelineno-18-61" href="#__codelineno-18-61"></a><span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10m</span>
+</span><span id="__span-18-62"><a id="__codelineno-18-62" name="__codelineno-18-62" href="#__codelineno-18-62"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-18-63"><a id="__codelineno-18-63" name="__codelineno-18-63" href="#__codelineno-18-63"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+</span><span id="__span-18-64"><a id="__codelineno-18-64" name="__codelineno-18-64" href="#__codelineno-18-64"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-18-65"><a id="__codelineno-18-65" name="__codelineno-18-65" href="#__codelineno-18-65"></a><span class="w">    </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="s">"WAL</span><span class="nv"> </span><span class="s">generation</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">$value</span><span class="nv"> </span><span class="s">}}MB/s</span><span class="nv"> </span><span class="s">—</span><span class="nv"> </span><span class="s">possible</span><span class="nv"> </span><span class="s">bulk</span><span class="nv"> </span><span class="s">operation"</span>
+</span><span id="__span-18-66"><a id="__codelineno-18-66" name="__codelineno-18-66" href="#__codelineno-18-66"></a><span class="w">    </span><span class="nt">runbook</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-18-67"><a id="__codelineno-18-67" name="__codelineno-18-67" href="#__codelineno-18-67"></a><span class="w">      </span><span class="no">1. Check for running migrations or backfill operations</span>
+</span><span id="__span-18-68"><a id="__codelineno-18-68" name="__codelineno-18-68" href="#__codelineno-18-68"></a><span class="w">      </span><span class="no">2. Verify replication can keep up</span>
+</span><span id="__span-18-69"><a id="__codelineno-18-69" name="__codelineno-18-69" href="#__codelineno-18-69"></a><span class="w">      </span><span class="no">3. Monitor WAL disk space</span>
+</span></code></pre></div>
+<hr />
+<h2 id="5-dashboard-layout-bo-cuc-dashboard">5. Dashboard Layout (Bố cục Dashboard)<a class="headerlink" href="#5-dashboard-layout-bo-cuc-dashboard" title="Permanent link">&para;</a></h2>
+<h3 id="51-executive-overview-dashboard">5.1 Executive Overview Dashboard<a class="headerlink" href="#51-executive-overview-dashboard" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>┌─────────────────────────────────────────────────────────────┐
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>│  VietPay Database — Executive Overview                       │
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>├──────────┬──────────┬──────────┬──────────┬─────────────────┤
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>│ DB Status│  TPS     │ Settled  │ Rep Lag  │ Disk Usage      │
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>│  🟢 UP   │  723/s   │  687/s   │  0.2s    │  52%            │
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>│  (Stat)  │ (Stat)   │ (Stat)   │ (Gauge)  │ (Gauge)         │
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>├──────────┴──────────┴──────────┴──────────┴─────────────────┤
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>│ Query Latency (p50/p95/p99)          │ Settlement Lag        │
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>│ ▂▃▂▃▂▁▂▃▅▃▂▁▂▃▂ (Time Series)       │ ▂▁▂▁▂▃▅▃▂▁ (Heatmap)│
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>├──────────────────────────────────────┼───────────────────────┤
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>│ Connection Pool                      │ Cache Hit Ratio       │
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>│ ████░░░░ 67% active (Stacked Bar)   │ 99.7% (Gauge)         │
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>├──────────────────────────────────────┴───────────────────────┤
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>│ Capacity Forecast (30d trend + linear prediction)            │
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>│ ▂▃▄▅▅▆▆▇▇ → 85% in 73 days (Time Series)                   │
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>└─────────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<h3 id="52-dba-deep-dive-dashboard">5.2 DBA Deep-Dive Dashboard<a class="headerlink" href="#52-dba-deep-dive-dashboard" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>┌─────────────────────────────────────────────────────────────┐
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>│  VietPay Database — DBA Deep Dive                            │
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>├──────────────────────────────────────────────────────────────┤
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>│ Row 1: Lock Analysis                                         │
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>│ Lock Waits │ Deadlocks (24h) │ Longest Wait │ Lock by Table  │
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>├──────────────────────────────────────────────────────────────┤
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>│ Row 2: I/O Analysis                                          │
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>│ IOPS Read/Write │ Throughput MB/s │ Checkpoint I/O │ WAL/s   │
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>├──────────────────────────────────────────────────────────────┤
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>│ Row 3: Vacuum &amp; Bloat                                        │
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>│ Top 10 Dead Tuples │ Autovacuum Activity │ Table Sizes       │
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>├──────────────────────────────────────────────────────────────┤
+</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>│ Row 4: Replication                                           │
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>│ Write Lag │ Flush Lag │ Replay Lag │ WAL Send/Receive Gap    │
+</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>└─────────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<hr />
+<h2 id="6-custom-business-metrics-metrics-nghiep-vu-tuy-chinh">6. Custom Business Metrics (Metrics nghiệp vụ tùy chỉnh)<a class="headerlink" href="#6-custom-business-metrics-metrics-nghiep-vu-tuy-chinh" title="Permanent link">&para;</a></h2>
+<p>Ngoài infrastructure metrics, cần giám sát <strong>business-level health</strong>:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1">-- Expose via postgres_exporter custom queries</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="c1">-- 1. Ledger balance verification (chạy mỗi phút)</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1">-- Metric: vietpay_ledger_imbalance_count</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">imbalance_count</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">transaction_id</span><span class="p">,</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">entry_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'DEBIT'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="o">-</span><span class="n">amount</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">net</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">ledger_entries</span>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'1 hour'</span>
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">transaction_id</span>
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="w">    </span><span class="k">HAVING</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">entry_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'DEBIT'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="o">-</span><span class="n">amount</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span>
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="p">)</span><span class="w"> </span><span class="n">imbalanced</span><span class="p">;</span>
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="c1">-- 2. Idempotency key hit rate (duplicate detection effectiveness)</span>
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="c1">-- Metric: vietpay_idempotency_duplicate_rate</span>
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="k">SELECT</span><span class="w"> </span>
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'5 minutes'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_keys</span><span class="p">,</span>
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">response_status</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span>
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="w">                     </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'5 minutes'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">duplicate_hits</span>
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="k">FROM</span><span class="w"> </span><span class="n">idempotency_keys</span><span class="p">;</span>
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="c1">-- 3. Failed transaction rate</span>
+</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a><span class="c1">-- Metric: vietpay_failed_transaction_rate</span>
+</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a><span class="k">SELECT</span>
+</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FAILED'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">failed</span><span class="p">,</span>
+</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total</span><span class="p">,</span>
+</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FAILED'</span><span class="p">)::</span><span class="nb">numeric</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">fail_pct</span>
+</span><span id="__span-21-28"><a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'5 minutes'</span><span class="p">;</span>
+</span><span id="__span-21-30"><a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a>
+</span><span id="__span-21-31"><a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a><span class="c1">-- 4. Wallet balance anomaly detection</span>
+</span><span id="__span-21-32"><a id="__codelineno-21-32" name="__codelineno-21-32" href="#__codelineno-21-32"></a><span class="c1">-- Metric: vietpay_wallet_balance_anomaly_count  </span>
+</span><span id="__span-21-33"><a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">anomaly_count</span>
+</span><span id="__span-21-34"><a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a><span class="k">FROM</span><span class="w"> </span><span class="n">wallets</span><span class="w"> </span><span class="n">w</span>
+</span><span id="__span-21-35"><a id="__codelineno-21-35" name="__codelineno-21-35" href="#__codelineno-21-35"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">balance</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-21-36"><a id="__codelineno-21-36" name="__codelineno-21-36" href="#__codelineno-21-36"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">le</span><span class="p">.</span><span class="n">entry_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'CREDIT'</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">le</span><span class="p">.</span><span class="n">amount</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="o">-</span><span class="n">le</span><span class="p">.</span><span class="n">amount</span><span class="w"> </span><span class="k">END</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-21-37"><a id="__codelineno-21-37" name="__codelineno-21-37" href="#__codelineno-21-37"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">ledger_entries</span><span class="w"> </span><span class="n">le</span>
+</span><span id="__span-21-38"><a id="__codelineno-21-38" name="__codelineno-21-38" href="#__codelineno-21-38"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">le</span><span class="p">.</span><span class="n">wallet_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span>
+</span><span id="__span-21-39"><a id="__codelineno-21-39" name="__codelineno-21-39" href="#__codelineno-21-39"></a><span class="p">);</span>
+</span></code></pre></div>
+<hr />
+<h2 id="7-monitoring-during-operations-giam-sat-trong-van-hanh">7. Monitoring During Operations (Giám sát trong vận hành)<a class="headerlink" href="#7-monitoring-during-operations-giam-sat-trong-van-hanh" title="Permanent link">&para;</a></h2>
+<h3 id="71-migration-monitoring-panel">7.1 Migration Monitoring Panel<a class="headerlink" href="#71-migration-monitoring-panel" title="Permanent link">&para;</a></h3>
+<p>Khi chạy migration (Task 3), thêm temporary panel:</p>
+<div class="language-promql highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Lock waits during migration</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">count</span><span class="o">(</span><span class="nv">pg_stat_activity</span><span class="p">{</span><span class="nl">wait_event_type</span><span class="o">=</span><span class="p">"</span><span class="s">Lock</span><span class="p">",</span><span class="w"> </span><span class="nl">query</span><span class="o">=~</span><span class="p">"</span><span class="s">.*settlement_batch_id.*</span><span class="p">"}</span><span class="o">)</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># Backfill progress</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="nv">vietpay_backfill_progress_rows</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nv">vietpay_backfill_total_rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1"># Replication lag spike during migration</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="kr">deriv</span><span class="o">(</span><span class="nv">pg_replication_lag_seconds</span><span class="p">[</span><span class="s">5m</span><span class="p">]</span><span class="o">)</span>
+</span></code></pre></div>
+<h3 id="72-on-call-runbook-quick-reference">7.2 On-Call Runbook Quick Reference<a class="headerlink" href="#72-on-call-runbook-quick-reference" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Alert</th>
+<th>First Response (&lt; 5 min)</th>
+<th>Escalation (&lt; 15 min)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DB Down</td>
+<td>Check process, attempt restart</td>
+<td>Failover to standby</td>
+</tr>
+<tr>
+<td>Replication Lag &gt; 10s</td>
+<td>Check network, pause writes</td>
+<td>Re-create replica</td>
+</tr>
+<tr>
+<td>Connection Exhaustion</td>
+<td>Kill idle connections</td>
+<td>Increase max_connections</td>
+</tr>
+<tr>
+<td>Disk &gt; 85%</td>
+<td>Archive old partitions</td>
+<td>Expand volume</td>
+</tr>
+<tr>
+<td>Ledger Imbalance</td>
+<td><strong>STOP ALL TRANSACTIONS</strong></td>
+<td>Executive escalation</td>
+</tr>
+<tr>
+<td>Settlement &gt; 10m</td>
+<td>Check batch processor</td>
+<td>Manual settlement trigger</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>vietpay/docs/observability.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../er-diagram/" class="md-footer__link md-footer__link--prev" aria-label="Trước: VietPay — Entity-Relationship Diagram">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                VietPay — Entity-Relationship Diagram
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../huong-dan-chi-tiet/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

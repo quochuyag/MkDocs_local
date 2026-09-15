@@ -1,0 +1,1029 @@
+<title>14 Đêm Oracle Tuning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --ground:#EBEEF1; --card:#FFFFFF; --card-2:#F5F7F9;
+  --ink:#121A1E; --ink-2:#3D4C55; --muted:#6B7C87;
+  --line:#D5DDE3; --line-soft:#E4EAEF;
+  --accent:#0F5F5C; --accent-soft:#DCEDEC; --accent-ink:#0B4A47;
+  --copper:#9C5A1E; --copper-soft:#F6E7D6;
+  --danger:#973026; --danger-soft:#F7E1DE;
+  --ok:#276B4C; --ok-soft:#DCEEE4;
+  --shadow:0 1px 2px rgba(18,26,30,.05), 0 8px 24px -16px rgba(18,26,30,.35);
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0C1215; --card:#141C21; --card-2:#19232A;
+    --ink:#E6EDF1; --ink-2:#B6C4CC; --muted:#8496A1;
+    --line:#28353D; --line-soft:#1F2A31;
+    --accent:#43A8A2; --accent-soft:#16302F; --accent-ink:#7FCCC6;
+    --copper:#D3924F; --copper-soft:#2E2113;
+    --danger:#E0796B; --danger-soft:#331A16;
+    --ok:#5FB98B; --ok-soft:#152A20;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0C1215; --card:#141C21; --card-2:#19232A;
+  --ink:#E6EDF1; --ink-2:#B6C4CC; --muted:#8496A1;
+  --line:#28353D; --line-soft:#1F2A31;
+  --accent:#43A8A2; --accent-soft:#16302F; --accent-ink:#7FCCC6;
+  --copper:#D3924F; --copper-soft:#2E2113;
+  --danger:#E0796B; --danger-soft:#331A16;
+  --ok:#5FB98B; --ok-soft:#152A20;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif; font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:Archivo,"Helvetica Neue",Arial,sans-serif; text-wrap:balance; margin:0}
+code,kbd,.mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+a{color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+
+.wrap{max-width:1180px; margin:0 auto; padding:0 20px 72px}
+
+/* ---------- header ---------- */
+.masthead{border-bottom:1px solid var(--line); background:var(--card)}
+.masthead-in{max-width:1180px; margin:0 auto; padding:34px 20px 26px; display:flex; flex-wrap:wrap; gap:28px; align-items:flex-end; justify-content:space-between}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-bottom:10px}
+h1{font-size:clamp(30px,4.4vw,46px); font-weight:700; letter-spacing:-.02em; line-height:1.05}
+.sub{color:var(--ink-2); max-width:56ch; margin-top:12px; font-size:16.5px}
+.meta{display:grid; grid-template-columns:auto auto; gap:2px 26px; font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--muted)}
+.meta b{color:var(--ink); font-weight:500; font-variant-numeric:tabular-nums}
+
+/* ---------- progress ---------- */
+.progress{display:flex; align-items:center; gap:16px; padding:16px 18px; margin:24px 0 30px;
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
+.bar{flex:1; height:8px; background:var(--card-2); border-radius:99px; overflow:hidden; border:1px solid var(--line-soft)}
+.bar i{display:block; height:100%; width:0%; background:var(--accent); transition:width .35s ease}
+.progress .count{font-family:"JetBrains Mono",monospace; font-size:13px; font-variant-numeric:tabular-nums; color:var(--ink); white-space:nowrap}
+.btn-reset{font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--muted); background:none; border:1px solid var(--line); border-radius:6px; padding:5px 9px; cursor:pointer}
+.btn-reset:hover{color:var(--ink); border-color:var(--muted)}
+
+/* ---------- layout ---------- */
+.cols{display:grid; grid-template-columns:190px minmax(0,1fr); gap:32px; align-items:start}
+@media (max-width:900px){ .cols{grid-template-columns:1fr; gap:20px} }
+
+.rail{position:sticky; top:18px; border:1px solid var(--line); background:var(--card); border-radius:var(--r); padding:14px 12px; box-shadow:var(--shadow)}
+@media (max-width:900px){ .rail{position:static} }
+.rail h4{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 6px 10px}
+.rail ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+@media (max-width:900px){ .rail ol{flex-direction:row; flex-wrap:wrap} }
+.rail a{display:flex; align-items:center; gap:9px; padding:5px 6px; border-radius:6px; text-decoration:none; color:var(--ink-2); font-size:13px; font-family:"JetBrains Mono",monospace}
+.rail a:hover{background:var(--card-2); color:var(--ink)}
+.rail .dot{width:7px; height:7px; border-radius:99px; background:var(--line); flex:none}
+.rail a.done .dot{background:var(--ok)}
+.rail a.done{color:var(--muted); text-decoration:line-through}
+
+/* ---------- generic card ---------- */
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
+.sect-title{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:38px 0 14px; font-family:Archivo,sans-serif}
+
+/* ---------- runbook ---------- */
+.runbook{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:14px}
+.rb{padding:16px 18px 18px}
+.rb h3{font-size:15px; display:flex; align-items:baseline; gap:8px}
+.rb h3 span{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--accent); font-weight:500}
+.rb p{margin:8px 0 0; font-size:14.5px; color:var(--ink-2)}
+pre{margin:10px 0 0; padding:11px 12px; background:var(--card-2); border:1px solid var(--line-soft); border-radius:8px;
+  overflow-x:auto; font-family:"JetBrains Mono",monospace; font-size:12.3px; line-height:1.65; color:var(--ink)}
+pre .c{color:var(--muted)}
+code:not(pre code){background:var(--card-2); border:1px solid var(--line-soft); border-radius:5px; padding:.06em .34em; font-size:.86em}
+
+/* ---------- day card ---------- */
+.day{margin-bottom:14px; scroll-margin-top:14px; overflow:hidden}
+.day-head{display:flex; align-items:flex-start; gap:14px; padding:14px 18px; border-bottom:1px solid var(--line-soft); background:var(--card-2)}
+.day-n{font-family:Archivo,sans-serif; font-weight:700; font-size:13px; letter-spacing:.1em; color:var(--accent); white-space:nowrap; padding-top:3px; font-variant-numeric:tabular-nums}
+.day-t{flex:1; min-width:0}
+.day-t h3{font-size:18px; letter-spacing:-.01em; font-weight:600}
+.day-date{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted); margin-top:3px; font-variant-numeric:tabular-nums}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:9px}
+.chip{font-family:"JetBrains Mono",monospace; font-size:11px; padding:2px 7px; border-radius:5px; border:1px solid var(--line); color:var(--ink-2); background:var(--card)}
+.chip.warn{background:var(--copper-soft); border-color:transparent; color:var(--copper)}
+.chip.hot{background:var(--danger-soft); border-color:transparent; color:var(--danger)}
+.chip.ok{background:var(--ok-soft); border-color:transparent; color:var(--ok)}
+.done-box{display:flex; align-items:center; gap:7px; font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--muted); cursor:pointer; user-select:none; white-space:nowrap; padding-top:3px}
+.done-box input{width:16px; height:16px; accent-color:var(--accent); cursor:pointer}
+
+.slots{display:flex; flex-direction:column}
+.slot{display:grid; grid-template-columns:78px minmax(0,1fr); gap:0 16px; padding:13px 18px; border-bottom:1px dashed var(--line-soft)}
+.slot:last-child{border-bottom:0}
+@media (max-width:620px){ .slot{grid-template-columns:1fr; gap:6px} }
+.time{font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:2px}
+.time small{display:block; color:var(--muted); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; margin-top:2px}
+.slot h4{font-size:13.5px; font-weight:600; margin-bottom:6px; letter-spacing:.01em}
+.slot ul{margin:0; padding-left:17px; font-size:14.5px; color:var(--ink-2)}
+.slot ul li{margin:3px 0}
+.slot ul li::marker{color:var(--muted)}
+.q{border-left:2px solid var(--accent); padding-left:11px; margin:0 0 5px; font-size:14.5px; color:var(--ink-2)}
+.metric{display:flex; gap:8px; align-items:baseline; font-size:14px; color:var(--ink-2); margin:3px 0}
+.metric b{font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--copper); font-weight:500; white-space:nowrap}
+.note{display:flex; gap:9px; align-items:center; padding:11px 18px; background:var(--card-2); border-top:1px solid var(--line-soft)}
+.note label{font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); white-space:nowrap}
+.note input{flex:1; min-width:0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:7px 9px;
+  font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--ink)}
+.note input::placeholder{color:var(--muted); opacity:.75}
+
+/* ---------- tables & closing ---------- */
+.tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--r); background:var(--card); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; font-size:14.3px}
+th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+th{font-family:Archivo,sans-serif; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600; background:var(--card-2)}
+tr:last-child td{border-bottom:0}
+.two{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px; align-items:start}
+.pad{padding:18px 20px 20px}
+.pad h3{font-size:16px; margin-bottom:10px}
+.pad ul{margin:0; padding-left:18px; color:var(--ink-2); font-size:14.7px}
+.pad ul li{margin:6px 0}
+.pad ol{margin:0; padding-left:20px; color:var(--ink-2); font-size:14.7px}
+.pad ol li{margin:6px 0}
+footer{margin-top:44px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; font-family:"JetBrains Mono",monospace}
+@media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div>
+      <div class="eyebrow">Oracle Database Performance Tuning · lộ trình thực hành</div>
+      <h1>14 Đêm Oracle Tuning</h1>
+      <p class="sub">Học lại từ đầu, mỗi đêm một ca 21:30–23:00 trên VM <code>srv1</code>: ôn bài cũ 20 phút, giảng 25 phút, tự tay chạy lab 35 phút, chốt số đo 10 phút. Không có đêm nào chỉ đọc — mọi kiến thức phải hiện ra thành con số trên database thật.</p>
+    </div>
+    <div class="meta">
+      <span>Bắt đầu</span><b>T2 24/08/2026</b>
+      <span>Kết thúc</span><b>T2 07/09/2026</b>
+      <span>Ca học</span><b>21:30 – 23:00</b>
+      <span>Section</span><b>29 / 29</b>
+      <span>Phòng lab</span><b>29 lab + toolkit</b>
+      <span>Môi trường</span><b>Vagrant · Oracle 19.3</b>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="progress">
+    <span class="count" id="pcount">0 / 15 đêm</span>
+    <div class="bar"><i id="pbar"></i></div>
+    <button class="btn-reset" id="preset" type="button">xoá tiến độ</button>
+  </div>
+
+  <h2 class="sect-title">Runbook mỗi đêm — thuộc lòng 3 khối này</h2>
+  <div class="runbook">
+    <div class="card rb">
+      <h3><span>21:30</span> Mở màn</h3>
+      <p>Bật VM trước khi ôn bài — DB mất 1–2 phút tự start, vừa đủ thời gian bạn trả lời 3 câu hỏi ôn.</p>
+<pre><span class="c"># PowerShell trên host</span>
+cd D:\Dba_project\vagrant-projects\OracleDatabase\19.3.0
+vagrant up
+<span class="c"># chỉ khi vừa restore snapshot:</span>
+vagrant ssh -c "echo 'oracle:oracle_4U' | sudo chpasswd"
+
+cd D:\Dba_project\The-Oracle-Database-Performance-Tuning-Course
+sqlplus -S -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\_toolkit\00_env_check.sql"</pre>
+    </div>
+    <div class="card rb">
+      <h3><span>21:50</span> Trong buổi</h3>
+      <p>Thứ tự tư duy cố định, không nhảy cóc — mỗi bước là một script trong <code>labs/_toolkit/</code>.</p>
+<pre>DB Time      → time_model.sql
+Wait Event   → top_waits.sql
+SQL/Session  → ash_now.sql · top_sql.sql
+Root cause   → 03_diagnose.sql của lab
+Fix          → 04_fix.sql
+Đo lại       → before_after.sql</pre>
+      <p style="margin-top:10px">Sinh tải: <code>@../_toolkit/workload_soe.sql N S</code> (N phiên SOE thật × S giây) · cắt tải sớm: <code>workload_stop.sql</code>.</p>
+    </div>
+    <div class="card rb">
+      <h3><span>22:50</span> Chốt buổi</h3>
+      <p>Ghi số đo vào ô “số đo đêm nay” dưới mỗi thẻ, tick hoàn thành, rồi tắt máy.</p>
+<pre>@99_cleanup.sql        <span class="c">-- luôn chạy, kể cả khi hết giờ</span>
+vagrant halt
+
+<span class="c"># trước lab có cảnh báo snapshot:</span>
+vagrant snapshot save truoc_lab_N
+<span class="c"># hỏng thì về mốc sạch:</span>
+vagrant snapshot restore baseline</pre>
+    </div>
+  </div>
+
+  <h2 class="sect-title">Lịch 15 đêm</h2>
+  <div class="cols">
+    <nav class="rail" aria-label="Danh sách đêm học">
+      <h4>Điều hướng</h4>
+      <ol id="rail"><li><a href="#day-01"><span class="dot"></span>Đêm 01 · 24/08</a></li><li><a href="#day-02"><span class="dot"></span>Đêm 02 · 25/08</a></li><li><a href="#day-03"><span class="dot"></span>Đêm 03 · 26/08</a></li><li><a href="#day-04"><span class="dot"></span>Đêm 04 · 27/08</a></li><li><a href="#day-05"><span class="dot"></span>Đêm 05 · 28/08</a></li><li><a href="#day-06"><span class="dot"></span>Đêm 06 · 29/08</a></li><li><a href="#day-07"><span class="dot"></span>Đêm 07 · 30/08</a></li><li><a href="#day-08"><span class="dot"></span>Đêm 08 · 31/08</a></li><li><a href="#day-09"><span class="dot"></span>Đêm 09 · 01/09</a></li><li><a href="#day-10"><span class="dot"></span>Đêm 10 · 02/09</a></li><li><a href="#day-11"><span class="dot"></span>Đêm 11 · 03/09</a></li><li><a href="#day-12"><span class="dot"></span>Đêm 12 · 04/09</a></li><li><a href="#day-13"><span class="dot"></span>Đêm 13 · 05/09</a></li><li><a href="#day-14"><span class="dot"></span>Đêm 14 · 06/09</a></li><li><a href="#day-15"><span class="dot"></span>Đêm 15 · 07/09</a></li></ol>
+    </nav>
+    <div id="days"><article class="card day" id="day-01">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 01</div>
+    <div class="day-t">
+      <h3>Nhận phòng lab — môi trường và bộ đồ nghề</h3>
+      <div class="day-date">T2 · 24/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 2</span><span class="chip ok">lab đã kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="01"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Đêm đầu chưa có bài cũ — thay bằng 10 phút đọc <code>labs/SO_TAY_MO_HINH.html</code>, riêng mô hình M1 (cây quyết định DB Time).</p><p class="q">Thuộc 3 lệnh mở màn trong <code>labs/README.md</code> phần “Bắt đầu mỗi buổi”.</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li><code>vagrant up</code> rồi <code>vagrant ssh -c "echo 'oracle:oracle_4U' | sudo chpasswd"</code>.</li><li>Chạy <code>_toolkit/00_env_check.sql</code> — phải PASS toàn bộ trước khi đi tiếp.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Vì sao khóa này đo mọi thứ bằng <b>DB Time</b> chứ không phải wall clock hay hit ratio.</li><li>Chuỗi sinh tải 4 mắt xích: credential <code>LAB_OS_CRED</code> → external job <code>LAB_SOE_DRIVER</code> → <code>soe_load.sh</code> → N phiên <code>sqlplus soe/soe</code> thật. Job PLSQL_BLOCK chạy bằng slave J00x là background — không tính vào DB time.</li><li>9 script <code>_toolkit/</code> và đúng thứ tự dùng chúng.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>labs/section_2/</code> bằng user <code>system</code>: <code>@01_setup.sql</code> (khám sức khỏe) → <code>@02_workload.sql</code> (smoke test ~1 phút) → <code>@99_cleanup.sql</code>.</li><li>Trong lúc smoke test đang chạy, mở session thứ hai chạy thử <code>time_model.sql</code>, <code>top_waits.sql</code>, <code>ash_now.sql</code> để thấy tải hiện ra ở đâu.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>SOE segments</b><span>phải đúng 49 — nhiều hơn là object lab cũ còn sót</span></p><p class="metric"><b>statistics_level</b><span>TYPICAL</span></p><p class="metric"><b>DB time</b><span>tăng ~60s sau smoke test, job LAB_SOE_DRIVER = SUCCEEDED</span></p><p class="metric"><b>con_dbid</b><span>ghi lại dbid của PDB ORADB — đêm AWR sẽ cần</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-01">Số đo đêm nay</label>
+    <input id="note-01" data-day="01" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-02">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 02</div>
+    <div class="day-t">
+      <h3>DB Time đi đâu — Time Model và Wait Events</h3>
+      <div class="day-date">T3 · 25/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 6</span><span class="chip ">Section 8</span><span class="chip ok">lab đã kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="02"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Chuỗi sinh tải gồm 4 mắt xích nào? Vì sao không dùng job PLSQL_BLOCK cho tiện?</p><p class="q">Đặt <code>statistics_level=BASIC</code> thì những công cụ nào của khóa này chết?</p><p class="q">SOE có bao nhiêu segment gốc? Thấy nhiều hơn nghĩa là gì?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Đọc phần <i>Mental Model</i> của <code>section_all_new/section_6_time_model_senior_guide.md</code>.</li><li><code>vagrant up</code> + env check.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>DB Time = tổng thời gian foreground session ở trong DB (CPU + wait). Phân rã bằng <code>V$SYS_TIME_MODEL</code>: DB CPU, parse time, PL/SQL, sequence load…</li><li><code>V$SESS_TIME_MODEL</code> để quy trách nhiệm về từng session; hiệu số 2 lần đọc mới có ý nghĩa (<code>tm_snap.sql</code>).</li><li>Wait event: class, <code>V$SYSTEM_EVENT</code> (tích lũy từ startup) vs <code>V$SESSION_WAIT</code> (đang chờ ngay lúc này). Một event lớn <b>chỉ</b> có nghĩa khi so với DB Time cùng khoảng.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_6/</code>: <code>01</code> → <code>02_workload</code> (3 mức tải 2/4/8 user) → <code>03_diagnose</code> → <code>04_usecase_top_sessions</code> → <code>99</code>.</li><li><code>section_8/</code>: <code>01</code> (chạy bằng <code>soe</code>) → <code>02</code> → <code>03</code> → <code>04_usecase_hung_session</code> (<code>lock_demo.sh</code>) → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>% DB CPU / DB Time</b><span>ở cả 3 mức tải 2 / 4 / 8 user</span></p><p class="metric"><b>Top 3 wait event</b><span>tên + thời gian chờ + % so với DB Time</span></p><p class="metric"><b>Hung session</b><span>SID nào, đang chờ event gì, ai giữ</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-02">Số đo đêm nay</label>
+    <input id="note-02" data-day="02" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-03">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 03</div>
+    <div class="day-t">
+      <h3>AWR — bộ nhớ dài hạn của database</h3>
+      <div class="day-date">T4 · 26/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 9</span><span class="chip ok">lab đã kiểm chứng</span><span class="chip warn">05–09 chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="03"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">DB Time khác Elapsed Time chỗ nào?</p><p class="q">Một wait event chờ 400 giây — có phải vấn đề không? Lấy gì làm mẫu số để trả lời?</p><p class="q"><code>V$SESSION_WAIT</code> khác <code>V$SYSTEM_EVENT</code> ở điểm nào?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Đọc <code>section_all_new/section_9_awr_senior_guide.md</code>, phần 2 stream AWR.</li><li>Lấy lại <code>con_dbid</code> đã ghi ở đêm 1.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Hai stream AWR: CDB root và PDB-local có <b>dbid khác nhau</b> — chạy report nhầm dbid là đọc nhầm database.</li><li>Snapshot / interval / retention; MMON sinh snapshot thế nào; baseline khác snapshot thường ra sao.</li><li>Thứ tự đọc một AWR report: DB Time & Load Profile → Top 10 Foreground Events → Time Model → SQL ordered by Elapsed. Không đọc hit ratio trước.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_9/</code>: <code>01_setup</code> (settings) → <code>awr_snap</code> + <code>02_workload</code> + <code>awr_snap</code> → <code>03_diagnose</code> → <code>04_usecase_baseline</code> → <code>99</code>.</li><li>Còn giờ thì thêm <code>05_usecase_plan_regression</code> (⚠️ nhóm 05–09 chưa kiểm chứng VM — bạn là người chốt số).</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>snap_id</b><span>trước / sau workload</span></p><p class="metric"><b>DB Time trong report</b><span>và Top FG event #1 chiếm bao nhiêu %</span></p><p class="metric"><b>Baseline</b><span>tên + khoảng snap đã tạo</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-03">Số đo đêm nay</label>
+    <input id="note-03" data-day="03" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-04">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 04</div>
+    <div class="day-t">
+      <h3>Cảnh báo tự động và Statspack</h3>
+      <div class="day-date">T5 · 27/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 10</span><span class="chip ">Section 11</span><span class="chip warn">11 chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="04"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Trong AWR report bạn đọc mục nào trước, vì sao?</p><p class="q">Baseline AWR để làm gì mà snapshot thường không làm được?</p><p class="q">Chạy <code>awrrpt</code> cho PDB thì chọn dbid nào?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 10 + 11.</li><li>⚠️ Lab 10 phải chạy bằng <b>SYS qua CDB root</b> — sai chỗ này là <code>ORA-65040</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Server-generated alert: stateful (ngưỡng, tự clear) vs stateless (sự kiện); <code>DBA_OUTSTANDING_ALERTS</code> vs <code>DBA_ALERT_HISTORY</code>; metric view là nguồn của ngưỡng.</li><li>Statspack: bản tiền-AWR, không cần Diagnostic Pack — vẫn còn giá trị trên Standard Edition. Thiếu gì so với AWR: ASH, ADDM, baseline tự động, giao diện EM.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_10/</code>: <code>01</code> → <code>02</code> (<code>lock_storm.sh</code>) → <code>03</code> → <code>04_usecase_clear</code> → <code>99</code>.</li><li><code>section_11/</code> 3 vai: SYS cài PERFSTAT → <code>system</code> sinh tải → PERFSTAT chạy report → <code>04_usecase_baseline_purge</code> → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>Alert bắt được</b><span>metric nào, ngưỡng bao nhiêu, giá trị thực bao nhiêu</span></p><p class="metric"><b>Statspack</b><span>snap id + Top 5 timed events trong spreport</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-04">Số đo đêm nay</label>
+    <input id="note-04" data-day="04" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-05">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 05</div>
+    <div class="day-t">
+      <h3>ADDM và ASH — máy chẩn đoán, máy quay chậm</h3>
+      <div class="day-date">T6 · 28/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 12</span><span class="chip ">Section 13</span><span class="chip warn">chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="05"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Alert stateful khác stateless chỗ nào?</p><p class="q">Statspack thiếu những gì so với AWR?</p><p class="q">Vì sao Statspack vẫn chạy được trên Standard Edition?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 12 + 13.</li><li><code>vagrant up</code> + env check.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>ADDM = phân tích DB Time tự động giữa 2 snapshot: finding → recommendation → rationale, xếp theo <b>impact %</b>. Giới hạn: chỉ thấy cái nằm trong DB.</li><li>ASH = ảnh chụp mỗi giây các session <b>đang active</b>. Các chiều quan trọng: <code>sql_id</code>, <code>event</code>, <code>blocking_session</code>, <code>current_obj#</code> / <code>row#</code>.</li><li>Khi nào ASH thắng AWR: sự cố ngắn 3 phút lúc 2 giờ sáng — AWR trung bình hóa mất, ASH vẫn giữ.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_12/</code>: <code>01</code> → <code>02</code> → <code>03</code> (DBMS_ADDM trên snapshot PDB-local) → <code>04_usecase_compare</code> → <code>99</code>.</li><li><code>section_13/</code>: <code>01</code> → <code>02</code> (<code>ash_lock_demo.sh</code>) → <code>03</code> → <code>04_usecase_dimensions</code> (lần tới đúng ROW bị khóa) → <code>05_ash_report</code> → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>Finding lớn nhất</b><span>tên + impact % DB Time</span></p><p class="metric"><b>ASH truy vết</b><span>blocking_session + object và row đích danh</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-05">Số đo đêm nay</label>
+    <input id="note-05" data-day="05" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-06">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 06</div>
+    <div class="day-t">
+      <h3>Dán nhãn workload và soi bằng SQL Trace</h3>
+      <div class="day-date">T7 · 29/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 14</span><span class="chip ">Section 15</span><span class="chip hot">chạy trong VM</span><span class="chip warn">chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="06"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">ADDM lấy dữ liệu từ đâu, và nó mù với loại vấn đề nào?</p><p class="q">ASH lấy mẫu bao lâu một lần? Hết chỗ trong bộ nhớ thì dữ liệu đi đâu?</p><p class="q"><code>current_obj#</code> trong ASH dùng để làm gì?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 14 + 15.</li><li>⚠️ Lab 15 chạy <b>trong VM</b> (<code>trcsess</code>/<code>tkprof</code> là lệnh OS): <code>vagrant ssh</code> → <code>sudo -u oracle -i</code> → <code>cd /labs/section_15</code>.</li><li>Cuối tuần — nếu còn hứng có thể kéo dài tới 23:30.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Service / module / action / client_id: cách gắn nhãn để quy DB Time về đúng ứng dụng (<code>DBMS_APPLICATION_INFO</code>, <code>V$SERVICE_STATS</code>).</li><li><code>DBMS_MONITOR</code> bật trace theo session, service, module, action — không cần sửa code ứng dụng.</li><li>Trace 10046 các level; <code>tkprof</code> đọc gì; <code>trcsess</code> gom nhiều file trace của một client.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_14/</code>: <code>01</code>–<code>03</code> → <code>04_usecase_modact</code> → <code>05_usecase_clientid_etl</code> (<code>etl_load.sh</code>: APPEND → <code>enq: TM</code>) → <code>99</code>.</li><li><code>section_15/</code> (trong VM): <code>01</code> → <code>02</code> (<code>traced_workload.sh</code>) → <code>03</code> → <code>04_usecase_tkprof</code> → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>DB Time theo service/module</b><span>cái nào ăn nhiều nhất</span></p><p class="metric"><b>tkprof</b><span>elapsed, disk, query, rows của câu tốn nhất</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-06">Số đo đêm nay</label>
+    <input id="note-06" data-day="06" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-07">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 07</div>
+    <div class="day-t">
+      <h3>Giám sát thời gian thực, việc bảo trì tự động — và chạy mù lần đầu</h3>
+      <div class="day-date">CN · 30/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 16</span><span class="chip ">Section 17</span><span class="chip ok">ôn tuần 1</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="07"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Module và action nên đặt ở tầng nào của ứng dụng?</p><p class="q">Khi nào phải dùng <code>trcsess</code> thay vì đọc thẳng file trace?</p><p class="q">Trace level 12 có thêm gì so với level 8?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 16 + 17.</li><li>Chuẩn bị tinh thần: cuối buổi có bài chạy mù, không được mở đáp án trước.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Real-time SQL Monitoring: tự bật khi SQL vượt 5 giây CPU/IO hoặc chạy parallel; <code>V$SQL_MONITOR</code> cho plan <b>đang chạy</b> kèm số dòng thực tế từng bước.</li><li>DBOP composite: gộp nhiều câu lệnh của một job thành một đơn vị đo được.</li><li>Automated maintenance: 3 task (optimizer stats, segment advisor, SQL tuning advisor), maintenance window, resource plan — vì sao stats gathering hay là thủ phạm của sự cố lúc 22 giờ.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_16/</code>: <code>01</code> → <code>02</code> (<code>monitor_client.sh</code>) → <code>03</code> (plan sống) → <code>04_usecase_report</code> → <code>99</code>.</li><li><code>section_17/</code>: <code>01</code> → <code>03</code> → <code>04_usecase_task_onoff</code> → <code>99</code> (99 khôi phục window về mặc định).</li><li><b>Chạy mù:</b> bốc ngẫu nhiên một lab trong {6, 8, 9, 10} — chỉ chạy <code>01</code>+<code>02</code>, tự chẩn đoán bằng <code>_toolkit/</code>, xong mới mở <code>03_diagnose.sql</code> chấm điểm.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>SQL được monitor</b><span>sql_id + elapsed + IO</span></p><p class="metric"><b>Maintenance window</b><span>cửa sổ nào đang mở, task nào ENABLED</span></p><p class="metric"><b>Chạy mù</b><span>đoán đúng hay sai, sai ở bước nào của chuỗi chẩn đoán</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-07">Số đo đêm nay</label>
+    <input id="note-07" data-day="07" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-08">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 08</div>
+    <div class="day-t">
+      <h3>Contention tầng 1 — Enqueue, Latch và Mutex</h3>
+      <div class="day-date">T2 · 31/08/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 19</span><span class="chip ">Section 20</span><span class="chip warn">chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="08"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Điều kiện nào khiến một SQL tự động vào <code>V$SQL_MONITOR</code>?</p><p class="q">Tắt auto stats gathering thì cái gì hỏng sau vài tuần?</p><p class="q">Kết quả chạy mù đêm qua: bạn đi chệch ở bước nào?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 19 + 20.</li><li>Mở sẵn <code>labs/SO_TAY_MO_HINH.html</code> mô hình M5 (wait event → root cause).</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Enqueue = khóa <b>có hàng đợi</b>: TX (row lock, ITL, index dup key), TM (DDL/DML bảo vệ bảng), mode 6 exclusive vs mode 4 share.</li><li><code>V$LOCK</code> đọc theo 3 thì: ai giữ (BLOCK=1), ai chờ (REQUEST>0), giữ cái gì (ID1/ID2).</li><li>Latch/mutex = serialize cấu trúc trong SGA, đơn vị micro giây, spin rồi sleep. Library cache mutex sinh ra từ hard parse literal; cache buffers chains sinh ra từ hot block.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_19/</code>: <code>01</code> → <code>02</code> (<code>lock_pair.sh</code> 120s) → <code>03</code> (V$LOCK) → <code>04_usecase_recent_past</code> → <code>99</code>.</li><li><code>section_20/</code>: <code>01</code> → <code>02</code> (<code>hard_parse.sh literal</code>) → <code>03</code> → <code>04_fix</code> (bind variable) → <code>05_cbc_pin</code> (cần SYS, X$BH) → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>enq: TX</b><span>chờ bao lâu, ai block ai</span></p><p class="metric"><b>Hard parse</b><span>số lần/giây trước và sau khi chuyển sang bind</span></p><p class="metric"><b>Mutex</b><span>thời gian chờ mutex giảm bao nhiêu</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-08">Số đo đêm nay</label>
+    <input id="note-08" data-day="08" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-09">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 09</div>
+    <div class="day-t">
+      <h3>Shared Pool — parse, cursor cache, result cache</h3>
+      <div class="day-date">T3 · 01/09/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 21</span><span class="chip ">gộp Practice 20–22</span><span class="chip warn">chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="09"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Enqueue TX mode 6 khác mode 4 ở tình huống nào?</p><p class="q">Vì sao literal SQL lại sinh contention ở library cache?</p><p class="q"><code>cache buffers chains</code> nói lên điều gì về workload?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 21.</li><li>Lab này <b>không restart DB</b> — mọi thay đổi làm bằng <code>ALTER SESSION</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Shared pool = library cache + row cache + free. Hard parse / soft parse / softer-soft (session cursor cache) khác nhau ở chỗ nào dừng lại.</li><li>Session cursor cache: bỏ qua cả bước tìm trong library cache — đo bằng <code>session cursor cache hits</code>.</li><li>Result cache: cache <b>kết quả</b> chứ không phải plan; invalidate ngay khi bảng nguồn có DML — chỉ hợp bảng ít đổi.</li><li>Đọc <code>ORA-04031</code>: thiếu ở subpool nào, request bao nhiêu byte.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_21/</code>: <code>01</code> → <code>02</code> → <code>03</code> → <code>04_usecase_session_cursor_cache</code> → <code>05_usecase_result_cache</code> → <code>06_usecase_library_cache_pin</code> (cần SYS, X$KGLOB) → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>parse count (hard)</b><span>trước / sau</span></p><p class="metric"><b>session cursor cache hits</b><span>trước / sau khi tăng cache</span></p><p class="metric"><b>Result cache</b><span>thời gian query lần 1 vs lần 2 + hit count</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-09">Số đo đêm nay</label>
+    <input id="note-09" data-day="09" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-10">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 10</div>
+    <div class="day-t">
+      <h3>Bộ nhớ đọc và bộ nhớ làm việc — Buffer Cache, PGA</h3>
+      <div class="day-date">T4 · 02/09/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 22</span><span class="chip ">Section 23</span><span class="chip warn">chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="10"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Soft parse vẫn tốn cái gì?</p><p class="q">Result cache mất hiệu lực trong tình huống nào?</p><p class="q"><code>ORA-04031</code> khác <code>ORA-04030</code> ở chỗ nào?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 22 + 23.</li><li>⚠️ <code>section_22/01</code> cần SYS grant <code>V_$MYSTAT</code> cho soe.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Buffer cache: LRU + touch count, logical vs physical read, vì sao hit ratio cao vẫn có thể là hệ thống bệnh.</li><li>KEEP pool: giữ segment nhỏ nóng khỏi bị lũ full scan đẩy ra.</li><li>PGA: workarea optimal / onepass / multipass; <code>PGA_AGGREGATE_TARGET</code> là mục tiêu mềm, <code>_LIMIT</code> mới là trần cứng; đọc <code>V$PGA_TARGET_ADVICE</code> phải bỏ các dòng overallocation trước.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_22/</code>: <code>01</code> → <code>02</code> (lũ full scan) → <code>03</code> → <code>04_fix</code> (KEEP pool) → <code>05_usecase_flash_cache</code> (tùy chọn, trong VM, 2 lần restart) → <code>99</code>.</li><li><code>section_23/</code>: <code>01</code> → <code>02</code> (<code>pga_sort.sh</code>) → <code>03</code> → <code>04_usecase_pga_advice</code> → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>Physical reads</b><span>trước / sau khi dùng KEEP pool</span></p><p class="metric"><b>Workarea</b><span>số lần optimal / onepass / multipass</span></p><p class="metric"><b>Temp</b><span>dung lượng temp bị dùng khi sort tràn</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-10">Số đo đêm nay</label>
+    <input id="note-10" data-day="10" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-11">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 11</div>
+    <div class="day-t">
+      <h3>Đường ghi và trần CPU — Redo, CPU Bottleneck</h3>
+      <div class="day-date">T5 · 03/09/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 24</span><span class="chip ">Section 25</span><span class="chip hot">snapshot bắt buộc</span><span class="chip hot">24 chạy trong VM</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="11"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Touch count dùng để làm gì trong thuật toán LRU?</p><p class="q">Buffer cache hit ratio 99% có nghĩa hệ thống khỏe không?</p><p class="q">Workarea rơi từ optimal xuống onepass thì cái gì đắt lên?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>⚠️ <code>vagrant snapshot save truoc_lab_24</code> — lab 24 đổi cấu hình redo ở cấp CDB.</li><li>Lab 24 chạy <b>trong VM</b>: <code>vagrant ssh</code> → <code>sudo -u oracle -i</code> → <code>cd /labs/section_24</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Redo path: log buffer → LGWR → online redo log. <code>log file sync</code> (session chờ commit) khác <code>log file parallel write</code> (LGWR chờ đĩa) — nhầm hai cái là chữa sai chỗ.</li><li>Giảm redo thật sự: bớt commit vụn, direct path / nologging đúng chỗ, chứ không phải phình log buffer.</li><li>CPU: DB CPU (time model) vs OS CPU (<code>V$OSSTAT</code>). Discriminator là <b>%Busy CPU</b> — tải ngoài DB làm ASH mù hoàn toàn.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_24/</code> (trong VM): <code>01</code> → <code>02</code> → <code>03</code> → <code>04_fix</code> → <code>99</code> — thu redo còn 10MB, đo, rồi phục hồi.</li><li><code>section_25/</code>: <code>02</code> (<code>cpu_load.sh db</code>) → <code>03</code> + <code>cpu_sample.sql</code> → <code>04_usecase_external_cpu</code> (<code>cpu_load.sh external</code>) → <code>05_parse_cpu</code> → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>log file sync</b><span>avg ms trước / sau</span></p><p class="metric"><b>%Busy CPU</b><span>ở cả 2 kịch bản DB và external</span></p><p class="metric"><b>ASH</b><span>kịch bản nào ASH chỉ được đích danh sql_id, kịch bản nào mù</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-11">Số đo đêm nay</label>
+    <input id="note-11" data-day="11" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-12">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 12</div>
+    <div class="day-t">
+      <h3>Đĩa và chỉ mục — I/O bùng nổ, index phình</h3>
+      <div class="day-date">T6 · 04/09/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 26</span><span class="chip ">Section 27</span><span class="chip warn">05 cần snapshot</span><span class="chip warn">chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="12"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q"><code>log file sync</code> khác <code>log file parallel write</code> chỗ nào? Mỗi cái chỉ về đâu?</p><p class="q">Vì sao ASH không nhìn thấy tải CPU ngoài database?</p><p class="q">%Busy CPU tính từ hai nguồn số nào?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 26 + 27.</li><li>⚠️ Chỉ chạy <code>26/05_calibrate_io</code> khi đã snapshot — nó restart và quiesce ~9 phút.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li><code>db file sequential read</code> (index/rowid, đọc 1 block) vs <code>db file scattered read</code> (multiblock full scan) vs <code>direct path read</code> — mỗi event tố cáo một đường truy cập.</li><li><code>ALTER TABLE MOVE</code> làm index UNUSABLE → equality lookup rơi xuống full scan → I/O nổ. Đây là sự cố kinh điển sau bảo trì.</li><li>Index không tự trả space: COALESCE gộp lá (giảm LF_BLKS, giữ BLOCKS) vs REBUILD (giảm cả hai) vs SHRINK. Huyền thoại “B-tree tự cân bằng nên không cần gì” sai ở chỗ nào.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_26/</code>: <code>01</code> → <code>02</code> → <code>03</code> → <code>04_fix</code> (REBUILD ONLINE) → <code>99</code>; tùy chọn <code>05_calibrate_io</code>.</li><li><code>section_27/</code>: <code>01</code> → <code>02</code> → <code>03</code> → <code>04_fix</code> (COALESCE vs REBUILD) → <code>05_shrink_and_dml</code> (<code>idx_dml_load.sh</code> làm REBUILD ONLINE treo ở <code>enq: TX</code>) → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>Physical reads</b><span>trước / sau khi rebuild index</span></p><p class="metric"><b>LF_BLKS & BLOCKS</b><span>sau COALESCE và sau REBUILD — khác nhau ra sao</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-12">Số đo đêm nay</label>
+    <input id="note-12" data-day="12" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-13">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 13</div>
+    <div class="day-t">
+      <h3>Hình dạng dữ liệu trong block — migration, HWM, nén</h3>
+      <div class="day-date">T7 · 05/09/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ok">Section 28</span><span class="chip ">Section 29</span><span class="chip ">Section 30</span><span class="chip warn">29–30 chưa kiểm chứng</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="13"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q"><code>db file sequential read</code> nhiều nói lên đường truy cập nào đang chiếm ưu thế?</p><p class="q">COALESCE trả space lại cho ai — segment hay tablespace?</p><p class="q">Vì sao REBUILD ONLINE có thể treo, treo ở event gì?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>Senior guide Section 28, 29, 30. Lab 28 là lab mẫu đã có số thật — chạy nhanh để lấy đà.</li><li>Cuối tuần: 3 lab, cần đủ 2 tiếng, có thể kéo tới 23:30.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Row migration (row lớn lên, không đủ chỗ, dời đi để lại con trỏ) vs row chaining (row quá to cho một block, hoặc >255 cột) — cùng triệu chứng <code>table fetch continued row</code>, cách chữa khác hẳn nhau.</li><li>Table fragmentation: bulk delete không hạ HWM → full scan vẫn quét tới HWM. Chỉ phạt full scan, không phạt truy cập qua index.</li><li>Compression: BASIC chỉ nén khi nạp direct-path; ADVANCED nén cả DML thường nhưng cần license ACO. Symbol table nằm ở cấp block nên tỉ lệ nén phụ thuộc độ lặp trong block.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_28/</code>: <code>01</code> → <code>02</code> → <code>03</code> (LIST CHAINED ROWS) → <code>04_fix</code> → <code>05_row_chaining_32k</code> → <code>99</code>.</li><li><code>section_29/</code>: <code>01</code> → <code>02</code> → <code>03</code> (3 góc đo HWM) → <code>04_fix</code> (SHRINK SPACE CASCADE) → <code>99</code>.</li><li><code>section_30/</code>: <code>01</code> → <code>02</code> → <code>03</code> (<code>GET_COMPRESSION_RATIO</code>) → <code>04_usecase_query_perf</code> → <code>99</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>table fetch continued row</b><span>trước / sau khi chữa migration</span></p><p class="metric"><b>Blocks dưới HWM</b><span>trước / sau SHRINK SPACE</span></p><p class="metric"><b>Compression</b><span>số block và thời gian nạp của 3 kiểu bảng</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-13">Số đo đêm nay</label>
+    <input id="note-13" data-day="13" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-14">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 14</div>
+    <div class="day-t">
+      <h3>Cột, đường truyền và tầng OS</h3>
+      <div class="day-date">CN · 06/09/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 31</span><span class="chip ">Section 32</span><span class="chip ">Section 34</span><span class="chip hot">snapshot + license</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="14"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">PCTFREE thấp gây ra hiện tượng gì, ở loại workload nào?</p><p class="q">SHRINK SPACE CASCADE có làm index hỏng không? Khác gì MOVE?</p><p class="q">Nén BASIC bỏ sót trường hợp nào?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>⚠️ <code>vagrant snapshot save truoc_lab_31</code> — lab 31 đổi <code>INMEMORY_SIZE</code> + SGA và restart; cần license In-Memory.</li><li>Senior guide Section 31, 32, 34. Lab 34 là lab shell, không SQL.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>In-Memory: dual format (row trên đĩa, column trong IM store), populate <b>bất đồng bộ</b> — đo sớm là đo sai; dấu hiệu trong plan là <code>TABLE ACCESS INMEMORY FULL</code>; IM thay được index phục vụ phân tích.</li><li>Connection: round-trip = <code>CEIL(rows / arraysize)</code> — ARRAYSIZE là đòn bẩy lớn nhất, SDU/socket buffer chỉ đáng kể khi latency cao. <code>SQL*Net message from client</code> là idle, không phải chậm.</li><li>Tầng OS theo USE method (Utilization–Saturation–Errors): vmstat, iostat, mpstat, top; cầu <b>SPID</b> nối process OS với session DB.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_31/</code> (trong VM): <code>01</code> → <code>02</code> (chờ <code>POPULATE_STATUS=COMPLETED</code>) → <code>03</code> → <code>04_usecase_compress_col</code> → <code>99</code> / restore snapshot.</li><li><code>section_32/</code>: <code>01</code> → <code>02</code> → <code>03</code> (AUTOTRACE, cần PLUSTRACE) → <code>04_usecase_sdu_socket</code> → <code>99</code>.</li><li><code>section_34/</code> (shell trong VM): <code>01_setup.sh</code> → <code>os_stress.sh cpu|io</code> → <code>02_map_os_to_db.sql</code> → <code>99_cleanup.sh</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>INMEMORY</b><span>thời gian query trước / sau populate + dung lượng IM so với segment</span></p><p class="metric"><b>Round-trip</b><span>arraysize 15 vs 100 vs 1000</span></p><p class="metric"><b>SPID → SID</b><span>process ngốn CPU nhất tương ứng session/sql_id nào</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-14">Số đo đêm nay</label>
+    <input id="note-14" data-day="14" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article>
+<article class="card day" id="day-15">
+  <div class="day-head">
+    <div class="day-n">ĐÊM 15</div>
+    <div class="day-t">
+      <h3>Change assurance — SPA và Database Replay</h3>
+      <div class="day-date">T2 · 07/09/2026 · 21:30 – 23:00</div>
+      <div class="chips"><span class="chip ">Section 35</span><span class="chip ">Section 36</span><span class="chip hot">license RAT</span><span class="chip hot">snapshot bắt buộc</span><span class="chip warn">đêm bù</span></div>
+    </div>
+    <label class="done-box"><input type="checkbox" data-day="15"> xong</label>
+  </div>
+  <div class="slots">
+    <div class="slot">
+      <div class="time">21:30<small>Ôn + chuẩn bị</small></div>
+      <div>
+        <h4>Trả lời trước, không mở tài liệu</h4>
+        <p class="q">Populate bất đồng bộ ảnh hưởng thế nào tới lần đo đầu tiên?</p><p class="q">ARRAYSIZE quá lớn thì trả giá ở đâu?</p><p class="q">USE method gồm ba thành phần nào?</p>
+        <h4 style="margin-top:11px">Chuẩn bị</h4>
+        <ul><li>⚠️ Snapshot bắt buộc; cả hai lab chạy <b>trong VM</b>; cần license Real Application Testing.</li><li>Senior guide Section 35 + 36 — đọc trước phần vòng đời 5 pha của DB Replay.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">21:50<small>Giảng</small></div>
+      <div>
+        <h4>Ý chính</h4>
+        <ul><li>Hai tầng bảo hiểm khi thay đổi hệ thống: <b>SPA</b> bắt plan regression ở mức từng câu SQL (nhẹ, chạy sớm, nhưng mù với concurrency); <b>DB Replay</b> phát lại toàn workload nên bắt được contention và throughput.</li><li>SPA: STS từ cursor cache → TEST EXECUTE trước/sau → COMPARE PERFORMANCE → improved / regressed / plan changed. Trên production dùng EXPLAIN PLAN thay vì chạy thật.</li><li>DB Replay 5 pha: Capture → Preprocess → [thay đổi] → Replay (<code>wrc</code>) → Report. Divergence khác 0 trên lab một VM là do thiếu restore-to-SCN, không phải do “upgrade hỏng”.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:15<small>Lab</small></div>
+      <div>
+        <h4>Tự tay chạy — dự đoán trước mỗi script</h4>
+        <ul><li><code>section_35/</code>: <code>01</code> → <code>02_capture</code> (STS) → <code>03_change_compare</code> (OFE 11.2 → 12.2) → <code>99</code>.</li><li><code>section_36/</code>: <code>01</code> → <code>02_capture</code> → <code>03_preprocess_change</code> → <code>04_replay</code> (<code>wrc_replay.sh</code>) → <code>99</code>.</li><li><b>Tổng kết:</b> chạy mù một lab bất kỳ của tuần 2, rồi cập nhật <code>progress.md</code>.</li></ul>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">22:50<small>Chốt</small></div>
+      <div>
+        <h4>Rời bàn với những con số này</h4>
+        <p class="metric"><b>SPA report</b><span>bao nhiêu SQL improved / regressed / plan changed</span></p><p class="metric"><b>Replay</b><span>divergence bao nhiêu và giải thích vì sao khác 0</span></p><p class="metric"><b>Tổng kết</b><span>3 chủ đề bạn thấy yếu nhất → xếp lịch học lại</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <label for="note-15">Số đo đêm nay</label>
+    <input id="note-15" data-day="15" type="text" placeholder="vd: DB CPU 62% · log file sync 8.4ms → 2.1ms">
+  </div>
+</article></div>
+  </div>
+
+  <h2 class="sect-title">Luật học &amp; bẫy môi trường</h2>
+  <div class="two">
+    <div class="card pad">
+      <h3>5 điều không thương lượng</h3>
+      <ul>
+        <li><b>Dự đoán trước khi chạy.</b> Trước mỗi script, nói ra con số bạn nghĩ sẽ thấy. Sai dự đoán là chỗ kiến thức dính lại — chạy mà không dự đoán chỉ là xem phim.</li>
+        <li><b>Ghi số, đừng ghi cảm giác.</b> Mỗi đêm rời bàn với ít nhất 2 con số trước/sau. “Nhanh hơn hẳn” không phải kết quả.</li>
+        <li><b>Debrief không nhìn tài liệu.</b> Câu hỏi tự kiểm tra cuối <code>README.md</code> mỗi lab — trả lời trước, tra sau.</li>
+        <li><b>Chạy mù để ôn.</b> Sau mỗi 3 lab mới, bốc lại một lab cũ: chỉ chạy <code>01</code> + <code>02</code>, tự chẩn đoán bằng <code>_toolkit/</code>, xong mới mở <code>03_diagnose.sql</code> chấm điểm.</li>
+        <li><b>Hết giờ thì dừng, đừng bỏ cleanup.</b> Lab dở dang chấp nhận được; object rác để lại làm sai số đo đêm sau thì không.</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <h3>Bẫy đã trả giá rồi</h3>
+      <div class="tablewrap" style="border:0; box-shadow:none">
+      <table>
+        <tr><td>Không connect được từ host</td><td>Port là <b>15210</b>, trong VM mới là 1521.</td></tr>
+        <tr><td>PowerShell nuốt mất <code>@file</code></td><td>Ký tự <code>@</code> không quote bị hiểu là splatting — luôn bọc <code>"@labs\_toolkit\x.sql"</code>.</td></tr>
+        <tr><td>Sinh tải im lặng, job FAILED</td><td>Password OS user <code>oracle</code> mất sau mỗi restore snapshot — chạy lại <code>chpasswd</code>.</td></tr>
+        <tr><td>Time model / AWR trống trơn</td><td><code>statistics_level</code> phải là <b>TYPICAL</b>; BASIC là chết cả khóa.</td></tr>
+        <tr><td>Shell script lỗi ký tự lạ</td><td>CRLF của Windows — script trong <code>labs/</code> đã chuẩn hoá LF, đừng để editor đổi lại.</td></tr>
+        <tr><td>Ghi file lớn vào <code>/labs</code> lỗi</td><td>Đây là mount vboxsf — trace/capture ghi vào <code>/home/oracle/…</code> trong VM.</td></tr>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sect-title">Đưa lộ trình vào Google Calendar</h2>
+  <div class="card pad">
+    <ol>
+      <li>Mở <b>Google Calendar</b> trên máy tính → bánh răng <b>Settings</b> → <b>Import &amp; export</b>.</li>
+      <li>Chọn file <code>ke_hoach/06_lo_trinh_2_tuan.ics</code>, chọn lịch đích rồi bấm <b>Import</b>. Kết quả: <b>30 sự kiện</b> — mỗi đêm 2 sự kiện (<i>Ôn + chuẩn bị</i> 21:30 và <i>Buổi học</i> 21:50), nhắc trước 15 phút.</li>
+      <li>Đổi ngày bắt đầu hoặc khung giờ? Sinh lại rồi import bản mới:
+<pre>python tools/make_lo_trinh.py --start 2026-09-07 --hour 20:00</pre>
+      </li>
+      <li>Import nhầm cũng không sao: mỗi sự kiện có UID cố định <code>oratune14-dNN-a@local</code> — import lại cùng file là ghi đè, không nhân đôi.</li>
+    </ol>
+  </div>
+
+  <footer>
+    Sinh từ <code>tools/make_lo_trinh.py</code> · nội dung lấy từ <code>labs/</code> + <code>section_all_new/</code> + <code>ke_hoach/01_learning_plan.md</code> · tiến độ lưu trong trình duyệt này (localStorage).
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KEY = "oratune14:v1";
+  var state = {done:{}, note:{}};
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){ state = JSON.parse(raw); state.done = state.done || {}; state.note = state.note || {}; }
+  }catch(e){}
+
+  var boxes = [].slice.call(document.querySelectorAll(".done-box input"));
+  var notes = [].slice.call(document.querySelectorAll(".note input"));
+  var bar = document.getElementById("pbar");
+  var count = document.getElementById("pcount");
+
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  function paint(){
+    var n = 0;
+    boxes.forEach(function(b){
+      var id = b.getAttribute("data-day");
+      var on = !!state.done[id];
+      b.checked = on;
+      if(on) n++;
+      var link = document.querySelector('#rail a[href="#day-' + id + '"]');
+      if(link) link.classList.toggle("done", on);
+    });
+    var pct = boxes.length ? Math.round(n / boxes.length * 100) : 0;
+    bar.style.width = pct + "%";
+    count.textContent = n + " / " + boxes.length + " đêm";
+  }
+
+  boxes.forEach(function(b){
+    b.addEventListener("change", function(){
+      state.done[b.getAttribute("data-day")] = b.checked;
+      save(); paint();
+    });
+  });
+
+  notes.forEach(function(i){
+    i.value = state.note[i.getAttribute("data-day")] || "";
+    i.addEventListener("input", function(){
+      state.note[i.getAttribute("data-day")] = i.value;
+      save();
+    });
+  });
+
+  document.getElementById("preset").addEventListener("click", function(){
+    if(!confirm("Xoá toàn bộ tiến độ và ghi chú đã lưu?")) return;
+    state = {done:{}, note:{}};
+    save();
+    notes.forEach(function(i){ i.value = ""; });
+    paint();
+  });
+
+  paint();
+})();
+</script>

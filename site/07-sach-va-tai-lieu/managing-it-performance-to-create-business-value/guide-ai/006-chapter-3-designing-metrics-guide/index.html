@@ -1,0 +1,2211 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../005-chapter-2-designing-performance-management-and-measurement-systems-guide/">
+      
+      
+        <link rel="next" href="../007-chapter-4-establishing-a-software-measurement-program-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Hướng Dẫn Học Tập: Thiết Kế Metrics - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#huong-dan-hoc-tap-thiet-ke-metrics" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hướng Dẫn Học Tập: Thiết Kế Metrics
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            07. Sach & Tai lieu (PDF da chuyen doi)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../devsecops-in-oracle-cloud-securing-and-automating-oracle-cloud-infrastructure-for-sebastian-hassinger/guide-ai/012-introduction-to-oci-and-devsecops-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Devsecops in oracle cloud securing and automating oracle cloud infrastructure for sebastian hassinger
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../itil-foundation-v5/guide-ai/001-itil-foundation-version5-official-book-en-v50-prpdf-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Itil foundation v5
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Managing it performance to create business value
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_5">
+            <span class="md-nav__icon md-icon"></span>
+            Managing it performance to create business value
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_5_1" id="__nav_7_5_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Guide ai
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_5_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            Guide ai
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-chapter-1-designing-performance-based-strategic-planning-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Hoạch Định Chiến Lược Dựa Trên Hiệu Suất
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../005-chapter-2-designing-performance-management-and-measurement-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Quản Lý và Đo Lường Hiệu Suất
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Metrics
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Metrics
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-1-erp-balanced-scorecard-rosemann-va-wiese" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 1: ERP Balanced Scorecard — Rosemann và Wiese
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-2-new-york-stock-exchange-nguy-co-cua-benchmarking-theo-phong-trao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 2: New York Stock Exchange — Nguy cơ của benchmarking theo phong trào
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-3-roi-phan-tich-cho-he-thong-it-ung-dung-thuc-te-tai-viet-nam" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 3: ROI phân tích cho hệ thống IT — Ứng dụng thực tế tại Việt Nam (🇻🇳)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-1-it-service-provider-vs-strategic-partner" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 1: IT Service Provider vs. Strategic Partner
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-2-cac-ky-thuat-tinh-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 2: Các kỹ thuật tính ROI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#so-o-ahp-global-outcome-worksheet-vi-du-rut-gon" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sơ đồ: AHP Global Outcome Worksheet (ví dụ rút gọn)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../007-chapter-4-establishing-a-software-measurement-program-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../008-chapter-5-designing-people-improvement-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Cải Tiến Con Người
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../009-chapter-6-knowledge-and-social-enterprising-performance-measurement-and-management-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Đo Lường và Quản Lý Hiệu Suất Tri Thức và Doanh Nghiệp Xã Hội
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../010-chapter-7-designing-performance-based-risk-management-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Quản Lý Rủi Ro Dựa Trên Hiệu Suất
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../011-chapter-8-designing-process-control-and-improvement-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Kiểm Soát và Cải Thiện Quy Trình
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../012-chapter-9-designing-and-measuring-the-it-product-strategy-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế và Đo Lường Chiến Lược Sản Phẩm IT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../013-chapter-10-designing-customer-value-systems-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Giá Trị Khách Hàng
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    STATUS — Managing IT Performance to Create Business Value
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../references/guide-structure/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    References
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../skill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Book Study Guide — Tạo Bài Giảng Từ Sách
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../the-business-value-of-it-managing-risks-optimizing-performance-and-measuring-results-auerbach-publications-2008/guide-ai/003-introduction-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    The business value of it managing risks optimizing performance and measuring results auerbach publications 2008
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-1-erp-balanced-scorecard-rosemann-va-wiese" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 1: ERP Balanced Scorecard — Rosemann và Wiese
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-2-new-york-stock-exchange-nguy-co-cua-benchmarking-theo-phong-trao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 2: New York Stock Exchange — Nguy cơ của benchmarking theo phong trào
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-3-roi-phan-tich-cho-he-thong-it-ung-dung-thuc-te-tai-viet-nam" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 3: ROI phân tích cho hệ thống IT — Ứng dụng thực tế tại Việt Nam (🇻🇳)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-1-it-service-provider-vs-strategic-partner" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 1: IT Service Provider vs. Strategic Partner
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-2-cac-ky-thuat-tinh-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 2: Các kỹ thuật tính ROI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#so-o-ahp-global-outcome-worksheet-vi-du-rut-gon" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sơ đồ: AHP Global Outcome Worksheet (ví dụ rút gọn)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="huong-dan-hoc-tap-thiet-ke-metrics">Hướng Dẫn Học Tập: Thiết Kế Metrics<a class="headerlink" href="#huong-dan-hoc-tap-thiet-ke-metrics" title="Permanent link">&para;</a></h1>
+<p><strong>Nguồn:</strong> Managing IT Performance to Create Business Value — Chapter 3<br />
+<strong>Ngày tạo:</strong> 2026-04-26<br />
+<strong>Thời gian học ước tính:</strong> 70–85 phút</p>
+<hr />
+<h2 id="muc-tieu-hoc-tap">🎯 Mục tiêu học tập<a class="headerlink" href="#muc-tieu-hoc-tap" title="Permanent link">&para;</a></h2>
+<p>Sau khi hoàn thành chương này, người học có thể:</p>
+<ul>
+<li><strong>Hiểu</strong> tại sao metric quan trọng và vượt qua các lý do phổ biến mà nhân viên đưa ra để tránh bị đo lường</li>
+<li><strong>Mô tả</strong> 10 tiêu chí của một metric hiệu quả và áp dụng để đánh giá chất lượng của một chỉ số cụ thể</li>
+<li><strong>Áp dụng</strong> phương pháp Analytic Hierarchy Process (AHP) để ưu tiên và chọn lọc metrics cho Balanced Scorecard</li>
+<li><strong>Phân biệt</strong> vai trò IT là "Service Provider" so với "Strategic Partner" và ý nghĩa của sự khác biệt này</li>
+<li><strong>Tính toán</strong> ROI, NPV, BCR và sử dụng Earned Value Management (EVM) để đánh giá hiệu suất dự án</li>
+<li><strong>Đánh giá</strong> khi nào nên dùng hard data hay soft data trong phân tích ROI</li>
+</ul>
+<hr />
+<h2 id="tom-tat-noi-dung-chinh">📋 Tóm tắt nội dung chính<a class="headerlink" href="#tom-tat-noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<p>Chương 3 giải quyết câu hỏi thực tiễn cốt lõi: làm thế nào chọn và thiết kế đúng metrics cho tổ chức? Điểm khởi đầu là phá vỡ 5 lý do phổ biến nhất mà nhân viên đưa ra để tránh bị đo lường: "không thể đo được," "không công bằng," "sẽ bị so sánh bất công," "kết quả sẽ bị dùng chống lại chúng tôi," và "không có dữ liệu."</p>
+<p>Một <strong>metric tốt</strong> phải thỏa mãn 10 tiêu chí: Results-oriented, Important, Reliable, Useful, Quantitative, Realistic, Cost-effective, Easy to interpret, Comparable, và Credible. Quy trình chuẩn để triển khai benchmarking metrics gồm 6 bước: chọn quy trình, xác định hiệu suất hiện tại, xác định hiệu suất mong muốn, tính performance gap, thiết kế action plan, và striving for continuous improvement.</p>
+<p><strong>Analytic Hierarchy Process (AHP)</strong> là phương pháp khoa học để chọn và trọng số hóa metrics. Thay vì chọn ngẫu nhiên, AHP dùng so sánh cặp đôi (pairwise comparisons) theo thang 1–9 để tính local weight (quan trọng trong category) và global weight (quan trọng so với toàn bộ mục tiêu). Kết quả: mỗi metric có trọng số toàn cục (global outcome = local × local category weight) để ưu tiên theo chiến lược.</p>
+<p><strong>IT Scorecard</strong> là phiên bản Balanced Scorecard được điều chỉnh cho bộ phận IT (thường là nhà cung cấp dịch vụ nội bộ, không phải bên ngoài). Bốn góc nhìn IT: User Orientation (giá trị cho end-user), Business Value (đóng góp vào kinh doanh), Internal Processes (vận hành hiệu quả), và Future Readiness (sẵn sàng cho tương lai). Mục tiêu chiến lược: CIO phải định vị IT là <strong>Strategic Partner</strong> (IT gắn với tăng trưởng kinh doanh, không tách rời), không chỉ là Service Provider (IT như chi phí cần kiểm soát).</p>
+<p><strong>Financial Metrics</strong> bao gồm: Cost-Benefit Analysis (so sánh chi phí và lợi ích tangible + intangible), BCR (Benefit-Cost Ratio = Benefits/Cost), Break-even Analysis (thời điểm lợi ích bằng chi phí), ROI = (Benefits − Costs)/Costs, NPV (giá trị hiện tại ròng theo time value of money), IRR (tỷ suất chiết khấu để NPV = 0), và EVM (Earned Value Management đo giá trị công việc thực tế vs. chi phí). Hard data (output, time, quality, costs) dễ tính; soft data (morale, turnover, loyalty) khó nhưng cần thiết cho bức tranh đầy đủ.</p>
+<hr />
+<h2 id="khai-niem-quan-trong">🔑 Khái niệm quan trọng<a class="headerlink" href="#khai-niem-quan-trong" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Khái niệm</th>
+<th>Định nghĩa</th>
+<th>Tại sao quan trọng</th>
+<th>Ví dụ</th>
+<th>Liên quan đến</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Analytic Hierarchy Process (AHP)</strong></td>
+<td>Framework logic để tổ chức dữ liệu thành hệ thống phân cấp, dùng so sánh cặp đôi để tính trọng số tương đối của từng metric</td>
+<td>Cho phép nhiều người ra quyết định nhất quán, minh bạch về độ ưu tiên metrics — không dựa vào cảm tính</td>
+<td>AHP tính: Market Share (Innovation) = 0.40 × 0.32 = 0.128 là metric quan trọng nhất</td>
+<td>Balanced Scorecard, Metric Selection</td>
+</tr>
+<tr>
+<td><strong>Performance Gap</strong></td>
+<td>Khoảng cách giữa hiệu suất hiện tại và hiệu suất mong muốn; phân loại theo nguyên nhân: people, process, technology, culture</td>
+<td>Xác định đúng gap mới có thể ưu tiên đúng action plan</td>
+<td>Công ty đang ở 75% SLA, mục tiêu 99% → gap 24% do thiếu automation (technology)</td>
+<td>Benchmarking, Action Plan</td>
+</tr>
+<tr>
+<td><strong>IT Strategic Partner</strong></td>
+<td>Vai trò mà IT không thể tách rời khỏi kinh doanh; ngân sách IT được quyết định bởi chiến lược kinh doanh, không phải benchmark bên ngoài</td>
+<td>Khi IT là Strategic Partner, CIO có tiếng nói ngang C-level; IT được coi là đầu tư, không phải chi phí</td>
+<td>Bảng so sánh: IT là investment to manage vs. IT là expense to control</td>
+<td>IT Scorecard, Business Value</td>
+</tr>
+<tr>
+<td><strong>Return on Investment (ROI)</strong></td>
+<td>(Benefits − Costs) / Costs × 100%; đo lợi tức thu được sau khi hoàn vốn</td>
+<td>Chỉ số được quản lý yêu thích nhất; trả lời câu hỏi "đầu tư này có đáng không?"</td>
+<td>Đầu tư $500K, thu lợi $700K: ROI = ($700K−$500K)/$500K = 40%</td>
+<td>NPV, Break-even, EVM</td>
+</tr>
+<tr>
+<td><strong>Net Present Value (NPV)</strong></td>
+<td>Giá trị hiện tại ròng: chiết khấu dòng tiền tương lai về giá trị hiện tại, thừa nhận time value of money</td>
+<td>Phù hợp với đầu tư IT kéo dài nhiều năm; NPV &gt; 0 là dấu hiệu chấp nhận đầu tư</td>
+<td>Đầu tư $1M có NPV tiết kiệm $1.5M → ROI = 50% (hoặc 150% tính theo NPV/Cost)</td>
+<td>ROI, IRR</td>
+</tr>
+<tr>
+<td><strong>Earned Value Management (EVM)</strong></td>
+<td>Đo hiệu suất dự án qua Cost Performance Index (CPI) = Earned Value / Actual Cost; CPI &lt; 1 nghĩa là tiêu nhiều hơn giá trị tạo ra</td>
+<td>Cảnh báo sớm vấn đề dự án khi chỉ 20% hoàn thành — thay vì phát hiện quá muộn</td>
+<td>CPI = 0.8 khi dự án 20% hoàn thành → tổng chi phí thực tế dự kiến = $1B/0.8 = $1.25B</td>
+<td>Financial Metrics, Project Control</td>
+</tr>
+<tr>
+<td><strong>Hard vs. Soft Data</strong></td>
+<td>Hard data: output, time, quality, costs — dễ đo và tính bằng tiền. Soft data: morale, turnover, loyalty — khó đo nhưng phản ánh sức khỏe tổ chức</td>
+<td>ROI chỉ dựa hard data bỏ qua nhiều giá trị thực; cần kết hợp cả hai để đánh giá toàn diện</td>
+<td>Hard: số đơn hàng xử lý/giờ. Soft: mức độ hài lòng nhân viên sau triển khai ERP</td>
+<td>ROI Calculation, Performance Measurement</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vi-du-thuc-te-case-study">🌍 Ví dụ thực tế &amp; Case Study<a class="headerlink" href="#vi-du-thuc-te-case-study" title="Permanent link">&para;</a></h2>
+<h3 id="case-study-1-erp-balanced-scorecard-rosemann-va-wiese">Case Study 1: ERP Balanced Scorecard — Rosemann và Wiese<a class="headerlink" href="#case-study-1-erp-balanced-scorecard-rosemann-va-wiese" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Triển khai ERP là một trong những dự án IT phức tạp và tốn kém nhất. Hầu hết tổ chức chỉ theo dõi tài chính và quy trình kinh doanh.</p>
+<p><strong>Vấn đề:</strong> Thiếu góc nhìn toàn diện dẫn đến bỏ qua các rủi ro quan trọng về khách hàng, đổi mới, và học hỏi trong suốt vòng đời ERP.</p>
+<p><strong>Giải pháp:</strong> Rosemann và Wiese thêm một góc nhìn thứ 5 — <strong>Project Perspective</strong> — vào Balanced Scorecard chuẩn. Kết quả: ERP Scorecard gồm 5 góc nhìn: Financial (Total Cost of Ownership), Project (Critical path, milestones), Internal Processes (Processing time trước/sau ERP), Customer (Linkage of customers to business processes), Innovation &amp; Learning (Alternative process paths, qualification index of developers).</p>
+<p><strong>Kết quả:</strong> Mối quan hệ nhân quả rõ ràng: "Customer satisfaction" ảnh hưởng đến TCO, total project time, fit với ERP solution, và user suggestions cùng một lúc — cho phép phát hiện vấn đề sớm hơn.</p>
+<p><strong>Bài học:</strong> Không có one-size-fits-all scorecard — cần điều chỉnh theo loại dự án và bối cảnh tổ chức.</p>
+<hr />
+<h3 id="case-study-2-new-york-stock-exchange-nguy-co-cua-benchmarking-theo-phong-trao">Case Study 2: New York Stock Exchange — Nguy cơ của benchmarking theo phong trào<a class="headerlink" href="#case-study-2-new-york-stock-exchange-nguy-co-cua-benchmarking-theo-phong-trao" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Tác giả chia sẻ kinh nghiệm khi làm việc tại NYSE. Chủ tịch thường xuyên yêu cầu đội ngũ làm theo "xu hướng quản lý mới nhất" từ Motorola, GE, Facebook, Google.</p>
+<p><strong>Vấn đề:</strong> Mỗi tổ chức có bối cảnh khác nhau. Áp dụng benchmark của Motorola hay GE vào NYSE mà không hiểu rõ môi trường kinh doanh cụ thể dẫn đến các chỉ số vô nghĩa hoặc gây hại.</p>
+<p><strong>Giải pháp (đúng):</strong> Trước khi benchmark, cần thực sự điều tra và hiểu rõ: (a) môi trường kinh doanh hiện tại, (b) tác động của các quy trình kinh doanh cụ thể đến hiệu suất tổng thể, (c) lý do tại sao các công ty hàng đầu kia thành công với metrics đó.</p>
+<p><strong>Bài học:</strong> Benchmarking là issue-specific — context matters. Chọn sai đối tượng benchmark hoặc áp dụng metric không phù hợp với bối cảnh sẽ lãng phí nguồn lực và gây nhầm lẫn chiến lược.</p>
+<hr />
+<h3 id="case-study-3-roi-phan-tich-cho-he-thong-it-ung-dung-thuc-te-tai-viet-nam">Case Study 3: ROI phân tích cho hệ thống IT — Ứng dụng thực tế tại Việt Nam (🇻🇳)<a class="headerlink" href="#case-study-3-roi-phan-tich-cho-he-thong-it-ung-dung-thuc-te-tai-viet-nam" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Một ngân hàng Việt Nam muốn thay thế hệ thống xử lý khoản vay cũ bằng hệ thống mới hoặc thuê ngoài.</p>
+<p><strong>Vấn đề:</strong> Có 3 lựa chọn: viết lại từ đầu, sửa đổi hệ thống hiện tại, hoặc outsource. Mỗi lựa chọn có chi phí và lợi ích khác nhau — cả tangible (thời gian xử lý, số lỗi) và intangible (sự hài lòng khách hàng, compliance).</p>
+<p><strong>Giải pháp:</strong> Áp dụng 4 loại ROI worksheets: (1) Initial Benefits (tiết kiệm giờ học hệ thống, giảm giám sát), (2) Continuing Benefits (giảm giờ làm thêm, giảm lỗi), (3) Quality Benefits (ít giao dịch bị từ chối hơn), (4) Other Benefits (giảm nghỉ việc, tăng morale). Dùng EVM để theo dõi thực tế vs. kế hoạch trong suốt triển khai.</p>
+<p><strong>Kết quả kỳ vọng:</strong> Break-even point có thể tính chính xác cho từng lựa chọn — ban quản lý chọn phương án có break-even ngắn nhất.</p>
+<p><strong>Bài học 🇻🇳:</strong> Các ngân hàng và công ty fintech Việt Nam thường quyết định đầu tư IT dựa trên "cảm tính" hoặc so sánh giá ban đầu. Áp dụng ROI + NPV + EVM tạo ra ngôn ngữ chung giữa IT và Finance — tăng khả năng được phê duyệt ngân sách IT chiến lược.</p>
+<hr />
+<h2 id="so-o-bang-tong-hop">📊 Sơ đồ &amp; Bảng tổng hợp<a class="headerlink" href="#so-o-bang-tong-hop" title="Permanent link">&para;</a></h2>
+<h3 id="bang-1-it-service-provider-vs-strategic-partner">Bảng 1: IT Service Provider vs. Strategic Partner<a class="headerlink" href="#bang-1-it-service-provider-vs-strategic-partner" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chiều</th>
+<th>Service Provider</th>
+<th>Strategic Partner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mục đích IT</td>
+<td>Hiệu quả vận hành</td>
+<td>Tăng trưởng kinh doanh</td>
+</tr>
+<tr>
+<td>Ngân sách IT</td>
+<td>Dựa trên benchmark bên ngoài</td>
+<td>Dựa trên chiến lược kinh doanh</td>
+</tr>
+<tr>
+<td>Mối quan hệ</td>
+<td>IT có thể tách rời khỏi kinh doanh</td>
+<td>IT không thể tách rời khỏi kinh doanh</td>
+</tr>
+<tr>
+<td>Nhìn nhận chi tiêu</td>
+<td>Chi phí cần kiểm soát</td>
+<td>Đầu tư cần quản lý</td>
+</tr>
+<tr>
+<td>Vai trò IT Manager</td>
+<td>Chuyên gia kỹ thuật</td>
+<td>Người giải quyết vấn đề kinh doanh</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bang-2-cac-ky-thuat-tinh-roi">Bảng 2: Các kỹ thuật tính ROI<a class="headerlink" href="#bang-2-cac-ky-thuat-tinh-roi" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Kỹ thuật</th>
+<th>Phạm vi</th>
+<th>Ưu điểm</th>
+<th>Nhược điểm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simple ROI</td>
+<td>Một dự án, ngắn hạn</td>
+<td>Dễ tính, trực quan</td>
+<td>Bỏ qua time value of money</td>
+</tr>
+<tr>
+<td>NPV</td>
+<td>Nhiều năm</td>
+<td>Tính đến giá trị thời gian của tiền</td>
+<td>Cần ước tính discount rate chính xác</td>
+</tr>
+<tr>
+<td>IRR</td>
+<td>So sánh nhiều dự án</td>
+<td>Hữu ích khi ngân sách hạn chế</td>
+<td>Không cung cấp tiêu chí quyết định rõ ràng</td>
+</tr>
+<tr>
+<td>EVM (CPI)</td>
+<td>Dự án đang chạy</td>
+<td>Cảnh báo sớm khi vừa 20% hoàn thành</td>
+<td>Chủ yếu dùng cho dự án chính phủ</td>
+</tr>
+<tr>
+<td>TCO</td>
+<td>Chi phí toàn vòng đời</td>
+<td>Bộc lộ chi phí ẩn (support, maintenance)</td>
+<td>Phức tạp, cần dữ liệu dài hạn</td>
+</tr>
+</tbody>
+</table>
+<h3 id="so-o-ahp-global-outcome-worksheet-vi-du-rut-gon">Sơ đồ: AHP Global Outcome Worksheet (ví dụ rút gọn)<a class="headerlink" href="#so-o-ahp-global-outcome-worksheet-vi-du-rut-gon" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Mục tiêu chiến lược: Differentiation Strategy
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Category Weights:         Local Weight × Category = Global Weight
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Innovation &amp; Learning     Market Share: 0.40 × 0.32 = 0.128  ← cao nhất
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>(0.32)                    New Products: 0.35 × 0.32 = 0.112
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>Financial (0.22)          Cash Flow ROI: 0.40 × 0.22 = 0.088
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                          Residual Income: 0.32 × 0.22 = 0.070
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>Customer (0.21)           QFD Score: 0.42 × 0.21 = 0.088
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                          Revenue: 0.20 × 0.21 = 0.042  ← thấp nhất
+</span></code></pre></div>
+<hr />
+<h2 id="cau-hoi-on-tap">❓ Câu hỏi ôn tập<a class="headerlink" href="#cau-hoi-on-tap" title="Permanent link">&para;</a></h2>
+<p><strong>Câu 1 (Nhớ lại):</strong> Kể 5 trong số 10 tiêu chí của một metric hiệu quả và giải thích ngắn gọn từng tiêu chí.</p>
+<p>💡 <em>Gợi ý: Metric tốt phải đo đúng thứ, đo được, hữu ích, rẻ để thu thập, và có thể so sánh.</em></p>
+<p>📝 <em>Đáp án:</em> Năm tiêu chí tiêu biểu: (1) <strong>Results-oriented</strong> — tập trung vào kết quả mong muốn, không chỉ đầu ra; (2) <strong>Reliable</strong> — thông tin chính xác, nhất quán theo thời gian; (3) <strong>Cost-effective</strong> — giá trị của metric đủ để biện minh cho chi phí thu thập dữ liệu; (4) <strong>Comparable</strong> — có thể dùng để benchmark với tổ chức khác, cả nội bộ và bên ngoài; (5) <strong>Credible</strong> — người dùng tin tưởng vào tính hợp lệ của dữ liệu. Thiếu bất kỳ tiêu chí nào, metric có thể dẫn đến quyết định sai hoặc bị từ chối bởi người dùng.</p>
+<hr />
+<p><strong>Câu 2 (Nhớ lại):</strong> Phân biệt Hard Data và Soft Data trong phân tích ROI. Cho 2 ví dụ mỗi loại.</p>
+<p>💡 <em>Gợi ý: Hard data có thể đếm và quy ra tiền trực tiếp; soft data liên quan đến con người và tâm lý.</em></p>
+<p>📝 <em>Đáp án:</em> <strong>Hard data</strong> là dữ liệu định lượng trực tiếp, dễ thu thập và quy đổi thành giá trị tiền tệ. Ví dụ: số đơn vị sản phẩm lắp ráp/giờ, thời gian hoàn thành dự án so với kế hoạch. <strong>Soft data</strong> là dữ liệu liên quan đến hành vi, thái độ, và tâm lý — khó đo và khó quy đổi thành tiền. Ví dụ: mức độ hài lòng nhân viên (employee satisfaction score), tần suất vắng mặt (absenteeism). Một ROI đầy đủ cần kết hợp cả hai: hard data cung cấp bằng chứng tài chính, soft data phản ánh sức khỏe tổ chức dài hạn. Bỏ qua soft data có thể dẫn đến đầu tư IT "thành công trên giấy" nhưng thất bại về mặt con người.</p>
+<hr />
+<p><strong>Câu 3 (Hiểu):</strong> Tại sao IT cần định vị mình là "Strategic Partner" thay vì "Service Provider"? Điều này ảnh hưởng như thế nào đến cách thiết kế IT Scorecard?</p>
+<p>💡 <em>Gợi ý: So sánh cách ngân sách được quyết định và cách IT managers được nhìn nhận trong hai vai trò.</em></p>
+<p>📝 <em>Đáp án:</em> Khi IT là Service Provider, ngân sách bị giới hạn bởi benchmark bên ngoài, IT bị coi là chi phí cần cắt giảm, và IT managers chỉ là chuyên gia kỹ thuật — không có tiếng nói trong chiến lược kinh doanh. Khi IT là Strategic Partner, ngân sách được dẫn dắt bởi chiến lược kinh doanh, IT được coi là đầu tư sinh lời, và IT managers là người giải quyết vấn đề kinh doanh ngồi cùng bàn với C-suite. Ảnh hưởng đến IT Scorecard: thay vì 4 góc nhìn truyền thống (Financial, Customer, Internal Process, Learning/Growth), IT Scorecard điều chỉnh thành: User Orientation (end-user view), Business Value (management view), Internal Processes (operations view), và Future Readiness (innovation view) — tất cả đều nhấn mạnh đóng góp cho kinh doanh, không chỉ vận hành kỹ thuật.</p>
+<hr />
+<p><strong>Câu 4 (Hiểu):</strong> Giải thích Earned Value Management (EVM) và tại sao CPI là chỉ số quan trọng. Nếu CPI = 0.75 khi dự án hoàn thành 25%, điều đó có nghĩa gì và CIO nên làm gì?</p>
+<p>💡 <em>Gợi ý: CPI đo "giá trị kiếm được" so với "tiền đã chi" — CPI &lt; 1 là dấu hiệu xấu.</em></p>
+<p>📝 <em>Đáp án:</em> EVM đo hiệu suất dự án bằng cách so sánh giá trị công việc thực sự hoàn thành ("earned value") với chi phí thực tế đã bỏ ra. CPI = Earned Value / Actual Cost — nếu CPI &lt; 1, bạn đang chi nhiều hơn giá trị tạo ra. Nếu CPI = 0.75 khi dự án hoàn thành 25%, điều này có nghĩa: với mỗi $1 chi ra, chỉ tạo ra $0.75 giá trị. Nếu ngân sách ban đầu là $2M, tổng chi phí thực tế dự kiến = $2M / 0.75 = ~$2.67M — vượt $670K. Đây là cảnh báo sớm có giá trị: CIO còn thời gian điều chỉnh (cắt giảm scope, tối ưu resources, hoặc đàm phán lại deadline) thay vì phát hiện quá muộn khi dự án 90% hoàn thành.</p>
+<hr />
+<p><strong>Câu 5 (Áp dụng):</strong> Một công ty FMCG Việt Nam muốn đánh giá đầu tư vào hệ thống WMS (Warehouse Management System) trị giá $300K. Hệ thống được kỳ vọng giảm 30% lỗi xuất hàng và 15% thời gian làm thêm. Thiết kế framework ROI cơ bản cho dự án này.</p>
+<p>💡 <em>Gợi ý: Phân loại lợi ích thành Initial (ban đầu) và Continuing (liên tục), bao gồm cả tangible và intangible.</em></p>
+<p>📝 <em>Đáp án:</em> <strong>Costs:</strong> $300K triển khai + ước tính $30K/năm maintenance = TCO. <strong>Initial Benefits</strong> (6 tháng đầu): giảm thời gian đào tạo nhân viên kho (ước tính $20K), giảm giám sát cần thiết ($10K). <strong>Continuing Benefits</strong> (hàng năm): tiết kiệm từ giảm 30% lỗi xuất hàng (tính: số lỗi/tháng × chi phí xử lý lỗi × 12), tiết kiệm từ giảm 15% overtime ($X/giờ × giờ OT giảm × 52 tuần). <strong>Quality Benefits:</strong> giảm hàng trả về và chi phí xử lý khiếu nại. <strong>Soft Benefits (intangible):</strong> tăng uy tín với retailers (khó quy thành tiền nhưng quan trọng). <strong>Break-even:</strong> ROI = (tổng lợi ích − $300K) / $300K. Nếu tổng lợi ích năm 1 = $180K, tiết kiệm liên tục = $200K/năm → break-even tại tháng 18–20. Dùng NPV để điều chỉnh cho 3 năm tiếp theo với discount rate 10%.</p>
+<hr />
+<h2 id="ghi-nho-nhanh">💡 Ghi nhớ nhanh<a class="headerlink" href="#ghi-nho-nhanh" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ Mọi thứ đều có thể đo lường nếu có đủ động lực và sáng tạo — lý do "không thể đo" thường là lý do tránh trách nhiệm</li>
+<li>✅ AHP biến quá trình chọn metrics từ "cảm tính" thành "khoa học" — minh bạch, nhất quán, và có sự tham gia của nhiều bên</li>
+<li>✅ CPI trong EVM là "đèn cảnh báo sớm" — giá trị nhất khi dự án còn 20–25% hoàn thành</li>
+<li>✅ IT phải trở thành Strategic Partner để có tiếng nói trong chiến lược — ngôn ngữ chung là business value, không phải technical specs</li>
+<li>⚠️ Benchmark metrics của Motorola/GE không tự động phù hợp với công ty của bạn — context and industry matter</li>
+<li>⚠️ ROI chỉ dựa trên hard data bỏ qua morale, turnover, loyalty — những thứ thường quyết định thành bại dài hạn</li>
+<li>🔗 Chương tiếp theo (Chapter 4) đi sâu vào việc <strong>xây dựng chương trình đo lường phần mềm</strong> — áp dụng GQM paradigm và SEI CMM để thiết lập metrics gắn với mục tiêu tổ chức</li>
+</ul>
+<hr />
+<h2 id="giai-thich-thuat-ngu-chuyen-nganh">📖 Giải thích thuật ngữ chuyên ngành<a class="headerlink" href="#giai-thich-thuat-ngu-chuyen-nganh" title="Permanent link">&para;</a></h2>
+<p><strong>Analytic Hierarchy Process (AHP)</strong> — Quy trình phân tích thứ bậc<br />
+Framework logic sử dụng so sánh cặp đôi (pairwise comparisons) theo thang 1–9 để tính trọng số tương đối của các lựa chọn trong một quyết định phức tạp.<br />
+<em>Ví dụ:</em> Nhóm quản lý dùng AHP để quyết định metrics nào quan trọng nhất trong Balanced Scorecard của công ty — kết quả là trọng số toàn cục (global weight) cho mỗi metric.<br />
+<em>Tại sao quan trọng:</em> Ngăn chặn việc loại bỏ metrics quan trọng quá sớm và đảm bảo sự đồng thuận có căn cứ khoa học trong nhóm.</p>
+<hr />
+<p><strong>Performance Gap</strong> — Khoảng cách hiệu suất<br />
+Sự chênh lệch giữa hiệu suất hiện tại (where you are) và hiệu suất mong muốn (where you want to be), được phân loại theo nguyên nhân: người, quy trình, công nghệ, hoặc văn hóa.<br />
+<em>Ví dụ:</em> Thời gian phát triển ứng dụng hiện tại là 6 tháng, mục tiêu là 3 tháng → gap 3 tháng do thiếu automation và quy trình CI/CD (technology &amp; process gap).<br />
+<em>Tại sao quan trọng:</em> Không xác định đúng nguyên nhân gap dẫn đến action plan sai — đầu tư vào training khi vấn đề thực sự là quy trình.</p>
+<hr />
+<p><strong>Earned Value Management (EVM)</strong> — Quản lý giá trị kiếm được<br />
+Phương pháp đo lường hiệu suất dự án bằng cách so sánh giá trị công việc thực sự hoàn thành với chi phí thực tế và kế hoạch ban đầu. Chỉ số chính: CPI = Earned Value / Actual Cost.<br />
+<em>Ví dụ:</em> Dự án ngân sách $1B, CPI = 0.8 khi hoàn thành 20% → dự báo tổng chi phí = $1.25B. Microsoft Project hỗ trợ tính EVM.<br />
+<em>Tại sao quan trọng:</em> Phát hiện vấn đề chi phí khi còn 80% dự án còn lại để điều chỉnh — thay vì phát hiện khi đã quá muộn.</p>
+<hr />
+<p><strong>Total Cost of Ownership (TCO)</strong> — Tổng chi phí sở hữu<br />
+Chi phí đầy đủ của một hệ thống IT bao gồm không chỉ chi phí mua ban đầu mà còn cả chi phí hỗ trợ, bảo trì, đào tạo, và vận hành trong suốt vòng đời.<br />
+<em>Ví dụ:</em> Một máy chủ giá $10K nhưng TCO trong 5 năm = $35K khi tính thêm điện, hỗ trợ kỹ thuật, bảo trì, và chi phí downtime.<br />
+<em>Tại sao quan trọng:</em> Quyết định IT dựa trên giá mua ban đầu thường bị "sốc" vì chi phí ẩn — TCO cho bức tranh thực sự.</p>
+<hr />
+<p><strong>Benefit-Cost Ratio (BCR)</strong> — Tỷ lệ lợi ích trên chi phí<br />
+BCR = Benefits / Costs. Nếu BCR &gt; 1, dự án tạo ra nhiều lợi ích hơn chi phí và được chấp nhận; nếu BCR &lt; 1, chi phí vượt lợi ích.<br />
+<em>Ví dụ:</em> Hệ thống CRM $200K mang lại $350K lợi ích (giảm churning + tăng cross-sell) → BCR = 1.75 → nên đầu tư.<br />
+<em>Tại sao quan trọng:</em> Đơn giản hơn ROI để so sánh nhiều dự án cùng lúc trong portfolio management.</p>
+<hr />
+<p><strong>Net Present Value (NPV)</strong> — Giá trị hiện tại ròng<br />
+Tổng giá trị hiện tại của tất cả dòng tiền tương lai (lợi ích trừ chi phí) được chiết khấu về thời điểm hiện tại bằng một tỷ lệ chiết khấu phù hợp. NPV &gt; 0 = dự án khả thi.<br />
+<em>Ví dụ:</em> $1 nhận được sau 3 năm chỉ có giá trị hiện tại ~$0.75 nếu discount rate 10%/năm. NPV tính tổng hợp tất cả các năm.<br />
+<em>Tại sao quan trọng:</em> Bắt buộc khi đầu tư IT kéo dài nhiều năm — simple ROI bỏ qua fact rằng tiền hôm nay có giá trị hơn tiền ngày mai.</p>
+<hr />
+<p><strong>ERP Balanced Scorecard</strong> — Thẻ điểm cân bằng cho ERP<br />
+Phiên bản Balanced Scorecard được mở rộng bởi Rosemann và Wiese để đánh giá cả quá trình triển khai ERP (thêm Project Perspective) lẫn vận hành liên tục sau triển khai.<br />
+<em>Ví dụ:</em> Trong quá trình triển khai: số lỗi nhập liệu, thời gian xử lý đơn hàng trước/sau ERP, số giờ đào tạo người dùng. Sau triển khai: average system uptime, tỷ lệ giao dịch không hoàn thành đúng lịch.<br />
+<em>Tại sao quan trọng:</em> ERP là khoản đầu tư lớn nhất của nhiều doanh nghiệp — đo lường sai hoặc thiếu dẫn đến không phát hiện được ROI thực sự.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>pdf_md/managing-it-performance-to-create-business-value/guide_ai/06_chapter-3-designing-metrics_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../005-chapter-2-designing-performance-management-and-measurement-systems-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Quản Lý và Đo Lường Hiệu Suất">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Hướng Dẫn Học Tập: Thiết Kế Hệ Thống Quản Lý và Đo Lường Hiệu Suất
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../007-chapter-4-establishing-a-software-measurement-program-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Hướng Dẫn Học Tập: Thiết Lập Chương Trình Đo Lường Phần Mềm
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

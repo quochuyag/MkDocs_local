@@ -1,0 +1,2320 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../module-14/module-14-guide/">
+      
+      
+        <link rel="next" href="../../module-16/module-16-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📘 Module 15: Nhân bản Cơ sở dữ liệu bằng RMAN (Duplicating a Database) - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-15-nhan-ban-co-so-du-lieu-bang-rman-duplicating-a-database" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📘 Module 15: Nhân bản Cơ sở dữ liệu bằng RMAN (Duplicating a Database)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            02. Backup & Recovery voi RMAN
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../module2-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 2: Nền tảng Backup & Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview-sample-answers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🎤 Câu Trả Lời Mẫu Chi Tiết — 5 Tình Huống Trọng Điểm
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview-scenarios-dba/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🎯 10 Tình Huống Phỏng Vấn Oracle DBA — Phân tích theo JD
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-01/module-01-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 01
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-02/module-02-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 02
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-03/module-03-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 03
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-04/module-04-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 04
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-05/module-05-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 05
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-06/module-06-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 06
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-07/module-07-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 07
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-08/module-08-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 08
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-09/module-09-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 09
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-10/module-10-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 10
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-11/module-11-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 11
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-12/module-12-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 12
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-13/module-13-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 13
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-14/module-14-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 14
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_17" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_17" id="__nav_3_3_17_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Module 15
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_17_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3_17">
+            <span class="md-nav__icon md-icon"></span>
+            Module 15
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📘 Module 15: Nhân bản Cơ sở dữ liệu bằng RMAN (Duplicating a Database)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 15: Nhân bản Cơ sở dữ liệu bằng RMAN (Duplicating a Database)
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-16/module-16-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 16
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-17/module-17-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 17
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tiến độ học Oracle RMAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tong-hop-17-modules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tổng hợp 17 Modules — Oracle RMAN Backup & Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../reviews-all/2026-20260418-firedrill-storagecrash/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Reviews all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../tools/setup-gdrive/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Tools
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="module-15-nhan-ban-co-so-du-lieu-bang-rman-duplicating-a-database">📘 Module 15: Nhân bản Cơ sở dữ liệu bằng RMAN (Duplicating a Database)<a class="headerlink" href="#module-15-nhan-ban-co-so-du-lieu-bang-rman-duplicating-a-database" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Module</strong>: 15/17
+<strong>Phạm vi</strong>: Bài 61 đến 63 (Lý thuyết Part I, Part II &amp; Practice 21)
+<strong>Giảng viên</strong>: Ahmed Baraka
+<strong>Thời gian học ước tính</strong>: 2.5 - 3 giờ
+<strong>Nguồn PDF</strong>: <code>pdf_extracted/module_15/</code></p>
+</blockquote>
+<hr />
+<h2 id="muc-luc">📑 Mục lục<a class="headerlink" href="#muc-luc" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#-kiến-trúc--tiền-điều-kiện-để-nhân-bản-db">Kiến trúc &amp; Tiền điều kiện để Nhân bản DB</a></li>
+<li><a href="#-phương-pháp-1-active-database-duplication-nhân-bản-trực-tiếp">Phương pháp 1: Active Database Duplication (Nhân bản Trực tiếp)</a></li>
+<li><a href="#-phương-pháp-2-backup-based-duplication-nhân-bản-qua-file-backup">Phương pháp 2: Backup-Based Duplication (Nhân bản qua File Backup)</a></li>
+<li><a href="#-thực-hành-practice-21-bốn-cách-clone-db-trên-cùng-server">Thực hành Practice 21: Bốn cách Clone DB trên cùng Server l</a></li>
+<li><a href="#-câu-hỏi-ôn-tập-module-15">Câu hỏi ôn tập Module 15</a></li>
+</ul>
+<hr />
+<h1 id="kien-truc-tien-ieu-kien-e-nhan-ban-db">📖 Kiến trúc &amp; Tiền điều kiện để Nhân bản DB<a class="headerlink" href="#kien-truc-tien-ieu-kien-e-nhan-ban-db" title="Permanent link">&para;</a></h1>
+<p>Trong đời sống DBA, việc tạo ra một bản Copy (Clone) của hệ thống Production để làm môi trường Dev/Test/UAT là công việc lặp đi lặp lại hàng tuần. RMAN cung cấp lệnh <code>DUPLICATE</code> để nhân bản một cách hoàn hảo và an toàn toàn bộ kiến trúc DB.</p>
+<h3 id="1-kien-truc-duplication-auxiliary-instance">1. Kiến trúc Duplication (Auxiliary Instance)<a class="headerlink" href="#1-kien-truc-duplication-auxiliary-instance" title="Permanent link">&para;</a></h3>
+<p>Oracle định nghĩa khái niệm <strong>Auxiliary Instance (Instance phụ/nháp)</strong>. Chu trình RMAN làm việc như sau:
+1. DBA dựng sẵn cấu trúc thư mục rỗng và một tệp <code>init.ora</code> siêu cơ bản cho DB nháp.
+2. Khởi động DB nháp ở chế độ <code>NOMOUNT</code>.
+3. RMAN kết nối vào DB Nháp với quyền <code>AUXILIARY</code>. Tự động cấp channel và bơm data thẳng từ Database Gốc (Source) hoặc từ File Backup vào DB nháp.
+4. RMAN tự động Recovery (nếu Copy lúc Prod đang bật) -&gt; RMAN tự đổi <code>DBID</code> -&gt; RMAN tự động <code>OPEN RESETLOGS</code>.</p>
+<h3 id="2-tien-ieu-kien-quan-trong">2. Tiền điều kiện quan trọng:<a class="headerlink" href="#2-tien-ieu-kien-quan-trong" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Source và Auxiliary Database bắt buộc phải <strong>CHUNG NỀN TẢNG (Platform)</strong>. (Cùng Windows, hoặc cùng Linux). <em>Lưu ý: Nếu khác nền tảng, mời quay lại dùng chiêu Vận tải Cross-Platform ở Module 14!</em></li>
+<li>Nếu nhân bản sang máy chủ khác, Auxiliary DB phải được khai báo cứng (Statically registered) trong file <code>listener.ora</code>.</li>
+</ul>
+<hr />
+<h1 id="phuong-phap-1-active-database-duplication-nhan-ban-truc-tiep">📖 Phương pháp 1: Active Database Duplication (Nhân bản Trực tiếp)<a class="headerlink" href="#phuong-phap-1-active-database-duplication-nhan-ban-truc-tiep" title="Permanent link">&para;</a></h1>
+<p>Không cần qua trung gian File Backup nào! RMAN sẽ mở đường hầm mạng kết nối Database Đích và Database Nguồn, bơm Datafiles thẳng thông qua Network.
+- <strong>Có 2 cơ chế bắn:</strong>
+  - <strong>Dùng Image Copies (Push):</strong> Các kênh Target Chanel của máy Gốc sẽ đọc và bơm sang máy Đích.
+  - <strong>Dùng Backupsets (Pull):</strong> Khuyên dùng! RMAN cấp Auxiliary Chanel ở máy Đích tự kéo dữ liệu, cho phép nén trực tiếp ngay trên đường truyền <code>USING COMPRESSED BACKUPSET</code> giúp tiết kiệm băng thông mạng công ty.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">CONNECT</span><span class="w"> </span><span class="n">TARGET</span><span class="w"> </span><span class="n">sys</span><span class="o">@</span><span class="n">oradb_prod</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">CONNECT</span><span class="w"> </span><span class="n">AUXILIARY</span><span class="w"> </span><span class="n">sys</span><span class="o">@</span><span class="n">oradb_dev</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">RUN</span><span class="w"> </span><span class="err">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="n">DUPLICATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">oradb_dev</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">ACTIVE</span><span class="w"> </span><span class="k">DATABASE</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="n">PASSWORD</span><span class="w"> </span><span class="n">FILE</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="n">SPFILE</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="k">SET</span><span class="w"> </span><span class="n">DB_CREATE_FILE_DEST</span><span class="o">=</span><span class="s1">'/oracle/oradata/dev'</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="err">}</span>
+</span></code></pre></div>
+<hr />
+<h1 id="phuong-phap-2-backup-based-duplication-nhan-ban-qua-file-backup">📖 Phương pháp 2: Backup-Based Duplication (Nhân bản qua File Backup)<a class="headerlink" href="#phuong-phap-2-backup-based-duplication-nhan-ban-qua-file-backup" title="Permanent link">&para;</a></h1>
+<p>Nếu băng thông mạng giữa Data Center A và Data Center B rất dở, việc nhân bản trực tiếp bằng mạng sẽ khiến Production bị giật lag. Phương pháp Backup-based là dùng ổ cứng chứa file Backup có sẵn để dựng lại.</p>
+<p>Có 3 nhánh nhỏ:
+1. <strong>Có kết nối tới Target DB (<code>TARGET</code> + <code>AUXILIARY</code>):</strong> RMAN xem Control File ở Prod DB để biết lôi File Backup nào ra xài.
+2. <strong>Không có Target, nhưng có Recovery Catalog (<code>CATALOG</code> + <code>AUXILIARY</code>):</strong> DB gốc đã bị cháy/hoặc không cho phép ping tới. RMAN đọc Catalog để dò đường dẫn lấy file Backup.
+3. <strong>Mù thông tin hoàn toàn (Chỉ có <code>AUXILIARY</code>):</strong> Bạn vác cái ổ cứng chứa file Backup chép ra thư mục <code>C:\backup</code>. Khi gõ lệnh Duplicate phải tự chỉ định ngõ vào <code>BACKUP LOCATION</code>.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- Kịch bản Mù thông tin hoàn toàn:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">CONNECT</span><span class="w"> </span><span class="n">AUXILIARY</span><span class="w"> </span><span class="o">/</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">RUN</span><span class="w"> </span><span class="err">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="n">DUPLICATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">oradb_dev</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="n">SPFILE</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="n">BACKUP</span><span class="w"> </span><span class="k">LOCATION</span><span class="w"> </span><span class="s1">'/tmp/db_files'</span><span class="p">;</span><span class="w"> </span><span class="c1">-- Tự Oracle vô lục lọi Backup trong này</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="err">}</span>
+</span></code></pre></div>
+<hr />
+<h1 id="thuc-hanh-practice-21-bon-cach-clone-db-tren-cung-server">🎯 Thực hành Practice 21: Bốn cách Clone DB trên cùng Server<a class="headerlink" href="#thuc-hanh-practice-21-bon-cach-clone-db-tren-cung-server" title="Permanent link">&para;</a></h1>
+<p>Bài Lab cực kỳ chi tiết! Bạn sẽ nhân bản <code>ORADB</code> tạo ra DB mới mang tên <code>ORADB2</code> ngay trên cùng 1 server ảo (srv1 của Linux).</p>
+<p><strong>Công việc chuẩn bị máy Nháp (Auxiliary):</strong>
+1. <code>mkdir /.../ORADB2</code> chuẩn bị ổ đĩa.
+2. Ghi mỗi 1 dòng <code>DB_NAME='ORADB2'</code> vào file <code>initORADB2.ora</code>.
+3. Sửa <code>tnsnames.ora</code> và <code>listener.ora</code> khai báo cấu hình.
+4. Copy file password: <code>cp orapwORADB orapwORADB2</code>.
+5. Đăng nhập SQL*Plus <code>STARTUP NOMOUNT</code>. (Phải gõ <code>export ORACLE_SID=ORADB2</code>).</p>
+<p><strong>Sau đó RMAN sẽ "gõ cửa" test 4 kiểu Nhân bản theo thứ tự sau:</strong>
+- <strong>Thử nghiệm 1:</strong> <code>FROM ACTIVE DATABASE</code>. Target DB đang chạy song song, RMAN bắn Data ngay tại chỗ tạo ra Dev DB. Check lại <code>SELECT COUNT(*)</code> thấy khớp.
+- <strong>Thử nghiệm 2:</strong> <code>DUPLICATE</code> thông thường từ Backup, Target vẫn nối dây. (Đơn giản bỏ tham số <code>ACTIVE</code>).
+- <strong>Thử nghiệm 3:</strong> Tắt Target. Chỉ để Catalog và Auxiliary mở. Nhân bản thành công.
+- <strong>Thử nghiệm 4:</strong> Tắt Target, tắt Catalog. Chỉ dùng Auxiliary. Khai báo <code>BACKUP LOCATION '/media/sf_extdisk/backup'</code>. Nhấn Enter, Database vẫn được tạo mới nguyên vẹn. Thật kỳ diệu!</p>
+<hr />
+<h1 id="cau-hoi-on-tap-module-15">🎯 Câu hỏi ôn tập Module 15<a class="headerlink" href="#cau-hoi-on-tap-module-15" title="Permanent link">&para;</a></h1>
+<p><strong>1. Trong kịch bản nhân bản vào MỘT CÙNG MỘT Server (Duplicate to Same Host), nếu Quên tham số <code>DB_FILE_NAME_CONVERT</code> thì hậu quả là gì?</strong></p>
+<details>
+<summary>💡 Đáp án</summary>
+Tai họa! RMAN sẽ ném đường dẫn mặc định từ Control File sang, điều này làm cho Auxiliary Instance đi TƯỚC đoạt và Ghi ĐÈ (Overwrite) trực tiếp lên Datafiles của Production Database đang chạy, làm hỏng hoặc xóa sạch Datafiles thật. Always map kĩ parameter đổi tên cấu trúc thư mục!
+</details>
+
+<p><strong>2. Để tăng tốc độ Duplicate khi dùng <code>FROM ACTIVE DATABASE</code> vì Data quá lớn (5TB), mạng lại yếu, thì DBA dùng cụm từ gì trong Run Block?</strong></p>
+<details>
+<summary>💡 Đáp án</summary>
+Dùng cụm từ `USING COMPRESSED BACKUPSET`. Thuật toán này sẽ nén dữ liệu nóng trên nguồn (Push mode) hoặc đích (Pull mode) trước khi bay qua đường mạng, băng thông truyền tải có thể giảm tới 3-5 lần!
+</details>
+
+<p><strong>3. Clone DB xong thì DBID của bản DB Clone có giống bản Gốc không?</strong></p>
+<details>
+<summary>💡 Đáp án</summary>
+Không! Điểm khác biệt giữa `RESTORE` và `DUPLICATE` là: Duplicate luôn tự động reset một `DBID` hoàn toàn mới toanh. Do đó bản clone sống độc lập và bạn có thể an toàn Add/Register bản Clone này vào cái Recovery Catalog mà không lo bị trùng lặp ID với ông bố Production của nó.
+</details>
+
+<hr />
+<h2 id="bai-tiep-theo">➡️ Bài tiếp theo<a class="headerlink" href="#bai-tiep-theo" title="Permanent link">&para;</a></h2>
+<p><strong>Module 16: RMAN Performance Tuning &amp; Troubleshooting</strong>
+Sau khi đã giỏi Backup và Recovery, điều tiếp theo là trở thành chuyên gia tinh chỉnh (Tuning). Ở bài sau, bạn sẽ học cách chia Channel đa luồng, tuning tham số bộ nhớ Large Pool, MAXPIECESIZE để tối đa hoá thông lượng IO giúp Backup chạy với tốc độ tên lửa, và cách đọc Alert Log khắc phục lỗi hóc búa của RMAN.</p>
+<blockquote>
+<p><strong>Ghi chú về tên Module:</strong> Anh ơi, Course này Module 15 trong giáo trình PDF tên đúng là <strong>Duplicating a Database using RMAN</strong>, chứ không phải khoá học về "Oracle Flashback" như em đã lỡ dự báo ở bài trước ạ (Có lẽ Flashback được xếp ở giáo trình khoá nâng cao mất rồi). </p>
+<p>Đặc biệt lúc nãy hệ thống Windows của Sandbox bên em không có hỗ trợ chạy lệnh cài đặt Powershell CLI tool (<code>irm https://claude.ai/install.ps1 | iex</code>) nên tiến trình install không chạy được trong Terminal ảo, anh hãy mở Command Line trên máy tính cá nhân chạy thủ công nha! Mời anh xem qua bài Cẩm nang Nhân bản siêu cấp này xong thì báo em để bước tiếp vào <strong>Module 16</strong> nha! 🚀</p>
+</blockquote>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>Oracle-Database-Backup-and-Recovery-using-RMAN/modules/module_15/module_15_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../module-14/module-14-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📘 Module 14: Vận Tải Dữ Liệu Xuyên Nền Tảng (Cross-Platform Data Transportation)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 14: Vận Tải Dữ Liệu Xuyên Nền Tảng (Cross-Platform Data Transportation)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../module-16/module-16-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📘 Module 16: Tối ưu Hiệu năng &amp; Xử lý Sự cố RMAN (Performance Tuning &amp; Troubleshooting)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 16: Tối ưu Hiệu năng & Xử lý Sự cố RMAN (Performance Tuning & Troubleshooting)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

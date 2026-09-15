@@ -1,0 +1,2403 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../chapter13-notes/">
+      
+      
+        <link rel="next" href="../chapter15-notes/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Chapter 14 — Export-DbaInstance và snapshot cấu hình instance - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-14-export-dbainstance-va-snapshot-cau-hinh-instance" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            11. Book Lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Dbatools lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            Dbatools lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1_1" id="__nav_9_1_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Bookcode
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            Bookcode
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 02 — Setting up your PowerShell environment for dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 03 — Dựng lab dbatools: cài instance, restore DB, tạo login & job
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` & xem dịch vụ với `Get-DbaService`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter05-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 07 — Lập inventory host & instance (features, builds, OS, databases)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 08 — Central Management Server (CMS) & Registered Servers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter09-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 09 — Error log, logins và quản trị quyền
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 10 — Backup database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 11 — Restore database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 12 — Database snapshot (tạo, restore, xoá)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-export-toan-bo-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18 — Export toàn bộ instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-22-xem-folder-ket-qua" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 22 — Xem folder kết quả
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-28-29-xem-cac-tuy-chon-scripting-mac-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 28-29 — Xem các tuỳ chọn scripting mặc định
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-33-34-bat-includeifnotexists" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 33-34 — Bật IncludeIfNotExists
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-38-43-export-instance-loai-tru-mot-phan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 38-43 — Export instance loại trừ một phần
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-47-48-export-mot-agent-job-duy-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 47-48 — Export một Agent job duy nhất
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-53-55-xem-noi-dung-script-ngay-tai-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 53-55 — Xem nội dung script ngay tại console
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-59-60-copy-script-vao-clipboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 59-60 — Copy script vào clipboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-64-71-export-audit-kem-scripting-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 64-71 — Export audit kèm scripting option
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-76-81-export-server-audit-specification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 76-81 — Export Server Audit Specification
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-86-inspect-member-cua-agent-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 86 — Inspect member của Agent job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-91-inspect-member-cua-sp_configure-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 91 — Inspect member của sp_configure object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-96-100-export-sp_configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 96-100 — Export sp_configure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-104-109-import-sp_configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 104-109 — Import sp_configure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter16-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter17-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 17 — Log Shipping và High Availability cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter20-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 21 — Data masking, PII scan & dữ liệu giả lập (Data tooling)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 22 — DACPAC & schema deployment (Export/Publish DAC Package)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 23 — SQL Trace & Extended Events (XEvents)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 24 — Certificates, Network Encryption & Database Encryption
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter25-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 25 — Backup compression & Data compression (Compression & Storage)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter26-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 26 — dbachecks & Pester validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter27-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 27 — Cloud & Azure SQL với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter28-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 28 — `dbatools` configuration system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter29-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 29 — Thực hành tổng hợp (Bonus lab chapter)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learning-path-vi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lộ trình học dbatools-lab — Hướng dẫn bắt đầu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-export-toan-bo-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18 — Export toàn bộ instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-22-xem-folder-ket-qua" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 22 — Xem folder kết quả
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-28-29-xem-cac-tuy-chon-scripting-mac-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 28-29 — Xem các tuỳ chọn scripting mặc định
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-33-34-bat-includeifnotexists" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 33-34 — Bật IncludeIfNotExists
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-38-43-export-instance-loai-tru-mot-phan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 38-43 — Export instance loại trừ một phần
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-47-48-export-mot-agent-job-duy-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 47-48 — Export một Agent job duy nhất
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-53-55-xem-noi-dung-script-ngay-tai-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 53-55 — Xem nội dung script ngay tại console
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-59-60-copy-script-vao-clipboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 59-60 — Copy script vào clipboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-64-71-export-audit-kem-scripting-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 64-71 — Export audit kèm scripting option
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-76-81-export-server-audit-specification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 76-81 — Export Server Audit Specification
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-86-inspect-member-cua-agent-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 86 — Inspect member của Agent job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-91-inspect-member-cua-sp_configure-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 91 — Inspect member của sp_configure object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-96-100-export-sp_configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 96-100 — Export sp_configure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-104-109-import-sp_configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 104-109 — Import sp_configure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-14-export-dbainstance-va-snapshot-cau-hinh-instance">Chapter 14 — Export-DbaInstance và snapshot cấu hình instance<a class="headerlink" href="#chapter-14-export-dbainstance-va-snapshot-cau-hinh-instance" title="Permanent link">&para;</a></h1>
+<h2 id="muc-tieu">Mục tiêu<a class="headerlink" href="#muc-tieu" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Dùng <code>Export-DbaInstance</code> để xuất "toàn bộ" cấu hình một SQL instance ra script T-SQL có thể replay.</li>
+<li>Hiểu cấu trúc folder/file mà <code>Export-DbaInstance</code> tạo ra và biết loại trừ các thành phần không cần.</li>
+<li>Sử dụng <code>New-DbaScriptingOption</code> để kiểm soát cách dbatools script object (ví dụ thêm <code>IF NOT EXISTS</code>).</li>
+<li>Xuất từng phần (Agent job, stored proc, audit, audit spec) bằng <code>Export-DbaScript</code>.</li>
+<li>Xuất/import cấu hình <code>sp_configure</code> để đảm bảo instance đích có cùng setting với instance nguồn.</li>
+</ul>
+<h2 id="tom-tat-3-5-y-chinh">Tóm tắt 3-5 ý chính<a class="headerlink" href="#tom-tat-3-5-y-chinh" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong><code>Export-DbaInstance</code> là "Documentation as Code"</strong> — sinh ra một thư mục có timestamp, mỗi loại object (logins, jobs, audits, sp_configure...) một file <code>.sql</code>. Dùng làm baseline disaster recovery hoặc đầu vào cho Git.</li>
+<li><strong><code>Export-DbaScript</code> tổng quát hơn</strong> — nhận bất kỳ object dbatools nào qua pipeline (job, sproc, view, audit...) và xuất ra T-SQL.</li>
+<li><strong><code>New-DbaScriptingOption</code> điều khiển SMO ScriptingOptions</strong> — bật <code>IncludeIfNotExists</code>, <code>ScriptDrops</code>, <code>WithDependencies</code>... y hệt SSMS "Generate Scripts".</li>
+<li><strong><code>Export-DbaSpConfigure</code> và <code>Import-DbaSpConfigure</code></strong> — cặp lệnh đặc biệt để snapshot và áp lại cấu hình <code>sp_configure</code> (max memory, parallelism, ...).</li>
+<li><strong>Get-Member là người bạn</strong> — khi không biết object có scriptable hay không, <code>| Get-Member</code> cho thấy method <code>.Script()</code> hoặc property hữu ích.</li>
+</ol>
+<h2 id="giai-thich-tung-oan-code">Giải thích từng đoạn code<a class="headerlink" href="#giai-thich-tung-oan-code" title="Permanent link">&para;</a></h2>
+<h3 id="oan-1-dong-18-export-toan-bo-instance">Đoạn 1: dòng 18 — Export toàn bộ instance<a class="headerlink" href="#oan-1-dong-18-export-toan-bo-instance" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Export-DbaInstance</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="n">-Path</span> <span class="p">\\</span><span class="n">nas</span><span class="p">\</span><span class="n">backups</span><span class="p">\</span><span class="n">sql01</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Xuất tất cả: logins, server roles, linked servers, audits, endpoints, Agent jobs, operators, alerts, sp_configure, custom errors, resource governor... Mỗi loại một file <code>.sql</code> trong folder con có timestamp.
+- <strong>Đổi cho lab:</strong> Thay <code>sql01</code> bằng <code>dbatoolslab\sql2017</code> và <code>\\nas\backups\sql01</code> bằng <code>C:\dbatoolslab\Export</code>.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — output có thể chứa <strong>thông tin nhạy cảm</strong> (login hash, linked server config). Không commit thẳng lên Git public. Đối với production, lưu vào share có ACL.</p>
+<h3 id="oan-2-dong-22-xem-folder-ket-qua">Đoạn 2: dòng 22 — Xem folder kết quả<a class="headerlink" href="#oan-2-dong-22-xem-folder-ket-qua" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">Get-ChildItem</span> <span class="p">.\</span><span class="n">sql01</span><span class="p">-</span><span class="n">11112019080741</span><span class="p">\</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> List nội dung folder export. Tên folder = <code>&lt;instance&gt;-&lt;yyyyMMddHHmmss&gt;</code>. Mỗi file là một object type.
+- <strong>Đổi cho lab:</strong> <code>Get-ChildItem C:\dbatoolslab\Export\dbatoolslab$sql2017-*</code>.
+- <strong>Lưu ý:</strong> Folder timestamp dùng để giữ lịch sử nhiều lần export liên tiếp.</p>
+<h3 id="oan-3-dong-28-29-xem-cac-tuy-chon-scripting-mac-inh">Đoạn 3: dòng 28-29 — Xem các tuỳ chọn scripting mặc định<a class="headerlink" href="#oan-3-dong-28-29-xem-cac-tuy-chon-scripting-mac-inh" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">$options</span> <span class="p">=</span> <span class="nb">New-DbaScriptingOption</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nv">$options</span> <span class="p">|</span> <span class="nb">Select </span><span class="p">*</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo object <code>Microsoft.SqlServer.Management.Smo.ScriptingOptions</code> với mặc định dbatools, rồi xem toàn bộ thuộc tính (Indexes, Triggers, ScriptDrops, IncludeIfNotExists, ...).
+- <strong>Đổi cho lab:</strong> Không cần đổi, chạy bất cứ máy nào có dbatools.
+- <strong>Lưu ý:</strong> Mặc định đã chỉnh khá hợp lý so với SSMS, nhưng vẫn nên xem trước khi production-export.</p>
+<h3 id="oan-4-dong-33-34-bat-includeifnotexists">Đoạn 4: dòng 33-34 — Bật IncludeIfNotExists<a class="headerlink" href="#oan-4-dong-33-34-bat-includeifnotexists" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">$options</span> <span class="p">=</span> <span class="nb">New-DbaScriptingOption</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">$options</span><span class="p">.</span><span class="n">IncludeIfNotExists</span> <span class="p">=</span> <span class="nv">$true</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Sửa scripting option để script ra dạng <code>IF NOT EXISTS (...) BEGIN ... END</code> — idempotent, chạy nhiều lần không lỗi "object đã tồn tại".
+- <strong>Đổi cho lab:</strong> Dùng nguyên.
+- <strong>Lưu ý:</strong> Tuỳ chọn này thiết yếu khi script dùng cho deploy có thể replay.</p>
+<h3 id="oan-5-dong-38-43-export-instance-loai-tru-mot-phan">Đoạn 5: dòng 38-43 — Export instance loại trừ một phần<a class="headerlink" href="#oan-5-dong-38-43-export-instance-loai-tru-mot-phan" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">$splatExportInstance</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">Path</span>        <span class="p">=</span> <span class="s2">"C:\git\ExportInstance"</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">Exclude</span>     <span class="p">=</span> <span class="s2">"ResourceGovernor"</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nb">Export-DbaInstance</span> <span class="nv">@splatExportInstance</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Export tất cả trừ Resource Governor. <code>-Exclude</code> nhận mảng, có thể loại bỏ nhiều mục: <code>Exclude = "ResourceGovernor","Logins","LinkedServers"</code>.
+- <strong>Đổi cho lab:</strong> <code>SqlInstance = "dbatoolslab\sql2017"</code>, <code>Path = "C:\dbatoolslab\Export"</code>.
+- <strong>Lưu ý:</strong> Loại trừ <code>Logins</code> nếu repo của bạn public — login script chứa hash SID.</p>
+<h3 id="oan-6-dong-47-48-export-mot-agent-job-duy-nhat">Đoạn 6: dòng 47-48 — Export một Agent job duy nhất<a class="headerlink" href="#oan-6-dong-47-48-export-mot-agent-job-duy-nhat" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">1</span> <span class="p">|</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">Export-DbaScript</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Lấy job đầu tiên, đẩy qua pipeline cho <code>Export-DbaScript</code>. Mặc định lưu vào <code>Documents\&lt;instance&gt;-&lt;timestamp&gt;.sql</code>.
+- <strong>Đổi cho lab:</strong> <code>Get-DbaAgentJob -SqlInstance dbatoolslab\sql2017</code>.
+- <strong>Lưu ý:</strong> <code>Select-Object -First 1</code> chỉ để demo. Production thường <code>Where-Object Name -like 'Backup*'</code> chẳng hạn.</p>
+<h3 id="oan-7-dong-53-55-xem-noi-dung-script-ngay-tai-console">Đoạn 7: dòng 53-55 — Xem nội dung script ngay tại console<a class="headerlink" href="#oan-7-dong-53-55-xem-noi-dung-script-ngay-tai-console" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">Get-DbaDbStoredProcedure</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="n">-Database</span> <span class="n">master</span> <span class="p">|</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">Where-Object</span> <span class="n">Name</span> <span class="o">-eq</span> <span class="n">sp_MScleanupmergepublisher</span> <span class="p">|</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">Export-DbaScript</span> <span class="n">-Passthru</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> <code>-Passthru</code> in script thẳng ra console thay vì ghi file. Hữu ích khi muốn copy-paste nhanh hoặc nối thêm processing.
+- <strong>Đổi cho lab:</strong> Thay sproc target. Ví dụ trên <code>WideWorldImporters</code> chọn một sproc thật.
+- <strong>Lưu ý:</strong> <code>-Passthru</code> cũng có thể pipe đến <code>clip</code> (Windows) hoặc <code>Set-Clipboard</code>.</p>
+<h3 id="oan-8-dong-59-60-copy-script-vao-clipboard">Đoạn 8: dòng 59-60 — Copy script vào clipboard<a class="headerlink" href="#oan-8-dong-59-60-copy-script-vao-clipboard" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">1</span> <span class="p">|</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">Export-DbaScript</span> <span class="p">|</span> <span class="n">clip</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Dùng <code>clip</code> của Windows để đưa script vào clipboard, paste vào SSMS/VS Code nhanh.
+- <strong>Đổi cho lab:</strong> <code>Get-DbaAgentJob -SqlInstance dbatoolslab\sql2017 | Where-Object Name -like '*backup*' | Export-DbaScript | clip</code>.
+- <strong>Lưu ý:</strong> <code>clip</code> không tồn tại trên Linux. Dùng <code>Set-Clipboard</code> của PowerShell 5+ cho cross-platform.</p>
+<h3 id="oan-9-dong-64-71-export-audit-kem-scripting-option">Đoạn 9: dòng 64-71 — Export audit kèm scripting option<a class="headerlink" href="#oan-9-dong-64-71-export-audit-kem-scripting-option" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">$options</span> <span class="p">=</span> <span class="nb">New-DbaScriptingOption</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nv">$options</span><span class="p">.</span><span class="n">includeifnotexists</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nv">$splatExportScript</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">FilePath</span>               <span class="p">=</span> <span class="s2">"C:\git\export\sql01\audit.sql"</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">ScriptingOptionsObject</span> <span class="p">=</span> <span class="nv">$options</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">}</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="nb">Get-DbaInstanceAudit</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="nb">Export-DbaScript</span> <span class="nv">@splatExportScript</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Pattern chuẩn: tạo option, build splat, pipe object qua <code>Export-DbaScript</code>. Output là file <code>.sql</code> chứa toàn bộ Server Audit kèm <code>IF NOT EXISTS</code>.
+- <strong>Đổi cho lab:</strong> <code>SqlInstance = "dbatoolslab\sql2017"</code>, <code>FilePath = "C:\dbatoolslab\Export\audit.sql"</code>.
+- <strong>Lưu ý:</strong> Audit gắn với file path trên disk SQL. Script này phải replay trên máy có cùng cấu trúc thư mục, hoặc edit file path sau khi export.</p>
+<h3 id="oan-10-dong-76-81-export-server-audit-specification">Đoạn 10: dòng 76-81 — Export Server Audit Specification<a class="headerlink" href="#oan-10-dong-76-81-export-server-audit-specification" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nv">$splatExportScript</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">FilePath</span>               <span class="p">=</span> <span class="s2">"C:\git\export\sql01\auditspec.sql"</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">ScriptingOptionsObject</span> <span class="p">=</span> <span class="nv">$options</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">}</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nb">Get-DbaInstanceAuditSpecification</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nb">Export-DbaScript</span> <span class="nv">@splatExportScript</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tương tự đoạn 9 nhưng cho Server Audit Specification (định nghĩa event nào được audit).
+- <strong>Đổi cho lab:</strong> Thay instance về <code>dbatoolslab\sql2017</code>.
+- <strong>Lưu ý:</strong> Audit Spec phụ thuộc vào Audit object — replay phải theo thứ tự: Audit trước, AuditSpec sau, rồi <code>ALTER SERVER AUDIT ... WITH (STATE = ON)</code>.</p>
+<h3 id="oan-11-dong-86-inspect-member-cua-agent-job">Đoạn 11: dòng 86 — Inspect member của Agent job<a class="headerlink" href="#oan-11-dong-86-inspect-member-cua-agent-job" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span> <span class="nb">Get-Member</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Liệt kê toàn bộ property/method của object SMO Agent Job. Dùng để biết object hỗ trợ <code>.Script()</code>, <code>.EnumHistory()</code>...
+- <strong>Đổi cho lab:</strong> <code>Get-DbaAgentJob -SqlInstance dbatoolslab\sql2017 | Get-Member</code>.
+- <strong>Lưu ý:</strong> <code>Get-Member</code> là một trong những cmdlet quan trọng nhất PowerShell — luôn dùng khi không rõ object có gì.</p>
+<h3 id="oan-12-dong-91-inspect-member-cua-sp_configure-object">Đoạn 12: dòng 91 — Inspect member của sp_configure object<a class="headerlink" href="#oan-12-dong-91-inspect-member-cua-sp_configure-object" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">Get-DbaSpConfigure</span> <span class="n">-SqlInstance</span> <span class="n">sql01</span> <span class="p">|</span> <span class="nb">Get-Member</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Xem object trả về của <code>Get-DbaSpConfigure</code> có property nào (<code>Name</code>, <code>ConfiguredValue</code>, <code>RunningValue</code>, <code>MinValue</code>, <code>MaxValue</code>...).
+- <strong>Đổi cho lab:</strong> Thay instance.
+- <strong>Lưu ý:</strong> Cách tốt nhất để học cấu trúc output trước khi viết script automation.</p>
+<h3 id="oan-13-dong-96-100-export-sp_configure">Đoạn 13: dòng 96-100 — Export sp_configure<a class="headerlink" href="#oan-13-dong-96-100-export-sp_configure" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nv">$splatExportSpConf</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"sql01"</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">FilePath</span>    <span class="p">=</span> <span class="s2">"C:\git\ExportInstance\spconfigure.sql"</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">}</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nb">Export-DbaSpConfigure</span> <span class="nv">@splatExportSpConf</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Xuất toàn bộ <code>sp_configure</code> của instance ra file T-SQL, dạng <code>EXEC sp_configure 'max server memory (MB)', 8192; RECONFIGURE;</code>.
+- <strong>Đổi cho lab:</strong> <code>SqlInstance = "dbatoolslab\sql2017"</code>, <code>FilePath = "C:\dbatoolslab\Export\spconfigure.sql"</code>.
+- <strong>Lưu ý:</strong> Cẩn thận: file này chứa cả setting nâng cao. Khi import lên instance khác, phải bật <code>show advanced options</code> trước.</p>
+<h3 id="oan-14-dong-104-109-import-sp_configure">Đoạn 14: dòng 104-109 — Import sp_configure<a class="headerlink" href="#oan-14-dong-104-109-import-sp_configure" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nv">$splatExportSpConf</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">SqlInstance</span>   <span class="p">=</span> <span class="s2">"sql01,15591"</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">SqlCredential</span> <span class="p">=</span> <span class="s2">"sqladmin"</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">Path</span>          <span class="p">=</span> <span class="s2">"C:\git\ExportInstance\spconfigure.sql"</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">}</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="nb">Import-DbaSpConfigure</span> <span class="nv">@splatExportSpConf</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Áp lại file <code>spconfigure.sql</code> lên instance đích. <code>sql01,15591</code> là syntax <code>host,port</code>. <code>-SqlCredential</code> đăng nhập SQL Auth.
+- <strong>Đổi cho lab:</strong> <code>SqlInstance = "dbatoolslab"</code> (target — empty instance để đồng bộ setting từ sql2017), <code>Path = "C:\dbatoolslab\Export\spconfigure.sql"</code>.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — sẽ thay đổi cấu hình instance đích. Có config yêu cầu restart (max worker threads, locks, ...). Phải <code>-WhatIf</code> trước.</p>
+<h2 id="lenh-thay-vao-lab-cua-ban">Lệnh thay vào lab của bạn<a class="headerlink" href="#lenh-thay-vao-lab-cua-ban" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c"># Source = dbatoolslab\sql2017 (instance đã có data trong lab)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">$source</span> <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nv">$exportRoot</span> <span class="p">=</span> <span class="s2">"C:\dbatoolslab\Export"</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c"># 1) Export toàn bộ instance — loại trừ ResourceGovernor cho gọn</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nv">$splatExportInstance</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="nv">$source</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">Path</span>        <span class="p">=</span> <span class="nv">$exportRoot</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="n">Exclude</span>     <span class="p">=</span> <span class="s2">"ResourceGovernor"</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="p">}</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="nb">Export-DbaInstance</span> <span class="nv">@splatExportInstance</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="c"># 2) Xem folder kết quả</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="nb">Get-ChildItem</span> <span class="nv">$exportRoot</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="c"># 3) Export một Agent job ra clipboard</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="nv">$source</span> <span class="p">|</span>
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>    <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">1</span> <span class="p">|</span>
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>    <span class="nb">Export-DbaScript</span> <span class="n">-Passthru</span>
+</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>
+</span><span id="__span-14-21"><a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a><span class="c"># 4) Export sp_configure</span>
+</span><span id="__span-14-22"><a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="nb">Export-DbaSpConfigure</span> <span class="n">-SqlInstance</span> <span class="nv">$source</span> <span class="n">-FilePath</span> <span class="s2">"$exportRoot\spconfigure.sql"</span>
+</span><span id="__span-14-23"><a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>
+</span><span id="__span-14-24"><a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a><span class="c"># 5) Import sp_configure sang target — DÙNG -WhatIf TRƯỚC</span>
+</span><span id="__span-14-25"><a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a><span class="nb">Import-DbaSpConfigure</span> <span class="n">-SqlInstance</span> <span class="s2">"dbatoolslab"</span> <span class="n">-Path</span> <span class="s2">"$exportRoot\spconfigure.sql"</span> <span class="n">-WhatIf</span>
+</span><span id="__span-14-26"><a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a>
+</span><span id="__span-14-27"><a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a><span class="c"># 6) Script audit với IncludeIfNotExists</span>
+</span><span id="__span-14-28"><a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a><span class="nv">$opt</span> <span class="p">=</span> <span class="nb">New-DbaScriptingOption</span>
+</span><span id="__span-14-29"><a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a><span class="nv">$opt</span><span class="p">.</span><span class="n">IncludeIfNotExists</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-14-30"><a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a><span class="nb">Get-DbaInstanceAudit</span> <span class="n">-SqlInstance</span> <span class="nv">$source</span> <span class="p">|</span>
+</span><span id="__span-14-31"><a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>    <span class="nb">Export-DbaScript</span> <span class="n">-FilePath</span> <span class="s2">"$exportRoot\audit.sql"</span> <span class="n">-ScriptingOptionsObject</span> <span class="nv">$opt</span>
+</span></code></pre></div>
+<h2 id="self-check">Self-check<a class="headerlink" href="#self-check" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Định nghĩa:</strong> <code>Export-DbaInstance</code> và <code>Export-DbaScript</code> khác nhau ở điểm nào? Khi nào dùng cái nào?</li>
+<li><strong>Thực hành:</strong> Tạo <code>$options = New-DbaScriptingOption</code> rồi bật cả <code>IncludeIfNotExists</code> và <code>ScriptDrops</code>. Pipe <code>Get-DbaDbStoredProcedure</code> qua <code>Export-DbaScript</code> với options đó, mở file kết quả và xác nhận thấy cả <code>DROP PROCEDURE IF EXISTS</code> lẫn <code>CREATE PROCEDURE</code>.</li>
+<li><strong>Liên hệ:</strong> Một instance production của bạn đột nhiên crash phải build lại. Bạn có folder export từ tuần trước. Liệt kê thứ tự apply các file <code>.sql</code> để hồi phục cấu hình (không gồm database, chỉ instance-level).</li>
+</ol>
+<h2 id="bai-tap-mo-rong">Bài tập mở rộng<a class="headerlink" href="#bai-tap-mo-rong" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Bài 1:</strong> Viết script PowerShell chạy <code>Export-DbaInstance</code> hàng tuần cho <code>dbatoolslab\sql2017</code>, sau đó commit folder kết quả vào git repo. Đặt scheduled task hoặc SQL Agent job kích hoạt nó.</li>
+<li><strong>Bài 2:</strong> So sánh <code>sp_configure</code> giữa hai instance: export từ <code>dbatoolslab\sql2017</code> và từ <code>dbatoolslab</code>, dùng <code>Compare-Object</code> (hoặc diff thường) để xem cấu hình lệch nhau ở đâu.</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>book_lab/dbatools-lab/bookcode/chapter14.notes.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../chapter13-notes/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chapter15-notes/" class="md-footer__link md-footer__link--next" aria-label="Sau: Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

@@ -1,0 +1,1458 @@
+ <!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mô hình hóa Sổ tay chẩn đoán Oracle</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+    --blue:#2a78d6; --green:#008300; --magenta:#e87ba4; --yellow:#eda100;
+    --aqua:#1baf7a; --orange:#eb6834; --violet:#4a3aa7; --red:#e34948;
+    --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      color-scheme: dark;
+      --bg:#0d0d0d; --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+      --blue:#3987e5; --magenta:#d55181; --yellow:#c98500; --aqua:#199e70;
+      --orange:#d95926; --violet:#9085e9; --red:#e66767;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px 80px}
+  header.hero{padding:38px 0 10px}
+  header.hero h1{font-size:26px;margin:0 0 6px}
+  header.hero p{color:var(--ink2);margin:4px 0;max-width:70ch}
+  .mantra{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:10px;
+    background:color-mix(in srgb,var(--blue) 12%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--blue) 35%,transparent);
+    font-weight:600;font-size:14px}
+  nav.toc{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(6px);padding:10px 0;display:flex;flex-wrap:wrap;gap:6px;
+    border-bottom:1px solid var(--grid)}
+  nav.toc a{font-size:12px;font-weight:600;text-decoration:none;color:var(--ink2);
+    padding:4px 9px;border-radius:99px;border:1px solid var(--border);background:var(--surface)}
+  nav.toc a:hover{color:var(--ink);border-color:var(--blue)}
+  section.model{margin:44px 0;padding:26px 26px 20px;border-radius:16px;
+    background:var(--surface);border:1px solid var(--border);
+    box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .mtag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;
+    padding:3px 10px;border-radius:99px;color:#fff;background:var(--blue);margin-bottom:8px}
+  section.model h2{margin:2px 0 4px;font-size:20px}
+  .lead{color:var(--ink2);margin:0 0 18px;font-size:14px}
+  .viz{margin:16px 0;padding:18px;border-radius:12px;background:var(--bg);
+    border:1px dashed var(--grid);overflow-x:auto}
+  /* ---------- nodes & flows ---------- */
+  .node{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;border-radius:10px;
+    background:color-mix(in srgb,var(--nc,var(--blue)) 10%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--nc,var(--blue)) 40%,transparent);
+    border-left:4px solid var(--nc,var(--blue));min-width:150px;flex:1}
+  .node .ic{font-size:19px;line-height:1.1}
+  .node b{display:block;font-size:13.5px}
+  .node small{color:var(--ink2);font-size:12px;line-height:1.4;display:block}
+  .n-blue{--nc:var(--blue)} .n-green{--nc:var(--green)} .n-amber{--nc:var(--yellow)}
+  .n-red{--nc:var(--critical)} .n-violet{--nc:var(--violet)} .n-orange{--nc:var(--orange)}
+  .n-aqua{--nc:var(--aqua)} .n-gray{--nc:var(--muted)}
+  .flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+  .flow .arr{align-self:center;color:var(--muted);font-size:20px;font-weight:700;flex:0}
+  .vflow{display:flex;flex-direction:column;gap:8px}
+  .vflow .arr{text-align:center;color:var(--muted);font-size:18px;font-weight:700;line-height:1}
+  .cols{display:grid;gap:14px}
+  @media(min-width:820px){.cols.c2{grid-template-columns:1fr 1fr}.cols.c3{grid-template-columns:1fr 1fr 1fr}}
+  .readme{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:13.5px;
+    background:color-mix(in srgb,var(--aqua) 8%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--aqua) 30%,transparent)}
+  .readme b:first-child{color:var(--aqua)}
+  .readme ul{margin:6px 0 0;padding-left:20px}
+  .readme li{margin:4px 0}
+  details.quiz{margin-top:12px;border:1px solid var(--border);border-radius:10px;padding:10px 14px;
+    background:color-mix(in srgb,var(--violet) 7%,var(--surface))}
+  details.quiz summary{cursor:pointer;font-weight:600;font-size:13.5px}
+  details.quiz p{margin:8px 0 2px;font-size:13.5px;color:var(--ink2)}
+  .story{margin-top:12px;padding:13px 16px;border-radius:10px;font-size:13.5px;
+    background:color-mix(in srgb,var(--blue) 7%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--blue) 28%,transparent)}
+  .story>b:first-child{color:var(--blue)}
+  .story ol{margin:6px 0 0;padding-left:22px}
+  .story li{margin:5px 0}
+  details.deep{margin-top:12px;border:1px solid color-mix(in srgb,var(--orange) 40%,transparent);
+    border-radius:10px;padding:10px 14px;background:color-mix(in srgb,var(--orange) 6%,var(--surface))}
+  details.deep summary{cursor:pointer;font-weight:700;font-size:13.5px;color:var(--orange)}
+  details.deep ul{margin:8px 0 2px;padding-left:20px;font-size:13.5px}
+  details.deep li{margin:7px 0;color:var(--ink2)}
+  details.deep li b{color:var(--ink)}
+  /* ---------- expert models ---------- */
+  nav.toc a.exp{border-color:color-mix(in srgb,var(--violet) 55%,transparent);color:var(--violet)}
+  .mtag.expert{background:var(--violet)}
+  .venn{position:relative;height:440px;max-width:540px;margin:0 auto}
+  .venn .c{position:absolute;width:300px;height:300px;border-radius:50%;
+    display:flex;align-items:flex-start;justify-content:center;padding-top:20px;
+    font-weight:800;font-size:13.5px}
+  .venn .c1{left:0;top:0;background:color-mix(in srgb,var(--blue) 18%,transparent);
+    border:2px solid var(--blue);color:var(--blue)}
+  .venn .c2{left:220px;top:0;background:color-mix(in srgb,var(--green) 16%,transparent);
+    border:2px solid var(--green);color:var(--green)}
+  .venn .c3{left:110px;top:135px;background:color-mix(in srgb,var(--orange) 16%,transparent);
+    border:2px solid var(--orange);color:var(--orange);align-items:flex-end;padding-bottom:22px;padding-top:0}
+  .venn .core{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
+    text-align:center;font-weight:800;font-size:12.5px;color:var(--ink);
+    background:var(--surface);border:2px solid var(--violet);border-radius:10px;
+    padding:9px 11px;max-width:170px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  tr.victim td{background:color-mix(in srgb,var(--yellow) 14%,var(--surface))}
+  tr.culprit td{background:color-mix(in srgb,var(--critical) 13%,var(--surface));font-weight:600}
+  code{font-family:Consolas,Menlo,monospace;font-size:.92em;background:color-mix(in srgb,var(--ink) 7%,transparent);
+    padding:1px 5px;border-radius:5px}
+  .ref{font-size:11.5px;font-weight:700;color:var(--blue);white-space:nowrap}
+  /* ---------- M1 wizard ---------- */
+  .wizard{display:flex;flex-direction:column;gap:12px}
+  .crumbs{display:flex;flex-direction:column;gap:6px}
+  .crumb{display:flex;gap:8px;align-items:baseline;font-size:13px;color:var(--ink2)}
+  .crumb .pick{font-weight:700;color:var(--ink);background:color-mix(in srgb,var(--blue) 12%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--blue) 35%,transparent);padding:2px 10px;border-radius:99px;font-size:12.5px}
+  .qcard{padding:16px 18px;border-radius:12px;background:var(--surface);
+    border:2px solid var(--blue)}
+  .qcard h3{margin:0 0 12px;font-size:16px}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opts button{cursor:pointer;font:600 13.5px/1.4 system-ui,sans-serif;color:var(--ink);
+    background:color-mix(in srgb,var(--blue) 8%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--blue) 40%,transparent);
+    border-radius:10px;padding:9px 14px;text-align:left;max-width:340px}
+  .opts button small{display:block;font-weight:400;color:var(--ink2);font-size:12px}
+  .opts button:hover{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 16%,var(--surface))}
+  .endcard{padding:18px;border-radius:12px;border:2px solid var(--good);
+    background:color-mix(in srgb,var(--good) 9%,var(--surface))}
+  .endcard.warn{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface))}
+  .endcard h3{margin:0 0 6px;font-size:16px}
+  .endcard p{margin:5px 0;font-size:13.5px;color:var(--ink2)}
+  .endcard .fix{color:var(--ink);font-weight:600}
+  .restart{align-self:flex-start;cursor:pointer;font:600 13px system-ui;color:var(--ink2);
+    background:none;border:1px solid var(--border);border-radius:99px;padding:6px 14px}
+  .restart:hover{color:var(--ink);border-color:var(--ink2)}
+  /* ---------- M2 architecture ---------- */
+  .arch{display:grid;gap:10px;grid-template-columns:1fr;font-size:12.5px}
+  @media(min-width:900px){.arch{grid-template-columns:0.9fr 1.1fr 1.5fr 1fr 1.1fr}}
+  .lane{border-radius:12px;padding:10px;border:1px solid var(--border)}
+  .lane h4{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink2);text-align:center}
+  .lane .node{margin-bottom:8px;min-width:0}
+  .flowlist{margin-top:14px;display:grid;gap:8px}
+  @media(min-width:820px){.flowlist{grid-template-columns:1fr 1fr}}
+  .fl{display:flex;gap:9px;align-items:center;font-size:12.5px;padding:8px 11px;border-radius:9px;
+    background:var(--surface);border:1px solid var(--border)}
+  .fl .pipe{font-weight:700;white-space:nowrap;color:var(--ink)}
+  .fl .cam{margin-left:auto;text-align:right;color:var(--ink2)}
+  .fl .cam b{color:var(--nc,var(--blue))}
+  /* ---------- M3 stacked bar ---------- */
+  .stack{display:flex;height:52px;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:12px;font-weight:700;color:#fff}
+  .stack>div{display:flex;align-items:center;justify-content:center;padding:0 6px;text-align:center;border-right:2px solid var(--bg)}
+  .nest{border:2px solid var(--blue);border-radius:12px;padding:12px;margin-top:14px}
+  .nest .tag{font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.5px}
+  .nest .inner{border:2px dashed var(--orange);border-radius:10px;padding:10px;margin-top:8px}
+  .nest .inner .tag{color:var(--orange)}
+  .nest .inner2{border:2px dotted var(--violet);border-radius:8px;padding:8px;margin-top:8px;font-size:13px}
+  .nest .inner2 .tag{color:var(--violet)}
+  /* ---------- M4 timeline ---------- */
+  .timeline{position:relative;padding-top:34px;margin-top:6px}
+  .tl-bar{height:12px;border-radius:99px;background:linear-gradient(90deg,var(--critical),var(--orange),var(--yellow),var(--blue));}
+  .tl-labels{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;color:var(--ink2);margin-top:4px}
+  .tl-cards{display:grid;gap:10px;margin-top:14px}
+  @media(min-width:820px){.tl-cards{grid-template-columns:repeat(4,1fr)}}
+  /* ---------- M5 event map ---------- */
+  .evrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+  .ev{cursor:pointer;font:600 12.5px system-ui;padding:6px 12px;border-radius:99px;color:var(--ink);
+    background:color-mix(in srgb,var(--nc,var(--blue)) 12%,var(--surface));
+    border:1.5px solid color-mix(in srgb,var(--nc,var(--blue)) 45%,transparent)}
+  .ev.on{background:var(--nc,var(--blue));color:#fff;border-color:var(--nc,var(--blue))}
+  .causes{display:grid;gap:9px}
+  @media(min-width:820px){.causes{grid-template-columns:1fr 1fr}}
+  .cause{transition:opacity .2s}
+  .cause.dim{opacity:.22}
+  /* ---------- M6/M11 sequence ---------- */
+  .seq{position:relative;display:grid;grid-template-columns:1fr 40px 1fr;gap:6px 0;font-size:13px}
+  .seq .line{grid-column:2;position:relative}
+  .seq .line::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--grid)}
+  .bub{margin:5px 0;padding:9px 12px;border-radius:10px;max-width:420px;
+    background:color-mix(in srgb,var(--nc,var(--blue)) 10%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--nc,var(--blue)) 40%,transparent)}
+  .bub b{font-size:12.5px}
+  .bub small{display:block;color:var(--ink2);font-size:12px}
+  .seq .L{grid-column:1;justify-self:end;text-align:right}
+  .seq .R{grid-column:3;justify-self:start}
+  .seq .num{grid-column:2;align-self:center;justify-self:center;z-index:1;
+    width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;
+    font:700 11px/22px system-ui;text-align:center}
+  .actors{display:flex;justify-content:space-between;font-weight:700;font-size:13px;margin-bottom:8px}
+  .span-note{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .span-note .sp{flex:1;min-width:240px;padding:9px 12px;border-radius:9px;font-size:12.5px;
+    border-left:4px solid var(--nc,var(--blue));
+    background:color-mix(in srgb,var(--nc,var(--blue)) 9%,var(--surface))}
+  /* ---------- M7 loop ---------- */
+  .loop{display:grid;gap:8px;grid-template-columns:1fr;counter-reset:step}
+  @media(min-width:860px){.loop{grid-template-columns:repeat(5,1fr)}}
+  .loop .node{position:relative}
+  .loopback{margin-top:6px;text-align:center;font-size:13px;font-weight:700;color:var(--critical)}
+  .meds{display:grid;gap:9px;margin-top:14px}
+  @media(min-width:820px){.meds{grid-template-columns:1fr 1fr 1fr}}
+  /* ---------- M8 chart ---------- */
+  .chartwrap{max-width:640px}
+  svg text{font-family:system-ui,sans-serif}
+  /* ---------- blocks pictograms (M9/M13/M14) ---------- */
+  .blockrow{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0}
+  .bk{width:16px;height:16px;border-radius:3px;background:var(--grid)}
+  .bk.hot{background:var(--orange)} .bk.wave{background:var(--blue)}
+  .bk.data{background:var(--blue)} .bk.empty{background:var(--grid)}
+  .bk.keep{background:var(--aqua)}
+  .panel{padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface)}
+  .panel h4{margin:0 0 6px;font-size:13px}
+  .panel small{color:var(--ink2);font-size:12px}
+  .poolbox{border:2px solid var(--aqua);border-radius:10px;padding:8px;margin-top:6px}
+  .poolbox.default{border-color:var(--muted)}
+  .poolbox .cap{font-size:11px;font-weight:800;color:var(--aqua)}
+  .poolbox.default .cap{color:var(--muted)}
+  .hwmwrap{position:relative;padding:4px 0 2px}
+  .hwm{position:absolute;top:-4px;bottom:-4px;width:0;border-left:3px dashed var(--critical)}
+  .hwm span{position:absolute;top:-18px;left:-14px;font-size:10.5px;font-weight:800;color:var(--critical)}
+  .frame{margin:14px 0;padding:12px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--border)}
+  .frame h4{margin:0 0 4px;font-size:13.5px}
+  .scan{height:8px;border-radius:99px;margin-top:6px;
+    background:repeating-linear-gradient(90deg,var(--critical),var(--critical) 8px,transparent 8px,transparent 12px)}
+  /* ---------- M12 quadrant ---------- */
+  .quad{display:grid;grid-template-columns:auto 1fr 1fr;grid-template-rows:1fr 1fr auto;gap:6px;max-width:720px}
+  .quad .ylab{grid-row:1/3;writing-mode:vertical-rl;transform:rotate(180deg);
+    text-align:center;font-size:12px;font-weight:700;color:var(--ink2)}
+  .quad .cell{border-radius:12px;padding:14px;min-height:110px}
+  .quad .xlab{grid-column:2/4;text-align:center;font-size:12px;font-weight:700;color:var(--ink2)}
+  .quad .cell b{display:block;font-size:14px;margin-bottom:4px}
+  .quad .cell small{color:var(--ink2)}
+  /* ---------- M13 block diagrams ---------- */
+  .blk8k{width:150px;min-height:96px;border:2px solid var(--ink2);border-radius:8px;padding:7px;
+    background:var(--surface);position:relative}
+  .blk8k .cap{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.4px}
+  .rowbar{height:11px;border-radius:3px;background:var(--blue);margin:4px 0}
+  .rowbar.stub{background:repeating-linear-gradient(45deg,var(--orange),var(--orange) 4px,transparent 4px,transparent 8px);
+    border:1px dashed var(--orange)}
+  .rowbar.big{background:var(--violet)}
+  .bigarr{align-self:center;font-size:24px;font-weight:800;color:var(--orange)}
+  /* ---------- tables ---------- */
+  table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0}
+  th,td{border:1px solid var(--grid);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--ink) 5%,var(--surface));font-size:12.5px}
+  .foot{margin-top:50px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--grid);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>🗺️ Mô hình hóa Sổ tay chẩn đoán hiệu năng Oracle</h1>
+  <p>Bản <b>tương tác — mở bằng trình duyệt</b>. Mỗi mô hình: <b>hình → cách đọc → câu hỏi tự kiểm tra</b> (bấm để xem đáp án).
+     Tra code chi tiết trong <code>SO_TAY_CHAN_DOAN.md</code> (§N) · bản Mermaid: <code>SO_TAY_MO_HINH.md</code>.</p>
+  <div class="mantra">Thứ tự tư duy: DB Time → Wait Event → SQL/Session → Root cause → Fix → Đo lại</div>
+</header>
+
+<nav class="toc">
+  <a href="#m1">M1 Cây quyết định</a><a href="#m2">M2 Kiến trúc↔V$</a><a href="#m3">M3 DB Time</a>
+  <a href="#m4">M4 Trục thời gian</a><a href="#m5">M5 Wait→Cause</a><a href="#m6">M6 Lock</a>
+  <a href="#m7">M7 Literal storm</a><a href="#m8">M8 Advisory</a><a href="#m9">M9 Lũ FTS</a>
+  <a href="#m10">M10 PGA</a><a href="#m11">M11 COMMIT</a><a href="#m12">M12 CPU 4 ô</a>
+  <a href="#m13">M13 Migration</a><a href="#m14">M14 HWM</a><a href="#m15">M15 Vòng tuning</a><a href="#m16">M16 Bản đồ</a>
+  <a href="#e1" class="exp">E1 AAS·Little</a><a href="#e2" class="exp">E2 Hàng đợi</a><a href="#e3" class="exp">E3 Method R</a>
+  <a href="#e4" class="exp">E4 3 vòng tròn</a><a href="#e5" class="exp">E5 Cardinality</a><a href="#e6" class="exp">E6 Session-first</a>
+</nav>
+
+<!-- ============================ M1 ============================ -->
+<section class="model" id="m1">
+  <span class="mtag">M1 · TƯƠNG TÁC</span>
+  <h2>Cây quyết định tổng — bấm để đi từng bước</h2>
+  <p class="lead">Toàn bộ sổ tay nén thành một cây. Chọn câu trả lời như đang trực chiến — đường đi của bạn được ghi lại bên trên. Thử đủ mọi nhánh!</p>
+  <div class="viz"><div class="wizard" id="wizard"></div></div>
+  <div class="readme"><b>Cách đọc:</b>
+    <ul>
+      <li>Cây có đúng <b>một cửa vào</b>: câu hỏi thời gian (M4). Sai cửa = sai công cụ ngay từ đầu.</li>
+      <li>Ngã ba quan trọng nhất khóa học: <b>CPU hay Wait?</b> — quyết định nửa còn lại của cuộc điều tra.</li>
+      <li>Không nhánh nào tới "Fix" mà không qua bước tìm SQL/session cụ thể — fix không biết thủ phạm là đoán mò.</li>
+    </ul>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — một ca điều tra mẫu:</b>
+    <ol>
+      <li>User báo "hệ thống chậm từ 14h". Câu hỏi ĐẦU TIÊN không phải "chậm ở đâu" mà <b>"chậm KHI NÀO"</b> — vì nó quyết định công cụ: đang xảy ra → V$; đã qua → ASH/AWR (M4).</li>
+      <li>Vào cửa bằng <code>time_model.sql</code>: DB Time đang tiêu vào đâu. <b>Đừng vội mở top_sql</b> — SQL "tốn nhất từ startup" chưa chắc là SQL gây chậm lúc 14h.</li>
+      <li>Ngã ba CPU/Wait: wait chiếm ưu thế → top_waits chỉ ra <i>lớp bệnh</i> (I/O? lock? parse?); CPU chiếm → phải xác minh HOST trước khi kết luận (M12) — đừng tin mỗi con số trong DB.</li>
+      <li>Khoanh được lớp bệnh rồi mới đi tìm SQL/session cụ thể (ash_now, top_sql) — thu hẹp dần từ "cả DB" xuống "một câu SQL / một phiên".</li>
+      <li>Kiểm chứng root cause bằng <b>bằng chứng phân biệt</b> (M5) → fix → bắt buộc đo lại so baseline (M15). Thiếu bước đo lại = chưa xong việc.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior)</summary>
+    <ul>
+      <li><b>AAS (Average Active Sessions)</b> = ΔDB time / Δthời gian đồng hồ — "trung bình bao nhiêu phiên đang bận". AAS &gt; số core = có xếp hàng; AAS ≈ 0.5 trên máy 2 core mà user vẫn than → "chậm" nhiều khả năng KHÔNG nằm ở DB.</li>
+      <li>Đây là phương pháp <b>top-down (kiểu Method-R)</b>: đi từ tổng thời gian xuống. Anti-pattern kinh điển: <i>compulsive tuning disorder</i> — chỉnh tham số theo cảm giác/checklist mà không có số DB time chứng minh thành phần đó đáng kể.</li>
+      <li>Luôn hỏi <b>"chậm so với CÁI GÌ?"</b> — không có baseline (AWR bình thường, số đo 02_workload) thì "chậm" chỉ là cảm giác. Vì thế mọi lab đều bắt đo baseline trước.</li>
+      <li>Toán ưu tiên: giảm 90% của thành phần chiếm 5% DB time = thắng 4.5%; giảm 20% của thành phần 60% = thắng 12%. <b>Tune thứ to nhất trước</b>, kể cả khi thứ nhỏ "dễ fix hơn".</li>
+      <li>Màn "Top Activity" của OEM/Cloud Control chính là cây này vẽ bằng ASH: trục tung = AAS, màu = wait class — đọc được cây này là đọc được OEM.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ User than "app chậm" nhưng top_waits toàn <code>SQL*Net message from client</code> — rẽ nhánh nào?</summary>
+  <p>Nhánh Network/Idle: DB đang <b>rảnh chờ app</b> — vấn đề ở round-trip hoặc phía ứng dụng (§21, M16 nút đỏ). Đi lại wizard và chọn thử nhánh này.</p></details>
+</section>
+
+<!-- ============================ M2 ============================ -->
+<section class="model" id="m2">
+  <span class="mtag">M2</span>
+  <h2>Kiến trúc Oracle ↔ điểm quan sát V$ — mỗi view là một 📷 camera</h2>
+  <p class="lead">Muốn xem bộ phận nào, query camera gắn ở đó. Mỗi mũi tên bên dưới là một chỗ có thể nghẽn — và event/view đo chỗ nghẽn đó.</p>
+  <div class="viz">
+    <div class="arch">
+      <div class="lane"><h4>🖥️ Client / App</h4>
+        <div class="node n-gray"><span class="ic">📱</span><div><b>Ứng dụng</b><small>ARRAYSIZE, fetch size<br>📷 SQL*Net roundtrips <span class="ref">§21</span></small></div></div>
+      </div>
+      <div class="lane"><h4>Server process</h4>
+        <div class="node n-blue"><span class="ic">👤</span><div><b>Session (FG)</b><small>📷 V$SESSION (event, p1-3, row_wait_*)<br>📷 V$SESS_TIME_MODEL · V$MYSTAT</small></div></div>
+        <div class="node n-violet"><span class="ic">🧮</span><div><b>PGA — work area</b><small>sort / hash riêng từng phiên<br>📷 V$PGASTAT · V$SQL_WORKAREA <span class="ref">§13</span></small></div></div>
+      </div>
+      <div class="lane"><h4>SGA — bộ nhớ chia sẻ</h4>
+        <div class="node n-orange"><span class="ic">🧠</span><div><b>Shared Pool</b><small>cursor, plan · 📷 V$SQL, V$SGASTAT, V$SHARED_POOL_ADVICE <span class="ref">§10 §11</span></small></div></div>
+        <div class="node n-aqua"><span class="ic">🗃️</span><div><b>Buffer Cache</b><small>DEFAULT + KEEP · 📷 V$BH, V$DB_CACHE_ADVICE <span class="ref">§12</span></small></div></div>
+        <div class="node n-amber"><span class="ic">📝</span><div><b>Log Buffer</b><small>📷 redo size (V$SYSSTAT) <span class="ref">§14</span></small></div></div>
+      </div>
+      <div class="lane"><h4>Background</h4>
+        <div class="node n-amber"><span class="ic">✍️</span><div><b>LGWR</b><small>📷 log file parallel write</small></div></div>
+        <div class="node n-aqua"><span class="ic">💧</span><div><b>DBWR</b><small>📷 free buffer waits</small></div></div>
+        <div class="node n-violet"><span class="ic">📸</span><div><b>MMON + ASH</b><small>AWR snap 60' · ASH sample 1s <span class="ref">§3 §5</span></small></div></div>
+      </div>
+      <div class="lane"><h4>💾 Disk</h4>
+        <div class="node n-blue"><span class="ic">🗄️</span><div><b>Datafiles</b><small>📷 V$FILESTAT, V$IOSTAT_FUNCTION <span class="ref">§16</span></small></div></div>
+        <div class="node n-amber"><span class="ic">🔁</span><div><b>Redo logs</b><small>📷 V$LOG, V$LOG_HISTORY</small></div></div>
+        <div class="node n-violet"><span class="ic">🌡️</span><div><b>Temp</b><small>📷 max_tempseg_size</small></div></div>
+        <div class="node n-gray"><span class="ic">📚</span><div><b>AWR (SYSAUX)</b><small>📷 DBA_HIST_*</small></div></div>
+      </div>
+    </div>
+    <div class="flowlist">
+      <div class="fl n-blue"><span class="pipe">App → FG</span> round-trips <span class="cam">nghẽn = <b>SQL*Net waits / user calls</b></span></div>
+      <div class="fl n-orange"><span class="pipe">FG → Shared Pool</span> parse <span class="cam">nghẽn = <b>library cache: mutex X</b></span></div>
+      <div class="fl n-aqua"><span class="pipe">Cache → Disk</span> miss → physical read <span class="cam">nghẽn = <b>db file sequential/scattered read</b></span></div>
+      <div class="fl n-violet"><span class="pipe">PGA → Temp</span> work area tràn <span class="cam">nghẽn = <b>direct path read/write temp</b></span></div>
+      <div class="fl n-amber"><span class="pipe">FG → LGWR → Redo</span> commit <span class="cam">nghẽn = <b>log file sync</b></span></div>
+      <div class="fl n-gray"><span class="pipe">FG ⇢ MMON</span> ASH chụp mỗi giây <span class="cam">vì thế <b>SAMPLES ≈ giây DB time</b></span></div>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b>
+    <ul>
+      <li><code>V$MYSTAT</code> chỉ thấy phiên của mình → dành cho thí nghiệm có kiểm soát (lab 22, 23); <code>V$SYSSTAT</code> = cả instance.</li>
+      <li>Học thuộc cặp <i>mũi tên ↔ event</i>: thấy event là biết ngay đường ống nào đang nghẽn.</li>
+    </ul>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — theo chân MỘT câu SELECT qua kiến trúc:</b>
+    <ol>
+      <li>App gửi câu SQL qua SQL*Net → server process (FG) nhận. Mỗi round-trip là một chuyến khứ hồi mạng (§21).</li>
+      <li>FG băm text câu SQL → tìm trong <b>Shared Pool</b>: thấy cursor dùng lại được = <b>soft parse</b> (rẻ); không thấy = <b>hard parse</b> (chạy optimizer, xây plan — đắt, cầm mutex).</li>
+      <li>Thực thi: mỗi block cần đọc được tìm trong <b>Buffer Cache</b> trước (logical read); miss → xuống datafile (physical read — chính là <code>db file sequential/scattered read</code>).</li>
+      <li>Cần sort/hash → mượn work area trong <b>PGA</b>; thiếu → tràn xuống Temp (<code>direct path … temp</code>, M10).</li>
+      <li>Kết quả trả về app theo từng đợt ARRAYSIZE row qua SQL*Net.</li>
+      <li>Nếu là DML: sinh redo vào Log Buffer (LGWR ghi khi commit — M11) + undo; block bẩn để DBWR ghi xuống <i>sau</i>, lười biếng — không ai phải chờ DBWR khi hệ khỏe.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior)</summary>
+    <ul>
+      <li><b>Logical read rẻ hơn physical ~100–1000 lần</b> (µs vs ms) nhưng vẫn tốn CPU + pin/mutex — logical reads NHIỀU bất thường vẫn là bệnh (SQL đọc thừa). Đừng nghĩ "hit 100% là vô tội".</li>
+      <li>Cursor có <b>cha/con</b>: cùng text = 1 parent; khác bind type/length, optimizer env… = nhiều child. VERSION_COUNT cao gây tranh mutex <i>dù đã dùng bind</i> — soi <code>V$SQL_SHARED_CURSOR</code> để biết lý do mismatch.</li>
+      <li>ASH là <b>vùng đệm vòng trong SGA</b> (~2% shared pool); MMON/MMNL đổ 1/10 số mẫu xuống DBA_HIST khi buffer đầy hoặc theo snapshot — đó là gốc con số "1/10" của M4.</li>
+      <li><b>LGWR ghi "hăng hái", DBWR ghi "lười"</b> — vì thế crash không mất data đã commit: redo đã nằm trên đĩa, block bẩn được dựng lại từ redo (instance recovery).</li>
+      <li>Ba hệ đo bổ sung nhau, đừng trộn đơn vị: V$SYSSTAT đếm <b>số lần</b>, Time Model đếm <b>thời gian làm việc</b>, wait event đếm <b>thời gian chờ</b>.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ Muốn biết "bảng nào đang chiếm buffer cache" — camera nào, gắn ở hộp nào?</summary>
+  <p><code>V$BH</code>, gắn vào Buffer Cache — group theo <code>data_object_id</code> (§12).</p></details>
+</section>
+
+<!-- ============================ M3 ============================ -->
+<section class="model" id="m3">
+  <span class="mtag">M3</span>
+  <h2>Cấu trúc DB Time — phép cộng đúng vs cây lồng nhau</h2>
+  <p class="lead">Hai cách nhìn cùng một DB time. Nhầm hai cách này là đọc sai <code>time_model.sql</code>.</p>
+  <div class="viz">
+    <b style="font-size:13px">① Phép cộng ĐÚNG (dùng để rẽ nhánh M1): DB time = DB CPU + Σ non-idle wait</b>
+    <div class="stack" style="margin-top:8px">
+      <div style="flex:38;background:var(--green)">DB CPU 38%</div>
+      <div style="flex:26;background:var(--blue)">User I/O 26%</div>
+      <div style="flex:14;background:var(--orange)">Lock 14%</div>
+      <div style="flex:12;background:var(--violet)">Concurrency 12%</div>
+      <div style="flex:10;background:var(--yellow);border-right:none">Commit 10%</div>
+    </div>
+    <small style="color:var(--ink2)">Ví dụ minh họa — thanh này luôn cộng đủ 100%. CPU lấn át → nhánh CPU; wait lấn át → top_waits.</small>
+
+    <div class="nest">
+      <span class="tag">② CÁC STAT TRONG V$SYS_TIME_MODEL — LỒNG NHAU, KHÔNG ĐƯỢC CỘNG · DB time</span>
+      <div class="inner"><span class="tag">sql execute elapsed time — thường 90%+, ĐÈ LÊN cả parse</span>
+        <div class="inner2"><span class="tag">parse time elapsed</span> ⊃ <b>hard parse elapsed time</b> ⚠️ cao → §10 §11</div>
+      </div>
+      <div class="inner2" style="margin-top:8px"><span class="tag">song song:</span> PL/SQL execution · connection mgmt · sequence load…</div>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b>
+    <ul>
+      <li>Vì lồng nhau, cột <code>pct_db_time</code> cộng lại <b>&gt;100% là bình thường</b> — đọc kiểu "thành phần nào NỔI BẬT?", không phải chia bánh.</li>
+      <li>DB time <b>không tính background</b> (LGWR/DBWR/job slave J00x) và không tính idle — bẫy đã đo: job 15s chỉ +0.01s DB time.</li>
+    </ul>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — đọc output time_model.sql theo 4 nhịp:</b>
+    <ol>
+      <li>Nhìn dòng <b>DB time</b> trước tiên: nó tăng chậm (vài giây mỗi phút) → DB đang nhàn, "chậm" của user nằm nơi khác (app, mạng, OS).</li>
+      <li>Tính tỉ lệ <b>DB CPU / DB time</b>: &gt;80–90% → nhánh CPU (M12); &lt;50% → wait chiếm ưu thế → sang top_waits.</li>
+      <li>Quét cột % tìm stat <b>NỔI BẬT bất thường</b>: hard parse vài chục % là đèn đỏ (M7); "PL/SQL execution" cao = thời gian trong engine PL/SQL (vòng lặp, hàm) chứ không phải SQL — tune code, không tune SQL.</li>
+      <li>Nhớ: mọi số là <b>LŨY KẾ từ startup</b> — instance chạy 30 ngày thì con số hôm nay bị 30 ngày lịch sử pha loãng. Muốn "ngay bây giờ": lấy delta 2 lần đo (before_after, AWR).</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior)</summary>
+    <ul>
+      <li>Đơn vị VALUE là <b>micro giây</b> — script đã chia 1e6; tự query mà quên chia là đọc sai 6 bậc.</li>
+      <li><b>AAS = ΔDB time / Δclock</b>: DB time tăng 600s trong 300s đồng hồ = AAS 2.0 → trung bình 2 phiên bận liên tục. So với số core: AAS 2.0 / 2 core = kín máy.</li>
+      <li>Điểm mù tinh vi: 'DB CPU' chỉ đếm thời gian <b>thật sự cầm CPU</b> — thời gian <b>xếp hàng chờ CPU</b> (runqueue) không được ghi nhận ở đâu cả; nó hiện ra như "khoảng hụt" DB time − (DB CPU + Σwait). Host bão hòa CPU còn thổi phồng nhẹ mọi con số wait (đo giờ bị trễ).</li>
+      <li>Có time model riêng cho background (<code>stat_name LIKE 'background%'</code>) — script cố tình lọc bỏ để tập trung foreground; đừng cộng hai hệ vào nhau.</li>
+      <li>Trong PDB: V$SYS_TIME_MODEL chỉ thấy PDB hiện tại; đứng ở CDB root thấy tổng — đúng bài học "2 stream AWR CDB/PDB" của lab 9.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ <code>sql execute elapsed time</code> = 130% DB time — số liệu hỏng?</summary>
+  <p>Không — các stat lồng nhau + đo lũy kế, hoàn toàn hợp lệ.</p></details>
+</section>
+
+<!-- ============================ M4 ============================ -->
+<section class="model" id="m4">
+  <span class="mtag">M4</span>
+  <h2>Trục thời gian — chọn công cụ theo "độ tươi" của sự cố</h2>
+  <p class="lead">Sự cố càng nguội, độ phân giải càng thấp, kết luận càng phải thận trọng.</p>
+  <div class="viz">
+    <div class="timeline">
+      <div class="tl-bar"></div>
+      <div class="tl-labels"><span>🔥 NGAY BÂY GIỜ</span><span>🕐 vài phút</span><span>⏳ ~1 giờ</span><span>📅 8 ngày+</span></div>
+    </div>
+    <div class="tl-cards">
+      <div class="node n-red"><span class="ic">⚡</span><div><b>V$SESSION · V$LOCK · SQL Monitor</b><small>tức thời, chính xác — nhưng sự cố qua là <b>mất</b> <span class="ref">§2 §8 §9</span></small></div></div>
+      <div class="node n-orange"><span class="ic">🎞️</span><div><b>ASH (RAM)</b><small>sample 1s/lần — đủ tìm thủ phạm, không đếm chính xác <span class="ref">§3</span></small></div></div>
+      <div class="node n-amber"><span class="ic">🗂️</span><div><b>DBA_HIST_ASH</b><small>mẫu thưa 1/10, giữ theo retention</small></div></div>
+      <div class="node n-blue"><span class="ic">📚</span><div><b>AWR / Baseline</b><small>delta giữa 2 snapshot 60' — mất chi tiết khoảng giữa <span class="ref">§5</span></small></div></div>
+    </div>
+    <div class="node n-violet" style="margin-top:12px"><span class="ic">🔬</span><div><b>SQL Trace + tkprof — đường riêng "cần chi tiết TỪNG call"</b>
+      <small>Chính xác tuyệt đối nhưng <b>không nhìn lùi được</b> — phải BẬT TRƯỚC rồi tái hiện. Vì thế "làm ơn tái hiện lại lỗi" là câu cửa miệng của DBA <span class="ref">§7</span></small></div></div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — 4 câu hỏi chọn công cụ:</b>
+    <ol>
+      <li>"Sự cố CÒN đang diễn ra không?" — còn: V$ trực tiếp (rẻ, chính xác tuyệt đối). Hết rồi: <b>đừng phí thời gian soi V$SESSION</b> — nó đã sạch dấu vết.</li>
+      <li>Hết nhưng &lt; ~1 giờ: ASH trong RAM còn mẫu mịn 1 giây — <code>ash_now.sql</code> hoặc <code>ashrpt.sql</code> khoanh đúng đến phút.</li>
+      <li>Xa hơn: DBA_HIST (ASH thưa 1/10 + AWR delta) — chấp nhận độ phân giải thô, kết luận thận trọng hơn.</li>
+      <li>Vấn đề <b>tái hiện được</b> và cần mổ từng call: bật trace → tái hiện → tắt → tkprof. Trace không nhìn lùi được — đó là cái giá của độ chính xác tuyệt đối.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior)</summary>
+    <ul>
+      <li><b>Toán ASH</b>: mỗi mẫu ≈ 1 giây active → event chiếm 300 mẫu trong 5 phút ≈ 300s DB time ≈ AAS 1.0. Sự kiện hiếm (&lt; vài chục mẫu) nằm dưới sàn nhiễu sampling — <b>đừng kết luận từ 3 mẫu</b>.</li>
+      <li>DBA_HIST_ACTIVE_SESS_HISTORY giữ 1/10 mẫu (hiệu dụng 10s/điểm) — khi ước lượng giây từ nó phải <b>nhân 10</b>.</li>
+      <li>Interval AWR mặc định 60': sự cố 5 phút bị pha loãng 12 lần trong delta — vì thế lab luôn chụp snapshot <b>TAY</b> ngay trước/sau workload (awr_snap.sql).</li>
+      <li>Retention dài = SYSAUX phình — kiểm soát bằng lab 9-09 (awr_hygiene): đo dung lượng, purge snapshot rác, giữ baseline.</li>
+      <li><b>License</b>: ASH/AWR/ADDM cần Diagnostic Pack (<code>control_management_pack_access</code>); không có → Statspack (lab 11) — cùng triết lý snapshot-delta nhưng KHÔNG có ASH: mất hẳn lớp "vừa xong" của trục thời gian này.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ 2h sáng qua DB treo 10 phút, giờ là 9h sáng — dùng gì?</summary>
+  <p>AWR report bao 2 snapshot quanh 2h + <code>DBA_HIST_ACTIVE_SESS_HISTORY</code> lọc sample_time khung đó. V$ và ASH-RAM đều đã trôi.</p></details>
+</section>
+
+<!-- ============================ M5 ============================ -->
+<section class="model" id="m5">
+  <span class="mtag">M5 · TƯƠNG TÁC</span>
+  <h2>Bản đồ wait event → root cause — bấm event để lọc nghi phạm</h2>
+  <p class="lead">Kỹ năng quan trọng nhất: <b>một event có NHIỀU root cause</b> — thấy event chưa được kết luận, phải có bằng chứng phân biệt.</p>
+  <div class="viz">
+    <div class="evrow" id="evrow">
+      <button class="ev n-gray on" data-ev="all">Tất cả</button>
+      <button class="ev n-blue" data-ev="seq">db file sequential read</button>
+      <button class="ev n-blue" data-ev="sct">db file scattered read</button>
+      <button class="ev n-violet" data-ev="tmp">direct path … temp</button>
+      <button class="ev n-orange" data-ev="tx">enq: TX</button>
+      <button class="ev n-orange" data-ev="tm">enq: TM</button>
+      <button class="ev n-red" data-ev="mtx">library cache: mutex X</button>
+      <button class="ev n-red" data-ev="cbc">latch: cache buffers chains</button>
+      <button class="ev n-amber" data-ev="lfs">log file sync</button>
+    </div>
+    <div class="causes">
+      <div class="cause node n-aqua" data-ev="seq"><span class="ic">🗃️</span><div><b>Cache thiếu chỗ / bị bảng lớn chiếm</b><small>kiểm chứng: V$BH theo object <span class="ref">§12 M9</span></small></div></div>
+      <div class="cause node n-aqua" data-ev="seq"><span class="ic">🏠</span><div><b>Row migration: 1 row = 2 block I/O</b><small>kiểm chứng: 'table fetch continued row' tăng <span class="ref">§18 M13</span></small></div></div>
+      <div class="cause node n-aqua" data-ev="seq"><span class="ic">🌳</span><div><b>Index bloat / index access quá dày</b><small>kiểm chứng: INDEX_STATS.del_lf_rows <span class="ref">§17</span></small></div></div>
+      <div class="cause node n-blue" data-ev="sct"><span class="ic">🚫</span><div><b>Index UNUSABLE sau MOVE</b><small>kiểm chứng: dba_indexes.status &lt;&gt; 'VALID' <span class="ref">§16</span></small></div></div>
+      <div class="cause node n-blue" data-ev="sct"><span class="ic">🌊</span><div><b>HWM cao sau bulk delete</b><small>kiểm chứng: DBMS_SPACE + consistent gets không giảm <span class="ref">§19 M14</span></small></div></div>
+      <div class="cause node n-blue" data-ev="sct"><span class="ic">🧭</span><div><b>Plan sai: FTS thay vì index</b><small>kiểm chứng: DBMS_XPLAN.DISPLAY_CURSOR <span class="ref">§4</span></small></div></div>
+      <div class="cause node n-violet" data-ev="tmp"><span class="ic">🌡️</span><div><b>PGA thiếu — sort/hash tràn temp</b><small>kiểm chứng: V$SQL_WORKAREA.max_tempseg_size <span class="ref">§13 M10</span></small></div></div>
+      <div class="cause node n-orange" data-ev="tx"><span class="ic">🔒</span><div><b>App giữ transaction lâu / tranh cùng row</b><small>kiểm chứng: V$LOCK holder-waiter <span class="ref">§9 M6</span></small></div></div>
+      <div class="cause node n-orange" data-ev="tm"><span class="ic">🔗</span><div><b>FK thiếu index / direct-path APPEND giữ TM X</b><small>case ETL kinh điển lab 14 <span class="ref">§7 §9</span></small></div></div>
+      <div class="cause node n-red" data-ev="mtx"><span class="ic">🌀</span><div><b>Bão hard parse do literal</b><small>kiểm chứng: FORCE_MATCHING_SIGNATURE <span class="ref">§10 M7</span></small></div></div>
+      <div class="cause node n-red" data-ev="cbc"><span class="ic">🔥</span><div><b>Hot block bị đọc lặp</b><small>kiểm chứng: ASH current_obj# — fix khác hẳn parse! <span class="ref">§10</span></small></div></div>
+      <div class="cause node n-amber" data-ev="lfs"><span class="ic">📮</span><div><b>App commit từng row</b><small>kiểm chứng: parallel write NHANH mà sync CAO <span class="ref">§14 M11</span></small></div></div>
+      <div class="cause node n-amber" data-ev="lfs"><span class="ic">🐢</span><div><b>Đĩa redo chậm</b><small>kiểm chứng: parallel write avg_ms CAO <span class="ref">§14 M11</span></small></div></div>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b>
+    <ul>
+      <li>Ngược lại cũng đúng: MỘT root cause phát nhiều event — literal storm vừa gây mutex X vừa làm SQLA phình đuổi cursor app khác.</li>
+      <li>Event lớp <b>Idle không phải bệnh DB</b> — nhưng SQL*Net message from client chiếm áp đảo khi user than chậm = manh mối bệnh ở app/mạng (§21).</li>
+    </ul>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — dùng bản đồ này theo 4 nhịp:</b>
+    <ol>
+      <li>Xếp hạng theo <b>TIME_WAITED, không phải TOTAL_WAITS</b>: 1 triệu wait × 0.1ms (100s) thua xa 1 nghìn wait × 500ms (500s).</li>
+      <li>So <b>AVG_MS với "giá bình thường"</b> của event đó (bảng giá trong phần chuyên sâu): avg cao bất thường = tầng dưới chậm; avg bình thường nhưng tổng lớn = bị gọi quá nhiều lần — hai bệnh khác nhau, hai thuốc khác nhau.</li>
+      <li>Bấm chip event → liệt kê nghi phạm → chọn <b>bằng chứng phân biệt RẺ nhất</b> kiểm trước (một câu query dictionary rẻ hơn dựng lại workload).</li>
+      <li>Chỉ kết luận khi bằng chứng khớp. Một event → một bằng chứng → một root cause — không đi tắt bằng cảm giác "chắc là cache".</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — bảng giá avg_ms &amp; kỹ thuật truy ngược</summary>
+    <ul>
+      <li><b>Giá tham khảo</b> (đại khái, 19c): <code>db file sequential read</code> ~5–10ms trên HDD, &lt;1ms trên SSD/đã cache OS; <code>log file parallel write</code> tốt là &lt;1–2ms; <code>log file sync</code> tốt là &lt;5ms. Avg vượt xa các mốc này → tầng storage/OS có vấn đề thật.</li>
+      <li><b>P1/P2/P3 của db file*</b> = file#, block#, blocks → truy ngược object bằng ASH <code>current_obj#</code> hoặc <code>dba_extents</code> (file_id, block_id) — từ "chờ I/O" ra "chờ I/O trên BẢNG NÀO".</li>
+      <li><code>V$EVENT_HISTOGRAM</code> cho <b>phân bố</b> thay vì trung bình: nhiều wait nhanh + đuôi dài chậm = storage chập chờn — avg_ms che mất pattern này.</li>
+      <li>Idle không phải luôn vô tội: <code>SQL*Net message from client</code> của phiên <b>ĐANG GIỮ LOCK</b> là thủ phạm gián tiếp — nó ngồi rảnh trong khi cả hàng chờ nó (đúng kịch bản "đi ăn trưa" của M6).</li>
+      <li>Wait class chỉ là taxonomy để rẽ nhánh nhanh — kết luận cuối luôn ở mức event + tham số + bằng chứng object, không dừng ở "User I/O cao".</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ scattered read tăng vọt ngay sau đêm bảo trì có chạy ALTER TABLE MOVE — nghi phạm số 1? Lệnh kiểm chứng?</summary>
+  <p>Index UNUSABLE. <code>SELECT index_name, status FROM dba_indexes WHERE status &lt;&gt; 'VALID';</code></p></details>
+</section>
+
+<!-- ============================ M6 ============================ -->
+<section class="model" id="m6">
+  <span class="mtag">M6</span>
+  <h2>Điều tra lock — 3 thì + diễn biến một vụ enq: TX</h2>
+  <p class="lead">Thì của lock quyết định công cụ; kịch bản dưới đây là lab 19 từng bước.</p>
+  <div class="viz">
+    <div class="cols c3">
+      <div class="node n-red"><span class="ic">⚡</span><div><b>ĐANG sống</b><small>V$LOCK holder/waiter cùng (ID1,ID2,TYPE) + V$SESSION ROW_WAIT_* → truy đúng ROW <span class="ref">§9</span></small></div></div>
+      <div class="node n-orange"><span class="ic">🕐</span><div><b>VỪA chết</b><small>ASH: blocking_session + current_obj#/file#/block#/row# → dựng lại hiện trường <span class="ref">§3</span></small></div></div>
+      <div class="node n-blue"><span class="ic">📅</span><div><b>Quá khứ</b><small>DBA_HIST_ASH — cùng cột, mẫu thưa 1/10</small></div></div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--grid);margin:16px 0">
+    <div class="actors"><span style="color:var(--orange)">🔒 Session A (holder)</span><span style="color:var(--blue)">⏳ Session B (waiter) & DBA</span></div>
+    <div class="seq">
+      <div class="bub L n-orange"><b>A: UPDATE … WHERE id=100</b><small>chưa COMMIT → giữ TX lock: V$LOCK <b>LMODE=6, REQUEST=0</b></small></div><div class="num">1</div><div></div>
+      <div></div><div class="num">2</div><div class="bub R n-blue"><b>B: UPDATE cùng row id=100</b><small>treo — event <b>enq: TX - row lock contention</b>; V$LOCK <b>LMODE=0, REQUEST=6</b>, CÙNG (ID1,ID2) = transaction của A</small></div>
+      <div></div><div class="num">3</div><div class="bub R n-violet"><b>DBA: V$LOCK WHERE request&gt;0</b><small>→ lộ cặp holder/waiter tranh cùng tài nguyên</small></div>
+      <div></div><div class="num">4</div><div class="bub R n-violet"><b>DBA: V$SESSION của B → ROW_WAIT_*</b><small>DBMS_ROWID.ROWID_CREATE(...) → đọc ĐÚNG row id=100</small></div>
+      <div class="bub L n-green"><b>A: COMMIT (hoặc ROLLBACK)</b><small>→ lock nhả, cả hàng chờ chạy tiếp</small></div><div class="num">5</div><div></div>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b>
+    <ul>
+      <li>Mấu chốt: với enq: TX, <b>(ID1,ID2) là định danh TRANSACTION của holder</b> — bạn xếp hàng sau transaction, không phải sau row.</li>
+      <li>Chuỗi chờ dài: lần theo <code>blocking_session</code> về <b>gốc</b>; kill waiter giữa chuỗi là vô nghĩa. Kill là biện pháp cuối — hỏi nghiệp vụ trước.</li>
+      <li>SECONDS_IN_WAIT lớn + holder INACTIVE = ai đó mở transaction rồi… đi ăn trưa — bài toán con người, không phải tuning.</li>
+    </ul>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — thuật lại vụ án 5 bước:</b>
+    <ol>
+      <li>A giữ TX lock (LMODE=6) vì UPDATE chưa commit — và <b>hoàn toàn im lặng</b>: không event nào ở phía A, thủ phạm không bao giờ tự kêu.</li>
+      <li>B đụng cùng row → treo ở <code>enq: TX - row lock contention</code>, chờ <b>vô thời hạn</b> (enqueue xếp hàng trật tự, không "thử lại" như latch).</li>
+      <li>DBA: V$LOCK tìm các dòng cùng (ID1, ID2, TYPE) — một bên REQUEST&gt;0, một bên LMODE&gt;0 → xác nhận có chuỗi và biết ai là gốc.</li>
+      <li>V$SESSION của waiter cho ROW_WAIT_OBJ#/FILE#/BLOCK#/ROW# → DBMS_ROWID dựng lại ROWID → đọc được <b>đích danh row</b> đang tranh chấp.</li>
+      <li>Xử lý ở GỐC: yêu cầu A commit/rollback; kill chỉ khi nghiệp vụ cho phép — rollback transaction của người khác là quyết định nghiệp vụ, không phải quyết định kỹ thuật.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — mode 4, wait chains, deadlock</summary>
+    <ul>
+      <li>Chờ TX <b>mode 6</b> = row lock kinh điển. Chờ TX <b>mode 4</b> là chuyện khác hẳn: thiếu ITL (block hết chỗ ghi transaction → tăng INITRANS), chờ unique key trùng (2 phiên insert cùng PK chưa commit), hoặc FK không index.</li>
+      <li>Row lock nằm <b>ngay trong block</b> (ITL entry + lock byte trên row) — không có "bảng lock trung tâm", nên Oracle không bao giờ leo thang row→table lock dù 1 triệu row bị khóa.</li>
+      <li>12c+: <code>V$SESSION.FINAL_BLOCKING_SESSION</code> và <code>V$WAIT_CHAINS</code> gỡ sẵn chuỗi nhiều tầng A←B←C — khỏi tự đệ quy theo blocking_session.</li>
+      <li><b>Deadlock</b>: Oracle tự phát hiện, ORA-00060 rollback <i>câu lệnh</i> của một bên (không rollback cả transaction) + để lại trace file. Deadlock là lỗi thiết kế app (thứ tự update không nhất quán) — không phải lỗi DB.</li>
+      <li><code>enq: TM</code>: mọi DML lấy TM mode 3 trên bảng; direct-path APPEND lấy <b>mode 6 (X) cả bảng</b> → serialize mọi DML khác — đúng vụ án ETL của lab 14.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ Vì sao waiter hiển thị LMODE = 0?</summary>
+  <p>Nó CHƯA giữ gì trên tài nguyên đó — chỉ đang REQUEST mode 6.</p></details>
+</section>
+
+<!-- ============================ M7 ============================ -->
+<section class="model" id="m7">
+  <span class="mtag">M7</span>
+  <h2>Vòng xoáy literal storm — 3 điểm đặt thuốc</h2>
+  <p class="lead">Vòng xoáy TỰ NUÔI: bệnh của một app lan thành bệnh của mọi app. Thuốc càng gần gốc càng thật.</p>
+  <div class="viz">
+    <div class="loop">
+      <div class="node n-red"><span class="ic">1️⃣</span><div><b>App ghép literal</b><small>WHERE order_id = 12345</small></div></div>
+      <div class="node n-orange"><span class="ic">2️⃣</span><div><b>Mỗi giá trị = câu SQL MỚI</b><small>không tìm thấy trong library cache</small></div></div>
+      <div class="node n-orange"><span class="ic">3️⃣</span><div><b>HARD PARSE liên tục</b><small>đốt CPU + giữ <b>mutex X</b> → mọi phiên parse xếp hàng</small></div></div>
+      <div class="node n-amber"><span class="ic">4️⃣</span><div><b>Cursor rác chất đống</b><small>SQLA phình (V$SGASTAT) → pool đầy</small></div></div>
+      <div class="node n-red"><span class="ic">5️⃣</span><div><b>Age-out cursor TỐT của app khác</b><small>→ app vô tội cũng phải hard parse</small></div></div>
+    </div>
+    <div class="loopback">⟲ …vòng lại bước 3 — xoáy tự nuôi, nạn nhân lan rộng</div>
+    <div class="meds">
+      <div class="node n-green"><span class="ic">💊</span><div><b>THUỐC THẬT — cắt bước 1</b><small>Sửa code dùng <b>BIND</b>: WHERE order_id = :id. Máy dò gốc: FORCE_MATCHING_SIGNATURE <span class="ref">§10</span></small></div></div>
+      <div class="node n-amber"><span class="ic">🩹</span><div><b>Chữa cháy — cắt bước 2</b><small>CURSOR_SHARING=FORCE. ⚠️ Mất literal cho histogram → rủi ro plan xấu</small></div></div>
+      <div class="node n-red"><span class="ic">❌</span><div><b>TĂNG SHARED POOL — vô ích</b><small>Không cắt vòng nào, chỉ nới chỗ chứa rác. Advisory đo LÚC BÃO sẽ xui bạn làm điều này (M8)</small></div></div>
+    </div>
+  </div>
+  <div class="readme"><b>Đo tốc độ vòng xoáy:</b> delta <code>parse count (hard)</code> trong 15s — bình thường vài chục; bão = hàng trăm/nghìn (§10).</div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — vòng xoáy bằng số thật của lab 20:</b>
+    <ol>
+      <li>Một câu literal chạy vài nghìn lần = vài nghìn cursor riêng biệt <b>cùng FORCE_MATCHING_SIGNATURE</b> — máy dò chỉ cần GROUP BY signature là lộ.</li>
+      <li>Mỗi cursor mới = một hard parse: đốt CPU optimizer + <b>cầm mutex library cache</b> khi chèn cursor — mọi phiên khác muốn parse phải xếp hàng sau.</li>
+      <li>SQLA phình dần (xem V$SGASTAT trước/sau) → cursor tốt của app khác bị age-out → app vô tội cũng quay lại hard parse: <b>bão lan chuỗi</b> — đây là chỗ vòng xoáy "tự nuôi".</li>
+      <li>Fix bind ở lab 20-04: cùng workload, số cursor từ nghìn → 1, mutex wait gần như biến mất — <b>đo được</b>, không phải lý thuyết.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — child cursors, ORA-04031, ACS</summary>
+    <ul>
+      <li>Đã bind mà vẫn tranh mutex? Soi <b>VERSION_COUNT</b> (nhiều child cursor: khác bind length/type, optimizer env, Adaptive Cursor Sharing…) — <code>V$SQL_SHARED_CURSOR</code> nói lý do mismatch từng child. Nghìn child của 1 parent gây mutex y như nghìn parent.</li>
+      <li><b>ORA-04031</b> là giai đoạn cuối của pool phân mảnh vì cursor rác — <code>ALTER SYSTEM FLUSH SHARED_POOL</code> chỉ là hô hấp nhân tạo, bệnh quay lại ngay nếu không cắt vòng xoáy.</li>
+      <li>Lịch sử: mutex thay library cache latch từ 10g/11g — nhẹ hơn, granular hơn (per-cursor), nhưng nguyên lý tranh chấp không đổi; vì thế kỹ thuật chẩn đoán cũ vẫn dùng được.</li>
+      <li>CURSOR_SHARING=FORCE + <b>bind peeking</b>: plan bị "chốt" theo giá trị peek đầu tiên; ACS (11g+) sửa dần sau vài lần chạy sai — nghĩa là có giai đoạn chạy plan xấu trước khi tự chữa.</li>
+      <li>Soft parse cũng có giá (CPU + mutex nhẹ): <code>SESSION_CACHED_CURSORS</code> biến soft parse thành "softer parse" — đo bằng 'session cursor cache hits' (lab 21-04). Thứ tự tối ưu: hard→soft (bind), rồi soft→softer (cache), rồi mới nghĩ đến giảm parse call ở app.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ Vì sao CURSOR_SHARING=FORCE có thể làm một báo cáo đang nhanh thành chậm?</summary>
+  <p>Optimizer mất giá trị literal thật → không dùng được histogram trên cột lệch → plan xấu cho giá trị phổ biến.</p></details>
+</section>
+
+<!-- ============================ M8 ============================ -->
+<section class="model" id="m8">
+  <span class="mtag">M8</span>
+  <h2>Cách đọc mọi Advisory — đường cong lợi ích &amp; "điểm gãy khúc"</h2>
+  <p class="lead">Shared Pool · Buffer Cache · PGA — cả ba advisory đọc CÙNG MỘT KIỂU.</p>
+  <div class="viz">
+    <div class="chartwrap">
+    <svg viewBox="0 0 640 330" role="img" aria-label="Đường cong lợi ích advisory theo size, điểm gãy khúc tại factor 1.25">
+      <!-- gridlines -->
+      <g stroke="var(--grid)" stroke-width="1">
+        <line x1="70" y1="40" x2="600" y2="40"/><line x1="70" y1="100" x2="600" y2="100"/>
+        <line x1="70" y1="160" x2="600" y2="160"/><line x1="70" y1="220" x2="600" y2="220"/>
+      </g>
+      <line x1="70" y1="280" x2="600" y2="280" stroke="var(--muted)" stroke-width="1.5"/>
+      <line x1="70" y1="30" x2="70" y2="280" stroke="var(--muted)" stroke-width="1.5"/>
+      <!-- flat zone shade -->
+      <rect x="335" y="30" width="265" height="250" fill="var(--muted)" opacity="0.08"/>
+      <!-- curve: pts (0.5,180)(0.75,520)(1.0,700)(1.25,890)(1.5,925)(1.75,940)(2.0,948) scaled -->
+      <polyline fill="none" stroke="var(--blue)" stroke-width="2.5"
+        points="90,235 175,150 260,105 335,57 420,49 505,45 590,43"/>
+      <!-- current pos -->
+      <circle cx="260" cy="105" r="6" fill="var(--surface)" stroke="var(--orange)" stroke-width="3"/>
+      <text x="260" y="128" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--orange)">factor 1.00 = HIỆN TẠI</text>
+      <!-- knee -->
+      <circle cx="335" cy="57" r="7" fill="var(--good)"/>
+      <line x1="335" y1="57" x2="335" y2="280" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="342" y="48" font-size="12" font-weight="800" fill="var(--good)">📍 ĐIỂM GÃY KHÚC ≈ size tối ưu</text>
+      <text x="460" y="90" text-anchor="middle" font-size="11.5" fill="var(--ink2)">vùng phẳng — thêm RAM vô ích</text>
+      <!-- axis labels -->
+      <g font-size="11" fill="var(--muted)">
+        <text x="90" y="298" text-anchor="middle">0.50</text><text x="175" y="298" text-anchor="middle">0.75</text>
+        <text x="260" y="298" text-anchor="middle">1.00</text><text x="335" y="298" text-anchor="middle">1.25</text>
+        <text x="420" y="298" text-anchor="middle">1.50</text><text x="505" y="298" text-anchor="middle">1.75</text>
+        <text x="590" y="298" text-anchor="middle">2.00</text>
+      </g>
+      <text x="335" y="322" text-anchor="middle" font-size="12" font-weight="600" fill="var(--ink2)">size_factor (1.00 = size hiện tại)</text>
+      <text x="24" y="160" font-size="12" font-weight="600" fill="var(--ink2)" transform="rotate(-90 24 160)">Lợi ích ước tính</text>
+    </svg>
+    </div>
+    <div class="cols c2" style="margin-top:8px">
+      <div class="node n-red"><span class="ic">⛔</span><div><b>BƯỚC 0 — workload lúc đo có BÌNH THƯỜNG không?</b><small>Đang bão literal / lũ FTS nhân tạo → <b>ĐỪNG TIN</b>: advisory đang khuyên chữa TRIỆU CHỨNG. Trị bệnh gốc trước (M7, M9).</small></div></div>
+      <div class="node n-amber"><span class="ic">🔭</span><div><b>Tầm chiếu chỉ ~200% size hiện tại</b><small>Lợi ích nằm xa hơn 2x nó KHÔNG nói (Practice 23: 10MB→280MB phải leo thang nhiều nấc, mỗi nấc đọc lại advisory).</small></div></div>
+      <div class="node n-green"><span class="ic">✅</span><div><b>Tăng size → lợi ích TĂNG RÕ rồi phẳng</b><small>điểm gãy khúc = size đáng cân nhắc.</small></div></div>
+      <div class="node n-violet"><span class="ic">🧮</span><div><b>Riêng PGA</b><small>loại TRƯỚC mọi dòng <code>estd_overalloc_count &gt; 0</code>, rồi mới chọn theo hit% (§13).</small></div></div>
+    </div>
+  </div>
+  <div class="readme"><b>Ba view cùng khuôn:</b> V$SHARED_POOL_ADVICE (est_lc_time_saved ↑ tốt) · V$DB_CACHE_ADVICE (estd_physical_read_factor — đọc NGƯỢC: giảm mạnh = tốt) · V$PGA_TARGET_ADVICE (hit% + overalloc).</div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — đọc bảng advisory từng dòng:</b>
+    <ol>
+      <li>Tìm dòng <b>size_factor = 1.00</b> — đó là vị trí hiện tại của bạn trên đường cong.</li>
+      <li>Đọc XUỐNG các dòng size lớn hơn: cột lợi ích (est_time_saved / physical_read_factor) thay đổi thế nào so với dòng 1.00.</li>
+      <li>Tìm chỗ đường cong <b>đổi độ dốc</b> — trước dốc, sau phẳng: đó là "điểm gãy khúc", size đáng tiền. Sau điểm đó mỗi MB thêm mua được rất ít lợi ích.</li>
+      <li>TRƯỚC khi tin: tự hỏi <b>"workload lúc đo có đại diện không?"</b> — vừa có bão literal/lũ FTS thì đo lại lúc bình thường rồi mới quyết.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — cơ chế mô phỏng &amp; ASMM</summary>
+    <ul>
+      <li><b>Cơ chế</b>: Oracle nuôi một LRU "ma" — theo dõi block/cursor đã bị đuổi mà <i>sẽ hit nếu cache to hơn</i>, và block <i>sẽ miss nếu cache nhỏ hơn</i>. Cần <code>STATISTICS_LEVEL ≥ TYPICAL</code>.</li>
+      <li>Advisory <b>reset khi restart/flush</b> — sau restart phải chạy đủ workload đại diện rồi mới được đọc; đọc sớm là đọc số của một DB "mới ngủ dậy".</li>
+      <li><code>estd_physical_read_factor</code> là <b>tỉ số so với hiện tại</b> (1.0): giá trị 0.6 nghĩa là "còn 60% physical reads so với bây giờ", không phải "hit 60%".</li>
+      <li>Với SGA_TARGET (ASMM) các pool tự co giãn — advisory vẫn hữu ích để đặt <b>giá trị sàn</b> (vd shared_pool_size làm minimum); xem lịch sử co giãn ở <code>V$SGA_RESIZE_OPS</code> — pool bị co đúng giờ cao điểm là manh mối quý.</li>
+      <li>PGA advisory: hit% = bytes xử lý optimal / tổng bytes; <code>estd_overalloc_count &gt; 0</code> = target dưới mức tối thiểu hệ cần — <b>vùng cấm</b>, loại trước khi so hit% (§13).</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ Advisory buffer cache đọc lúc đang chạy "lũ FTS nhân tạo" của lab 22 sẽ khuyên gì, vì sao không nghe?</summary>
+  <p>Khuyên tăng cache thật to — nhưng lũ FTS là workload bất thường/một lần; nghe theo là mua RAM cho sự kiện không lặp lại.</p></details>
+</section>
+
+<!-- ============================ M9 ============================ -->
+<section class="model" id="m9">
+  <span class="mtag">M9</span>
+  <h2>Buffer cache: lũ FTS đuổi bảng nóng → cách ly bằng KEEP pool</h2>
+  <p class="lead">🔥 = block bảng nóng nhỏ · 🌊 = block lũ FTS bảng lớn · ⬜ = free.</p>
+  <div class="viz">
+    <div class="cols c2">
+      <div class="panel">
+        <h4>① TRƯỚC — một pool DEFAULT chung</h4>
+        <div class="blockrow">
+          <div class="bk hot"></div><div class="bk hot"></div><div class="bk hot"></div><div class="bk hot"></div><div class="bk hot"></div><div class="bk hot"></div><div class="bk hot"></div><div class="bk hot"></div><div class="bk"></div><div class="bk"></div><div class="bk"></div><div class="bk"></div><div class="bk"></div><div class="bk"></div><div class="bk"></div><div class="bk"></div>
+        </div>
+        <small>Bảng nóng ấm cache, đọc logic thuần → nhanh.</small>
+        <h4 style="margin-top:12px">② Lũ FTS tràn vào — LRU đuổi block nóng</h4>
+        <div class="blockrow">
+          <div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk hot"></div><div class="bk hot"></div><div class="bk wave"></div>
+        </div>
+        <small>Block FTS vào đầu-lạnh LRU nhưng <b>số lượng áp đảo</b> → bảng nóng phải đọc lại từ DISK mỗi đợt lũ.<br>📷 V$BH: block bảng nóng ít dần · db file sequential read tăng.</small>
+      </div>
+      <div class="panel">
+        <h4>③ SAU — cách ly bằng KEEP pool</h4>
+        <div class="poolbox"><span class="cap">KEEP POOL 64MB — chứa TRỌN bảng nóng (ALTER TABLE … BUFFER_POOL KEEP)</span>
+          <div class="blockrow"><div class="bk keep"></div><div class="bk keep"></div><div class="bk keep"></div><div class="bk keep"></div><div class="bk keep"></div><div class="bk keep"></div><div class="bk keep"></div><div class="bk keep"></div></div>
+        </div>
+        <div class="poolbox default"><span class="cap">DEFAULT POOL — lũ FTS tự do ra vào, không đụng được bảng nóng</span>
+          <div class="blockrow"><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div><div class="bk wave"></div></div>
+        </div>
+        <small>Chứng minh (lab 22 · 04_fix): physical_reads của reader ≈ 0 sau khi block đã ấm trong KEEP.</small>
+      </div>
+    </div>
+    <div class="flow" style="margin-top:14px">
+      <div class="node n-green"><span class="ic">1</span><div><b>Ưu tiên 1: tune SQL gây lũ FTS</b><small>vì sao nó FTS? plan? thiếu index?</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-aqua"><span class="ic">2</span><div><b>Ưu tiên 2: cách ly KEEP pool</b><small>chỉ có nghĩa khi chứa TRỌN object</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-amber"><span class="ic">3</span><div><b>Ưu tiên 3: tăng DEFAULT cache</b><small>theo advisory M8</small></div></div>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b> hit% tổng thể có thể vẫn "đẹp" (95%+) trong khi bảng nóng khổ sở — phải nhìn <code>V$BH</code> theo object, đừng chỉ nhìn hit%. KEEP nhỏ hơn object → vẫn bị đuổi ngay trong KEEP (đo <code>user_segments.bytes</code> trước).</div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — kịch bản lũ 4 nhịp:</b>
+    <ol>
+      <li>Trước lũ: reader đọc bảng nóng toàn logical read (block đã ấm trong cache) — nhanh, physical reads ≈ 0.</li>
+      <li>Lũ FTS bảng lớn tràn vào: từng block FTS "lạnh" nhưng <b>số lượng áp đảo</b> → LRU dần đẩy block nóng ra ngoài.</li>
+      <li>Reader giờ mỗi vòng phải đọc lại từ disk: <code>db file sequential read</code> nhảy vọt; V$BH cho thấy số block bảng nóng teo dần theo từng đợt lũ — đó là "video quay chậm" của vụ án.</li>
+      <li>Fix theo thang ưu tiên: tune SQL gây lũ (trị thủ phạm) → KEEP pool (cách ly nạn nhân) → tăng cache (nới nhà). Đảo thứ tự = chữa triệu chứng.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — LRU midpoint, direct path read, RECYCLE</summary>
+    <ul>
+      <li>Oracle đã tự vệ sẵn: block FTS vào <b>giữa LRU</b> (mid-point insertion) + touch count — block phải được đụng nhiều lần mới leo lên đầu nóng. Nhưng khi cache nhỏ, <b>số lượng vẫn thắng chất lượng</b>.</li>
+      <li>Bất ngờ 11g+: FTS bảng đủ lớn thường chuyển sang <b>direct path read — đọc thẳng vào PGA, KHÔNG qua buffer cache</b> → lũ kiểu này không đuổi ai (nhưng cũng không được ai cache giúp). Lab phải dùng bảng CACHE/hint để ép lũ đi qua cache — đọc header 01_setup của lab 22.</li>
+      <li>Ngưỡng "bảng nhỏ" được cache trọn khi FTS: khoảng ~2% cache (tham số ẩn small table threshold) — bảng vượt ngưỡng bị đối xử kiểu khác hẳn.</li>
+      <li><b>RECYCLE pool</b> = chiều ngược của KEEP: nhốt bảng "đi qua một lần" để nó không phá DEFAULT — ít dùng nhưng đúng chỗ thì rất gọn.</li>
+      <li>KEEP <b>không phải pin vĩnh viễn</b> — vẫn là một LRU riêng; tổng object gán vào KEEP lớn hơn KEEP thì chúng tự đuổi lẫn nhau, coi như không cách ly.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============================ M10 ============================ -->
+<section class="model" id="m10">
+  <span class="mtag">M10</span>
+  <h2>PGA — 3 số phận của một work area</h2>
+  <p class="lead">Cùng một câu sort/hash — số phận phụ thuộc work area được cấp bao nhiêu so với nhu cầu.</p>
+  <div class="viz">
+    <div class="cols c3">
+      <div class="node n-green"><span class="ic">✅</span><div><b>OPTIMAL</b><small>làm trọn trong RAM<br>📷 sorts (memory)++<br>V$SQL_WORKAREA: last_mem ≈ est_optimal, <b>temp = 0</b></small></div></div>
+      <div class="node n-amber"><span class="ic">⚠️</span><div><b>ONE-PASS</b><small>ghi ra temp 1 lượt rồi merge<br>📷 sorts (disk)++ · direct path write temp<br>last_mem &lt; est_optimal, <b>max_tempseg &gt; 0</b></small></div></div>
+      <div class="node n-red"><span class="ic">🔴</span><div><b>MULTI-PASS</b><small>đọc đi đọc lại temp — I/O nhân lên nhiều lần<br>= báo động đỏ</small></div></div>
+    </div>
+    <div class="vflow" style="margin-top:14px">
+      <div class="node n-violet"><span class="ic">❓</span><div><b>Vì sao bị bóp?</b><small>(a) PGA_AGGREGATE_TARGET quá nhỏ so với tổng nhu cầu MỌI phiên cùng lúc · (b) một SQL đòi work area khổng lồ (sort cả bảng, hash join bảng lớn)</small></div></div>
+      <div class="arr">↓</div>
+      <div class="flow">
+        <div class="node n-green"><span class="ic">💊</span><div><b>Nhu cầu chính đáng</b><small>tăng PGA_AGGREGATE_TARGET theo V$PGA_TARGET_ADVICE (M8, §13)</small></div></div>
+        <div class="node n-aqua"><span class="ic">✂️</span><div><b>SQL tham lam</b><small>bớt cột SELECT, index tránh sort, viết lại join</small></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="readme"><b>Lab 23 tái hiện bằng 1 tham số:</b> bóp SORT_AREA_SIZE=160KB (manual) → cùng câu SQL rơi từ OPTIMAL xuống ONE-PASS, sorts (disk)=1. Production không ai bóp tay — nhưng PGA target quá nhỏ gây ĐÚNG hiệu ứng đó cho mọi phiên cùng lúc. ONE-PASS thỉnh thoảng với batch = chấp nhận được; MULTI-PASS = đỏ.</div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — vật lý của 3 số phận:</b>
+    <ol>
+      <li><b>Optimal</b>: toàn bộ input vừa work area — sort đúng 1 lần trong RAM, không chạm đĩa.</li>
+      <li><b>One-pass</b>: input chia thành từng batch; mỗi batch sort trong RAM rồi ghi tạm ra temp; cuối cùng merge tất cả batch <b>một lượt duy nhất</b> — chậm hơn nhưng chấp nhận được.</li>
+      <li><b>Multi-pass</b>: work area nhỏ đến mức bước merge cũng không đủ chỗ → phải merge <b>nhiều vòng</b>, mỗi vòng đọc + ghi lại toàn bộ dữ liệu temp — I/O nhân bản theo số vòng, đây là thảm họa.</li>
+      <li>Đọc V$SQL_WORKAREA như hồ sơ bệnh án: <code>estimated_optimal_size</code> (cần bao nhiêu) vs <code>last_memory_used</code> (được cấp bao nhiêu) vs <code>max_tempseg_size</code> (tràn bao nhiêu).</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — quy tắc √, giới hạn 5%, ORA-04036</summary>
+    <ul>
+      <li><b>Quy tắc ngón cái</b>: one-pass chỉ cần work area cỡ ~√(kích thước input) nhân hệ số — input 1GB thường chỉ cần vài chục MB để one-pass. Vì thế thấy MULTI-PASS nghĩa là target sai <b>nghiêm trọng</b>, không phải thiếu chút đỉnh.</li>
+      <li>Một work area <b>serial</b> bị trần ~5% PGA_AGGREGATE_TARGET (giới hạn nội bộ) — target 100MB thì không câu nào được quá ~5MB <i>dù tổng PGA còn dư</i>: target nhỏ phạt cả câu chạy một mình.</li>
+      <li>PGA_AGGREGATE_TARGET là mục tiêu <b>mềm</b>; PGA_AGGREGATE_LIMIT (12c+) là trần <b>cứng</b> — chạm trần là ORA-04036 / call bị kill. Đừng nhầm hai tham số.</li>
+      <li>Temp I/O đi đường <b>direct path</b> (né buffer cache) — vì thế event là <code>direct path read/write temp</code> chứ không phải <code>db file …</code>; tăng buffer cache không giúp gì cho sort tràn.</li>
+      <li>Đang chạy mà muốn xem ai đang chiếm temp: <code>V$TEMPSEG_USAGE</code> (V$SORT_USAGE) — soi trực tiếp, khỏi chờ hậu kỳ.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============================ M11 ============================ -->
+<section class="model" id="m11">
+  <span class="mtag">M11</span>
+  <h2>Đường đi của COMMIT — "đo hai đầu một đường ống"</h2>
+  <p class="lead">Hai event đo <b>hai đoạn khác nhau</b> của cùng chuyến đi — hiệu của chúng chính là chẩn đoán.</p>
+  <div class="viz">
+    <div class="actors"><span style="color:var(--blue)">👤 Session (foreground)</span><span style="color:var(--yellow)">✍️ LGWR & đĩa redo</span></div>
+    <div class="seq">
+      <div class="bub L n-blue"><b>App: COMMIT</b><small>redo record đã nằm sẵn trong log buffer</small></div><div class="num">1</div><div></div>
+      <div class="bub L n-blue"><b>FG yêu cầu LGWR flush tới SCN</b><small>⏱️ FG bắt đầu chờ <b>log file sync</b> — đo TRỌN chuyến đi từ phía session</small></div><div class="num">2</div><div></div>
+      <div></div><div class="num">3</div><div class="bub R n-amber"><b>LGWR ghi batch redo xuống đĩa</b><small>⏱️ <b>log file parallel write</b> — chỉ đoạn CHẠM ĐĨA, đo từ phía LGWR</small></div>
+      <div></div><div class="num">4</div><div class="bub R n-amber"><b>Đĩa báo ghi xong → LGWR báo FG</b><small>SCN đã bền vững</small></div>
+      <div class="bub L n-green"><b>COMMIT thành công</b><small>FG hết chờ log file sync</small></div><div class="num">5</div><div></div>
+    </div>
+    <div class="span-note">
+      <div class="sp n-blue"><b>log file sync</b> = bước 2→5 (xếp hàng + báo hiệu + đĩa)</div>
+      <div class="sp n-amber"><b>log file parallel write</b> = bước 3→4 (chỉ đĩa)</div>
+    </div>
+    <div class="cols c2" style="margin-top:12px">
+      <div class="node n-orange"><span class="ic">📮</span><div><b>sync CAO − write THẤP = XẾP HÀNG</b><small>đĩa vô tội, LGWR bị gọi quá dày → app commit từng row. 💊 sửa APP: commit theo batch (§14)</small></div></div>
+      <div class="node n-red"><span class="ic">🐢</span><div><b>cả sync và write đều CAO = ĐĨA</b><small>💊 chuyển redo sang storage nhanh, tách khỏi datafile (§14)</small></div></div>
+      <div class="node n-amber"><span class="ic">📦</span><div><b>log buffer space</b><small>buffer đầy trước khi LGWR kịp xả — thường vẫn là đĩa chậm hoặc redo size bùng nổ</small></div></div>
+      <div class="node n-blue"><span class="ic">🔄</span><div><b>Log switch mỗi vài phút (V$LOG_HISTORY)</b><small>redo log quá nhỏ → tăng size group</small></div></div>
+    </div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — vì sao "đo hai đầu ống" là chìa khóa:</b>
+    <ol>
+      <li>FG không tự ghi đĩa — nó <b>NHỜ</b> LGWR rồi ngủ chờ: đồng hồ <code>log file sync</code> bắt đầu chạy từ lúc nhờ.</li>
+      <li>LGWR gom redo của <b>nhiều phiên commit gần nhau</b> và ghi MỘT nhát (group commit) — đồng hồ <code>log file parallel write</code> chỉ đo nhát ghi này.</li>
+      <li>Đĩa xong → LGWR đánh thức các FG đang chờ — sync kết thúc.</li>
+      <li>So hai đồng hồ: sync ≈ write → mọi thời gian là đĩa thật; sync ≫ write → thời gian mất ở <b>xếp hàng/báo thức</b>, đĩa vô tội — thay đĩa không giúp gì.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — nguyên nhân thứ 3, group commit, NOWAIT</summary>
+    <ul>
+      <li><b>Nguyên nhân thứ 3 hay bị quên: host thiếu CPU</b> — LGWR ghi xong nhưng FG chậm được cấp CPU để "tỉnh dậy" → sync cao, write thấp, mà app KHÔNG hề commit dày. Đối chiếu M12 trước khi kết tội app.</li>
+      <li><b>Group commit</b> là lý do avg sync có thể GIẢM khi tải tăng: một nhát ghi trả nợ cho nhiều commit — nghịch lý dễ gây hoang mang khi đọc AWR hai khung giờ.</li>
+      <li>11g+ <b>adaptive log file sync</b>: FG tự chuyển giữa post/wait và polling — thấy statistic/trace nhắc chuyện đổi chế độ là bình thường, không phải lỗi.</li>
+      <li><code>COMMIT WRITE BATCH NOWAIT</code>: đổi độ bền lấy tốc độ — crash có thể mất vài giao dịch cuối. Chỉ dành cho dữ liệu chấp nhận mất (log sự kiện, metrics), không bao giờ cho tiền.</li>
+      <li>Private redo strands giảm tranh 'redo allocation latch' khi nhiều phiên cùng sinh redo — tự động từ 10g, biết để đọc AWR khỏi hoảng khi thấy tên nó.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ OLTP commit từng row: sync avg 4ms, parallel write avg 0.4ms — thuốc là gì?</summary>
+  <p>Gộp commit theo batch ở app — thay đĩa không giúp gì đáng kể (chênh 10x là xếp hàng, không phải I/O).</p></details>
+</section>
+
+<!-- ============================ M12 ============================ -->
+<section class="model" id="m12">
+  <span class="mtag">M12</span>
+  <h2>Ma trận CPU 4 ô — Host %busy × DB CPU</h2>
+  <p class="lead">Toàn bộ Section 25 nén vào một phép so sánh 2 delta: <code>%busy = ΔBUSY/(ΔBUSY+ΔIDLE)</code> (V$OSSTAT, 2 mẫu cách 30s) vs <code>ΔDB CPU/(30s × NUM_CPUS)</code>.</p>
+  <div class="viz">
+    <div class="quad">
+      <div class="ylab">Host %busy →</div>
+      <div class="cell" style="background:color-mix(in srgb,var(--critical) 12%,var(--surface));border:1.5px solid var(--critical)">
+        <b>🚨 Host bận + DB CPU thấp</b><small>Process NGOÀI DB chiếm CPU (backup, batch OS, VM hàng xóm) → <code>top</code> + cầu SPID <span class="ref">§22</span>. Cú lừa kinh điển: mọi chỉ số DB đều đẹp!</small></div>
+      <div class="cell" style="background:color-mix(in srgb,var(--serious) 13%,var(--surface));border:1.5px solid var(--serious)">
+        <b>🔥 Host bận + DB CPU cao</b><small>Thủ phạm TRONG DB → <code>top_sql.sql CPU</code> → plan sai / FTS lặp / hard parse (M7) <span class="ref">§15</span></small></div>
+      <div class="cell" style="background:color-mix(in srgb,var(--good) 10%,var(--surface));border:1.5px solid var(--good)">
+        <b>😌 Host rảnh + DB CPU thấp</b><small>Không có vấn đề CPU — quay lại M1 tìm hướng khác.</small></div>
+      <div class="cell" style="background:color-mix(in srgb,var(--warn) 14%,var(--surface));border:1.5px solid var(--warn)">
+        <b>🤔 Host còn dư + DB CPU cao</b><small>DB bận làm việc thật — CHƯA phải bottleneck. Chỉ báo động khi host bão hòa (vmstat cột <code>r</code> &gt; số core).</small></div>
+      <div class="xlab">DB CPU →</div>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b> ô vàng hay bị hiểu nhầm nhất — <code>DB CPU ≈ DB time</code> (M3) chưa chắc là bệnh, chỉ là "DB đang bận thật"; ASH toàn ON CPU vẫn OK nếu runqueue &lt; số core.</div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — công thức tính bằng ví dụ số:</b>
+    <ol>
+      <li>Lấy mẫu 1: BUSY_TIME, IDLE_TIME từ V$OSSTAT. Chờ 30 giây. Lấy mẫu 2 (kỹ thuật <code>cpu_sample.sql</code> lab 25).</li>
+      <li>%busy host = ΔBUSY/(ΔBUSY+ΔIDLE). Ví dụ Δbusy=5400, Δidle=600 (centisecond) → host bận <b>90%</b>.</li>
+      <li>Cùng 30s đó: ΔDB CPU = 27s → quy đổi 27/(30 × 2 core) = <b>45%</b>. Hụt 45 điểm so với 90% → <b>một nửa CPU đang bị ai đó NGOÀI DB ăn</b> → vào VM chạy top, bắc cầu SPID.</li>
+      <li>Đối chiếu vmstat: cột <code>r</code> &gt; số core = bão hòa thật (có xếp hàng); <code>st</code> &gt; 0 = hypervisor/VM hàng xóm "ăn cắp" CPU.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — đơn vị, steal time, hyperthread</summary>
+    <ul>
+      <li><b>Bẫy đơn vị</b>: V$OSSTAT tính bằng centisecond (1/100s), Time Model bằng micro giây — trộn hai nguồn phải quy đổi, sai một hệ số là ma trận đọc ngược.</li>
+      <li>Trong máy ảo: cột <b>st (steal)</b> của vmstat = hypervisor lấy CPU phục vụ VM khác — DB lẫn OS guest đều "sạch" mà vẫn chậm. Đúng loại môi trường Vagrant/cloud của ta — luôn liếc st trước khi đào sâu.</li>
+      <li><b>NUM_CPUS đếm thread (hyperthread)</b>, không phải core vật lý — 2 thread/core không phải 2× công suất; hệ HT bão hòa sớm hơn con số %busy gợi ý.</li>
+      <li>Load average của Linux gồm cả process <b>D-state</b> (chờ I/O không ngắt được) — load cao chưa chắc CPU; cột <code>r</code> của vmstat mới là hàng đợi CPU thuần.</li>
+      <li>Chiều ngược lại — GIỚI HẠN DB ăn CPU: CPU_COUNT (instance caging) + Resource Manager; dao hai lưỡi vì chính nó tạo wait <code>resmgr: cpu quantum</code> — thấy event này là biết DB đang bị "phanh" có chủ đích.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============================ M13 ============================ -->
+<section class="model" id="m13">
+  <span class="mtag">M13</span>
+  <h2>Row Migration vs Chaining — nhìn ở tầng block</h2>
+  <p class="lead">Hai bệnh, MỘT chỉ số gộp (CHAIN_CNT) — phân biệt bằng AVG_ROW_LEN vì thuốc hoàn toàn khác nhau.</p>
+  <div class="viz">
+    <div class="cols c2">
+      <div class="panel">
+        <h4>🏠 MIGRATION — row VỪA block nhưng bị "chuyển nhà"</h4>
+        <div class="flow" style="flex-wrap:nowrap">
+          <div class="blk8k"><span class="cap">BLOCK GỐC (8K)</span>
+            <div class="rowbar"></div><div class="rowbar"></div>
+            <div class="rowbar stub"></div>
+            <small style="font-size:10.5px;color:var(--orange)">🏷️ forwarding stub — ROWID cũ, index vẫn trỏ về đây</small>
+          </div>
+          <div class="bigarr">➜</div>
+          <div class="blk8k"><span class="cap">BLOCK MỚI (8K)</span>
+            <div class="rowbar big" style="height:26px"></div>
+            <small style="font-size:10.5px;color:var(--ink2)">row đầy đủ — sau UPDATE phình, block gốc hết PCTFREE</small>
+          </div>
+        </div>
+        <small><b>Giá phải trả: đọc 1 row = 2 block I/O.</b> ROWID không đổi nên index khỏi sửa — đó là lý do triệu chứng là buffer_gets/exec tăng mà bảng không to lên.</small>
+      </div>
+      <div class="panel">
+        <h4>⛓️ CHAINING — row TO HƠN block, không block nào chứa nổi</h4>
+        <div class="flow" style="flex-wrap:nowrap">
+          <div class="blk8k" style="min-height:70px"><span class="cap">BLOCK 1</span><div class="rowbar big"></div><small style="font-size:10.5px">mảnh 1/3</small></div>
+          <div class="bigarr" style="color:var(--violet)">➜</div>
+          <div class="blk8k" style="min-height:70px"><span class="cap">BLOCK 2</span><div class="rowbar big"></div><small style="font-size:10.5px">mảnh 2/3</small></div>
+          <div class="bigarr" style="color:var(--violet)">➜</div>
+          <div class="blk8k" style="min-height:70px"><span class="cap">BLOCK 3</span><div class="rowbar big"></div><small style="font-size:10.5px">mảnh 3/3</small></div>
+        </div>
+        <small>Row quá khổ bẩm sinh — <b>PCTFREE không cứu được</b>.</small>
+      </div>
+    </div>
+    <div class="vflow" style="margin-top:14px">
+      <div class="node n-blue"><span class="ic">🔎</span><div><b>Nghi ngờ khi:</b><small>buffer_gets/exec tăng dần · db file sequential read nhiều · <code>table fetch continued row</code> tăng. ⚠️ DBMS_STATS KHÔNG đếm chain → phải <code>ANALYZE TABLE … COMPUTE STATISTICS</code></small></div></div>
+      <div class="arr">↓ CHAIN_CNT &gt; 0 → nhìn AVG_ROW_LEN</div>
+      <div class="flow">
+        <div class="node n-green"><span class="ic">🏠</span><div><b>AVG_ROW_LEN ≪ 8K (vd ~450 bytes) = MIGRATION</b><small>💊 ALTER TABLE … PCTFREE 20 + MOVE ONLINE, rồi <b>REBUILD INDEX</b> (MOVE làm index UNUSABLE!). Số thật lab 28: ~33% migrate → ≈0.</small></div></div>
+        <div class="node n-violet"><span class="ic">⛓️</span><div><b>AVG_ROW_LEN ≳ 8K = CHAINING</b><small>💊 tablespace block 32K / tách cột / LOB (lab 28-05). PCTFREE vô dụng.</small></div></div>
+      </div>
+      <div class="arr">↓</div>
+      <div class="node n-amber"><span class="ic">🧹</span><div><b>Dọn stats sau ANALYZE</b><small><code>DBMS_STATS.GATHER_TABLE_STATS</code> lại — ANALYZE ghi đè optimizer stats kiểu cũ (deprecated).</small></div></div>
+    </div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — đời một row bị chuyển nhà:</b>
+    <ol>
+      <li>Row sinh ra vừa vặn trong block. Rồi UPDATE làm nó phình (cột NOTE dài ra) — block gốc không còn chỗ vì phần dự trữ PCTFREE đã cạn.</li>
+      <li>Oracle chuyển <b>cả row</b> sang block mới, để lại stub trỏ đi — <b>ROWID cũ giữ nguyên</b> nên mọi index không phải sửa. Đó là một đánh đổi có chủ đích: sửa index đắt hơn nhiều.</li>
+      <li>Cái giá trả dần về sau: mỗi lần truy cập qua index/rowid = 2 block thay vì 1; stat <code>table fetch continued row</code> đếm đúng mỗi lần đi theo stub.</li>
+      <li>Chaining là chuyện khác hẳn: row to hơn block <b>ngay từ đầu</b> — không cách "chuyển nhà" nào cứu được, phải đổi nhà to hơn (block 32K) hoặc tách bớt đồ (tách cột, LOB).</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — ai bị phạt, ai thoát; PCTFREE math</summary>
+    <ul>
+      <li><b>Chỉ UPDATE gây migration</b> — INSERT tự chọn block đủ chỗ. Bảng insert-only không bao giờ migrate; thấy CHAIN_CNT ở bảng như vậy → nghĩ đến chaining thật hoặc bảng &gt;255 cột.</li>
+      <li>Điểm tinh tế ít người biết: <b>FTS hầu như KHÔNG bị migration phạt</b> — FTS quét mọi block, gặp stub thì bỏ qua (row đằng nào cũng gặp ở block mới); nạn nhân nặng nhất là truy cập <b>index/rowid</b>. Chaining thì phạt tất cả các kiểu truy cập.</li>
+      <li>Bảng <b>&gt;255 cột</b>: intra-block chaining bẩm sinh (row piece tối đa 255 cột) — CHAIN_CNT cao "vô phương" với PCTFREE; đây là lỗi thiết kế schema.</li>
+      <li><b>PCTFREE là tiền đặt cọc chỗ phình</b>: ước lượng % tăng kích thước row sau update rồi đặt xấp xỉ. Đặt quá cao cũng có giá — block rỗng ruột, tốn cache/disk cho khoảng trống.</li>
+      <li>MOVE đổi ROWID: app nào cache rowid phải biết trước; và MOVE làm <b>index UNUSABLE</b> — quên rebuild là I/O bùng nổ ngay hôm sau (chính là nghi phạm R4 của M5/§16).</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============================ M14 ============================ -->
+<section class="model" id="m14">
+  <span class="mtag">M14</span>
+  <h2>HWM — vì sao DELETE xong FTS vẫn chậm?</h2>
+  <p class="lead">🟦 = block còn data · ⬜ = block RỖNG · <span style="color:var(--critical);font-weight:700">┆HWM┆</span> = mực nước từng dâng cao nhất. FTS quét TỚI HWM, không quét "tới data".</p>
+  <div class="viz">
+    <div class="frame"><h4>① Bảng đầy — HWM ở block 20</h4>
+      <div class="hwmwrap"><div class="blockrow">
+        <div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div><div class="bk data"></div>
+      </div><div class="hwm" style="right:-6px"><span>HWM</span></div></div>
+    </div>
+    <div class="frame"><h4>② Sau bulk DELETE 90% — HWM VẪN ở block 20</h4>
+      <div class="hwmwrap"><div class="blockrow">
+        <div class="bk data"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk data"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div><div class="bk empty"></div>
+      </div><div class="hwm" style="right:-6px"><span>HWM</span></div></div>
+      <small>DELETE rút nước nhưng <b>không hạ vạch</b>.</small>
+    </div>
+    <div class="frame"><h4>③ FTS vẫn đọc đủ 20 block — kể cả 18 block rỗng</h4>
+      <div class="scan"></div>
+      <small>📷 <code>consistent gets</code> KHÔNG giảm sau DELETE — đó là bằng chứng vàng (lab 29).</small>
+    </div>
+    <div class="frame" style="border-color:var(--good)"><h4 style="color:var(--good)">④ Fix: hạ HWM — SHRINK SPACE CASCADE</h4>
+      <div class="hwmwrap"><div class="blockrow">
+        <div class="bk data"></div><div class="bk data"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div><div class="bk empty" style="opacity:.25"></div>
+      </div><div class="hwm" style="left:36px"><span>HWM</span></div></div>
+      <small><code>ALTER TABLE … ENABLE ROW MOVEMENT; ALTER TABLE … SHRINK SPACE CASCADE;</code> → FTS chỉ còn đọc ~2 block.</small>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b>
+    <ul>
+      <li>3 góc đo cùng một sự thật (lab 29): <code>blocks</code> cao + <code>avg_space</code> lớn · DBMS_SPACE nhiều block FS4-trống · consistent gets không giảm. Khớp cả ba mới kết luận.</li>
+      <li>⚠️ Fragment <b>chỉ phạt FTS, không phạt index access</b> (rowid trỏ thẳng block) — workload toàn index thì shrink không cấp bách.</li>
+      <li>SHRINK đổi ROWID (cần ROW MOVEMENT), giành lock từng đợt — DML dày dễ ORA-00054; làm ngoài giờ cao điểm.</li>
+    </ul>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — vụ án "archive xong vẫn chậm":</b>
+    <ol>
+      <li>Bảng từng chứa 1 triệu row — HWM dâng tới block 1000 (mực nước cao nhất từng đạt).</li>
+      <li>Nghiệp vụ archive DELETE 90% — dữ liệu còn ~100 block, nhưng HWM <b>vẫn đứng ở 1000</b>: DELETE rút nước, không hạ vạch.</li>
+      <li>FTS đọc theo extent map <b>tới HWM</b>: vẫn đủ 1000 block — <code>consistent gets</code> y nguyên, user không thấy nhanh hơn tí nào, và bắt đầu nghi ngờ "archive vô dụng".</li>
+      <li>SHRINK: dồn row về đầu segment (compact) rồi hạ HWM → FTS còn ~100 block. Index access thì trước sau như một — rowid trỏ thẳng block, kệ HWM.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — vì sao FTS "ngu", SHRINK 2 pha, so găng các fix</summary>
+    <ul>
+      <li><b>Vì sao FTS không né block rỗng?</b> Nó không biết block nào rỗng cho tới khi ĐỌC — extent map/bitmap ASSM (L1/L2) chỉ nói "block thuộc segment, còn chỗ trống bao nhiêu để GHI", không nói "có đáng ĐỌC không".</li>
+      <li><b>SHRINK 2 pha</b>: COMPACT (di row online từng đợt lock nhỏ) + hạ HWM (khóa exclusive <i>ngắn</i> cuối lệnh). Tách được: <code>SHRINK SPACE COMPACT</code> chạy dần trong giờ thấp điểm, hạ HWM sau bằng lệnh SHRINK đầy đủ.</li>
+      <li><b>So găng</b>: SHRINK (online, cần ROW MOVEMENT + ASSM, giữ index dùng được) vs MOVE (nhanh gọn nhưng index UNUSABLE + đòi 2× chỗ) vs online redefinition/CTAS (linh hoạt nhất, phức tạp nhất). Chọn theo cửa sổ bảo trì và mức chịu lock.</li>
+      <li>Direct path read của FTS <b>cũng đọc tới HWM</b> — đổi đường đọc không né được bệnh này; chỉ hạ HWM mới trị gốc.</li>
+      <li>Tự động hóa phát hiện: <b>Segment Advisor</b> (chạy trong auto task đêm — lab 17) ghi khuyến nghị shrink vào <code>DBA_ADVISOR_FINDINGS</code> — đáng liếc định kỳ thay vì chờ user than.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============================ M15 ============================ -->
+<section class="model" id="m15">
+  <span class="mtag">M15</span>
+  <h2>Vòng đời một cuộc tuning — DỰ ĐOÁN là linh hồn</h2>
+  <div class="viz">
+    <div class="flow">
+      <div class="node n-blue"><span class="ic">🧪</span><div><b>01 setup</b><small>tái tạo vấn đề có kiểm soát</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-blue"><span class="ic">📏</span><div><b>02 workload</b><small>chạy tải + <b>ĐO BASELINE</b> (AWR snap B / before_after BEGIN)</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-aqua"><span class="ic">🔬</span><div><b>03 diagnose</b><small>chứng minh root cause <b>BẰNG SỐ</b>, không đoán</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-violet" style="border-width:2px"><span class="ic">🎯</span><div><b>DỰ ĐOÁN</b><small>"sau fix, chỉ số X sẽ về ~Y"</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-green"><span class="ic">🔧</span><div><b>04 fix</b><small>sửa ĐÚNG nguyên nhân + chạy lại <b>CÙNG</b> workload</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-amber"><span class="ic">⚖️</span><div><b>Đo lại, so baseline</b><small>AWR snap E / before_after END</small></div></div>
+    </div>
+    <div class="cols c2" style="margin-top:14px">
+      <div class="node n-green"><span class="ic">✅</span><div><b>Số KHỚP dự đoán</b><small>hiểu đúng cơ chế → 99_cleanup, ghi progress.md</small></div></div>
+      <div class="node n-red"><span class="ic">🔁</span><div><b>Số KHÔNG khớp — quay lại 03</b><small>mô hình trong đầu sai ở đâu? biến số nào bỏ sót? <b>Đây là lúc HỌC được nhiều nhất</b> — dự đoán trượt không phải thất bại.</small></div></div>
+    </div>
+  </div>
+  <div class="readme"><b>Cách đọc:</b> không có dự đoán thì "đo lại" chỉ là xem số, không phải kiểm định giả thuyết. "Cùng workload" khi đo lại là bắt buộc — đổi tải giữa chừng thì so sánh vô nghĩa.</div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — nghi thức 4 bước trước và sau fix:</b>
+    <ol>
+      <li>TRƯỚC fix: chốt <b>chỉ số thành công</b> (physical reads? elapsed? sync avg?) và ghi lại số baseline của đúng chỉ số đó.</li>
+      <li>Viết dự đoán <b>ra giấy, có con số</b>: "PCTFREE 20 + MOVE → chain_cnt ≈ 0, buffer_gets/exec giảm ~40%". Dự đoán mơ hồ ("chắc sẽ nhanh hơn") không kiểm định được.</li>
+      <li>Fix <b>MỘT biến duy nhất</b>. Chạy lại CÙNG workload, cùng điều kiện.</li>
+      <li>So số: khớp → mental model đúng, chốt bài; lệch → mở lại 03_diagnose, truy biến bỏ sót (cache ấm? stats đổi? tải nền?) — và đây mới là lúc học sâu nhất.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — các nguồn sai số đo lường</summary>
+    <ul>
+      <li><b>Bẫy cache ấm</b>: lần chạy 2 nhanh hơn lần 1 <i>chỉ vì</i> block đã nằm trong cache — chạy 2 lần bỏ lần đầu, hoặc so <b>logical reads</b> (miễn nhiễm cache) thay vì elapsed time.</li>
+      <li>Số dao động → <b>đo 3 lần lấy trung vị</b>; một lần đo không phải bằng chứng, là giai thoại.</li>
+      <li><b>Một biến mỗi lần</b>: fix 3 thứ cùng lúc mà nhanh lên thì không biết cái nào ăn — và không biết cái nào đang PHẢN tác dụng bị hai cái kia che mất.</li>
+      <li><b>Chi phí quan sát</b>: bật trace/AUTOTRACE cũng tốn tài nguyên — đừng so "lần có trace" với "lần không trace" rồi kết luận fix có tác dụng.</li>
+      <li>Production thêm 3 thứ: cửa sổ thay đổi được duyệt, <b>kế hoạch rollback viết TRƯỚC</b>, tiêu chí thành công chốt TRƯỚC khi chạm hệ thống — sửa xong mới định nghĩa "thành công" là gian lận với chính mình.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============================ M16 ============================ -->
+<section class="model" id="m16">
+  <span class="mtag">M16</span>
+  <h2>Bản đồ liên kết — mọi con đường dẫn về DB TIME</h2>
+  <p class="lead">Các chuyên đề là các trạm trên cùng mạng nhân quả. Che phần dưới, tự vẽ lại từ DB TIME xuống — vẽ trọn là nắm khung cả khóa.</p>
+  <div class="viz">
+    <div class="vflow">
+      <div class="node n-blue" style="max-width:420px;margin:0 auto;border-width:2px;text-align:center">
+        <div style="width:100%"><b style="font-size:16px">⏱️ DB TIME — mọi bệnh đều hiện ra ở đây</b></div></div>
+      <div class="arr">↙ &nbsp;&nbsp;&nbsp;&nbsp; ↘</div>
+      <div class="cols c2">
+        <div class="vflow">
+          <div class="node n-green"><span class="ic">🧮</span><div><b>DB CPU cao</b></div></div>
+          <div class="arr">↓</div>
+          <div class="node n-green"><span class="ic">·</span><div><small>SQL plan xấu / FTS lặp <span class="ref">§4</span> · Hard parse <span class="ref">§10 M7</span> · CPU ngoài DB <span class="ref">§15 §22 M12</span></small></div></div>
+        </div>
+        <div class="vflow">
+          <div class="node n-orange"><span class="ic">⏳</span><div><b>Wait cao</b></div></div>
+          <div class="arr">↓</div>
+          <div class="node n-orange"><span class="ic">·</span><div><small>User I/O · Lock <span class="ref">§9 M6</span> · Mutex/Latch · Commit <span class="ref">§14 M11</span> · Temp I/O <span class="ref">§13 M10</span></small></div></div>
+        </div>
+      </div>
+      <div class="arr">↓ User I/O phân rã tiếp ↓</div>
+      <div class="flow">
+        <div class="node n-aqua"><span class="ic">🗃️</span><div><b>Cache thiếu/bị chiếm</b> <span class="ref">§12 M9</span></div></div>
+        <div class="node n-aqua"><span class="ic">🏠</span><div><b>Row migration</b> <span class="ref">§18 M13</span><small>→ kéo theo cả index (MOVE!)</small></div></div>
+        <div class="node n-aqua"><span class="ic">🌊</span><div><b>HWM cao</b> <span class="ref">§19 M14</span></div></div>
+        <div class="node n-aqua"><span class="ic">🌳</span><div><b>Index bloat/UNUSABLE</b> <span class="ref">§17 §16</span></div></div>
+      </div>
+      <div class="cols c2" style="margin-top:6px">
+        <div class="node n-violet"><span class="ic">🔀</span><div><b>Liên kết chéo phải nhớ</b><small>Hard parse → Mutex + Shared pool phình <span class="ref">§11 M8</span> · SQL plan xấu → vừa CPU vừa I/O · ETL APPEND → Lock TM <span class="ref">§7</span> · một nút có thể có nhiều cha!</small></div></div>
+        <div class="node n-red" style="border-width:2px"><span class="ic">🚨</span><div><b>NGOẠI LỆ QUAN TRỌNG NHẤT: Round-trip dày <span class="ref">§21</span></b><small>KHÔNG hiện trong DB time — DB càng rảnh, app càng chậm. Gặp ca "mọi chỉ số DB đều đẹp mà user than trời" → nghĩ ngay nó (và CPU ngoài DB).</small></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — 3 cách dùng bản đồ này:</b>
+    <ol>
+      <li><b>Khung viết postmortem</b>: triệu chứng (lời user) → bằng chứng DB time → nhánh CPU/Wait → trạm chuyên đề → root cause → fix → delta đo được. Báo cáo sự cố nào cũng nên đi đủ chuỗi này.</li>
+      <li><b>Chống bias</b>: một nút có nhiều cha nhắc bạn LUÔN đi từ trên xuống — đừng nhảy thẳng vào trạm quen thuộc kiểu "lần trước là cache thì lần này chắc cũng cache".</li>
+      <li><b>Ôn tập chủ động</b>: che nửa dưới, tự vẽ lại từ DB TIME xuống; thiếu trạm nào — đó là chương cần học lại.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu (mức Senior) — DB time là đồng tiền chung</summary>
+    <ul>
+      <li><b>DB time là đồng tiền chung của tuning</b>: mọi cải thiện quy được về "giảm bao nhiêu giây DB time / AAS" — nhờ đó so sánh được giá trị của một fix I/O với một fix parse, và xếp hạng backlog tuning một cách khách quan.</li>
+      <li>Ở tầng OS, bản đồ nối sang <b>USE method</b> (Utilization–Saturation–Errors, §22): DB time nói "DB <i>cảm thấy</i> gì", USE nói "tài nguyên <i>thật ra</i> sao" — hai góc nhìn phải khớp nhau; lệch nhau chính là manh mối (vd DB kêu I/O chậm mà iostat nhàn → nghi tầng giữa/VM).</li>
+      <li>Hai điểm mù nằm NGOÀI bản đồ phải thuộc lòng: <b>round-trip/app</b> (DB rảnh) và <b>CPU ngoài DB</b> (host bận) — cả hai đều cho "mọi chỉ số DB đẹp" trong khi user khổ.</li>
+      <li>Nếu đi hết mọi nhánh đều "xanh" mà user vẫn than: quay lại <b>định nghĩa vấn đề</b> — chậm Ở ĐÂU, ĐO BẰNG GÌ, SO VỚI GÌ. Rất nhiều "sự cố" chết ngay ở câu hỏi này.</li>
+    </ul>
+  </details>
+</section>
+
+<div id="experts" style="margin-top:60px;padding-top:18px;border-top:2px solid var(--violet)">
+  <h2 style="font-size:22px;margin:0 0 6px">🧠 PHẦN MỞ RỘNG — mô hình của các chuyên gia (ngoài giáo trình)</h2>
+  <p style="color:var(--ink2);max-width:82ch;font-size:14px">Khóa học dạy <b>khung chẩn đoán chuẩn của Oracle</b> (M1–M16). Cộng đồng expert bổ sung 6 góc nhìn kinh điển mà giáo trình không đi sâu: <b>Cary Millsap</b> (Method R), <b>Craig Shallahamer</b> (3-circle), <b>Wolfgang Breitling</b> (Cardinality Feedback), <b>Tanel Poder</b> (session-first), cùng hai nền tảng toán học — <b>Little's Law/AAS</b> và <b>lý thuyết hàng đợi</b>. Chúng không thay thế M1–M16 mà trả lời những câu M1–M16 trả lời yếu: <i>"hệ tải đến mức nào thì gãy?"</i>, <i>"tune cho MỘT người dùng cụ thể?"</i>, <i>"vì sao plan sai?"</i>.</p>
+</div>
+
+<!-- ============================ E1 ============================ -->
+<section class="model" id="e1">
+  <span class="mtag expert">E1 · CHUYÊN GIA</span>
+  <h2>AAS &amp; Little's Law — "biểu đồ quan trọng nhất của Oracle performance"</h2>
+  <p class="lead">Kyle Hailey / John Beresniewicz (nhóm thiết kế màn Top Activity của OEM): thay vì hàng trăm chỉ số, chỉ cần MỘT đường — AAS theo thời gian, so với đường số core.</p>
+  <div class="viz">
+    <div class="chartwrap" style="max-width:680px">
+    <svg viewBox="0 0 640 320" role="img" aria-label="AAS theo thời gian, phân màu theo wait class, so với đường số CPU core">
+      <g stroke="var(--grid)" stroke-width="1">
+        <line x1="70" y1="80" x2="600" y2="80"/><line x1="70" y1="130" x2="600" y2="130"/>
+        <line x1="70" y1="230" x2="600" y2="230"/>
+      </g>
+      <line x1="70" y1="280" x2="600" y2="280" stroke="var(--muted)" stroke-width="1.5"/>
+      <line x1="70" y1="30" x2="70" y2="280" stroke="var(--muted)" stroke-width="1.5"/>
+      <!-- bars: CPU(green) / User IO(blue) / other wait(orange), 50px per AAS -->
+      <g stroke="var(--bg)" stroke-width="2">
+        <rect x="90"  y="255" width="44" height="25" fill="var(--green)"/><rect x="90"  y="240" width="44" height="15" fill="var(--blue)"/>
+        <rect x="152" y="245" width="44" height="35" fill="var(--green)"/><rect x="152" y="220" width="44" height="25" fill="var(--blue)"/><rect x="152" y="210" width="44" height="10" fill="var(--orange)"/>
+        <rect x="214" y="235" width="44" height="45" fill="var(--green)"/><rect x="214" y="195" width="44" height="40" fill="var(--blue)"/><rect x="214" y="180" width="44" height="15" fill="var(--orange)"/>
+        <rect x="276" y="230" width="44" height="50" fill="var(--green)"/><rect x="276" y="150" width="44" height="80" fill="var(--blue)"/><rect x="276" y="120" width="44" height="30" fill="var(--orange)"/>
+        <rect x="338" y="220" width="44" height="60" fill="var(--green)"/><rect x="338" y="110" width="44" height="110" fill="var(--blue)"/><rect x="338" y="60"  width="44" height="50" fill="var(--orange)"/>
+        <rect x="400" y="225" width="44" height="55" fill="var(--green)"/><rect x="400" y="135" width="44" height="90" fill="var(--blue)"/><rect x="400" y="100" width="44" height="35" fill="var(--orange)"/>
+        <rect x="462" y="240" width="44" height="40" fill="var(--green)"/><rect x="462" y="205" width="44" height="35" fill="var(--blue)"/><rect x="462" y="190" width="44" height="15" fill="var(--orange)"/>
+        <rect x="524" y="250" width="44" height="30" fill="var(--green)"/><rect x="524" y="230" width="44" height="20" fill="var(--blue)"/>
+      </g>
+      <!-- core line: AAS = 2 -->
+      <line x1="70" y1="180" x2="600" y2="180" stroke="var(--critical)" stroke-width="2" stroke-dasharray="7 5"/>
+      <text x="596" y="172" text-anchor="end" font-size="12" font-weight="800" fill="var(--critical)">số CPU core = 2 (srv1)</text>
+      <text x="360" y="48" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink2)">↑ vượt đường core = có XẾP HÀNG — user bắt đầu cảm nhận</text>
+      <g font-size="11" fill="var(--muted)">
+        <text x="64" y="284" text-anchor="end">0</text><text x="64" y="234" text-anchor="end">1</text>
+        <text x="64" y="184" text-anchor="end">2</text><text x="64" y="134" text-anchor="end">3</text><text x="64" y="84" text-anchor="end">4</text>
+      </g>
+      <text x="335" y="308" text-anchor="middle" font-size="12" font-weight="600" fill="var(--ink2)">thời gian →</text>
+      <text x="24" y="160" font-size="12" font-weight="600" fill="var(--ink2)" transform="rotate(-90 24 160)">AAS</text>
+    </svg>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;margin-top:4px">
+      <span><span style="display:inline-block;width:12px;height:12px;background:var(--green);border-radius:3px"></span> ON CPU</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:var(--blue);border-radius:3px"></span> User I/O</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:var(--orange);border-radius:3px"></span> wait khác</span>
+    </div>
+    <div class="node n-violet" style="margin-top:12px"><span class="ic">🧮</span><div><b>Little's Law: AAS = throughput × response time trung bình</b>
+      <small>AAS = ΔDB time / Δthời gian đồng hồ. Cùng một AAS 4.0 có thể là "400 giao dịch/s × 10ms" (khỏe) hoặc "4 giao dịch/s × 1s" (bệnh) — AAS cho biết ĐỘ BẬN, Little's Law nhắc bạn tách nó thành 2 thừa số để biết bận KIỂU GÌ.</small></div></div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc:</b>
+    <ol>
+      <li>Tính AAS cho khung giờ nghi vấn: ΔDB time / Δclock (từ AWR hoặc đếm mẫu ASH ÷ số giây).</li>
+      <li>So với <b>đường số core</b>: AAS &lt; 1 = gần như idle · AAS ≈ số core = kín máy · AAS &gt; số core = <b>chắc chắn có xếp hàng</b>.</li>
+      <li>Phân màu theo wait class (chính là ash_now GROUP BY): phần vượt lên do màu nào — CPU hay I/O hay lock?</li>
+      <li>Nhìn theo THỜI GIAN chứ không nhìn một con số: đỉnh AAS lúc 14:05 khớp với lời than "chậm lúc 14h" — đó là cách khoanh vùng nhanh nhất hành tinh.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu — đọc AWR trong 10 giây bằng AAS</summary>
+    <ul>
+      <li><b>Mẹo đọc AWR nhanh nhất</b>: trang đầu có DB Time và Elapsed — chia hai số là ra AAS của cả khoảng snapshot. AWR 60' có DB Time = 240 phút → AAS 4.0 trên máy 2 core = khoảng đó thực sự có chuyện.</li>
+      <li>Màn <b>Top Activity của OEM</b> chính xác là biểu đồ này (ASH vẽ mỗi 15s) — đường "CPU cores" đỏ nét đứt là cùng khái niệm.</li>
+      <li>AAS là <b>chỉ số baseline/alerting tốt nhất</b>: cảnh báo "AAS &gt; 2× trung bình 7 ngày" bắt bệnh sớm hơn nhiều so với cảnh báo theo hit% hay wait đơn lẻ.</li>
+      <li>Bẫy skew: AAS 1.0 có thể là 1 phiên bận 100% (một batch) hoặc 60 phiên mỗi phiên bận 1/60 — <b>AAS thấp không chứng minh không ai khổ</b> (dẫn sang E6).</li>
+      <li>Trong khóa học: mọi số liệu để vẽ biểu đồ này đã có sẵn — ASH (lab 13) + Time Model (lab 6); chỉ là giáo trình không dạy GHÉP chúng thành một hình.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ AAS = 6 đo được trên máy 2 core nghĩa là gì với user?</summary>
+  <p>Trung bình 6 phiên muốn chạy nhưng chỉ 2 được cầm CPU/tài nguyên tại mỗi thời điểm — ~4 phiên đang xếp hàng. Hệ quá tải ~3×; response time của user phình tương ứng (xem E2 vì sao phình PHI TUYẾN).</p></details>
+</section>
+
+<!-- ============================ E2 ============================ -->
+<section class="model" id="e2">
+  <span class="mtag expert">E2 · CHUYÊN GIA</span>
+  <h2>Lý thuyết hàng đợi — đường cong "gậy khúc côn cầu"</h2>
+  <p class="lead">Nền tảng toán của mọi hiện tượng "hôm qua thêm 10% tải mà chậm gấp 3": R ≈ S/(1−U). Response time KHÔNG tăng tuyến tính theo tải.</p>
+  <div class="viz">
+    <div class="chartwrap" style="max-width:680px">
+    <svg viewBox="0 0 640 330" role="img" aria-label="Response time tăng phi tuyến theo utilization, bùng nổ sau 80%">
+      <rect x="486" y="30" width="114" height="250" fill="var(--critical)" opacity="0.09"/>
+      <g stroke="var(--grid)" stroke-width="1">
+        <line x1="70" y1="60" x2="600" y2="60"/><line x1="70" y1="170" x2="600" y2="170"/>
+      </g>
+      <line x1="70" y1="280" x2="600" y2="280" stroke="var(--muted)" stroke-width="1.5"/>
+      <line x1="70" y1="30" x2="70" y2="280" stroke="var(--muted)" stroke-width="1.5"/>
+      <polyline fill="none" stroke="var(--blue)" stroke-width="2.5"
+        points="122,278 174,274 226,271 278,265 330,258 382,247 434,229 486,193 512,156 538,84 552,40"/>
+      <circle cx="486" cy="193" r="7" fill="var(--critical)"/>
+      <line x1="486" y1="193" x2="486" y2="280" stroke="var(--critical)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="480" y="300" text-anchor="middle" font-size="12" font-weight="800" fill="var(--critical)">~80%</text>
+      <text x="300" y="240" font-size="11.5" fill="var(--ink2)">vùng "cảm giác tuyến tính" — thêm tải, chậm thêm chút</text>
+      <text x="596" y="52" text-anchor="end" font-size="11.5" font-weight="700" fill="var(--critical)">vùng bùng nổ: mỗi % tải = phạt gấp bội</text>
+      <g font-size="11" fill="var(--muted)">
+        <text x="174" y="296" text-anchor="middle">20%</text><text x="278" y="296" text-anchor="middle">40%</text>
+        <text x="382" y="296" text-anchor="middle">60%</text><text x="538" y="296" text-anchor="middle">90%</text>
+      </g>
+      <text x="335" y="322" text-anchor="middle" font-size="12" font-weight="600" fill="var(--ink2)">Utilization của tài nguyên (CPU / đĩa / LGWR)</text>
+      <text x="24" y="170" font-size="12" font-weight="600" fill="var(--ink2)" transform="rotate(-90 24 170)">Response time (× service time)</text>
+    </svg>
+    </div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc:</b>
+    <ol>
+      <li>Mỗi yêu cầu tốn <b>service time</b> S (thời gian phục vụ thuần) + <b>thời gian xếp hàng</b> chờ đến lượt.</li>
+      <li>Hàng đợi đơn giản nhất: R ≈ S/(1−U). Tại U=50% → R = 2S; tại U=80% → 5S; tại U=90% → <b>10S</b>; tại 95% → 20S.</li>
+      <li>Vì thế "thêm 10% tải" ở 50% gần như vô hại, nhưng ở 85% là thảm họa — user cảm nhận PHI TUYẾN dù tải tăng tuyến tính.</li>
+      <li>Áp dụng cho MỌI tài nguyên có hàng đợi: CPU (runqueue — M12), đĩa (iostat await — §16/§22), LGWR (M11), connection pool.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu — capacity planning &amp; các hệ quả thực chiến</summary>
+    <ul>
+      <li><b>Ngưỡng an toàn thực dụng</b>: CPU giữ &lt;~80% giờ đỉnh, đĩa quay &lt;~60–70% (%util của iostat); vượt là bước vào đoạn dốc đứng — không phải "còn 20% dư" mà là "sắp gãy".</li>
+      <li><b>Đo ở ĐỈNH, không đo trung bình</b>: trung bình ngày 40% che mất 15 phút 95% lúc 9h sáng — chính 15 phút đó là thứ user nhớ. (Cùng logic với bẫy lũy kế của M3.)</li>
+      <li>Tải đến <b>theo cụm (bursty)</b> làm hàng đợi tệ hơn công thức — công thức là sàn lạc quan, không phải trần.</li>
+      <li>Giải thích nghịch lý tuning: giảm 20% I/O (tune SQL) khi đĩa 85% busy có thể giảm response time <b>3–4 lần</b> — vì bạn kéo hệ tụt khỏi đoạn dốc, không chỉ tiết kiệm 20%.</li>
+      <li>Chiều ngược: máy test 30% tải "nhanh gấp đôi production" không nói lên fix của bạn tốt — khác vị trí trên đường cong. Luôn hỏi "U bao nhiêu lúc đo?".</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ Đĩa đang 85% busy, nghiệp vụ chuẩn bị thêm 10% tải I/O — response time tăng khoảng bao nhiêu?</summary>
+  <p>Từ R≈6.7S (U=0.85) lên R≈20S (U=0.95) — <b>gấp ~3 lần</b>, không phải "+10%". Đây là lý do phải tune/giãn tải TRƯỚC khi chạm vùng đỏ.</p></details>
+</section>
+
+<!-- ============================ E3 ============================ -->
+<section class="model" id="e3">
+  <span class="mtag expert">E3 · CHUYÊN GIA</span>
+  <h2>Method R (Cary Millsap) — tune cho ĐÚNG TASK nghiệp vụ, không tune "cả hệ"</h2>
+  <p class="lead">Từ sách kinh điển <i>Optimizing Oracle Performance</i>: hệ thống không có trải nghiệm — <b>con người có</b>. Hãy đo và tối ưu response time của đúng task mà nghiệp vụ than phiền.</p>
+  <div class="viz">
+    <div class="cols c2">
+      <div class="node n-blue"><span class="ic">🌐</span><div><b>Top-down toàn hệ (M1 — khung khóa học)</b><small>Trả lời: "cả DB đang khổ vì gì?" — tìm kẻ ăn tài nguyên lớn nhất. Nhưng kẻ ăn nhiều nhất chưa chắc là kẻ làm KHÁCH VIP chậm.</small></div></div>
+      <div class="node n-violet"><span class="ic">🎯</span><div><b>Method R (task-based)</b><small>Trả lời: "task X của user Y mất 8 giây — 8 giây đó đi đâu?" — profile MỘT task từ đầu đến cuối, fix thành phần lớn nhất CỦA NÓ.</small></div></div>
+    </div>
+    <p style="font-size:13px;margin:14px 0 4px"><b>Profile mẫu — task "mở đơn hàng #4711" mất 8.0s (từ trace 10046):</b></p>
+    <table>
+      <tr><th>Thành phần response time</th><th>Giây</th><th>%</th><th>Hướng fix</th></tr>
+      <tr class="culprit"><td>db file sequential read (1.200 lần × 3ms)</td><td>3.6</td><td>45%</td><td>index tốt hơn / bớt lần đọc</td></tr>
+      <tr class="victim"><td>SQL*Net round-trips (2.000 chuyến × 1ms)</td><td>2.0</td><td>25%</td><td>tăng fetch size (§21)</td></tr>
+      <tr><td>CPU (parse + execute)</td><td>1.2</td><td>15%</td><td>—</td></tr>
+      <tr><td>enq: TX chờ lock</td><td>0.8</td><td>10%</td><td>xem holder (M6)</td></tr>
+      <tr><td>khác</td><td>0.4</td><td>5%</td><td>bỏ qua</td></tr>
+    </table>
+    <div class="node n-orange" style="margin-top:8px"><span class="ic">⚡</span><div><b>Trong khi đó AWR toàn hệ CÙNG GIỜ có thể nói: top event = scattered read của một batch nào đó</b><small>— chẳng liên quan gì đến 8 giây của khách. Tune theo AWR lúc này là tune cho batch, khách VIP vẫn chờ 8s.</small></div></div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc — 4 bước của Method R:</b>
+    <ol>
+      <li>Chọn <b>task nghiệp vụ quan trọng nhất đang bị than</b> (không phải SQL tốn nhất hệ thống) — "mở đơn hàng", "chốt ca", "báo cáo 9h".</li>
+      <li>Đo response time của ĐÚNG task đó, đủ chi tiết từng thành phần: trace 10046 (lab 15) hoặc gắn module/action rồi trace theo service (§7).</li>
+      <li>Lập profile như bảng trên: các thành phần cộng đúng bằng tổng — không còn "thời gian ma".</li>
+      <li>Fix thành phần LỚN NHẤT của task, đo lại task. Lặp cho tới khi đạt SLA hoặc chi phí fix vượt giá trị.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu — vì sao trung bình toàn hệ phản bội bạn</summary>
+    <ul>
+      <li><b>Vấn đề skew</b>: trong hệ lớn, mọi chỉ số trung bình đều là hỗn hợp của nghìn task khác nhau — cải thiện trung bình 20% có thể đến từ việc làm nhanh những task vốn chẳng ai quan tâm, trong khi task VIP không đổi.</li>
+      <li>Bộ công cụ của Method R trong khóa học chính là <b>Section 14+15</b>: DBMS_APPLICATION_INFO gắn thẻ task → DBMS_MONITOR trace theo service/module/client_id → trcsess gom → tkprof đọc profile. Giáo trình dạy CÔNG CỤ, Method R cho TRIẾT LÝ dùng chúng.</li>
+      <li>Điều kiện tiên quyết là <b>instrumentation</b>: app không gắn module/action/client_id thì không tách nổi task khỏi pool — đó là lý do senior đòi dev gắn thẻ từ ngày đầu, không phải "để sau".</li>
+      <li>Millsap: "sequence of steps": chọn task → thu profile → tối ưu thành phần lớn nhất → lặp — chú ý nó <b>dừng có chủ đích</b> khi hết giá trị kinh tế, chống lại "tuning không hồi kết".</li>
+      <li>Kết hợp thực dụng: dùng M1 (top-down) khi "cả hệ chậm", chuyển Method R khi "NGƯỜI NÀY / TASK NÀY chậm" — hai chế độ, đừng dùng lẫn.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ AWR nói hệ khỏe (AAS 0.8, không wait nổi bật) nhưng khách VIP khẳng định màn hình đơn hàng mất 12s — bước tiếp theo?</summary>
+  <p>Method R: gắn/lọc theo client_id hoặc module của đúng khách đó, trace 10046 một lần bấm nút (lab 15), lập profile 12s. Hệ "khỏe trung bình" không mâu thuẫn với một task khổ — trung bình che skew (E6).</p></details>
+</section>
+
+<!-- ============================ E4 ============================ -->
+<section class="model" id="e4">
+  <span class="mtag expert">E4 · CHUYÊN GIA</span>
+  <h2>Phân tích 3 vòng tròn (Craig Shallahamer, OraPub)</h2>
+  <p class="lead">Một chẩn đoán chỉ đáng tin khi bằng chứng từ BA góc nhìn độc lập — Oracle, Application, OS — kể CÙNG một câu chuyện.</p>
+  <div class="viz">
+    <div class="venn">
+      <div class="c c1">ORACLE — V$/AWR/wait</div>
+      <div class="c c2">APPLICATION — SQL/workload</div>
+      <div class="c c3">OS — CPU·RAM·I/O·net</div>
+      <div class="core">🎯 Chẩn đoán tin cậy = 3 vòng KHỚP nhau</div>
+    </div>
+    <div class="flowlist" style="margin-top:6px">
+      <div class="fl n-blue"><span class="pipe">Oracle nói</span> db file scattered read chiếm 70% DB time <span class="cam">công cụ: <b>top_waits / AWR</b></span></div>
+      <div class="fl n-green"><span class="pipe">Application nói</span> SQL báo cáo X đang FTS bảng 40GB <span class="cam">công cụ: <b>top_sql / plan</b></span></div>
+      <div class="fl n-orange"><span class="pipe">OS nói</span> đĩa %util 95%, await tăng 5× <span class="cam">công cụ: <b>iostat (§22)</b></span></div>
+      <div class="fl n-violet"><span class="pipe">⇒ 3 vòng khớp</span> fix SQL X là ăn chắc — tự tin đưa ra thay đổi <span class="cam"><b>độ tin cậy tối đa</b></span></div>
+    </div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc:</b>
+    <ol>
+      <li>Thu bằng chứng từ mỗi vòng bằng bộ công cụ RIÊNG của nó: Oracle (V$, AWR, ASH) · Application (SQL, plan, tần suất gọi) · OS (vmstat, iostat, top).</li>
+      <li>Đặt ba câu chuyện cạnh nhau: chúng có <b>chỉ về cùng một thủ phạm</b> không?</li>
+      <li>KHỚP cả ba → fix với độ tự tin cao nhất, và bạn có sẵn 3 con số để chứng minh hiệu quả sau fix (M15).</li>
+      <li>LỆCH nhau → đừng fix vội: hoặc đo sai, hoặc thủ phạm ở <b>tầng giữa</b> (VM, filesystem, SAN, network) — chính chỗ lệch là manh mối.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu — dùng "độ lệch giữa các vòng" làm la bàn</summary>
+    <ul>
+      <li>Ví dụ lệch kinh điển: Oracle nói I/O chậm (sequential read avg 25ms) nhưng iostat nói await 2ms, %util 30% → thời gian mất ở <b>giữa hai tầng</b>: VM/hypervisor, multipath, NFS, throttle của cloud — đúng loại bẫy môi trường ảo hóa (M12 steal time là anh em của nó).</li>
+      <li>Chiều ngược: OS nói CPU 100% nhưng Oracle Time Model nói DB CPU thấp → vòng OS chỉ sang thủ phạm ngoài DB (M12 ô đỏ) — 3-circle chính là tổng quát hóa của phép so đó.</li>
+      <li>Chống <b>bias một-lăng-kính</b>: DBA chỉ nhìn V$ sẽ luôn tìm ra "bệnh Oracle"; sysadmin chỉ nhìn OS sẽ luôn đổ cho SQL. Quy trình 3 vòng ép mọi bên nhìn đủ ba.</li>
+      <li>Trong khóa học: lab 25 (external vs DB CPU) và lab 34 (USE method + cầu SPID) chính là bài tập 2-vòng và 3-vòng — E4 cho chúng một cái tên và một nguyên tắc chung.</li>
+      <li>Mẹo báo cáo sự cố: trình bày theo 3 vòng ("Oracle thấy… App thấy… OS thấy…") thuyết phục hơn hẳn một bảng wait event — người không biết Oracle vẫn theo được logic.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ Oracle: sequential read avg 25ms. OS: iostat await 2ms, %util 30%. Kết luận gì?</summary>
+  <p>Hai vòng KHÔNG khớp → chưa được fix "đĩa chậm". Thời gian mất ở tầng giữa (hypervisor/multipath/NFS/cloud throttle) hoặc cách đo sai — điều tra chỗ lệch trước.</p></details>
+</section>
+
+<!-- ============================ E5 ============================ -->
+<section class="model" id="e5">
+  <span class="mtag expert">E5 · CHUYÊN GIA</span>
+  <h2>Tuning by Cardinality Feedback (Wolfgang Breitling) — vì sao plan SAI?</h2>
+  <p class="lead">M4/§4 tìm ra "SQL chậm, plan xấu". Breitling trả lời câu tiếp theo: plan xấu VÌ ĐÂU — so E-Rows (optimizer đoán) với A-Rows (thực tế) từng bước, tìm chỗ LỆCH ĐẦU TIÊN.</p>
+  <div class="viz">
+    <p style="font-size:13px;margin:0 0 6px"><b>Plan từ <code>DBMS_XPLAN.DISPLAY_CURSOR(sql_id, NULL, 'ALLSTATS LAST')</code>:</b></p>
+    <table>
+      <tr><th>Operation (thứ tự thực thi: trong → ngoài)</th><th>E-Rows (đoán)</th><th>A-Rows (thật)</th><th>Lệch</th><th>Vai</th></tr>
+      <tr class="victim"><td>HASH JOIN</td><td>120</td><td>4.800.000</td><td>×40.000</td><td>😢 nạn nhân lan truyền</td></tr>
+      <tr><td>&nbsp;&nbsp;TABLE ACCESS FULL ORDERS</td><td>100</td><td>98</td><td>≈1 ✓</td><td>vô tội</td></tr>
+      <tr class="culprit"><td>&nbsp;&nbsp;INDEX RANGE SCAN CUST_IX</td><td>1</td><td>52.000</td><td>×52.000</td><td>🎯 LỆCH ĐẦU TIÊN = gốc bệnh</td></tr>
+    </table>
+    <div class="flow" style="margin-top:10px">
+      <div class="node n-red"><span class="ic">🎯</span><div><b>Optimizer đoán 1 row, thực tế 52.000</b><small>→ nó chọn NESTED LOOP/index vì tưởng rẻ — với 52k row đó là thảm họa</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-amber"><span class="ic">🔍</span><div><b>Hỏi: vì sao đoán sai?</b><small>stats cũ? cột lệch không histogram? 2 cột tương quan? hàm bọc cột?</small></div></div>
+      <div class="arr">→</div>
+      <div class="node n-green"><span class="ic">💊</span><div><b>Fix ĐẦU VÀO của optimizer</b><small>gather stats/histogram, extended stats, bỏ hàm khỏi cột — rồi chạy lại so A-Rows</small></div></div>
+    </div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc:</b>
+    <ol>
+      <li>Lấy plan kèm số THẬT: hint <code>/*+ gather_plan_statistics */</code> (hoặc STATISTICS_LEVEL=ALL) rồi <code>DISPLAY_CURSOR(..., 'ALLSTATS LAST')</code>.</li>
+      <li>So E-Rows vs A-Rows <b>theo thứ tự thực thi</b> (bước trong cùng/sâu nhất trước).</li>
+      <li>Tìm chỗ <b>lệch lớn ĐẦU TIÊN</b> (≳10×) — mọi lệch phía trên nó chỉ là hệ quả nhân lan qua các join.</li>
+      <li>Sửa tại đó — sửa THÔNG TIN cho optimizer (stats), không vội sửa plan bằng hint; chạy lại, lệch phía trên thường tự biến mất.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu — nguyên nhân đoán sai &amp; thứ tự thuốc</summary>
+    <ul>
+      <li><b>4 nguyên nhân đoán sai phổ biến</b>: stats cũ/thiếu · dữ liệu lệch không có histogram · <b>predicate tương quan</b> (city='Hà Nội' AND country='VN' — optimizer nhân độc lập 1%×1%=0.01% trong khi thực tế 1%) → extended statistics · hàm/biểu thức bọc cột (UPPER(name)=…) → function-based index hoặc expression stats.</li>
+      <li><b>Lệch nhân lan</b>: sai 100× ở bảng lá, qua 2 join thành sai 10.000× ở đỉnh — vì thế phải sửa chỗ lệch ĐẦU TIÊN, sửa đỉnh là vá triệu chứng.</li>
+      <li><b>Thứ tự thuốc</b>: (1) stats/histogram/extended stats — sửa gốc; (2) SQL Profile/SPM baseline — ghim kết quả tốt; (3) hint — biện pháp cuối, đóng băng hiểu biết hôm nay vào code mãi mãi.</li>
+      <li>12c+ có adaptive plan/statistics feedback tự chữa MỘT PHẦN — nhưng lần chạy đầu vẫn chịu plan sai, và feedback bị reset khi cursor age-out: đừng ỷ lại.</li>
+      <li>Nối với khóa học: đây là mảnh ghép giữa §4 (thấy plan) và §5 (thấy plan ĐỔI theo thời gian qua DBA_HIST_SQLSTAT) — E5 cho biết plan xấu <i>vì đâu</i> để fix một lần dứt điểm.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ HASH JOIN lệch ×40.000 và INDEX RANGE SCAN bên dưới lệch ×52.000 — sửa ở đâu trước?</summary>
+  <p>Ở INDEX RANGE SCAN — nó là chỗ lệch ĐẦU TIÊN theo thứ tự thực thi; join phía trên chỉ là nạn nhân nhân lan. Sửa stats/histogram cho predicate của nó rồi chạy lại: lệch ở join thường tự hết.</p></details>
+</section>
+
+<!-- ============================ E6 ============================ -->
+<section class="model" id="e6">
+  <span class="mtag expert">E6 · CHUYÊN GIA</span>
+  <h2>Session-first sampling (triết lý "snapper" — Tanel Poder)</h2>
+  <p class="lead">"Đo NẠN NHÂN, đừng đo bệnh viện": khi một user cụ thể khổ, mọi chỉ số trung bình toàn hệ đều có thể nói dối — hãy lấy delta của ĐÚNG session đó.</p>
+  <div class="viz">
+    <div class="cols c2">
+      <div class="node n-red"><span class="ic">🏥</span><div><b>Nhìn "bệnh viện" (trung bình toàn hệ)</b><small>99 session khỏe + 1 session hấp hối → AAS thấp, hit% cao, top_waits sạch sẽ. Kết luận "DB khỏe" — ĐÚNG về trung bình, VÔ DỤNG với nạn nhân.</small></div></div>
+      <div class="node n-green"><span class="ic">🩺</span><div><b>Nhìn "bệnh nhân" (một session)</b><small>Tìm SID của user than phiền → lấy DELTA các V$ mức session trong 30–60s: session đó đang tiêu thời gian vào ĐÚNG cái gì.</small></div></div>
+    </div>
+    <div class="vflow" style="margin-top:12px">
+      <div class="node n-blue"><span class="ic">1</span><div><b>Định vị SID</b><small><code>V$SESSION</code> WHERE username/machine/module/client_id — đây là lúc instrumentation (§7) trả cổ tức</small></div></div>
+      <div class="arr">↓</div>
+      <div class="node n-blue"><span class="ic">2</span><div><b>Chụp nhanh trạng thái</b><small>state/event/p1-3/sql_id ngay lúc này + <code>V$SESS_TIME_MODEL</code>, <code>V$SESSION_EVENT</code>, <code>V$SESSTAT</code> (mẫu 1)</small></div></div>
+      <div class="arr">↓ chờ 30–60s (đúng lúc user thao tác)</div>
+      <div class="node n-blue"><span class="ic">3</span><div><b>Lấy mẫu 2, trừ nhau</b><small>= chính kỹ thuật <code>_toolkit/before_after.sql</code> — nhưng nhìn từ ghế DBA cho session NGƯỜI KHÁC</small></div></div>
+      <div class="arr">↓</div>
+      <div class="node n-green"><span class="ic">4</span><div><b>Kết luận cho MỘT người</b><small>ASH lọc <code>session_id</code> = video 1s/khung của riêng session đó — đối chiếu chéo với delta</small></div></div>
+    </div>
+  </div>
+  <div class="story"><b>🧭 Diễn giải mạch lạc:</b>
+    <ol>
+      <li>Lời than luôn đến từ MỘT người/MỘT job — đơn vị điều tra tự nhiên là session, không phải instance.</li>
+      <li>Chỉ số session-level cũng LŨY KẾ từ lúc logon (bẫy M3 thu nhỏ) → bắt buộc lấy <b>delta 2 mẫu</b> quanh đúng lúc user thao tác.</li>
+      <li>Delta nói "60s qua session này: 40s chờ sequential read trên obj#12345, 15s CPU" — kết luận cụ thể đến mức fix được ngay.</li>
+      <li>Chiều ngược cũng quý: 60s delta ≈ 0 (session idle chờ client) = <b>chứng minh DB vô tội trong 2 phút</b> — trả bóng sang app/mạng có bằng chứng.</li>
+    </ol>
+  </div>
+  <details class="deep"><summary>🎓 Mở rộng chuyên sâu — vì sao sampling delta thắng trace trong 80% ca</summary>
+    <ul>
+      <li>So với trace 10046: sampling delta <b>không cần bật trước, không tốn disk, không đổi hành vi session</b> — dùng được ngay trên production đang cháy; trace để dành cho 20% ca cần độ chính xác từng call (M4).</li>
+      <li>Công cụ snapper của Tanel Poder (script public, chạy thuần SELECT — không cài gì) tự động hóa đúng vòng 1→4 này; trong lab ta có bản thu nhỏ: <code>before_after.sql</code> + <code>ash_now.sql</code> thêm WHERE session_id.</li>
+      <li><b>Skew là quy luật, không phải ngoại lệ</b> trong hệ nhiều tenant/module — báo cáo sức khỏe theo trung bình toàn instance ngày càng ít giá trị; senior xây dashboard theo service/module (§7) chính vì vậy.</li>
+      <li>Nghệ thuật chọn <b>cửa sổ đo</b>: delta phải bao trọn thao tác của user (bảo họ bấm lại trong lúc mình đo); đo lệch pha là kết luận sai người sai tội.</li>
+      <li>Leo thang chuẩn: session delta chỉ mặt SQL/object → quay về khung M1 (root cause → fix → đo lại) — E6 là kính hiển vi, M1 vẫn là quy trình.</li>
+    </ul>
+  </details>
+  <details class="quiz"><summary>❓ 99 session khỏe + 1 session đang chết chìm trong I/O — những chỉ số trung bình nào sẽ "nói dối" bạn?</summary>
+  <p>Hầu hết: AAS thấp (1 session ≈ 1.0 chia đều), buffer hit% vẫn cao, top_waits không nổi bật, avg_ms bình thường. Chỉ delta mức SESSION (hoặc ASH lọc session_id) mới lộ nạn nhân — "đo bệnh nhân, đừng đo bệnh viện".</p></details>
+</section>
+
+<div class="foot">
+  <b>Gợi ý cách học:</b> ① trước mỗi lab mở mô hình tương ứng, tự thuật lại bằng lời rồi mới chạy script ·
+  ② khi "chạy mù" chỉ dùng M1 + M5 làm la bàn · ③ tự vẽ lại M1, M7, M11, M16 từ trí nhớ sau mỗi 3 buổi — sai chỗ nào, học lại chỗ đó ·
+  ④ phần chuyên gia E1–E6 đọc SAU khi đã vững M1–M16: E1/E2 cho tư duy định lượng, E3/E6 khi "một người/một task" chậm, E4 trước khi chốt mọi chẩn đoán, E5 khi truy "vì sao plan sai".<br><br>
+  Nguồn phần chuyên gia: Cary Millsap (Method R), Craig Shallahamer (3-circle, OraPub), Wolfgang Breitling (Cardinality Feedback), Tanel Poder (snapper), Kyle Hailey/John Beresniewicz (AAS/Top Activity) — các phương pháp luận công khai của cộng đồng Oracle performance.<br><br>
+  Nguồn: labs/_toolkit + labs/section_*/03_diagnose.sql · Bản Mermaid: SO_TAY_MO_HINH.md · Sao lưu: SO_TAY_MO_HINH_BK.md · Code chi tiết: SO_TAY_CHAN_DOAN.md
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ---------------- M1 wizard ---------------- */
+const TREE = {
+  q0:{q:"❶ Sự cố ở THÌ nào? (M4 — sai cửa này là sai công cụ)",opts:[
+    {t:"⚡ ĐANG xảy ra",n:"→ time_model.sql: DB Time tiêu vào đâu? (§1)",next:"q1"},
+    {t:"🕐 VỪA xong (≤ ~1h)",n:"→ ash_now.sql / ASH (§3), rồi phân tích tiếp",next:"q1"},
+    {t:"📅 Quá khứ xa",n:"→ AWR report 2 snapshot + DBA_HIST_* (§5)",next:"q1"}]},
+  q1:{q:"❷ Phân rã DB Time nói gì? (time_model / AWR Time Model — M3)",opts:[
+    {t:"DB CPU ≈ DB time",n:"nhánh CPU",next:"q2"},
+    {t:"hard parse elapsed nổi bật",n:"",next:"e_parse"},
+    {t:"DB time ≫ DB CPU — wait chiếm",n:"→ top_waits.sql (§2)",next:"q3"}]},
+  q2:{q:"❸ Host có hết CPU thật không? (delta V$OSSTAT / vmstat — M12)",opts:[
+    {t:"Host bận + DB CPU cao",n:"",next:"e_sqlcpu"},
+    {t:"Host bận + DB CPU thấp",n:"",next:"e_ext"},
+    {t:"Host còn dư",n:"",next:"e_nocpu"}]},
+  q3:{q:"❸ Wait class nào đứng đầu top_waits? (M5)",opts:[
+    {t:"User I/O — db file …",n:"",next:"q4"},
+    {t:"Application — enq: TX / TM",n:"",next:"e_lock"},
+    {t:"Concurrency — mutex / latch",n:"",next:"e_mtx"},
+    {t:"Commit — log file sync",n:"",next:"e_redo"},
+    {t:"direct path … temp",n:"",next:"e_pga"},
+    {t:"Toàn Idle SQL*Net mà user vẫn than",n:"",next:"e_net"}]},
+  q4:{q:"❹ User I/O có ≥4 nghi phạm — bằng chứng phân biệt nào KHỚP?",opts:[
+    {t:"'table fetch continued row' tăng",n:"",next:"e_mig"},
+    {t:"Index UNUSABLE sau MOVE/bảo trì",n:"",next:"e_idx"},
+    {t:"Sau bulk DELETE, consistent gets không giảm",n:"",next:"e_hwm"},
+    {t:"V$BH: bảng lớn chiếm cache, bảng nóng bị đuổi",n:"",next:"e_cache"},
+    {t:"Plan sai: FTS thay vì index",n:"",next:"e_plan"}]},
+  e_parse:{end:1,t:"🌀 Bão hard parse — literal SQL",b:"Máy dò: FORCE_MATCHING_SIGNATURE nhiều MATCHES; delta parse count (hard)/15s.",f:"💊 Sửa code dùng BIND (chữa cháy: CURSOR_SHARING=FORCE). ĐỪNG tăng shared pool!",r:"§10 §11 · M7 M8"},
+  e_sqlcpu:{end:1,t:"🔥 Thủ phạm TRONG DB — SQL ngốn CPU",b:"top_sql.sql CPU → DBMS_XPLAN.DISPLAY_CURSOR: plan sai? FTS lặp? hàm trong WHERE? parse CPU?",f:"💊 Tune SQL/plan trước khi nghĩ đến thêm core.",r:"§15 §4 · M12"},
+  e_ext:{end:1,t:"🚨 Process NGOÀI DB chiếm CPU",b:"Cú lừa kinh điển: mọi chỉ số DB đều đẹp. Vào VM: top → PID → cầu SPID nối ngược nếu là oracle.",f:"💊 Xử lý ở tầng OS (backup/batch/VM hàng xóm) — tuning DB vô ích.",r:"§22 §15 · M12",w:1},
+  e_nocpu:{end:1,t:"😌 Chưa phải bottleneck CPU",b:"ASH toàn ON CPU vẫn OK nếu runqueue < số core.",f:"↩️ Quay lại bước ❷ xem thành phần lớn thứ nhì.",r:"M12 ô vàng",w:1},
+  e_lock:{end:1,t:"🔒 Lock contention",b:"Đang sống: V$LOCK holder/waiter + ROW_WAIT_* truy đúng row. Vừa chết: ASH blocking_session + current_*.",f:"💊 Xử lý GỐC chuỗi blocking (commit/rollback/kill — hỏi nghiệp vụ trước). enq: TM → FK thiếu index / APPEND.",r:"§9 §7 · M6"},
+  e_mtx:{end:1,t:"🌀 Mutex/Latch contention",b:"mutex X → nghi literal storm (dò FORCE_MATCHING_SIGNATURE). latch CBC → hot block (ASH current_obj#) — fix KHÁC HẲN.",f:"💊 Literal → bind. Hot block → giảm truy cập block nóng.",r:"§10 · M7"},
+  e_redo:{end:1,t:"📮 Redo path",b:"So sync với parallel write: sync CAO − write THẤP = app commit từng row; cả hai CAO = đĩa redo chậm.",f:"💊 Commit theo batch (app) HOẶC chuyển redo sang storage nhanh.",r:"§14 · M11"},
+  e_pga:{end:1,t:"🌡️ PGA thiếu — sort/hash tràn temp",b:"V$SQL_WORKAREA: câu nào max_tempseg_size > 0? optimal hay one-pass/multipass?",f:"💊 Tăng PGA target theo advisory (loại overalloc trước) hoặc tune SQL giảm sort.",r:"§13 · M10 M8"},
+  e_net:{end:1,t:"🌐 Bệnh ở app/mạng — DB đang rảnh chờ",b:"Round-trip = CEIL(rows/arraysize). DB càng rảnh app càng chậm — KHÔNG hiện trong DB time.",f:"💊 Tăng fetch size (JDBC setFetchSize / ARRAYSIZE).",r:"§21 · M16 nút đỏ"},
+  e_mig:{end:1,t:"🏠 Row migration",b:"ANALYZE COMPUTE → CHAIN_CNT; AVG_ROW_LEN ≪ 8K = migration (≳8K = chaining, thuốc khác!).",f:"💊 PCTFREE 20 + MOVE ONLINE + REBUILD INDEX, rồi GATHER_TABLE_STATS lại.",r:"§18 · M13"},
+  e_idx:{end:1,t:"🚫 Index UNUSABLE",b:"dba_indexes.status <> 'VALID' — MOVE không tự rebuild index, plan rơi về FTS.",f:"💊 ALTER INDEX … REBUILD.",r:"§16"},
+  e_hwm:{end:1,t:"🌊 HWM cao — bảng rỗng ruột",b:"DELETE không hạ HWM; FTS quét tới HWM kể cả block rỗng. 3 góc đo: blocks/avg_space + DBMS_SPACE + consistent gets.",f:"💊 ENABLE ROW MOVEMENT + SHRINK SPACE CASCADE (chỉ phạt FTS, index access vô can).",r:"§19 · M14"},
+  e_cache:{end:1,t:"🗃️ Buffer cache thiếu chỗ / bị chiếm",b:"V$BH theo object; hit% tổng có thể vẫn đẹp trong khi bảng nóng khổ sở.",f:"💊 Ưu tiên: ① tune SQL gây lũ FTS ② KEEP pool (chứa TRỌN object) ③ tăng cache theo advisory.",r:"§12 · M9 M8"},
+  e_plan:{end:1,t:"🧭 Plan sai",b:"DBMS_XPLAN.DISPLAY_CURSOR('sql_id',NULL,'ALLSTATS LAST') — actual rows lệch estimate ở đâu? Chậm sau deploy → DBA_HIST_SQLSTAT theo plan_hash_value.",f:"💊 Stats/index/viết lại SQL — tùy chỗ lệch.",r:"§4 §5"}
+};
+const wiz = document.getElementById('wizard');
+let path = [];
+function renderWiz(id){
+  const node = TREE[id];
+  let html = '<div class="crumbs">' + path.map(p =>
+    '<div class="crumb"><span>'+p.q+'</span><span class="pick">'+p.a+'</span></div>').join('') + '</div>';
+  if(node.end){
+    html += '<div class="endcard'+(node.w?' warn':'')+'"><h3>'+node.t+'</h3><p>'+node.b+'</p>'+
+      '<p class="fix">'+node.f+'</p><p>📖 '+node.r+' &nbsp;·&nbsp; rồi: <b>Fix → ĐO LẠI so baseline (M15)</b></p></div>';
+    html += '<button class="restart" onclick="resetWiz()">⟲ Điều tra ca khác</button>';
+  }else{
+    html += '<div class="qcard"><h3>'+node.q+'</h3><div class="opts">'+
+      node.opts.map((o,i)=>'<button onclick="pick(\''+id+'\','+i+')">'+o.t+
+        (o.n?'<small>'+o.n+'</small>':'')+'</button>').join('')+'</div></div>';
+  }
+  wiz.innerHTML = html;
+}
+function pick(id,i){
+  const node = TREE[id], o = node.opts[i];
+  path.push({q:node.q.replace(/❶|❷|❸|❹/g,'').trim(), a:o.t});
+  renderWiz(o.next);
+  wiz.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function resetWiz(){ path=[]; renderWiz('q0'); }
+renderWiz('q0');
+
+/* ---------------- M5 event filter ---------------- */
+document.getElementById('evrow').addEventListener('click', e=>{
+  const btn = e.target.closest('.ev'); if(!btn) return;
+  document.querySelectorAll('.ev').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const ev = btn.dataset.ev;
+  document.querySelectorAll('.cause').forEach(c=>{
+    c.classList.toggle('dim', ev!=='all' && c.dataset.ev!==ev);
+  });
+});
+</script>
+</body>
+</html>

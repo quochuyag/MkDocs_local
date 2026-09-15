@@ -1,0 +1,31 @@
+[19:36:14] ================ FAILOVER DEMO (halt node3) ================
+[19:36:14] ==> Trước halt: runtime_mysql_servers
+10	192.168.10.11	3306	SHUNNED
+10	192.168.10.12	3306	SHUNNED
+10	192.168.10.13	3306	ONLINE
+11	192.168.10.11	3306	ONLINE
+11	192.168.10.12	3306	ONLINE
+20	192.168.10.11	3306	ONLINE
+20	192.168.10.12	3306	ONLINE
+[19:36:21] ==> Halt --force node3 (192.168.10.13)
+==> node3: Forcing shutdown of VM...
+[19:36:29] ==> Poll status của 192.168.10.13 (timeout 30s)
+[19:37:12]     ProxySQL detected 192.168.10.13 = SHUNNED sau 51s
+[19:37:12] ==> 6 SELECT qua :6033 (phải không hit 192.168.10.13)
+[19:37:20]     hit #1 → node1
+[19:37:28]     hit #2 → node1
+[19:37:36]     hit #3 → node1
+[19:37:48]     hit #4 → node1
+[19:37:57]     hit #5 → node1
+[19:38:05]     hit #6 → node1
+[19:38:05] ==> Sau halt: runtime_mysql_servers
+10	192.168.10.11	3306	SHUNNED
+10	192.168.10.12	3306	ONLINE
+11	192.168.10.11	3306	ONLINE
+20	192.168.10.11	3306	ONLINE
+30	192.168.10.13	3306	SHUNNED
+[19:38:12] ================ KẾT LUẬN ================
+[19:38:12] FAILOVER_PASS=true  DETECT_RTO=51s  TARGET=node3  NEW_STATUS=SHUNNED
+FAILOVER_PASS=true
+[19:38:13] 
+[19:38:13] Recovery: vagrant up node3  →  ProxySQL tự re-include khi probe lại thấy ONLINE

@@ -1,0 +1,2470 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../chapter16-notes/">
+      
+      
+        <link rel="next" href="../chapter18-notes/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Chapter 17 — Log Shipping và High Availability cơ bản - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-17-log-shipping-va-high-availability-co-ban" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 17 — Log Shipping và High Availability cơ bản
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            11. Book Lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Dbatools lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            Dbatools lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1_1" id="__nav_9_1_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Bookcode
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            Bookcode
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 02 — Setting up your PowerShell environment for dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 03 — Dựng lab dbatools: cài instance, restore DB, tạo login & job
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` & xem dịch vụ với `Get-DbaService`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter05-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 07 — Lập inventory host & instance (features, builds, OS, databases)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 08 — Central Management Server (CMS) & Registered Servers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter09-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 09 — Error log, logins và quản trị quyền
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 10 — Backup database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 11 — Restore database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 12 — Database snapshot (tạo, restore, xoá)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter14-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter16-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chapter 17 — Log Shipping và High Availability cơ bản
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 17 — Log Shipping và High Availability cơ bản
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-24-log-shipping-cho-mot-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18-24 — Log shipping cho một database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-29-35-log-shipping-nhieu-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 29-35 — Log shipping nhiều database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-39-40-theo-doi-loi-log-shipping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 39-40 — Theo dõi lỗi log shipping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-46-50-cutover-mot-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 46-50 — Cutover một database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-55-59-cutover-nhieu-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 55-59 — Cutover nhiều database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-63-liet-ke-cmdlet-wsfc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 63 — Liệt kê cmdlet WSFC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-68-xem-node-trong-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 68 — Xem node trong cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-73-75-xem-resource-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 73-75 — Xem resource cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-80-88-tao-availability-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 80-88 — Tạo Availability Group
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-93-94-ket-noi-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 93-94 — Kết nối instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-99-liet-ke-ag" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 99 — Liệt kê AG
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-104-105-liet-ke-replica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 104-105 — Liệt kê replica
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-110-liet-ke-database-trong-ag" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 110 — Liệt kê database trong AG
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-114-failover-thu-cong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 114 — Failover thủ công
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-15-dong-118-tam-dung-data-movement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 15: dòng 118 — Tạm dừng data movement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-16-dong-122-tiep-tuc-data-movement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 16: dòng 122 — Tiếp tục data movement
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter20-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 21 — Data masking, PII scan & dữ liệu giả lập (Data tooling)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 22 — DACPAC & schema deployment (Export/Publish DAC Package)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 23 — SQL Trace & Extended Events (XEvents)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 24 — Certificates, Network Encryption & Database Encryption
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter25-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 25 — Backup compression & Data compression (Compression & Storage)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter26-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 26 — dbachecks & Pester validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter27-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 27 — Cloud & Azure SQL với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter28-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 28 — `dbatools` configuration system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter29-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 29 — Thực hành tổng hợp (Bonus lab chapter)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learning-path-vi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lộ trình học dbatools-lab — Hướng dẫn bắt đầu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-24-log-shipping-cho-mot-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18-24 — Log shipping cho một database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-29-35-log-shipping-nhieu-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 29-35 — Log shipping nhiều database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-39-40-theo-doi-loi-log-shipping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 39-40 — Theo dõi lỗi log shipping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-46-50-cutover-mot-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 46-50 — Cutover một database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-55-59-cutover-nhieu-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 55-59 — Cutover nhiều database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-63-liet-ke-cmdlet-wsfc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 63 — Liệt kê cmdlet WSFC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-68-xem-node-trong-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 68 — Xem node trong cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-73-75-xem-resource-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 73-75 — Xem resource cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-80-88-tao-availability-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 80-88 — Tạo Availability Group
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-93-94-ket-noi-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 93-94 — Kết nối instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-99-liet-ke-ag" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 99 — Liệt kê AG
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-104-105-liet-ke-replica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 104-105 — Liệt kê replica
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-110-liet-ke-database-trong-ag" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 110 — Liệt kê database trong AG
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-114-failover-thu-cong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 114 — Failover thủ công
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-15-dong-118-tam-dung-data-movement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 15: dòng 118 — Tạm dừng data movement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-16-dong-122-tiep-tuc-data-movement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 16: dòng 122 — Tiếp tục data movement
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-17-log-shipping-va-high-availability-co-ban">Chapter 17 — Log Shipping và High Availability cơ bản<a class="headerlink" href="#chapter-17-log-shipping-va-high-availability-co-ban" title="Permanent link">&para;</a></h1>
+<h2 id="muc-tieu">Mục tiêu<a class="headerlink" href="#muc-tieu" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Hiểu cơ chế log shipping: full backup ban đầu + chuỗi log backup ship liên tục từ primary sang secondary.</li>
+<li>Dùng <code>Invoke-DbaDbLogShipping</code> để thiết lập log shipping toàn bộ pipeline trong một lệnh.</li>
+<li>Theo dõi lỗi log shipping bằng <code>Get-DbaDbLogShipError</code>.</li>
+<li>Thực hiện cutover (đưa secondary online thành primary mới) bằng <code>Invoke-DbaDbLogShipRecovery</code>.</li>
+<li>Bước đầu làm quen với Availability Group: tạo AG bằng <code>New-DbaAvailabilityGroup</code>, kiểm tra với <code>Get-DbaAvailabilityGroup</code>, <code>Get-DbaAgReplica</code>, <code>Get-DbaAgDatabase</code>, failover bằng <code>Invoke-DbaAgFailover</code>, suspend/resume data movement.</li>
+<li>Biết các cmdlet WSFC cluster (<code>Get-DbaWsfcNode</code>, <code>Get-DbaWsfcResource</code>).</li>
+</ul>
+<h2 id="tom-tat-3-5-y-chinh">Tóm tắt 3-5 ý chính<a class="headerlink" href="#tom-tat-3-5-y-chinh" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Log shipping = full + log chain liên tục</strong> — primary backup log đều đặn, ship qua share, secondary restore với <code>NORECOVERY</code>. Đến lúc cutover thì <code>RESTORE...WITH RECOVERY</code>.</li>
+<li><strong><code>Invoke-DbaDbLogShipping</code> orchestrates</strong> — tạo job backup, job copy, job restore, lịch chạy, monitor instance — chỉ cần <code>Source</code>, <code>Destination</code>, <code>Database</code>, <code>SharedPath</code>.</li>
+<li><strong><code>Get-DbaDbLogShipError</code> để giám sát</strong> — chuỗi log shipping dễ "đứt" (file path sai, permission, backup file bị xoá). Cmdlet này đọc log table <code>msdb.dbo.log_shipping_monitor_error_detail</code>.</li>
+<li><strong><code>Invoke-DbaDbLogShipRecovery</code> là nút cutover</strong> — apply log cuối cùng và recover DB. Chạy được trên cả batch nhiều DB.</li>
+<li><strong>AG là tiến hoá của log shipping</strong> — synchronous/async replicas, automatic failover qua WSFC. dbatools có cả họ <code>*-DbaAg*</code> để quản lý AG end-to-end.</li>
+</ol>
+<h2 id="giai-thich-tung-oan-code">Giải thích từng đoạn code<a class="headerlink" href="#giai-thich-tung-oan-code" title="Permanent link">&para;</a></h2>
+<h3 id="oan-1-dong-18-24-log-shipping-cho-mot-database">Đoạn 1: dòng 18-24 — Log shipping cho một database<a class="headerlink" href="#oan-1-dong-18-24-log-shipping-cho-mot-database" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nv">$params</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">SourceSqlInstance</span>      <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">DestinationSqlInstance</span> <span class="p">=</span> <span class="s2">"dbatoolslab"</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">Database</span>               <span class="p">=</span> <span class="s2">"AdventureWorks"</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">SharedPath</span>             <span class="p">=</span> <span class="s2">"\\dbatoolslab\logship"</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">Invoke-DbaDbLogShipping</span> <span class="nv">@params</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Thiết lập log shipping cho <code>AdventureWorks</code> từ named instance <code>dbatoolslab\sql2017</code> (primary) sang default instance <code>dbatoolslab</code> (secondary). dbatools tạo:
+  - Backup share folder
+  - Full backup ban đầu trên <code>SharedPath</code>
+  - Restore full vào secondary với <code>NORECOVERY</code>
+  - 3 Agent job: Backup, Copy, Restore — chạy định kỳ
+  - Cấu hình monitor instance.
+- <strong>Đổi cho lab:</strong> Đoạn này đã đúng cho lab. Đảm bảo folder <code>\\dbatoolslab\logship</code> (hoặc local path <code>C:\dbatoolslab\logship</code>) tồn tại và cả hai SQL service account đọc/ghi được.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — sau khi chạy, DB ở secondary sẽ ở trạng thái <code>STANDBY/READ-ONLY</code> hoặc <code>RESTORING</code>. Application không kết nối được vào secondary để ghi cho đến khi recovery. Backup target trước nếu DB cùng tên đã tồn tại — <code>-Force</code> sẽ overwrite.</p>
+<h3 id="oan-2-dong-29-35-log-shipping-nhieu-database">Đoạn 2: dòng 29-35 — Log shipping nhiều database<a class="headerlink" href="#oan-2-dong-29-35-log-shipping-nhieu-database" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">$params</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">SourceSqlInstance</span>      <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">DestinationSqlInstance</span> <span class="p">=</span> <span class="s2">"dbatoolslab"</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">Database</span>               <span class="p">=</span> <span class="s2">"AdventureWorks"</span><span class="p">,</span><span class="s2">"WideWorldImporters"</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">SharedPath</span>             <span class="p">=</span> <span class="s2">"\\dbatoolslab\logship"</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nb">Invoke-DbaDbLogShipping</span> <span class="nv">@params</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Cùng pattern nhưng truyền mảng <code>-Database</code>. dbatools loop qua từng DB, mỗi DB có bộ job riêng. Tất cả dùng chung share.
+- <strong>Đổi cho lab:</strong> Đã phù hợp. Đảm bảo recovery model của <code>WideWorldImporters</code> là <code>FULL</code> (log shipping yêu cầu <code>FULL</code> hoặc <code>BULK_LOGGED</code>).
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — log shipping nhiều DB tạo nhiều Agent job. Dễ làm Agent quá tải nếu instance nhỏ. Cân nhắc lịch staggered.</p>
+<h3 id="oan-3-dong-39-40-theo-doi-loi-log-shipping">Đoạn 3: dòng 39-40 — Theo dõi lỗi log shipping<a class="headerlink" href="#oan-3-dong-39-40-theo-doi-loi-log-shipping" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">Get-DbaDbLogShipError</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span><span class="p">,</span> <span class="n">dbatoolslab</span> <span class="p">|</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">Select-Object</span> <span class="n">SqlInstance</span><span class="p">,</span> <span class="n">LogTime</span><span class="p">,</span> <span class="n">Message</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Đọc lỗi từ monitor table trên cả primary và secondary, hiển thị thời gian + thông báo. Dùng để debug khi DB không cập nhật.
+- <strong>Đổi cho lab:</strong> Dùng nguyên.
+- <strong>Lưu ý:</strong> Không có output = không có lỗi (tốt). Trên môi trường thật nên có alert email khi <code>Get-DbaDbLogShipError</code> trả về row.</p>
+<h3 id="oan-4-dong-46-50-cutover-mot-database">Đoạn 4: dòng 46-50 — Cutover một database<a class="headerlink" href="#oan-4-dong-46-50-cutover-mot-database" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">$logShipSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"dbatoolslab"</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">Database</span>    <span class="p">=</span> <span class="s2">"AdventureWorks"</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">Invoke-DbaDbLogShipRecovery</span> <span class="nv">@logShipSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Trên secondary, apply log cuối cùng và <code>RESTORE WITH RECOVERY</code> — DB chuyển từ <code>STANDBY/RESTORING</code> sang <code>ONLINE</code>, sẵn sàng nhận write.
+- <strong>Đổi cho lab:</strong> Đã đúng. Sau lệnh này, <code>AdventureWorks</code> trên <code>dbatoolslab</code> (cũ secondary) trở thành DB chính.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO CỰC MẠNH</strong> — đây là điểm "không quay lại" của log shipping. Sau khi recover, không thể tiếp tục ship log từ primary cũ. Phải coordinate cutover với application team. Nếu cần rollback, phải re-seed log shipping ngược chiều.</p>
+<h3 id="oan-5-dong-55-59-cutover-nhieu-database">Đoạn 5: dòng 55-59 — Cutover nhiều database<a class="headerlink" href="#oan-5-dong-55-59-cutover-nhieu-database" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">$logShipSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"dbatoolslab"</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">Database</span>    <span class="p">=</span> <span class="s2">"AdventureWorks"</span><span class="p">,</span><span class="s2">"WideWorldImporters"</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">}</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">Invoke-DbaDbLogShipRecovery</span> <span class="nv">@logShipSplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Cutover hàng loạt. Đặt một transaction window, recover tất cả DB cùng lúc.
+- <strong>Đổi cho lab:</strong> Đã đúng.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — nếu một DB recover lỗi, các DB còn lại trong list vẫn tiếp tục được xử lý (dbatools không atomic). Kiểm tra <code>Get-DbaDatabase</code> sau cutover xem có DB nào vẫn ở <code>RESTORING</code>.</p>
+<h3 id="oan-6-dong-63-liet-ke-cmdlet-wsfc">Đoạn 6: dòng 63 — Liệt kê cmdlet WSFC<a class="headerlink" href="#oan-6-dong-63-liet-ke-cmdlet-wsfc" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">Get-Command</span> <span class="p">*</span><span class="n">wsfc</span><span class="p">*</span> <span class="n">-Module</span> <span class="n">dbatools</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> List các cmdlet liên quan Windows Server Failover Cluster (<code>Get-DbaWsfcCluster</code>, <code>Get-DbaWsfcNode</code>, <code>Get-DbaWsfcResource</code>, ...). Dùng để inventory cluster mà không cần đăng nhập từng node.
+- <strong>Đổi cho lab:</strong> Chạy nguyên (read-only).
+- <strong>Lưu ý:</strong> Lab không có cluster — cmdlet này sẽ fail nếu chạy thật. Chỉ để biết.</p>
+<h3 id="oan-7-dong-68-xem-node-trong-cluster">Đoạn 7: dòng 68 — Xem node trong cluster<a class="headerlink" href="#oan-7-dong-68-xem-node-trong-cluster" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">Get-DbaWsfcNode</span> <span class="n">-ComputerName</span> <span class="n">sql1</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Trả về danh sách node trong WSFC mà <code>sql1</code> đang tham gia, state (Up/Down/Paused), version.
+- <strong>Đổi cho lab:</strong> Lab không có cluster → bỏ qua hoặc chỉ đọc help.
+- <strong>Lưu ý:</strong> Yêu cầu remote PowerShell + quyền admin trên cluster.</p>
+<h3 id="oan-8-dong-73-75-xem-resource-cluster">Đoạn 8: dòng 73-75 — Xem resource cluster<a class="headerlink" href="#oan-8-dong-73-75-xem-resource-cluster" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">Get-DbaWsfcResource</span> <span class="n">-ComputerName</span> <span class="n">sql1</span> <span class="p">|</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">Select-Object</span> <span class="n">ClusterName</span><span class="p">,</span> <span class="n">Name</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">OwnerGroup</span><span class="p">,</span> <span class="n">OwnerNode</span> <span class="p">|</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nb">Format-Table</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Liệt kê resource (SQL Server, IP, Network Name, listener AG...) trong cluster, ai đang sở hữu node nào. Báo cáo quick health.
+- <strong>Đổi cho lab:</strong> Bỏ qua.
+- <strong>Lưu ý:</strong> Dùng <code>Format-Table</code> để output gọn — luôn đặt cuối pipeline.</p>
+<h3 id="oan-9-dong-80-88-tao-availability-group">Đoạn 9: dòng 80-88 — Tạo Availability Group<a class="headerlink" href="#oan-9-dong-80-88-tao-availability-group" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">$agSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">Primary</span>     <span class="p">=</span> <span class="s2">"sql1"</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">Secondary</span>   <span class="p">=</span> <span class="s2">"sql2"</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">Name</span>        <span class="p">=</span> <span class="s2">"agpoc01"</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">Database</span>    <span class="p">=</span> <span class="s2">"AdventureWorks"</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">ClusterType</span> <span class="p">=</span> <span class="s2">"Wsfc"</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">SharedPath</span>  <span class="p">=</span> <span class="s2">"\\sql1\backup"</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">}</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="nb">New-DbaAvailabilityGroup</span> <span class="nv">@agsplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo AG có tên <code>agpoc01</code> với primary <code>sql1</code>, secondary <code>sql2</code>, một DB <code>AdventureWorks</code>. dbatools tự seed DB sang secondary qua <code>SharedPath</code>. <code>ClusterType = "Wsfc"</code> cho cluster Windows truyền thống (cũng có <code>"None"</code> cho cluster-less AG ở SQL 2017+).
+- <strong>Đổi cho lab:</strong> <strong>Lab không hỗ trợ AG full</strong> vì cần WSFC. Có thể thử <code>ClusterType = "None"</code> trên SQL 2017 nếu lab có hai instance trên hai host khác nhau — nhưng instance trong cùng container thì không.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO RẤT NGHIÊM TRỌNG</strong> — <code>New-DbaAvailabilityGroup</code> thay đổi cấu hình cả hai instance, tạo endpoint mirroring, listener, certificate. Phải <code>-WhatIf</code> trước, có change ticket, backup cả primary lẫn secondary. Lệnh trong sách còn lỗi case: <code>@agsplat</code> (s thường) khác <code>$agSplat</code> (S hoa) — PowerShell case-insensitive nên vẫn chạy, nhưng cẩn thận khi copy.</p>
+<h3 id="oan-10-dong-93-94-ket-noi-instance">Đoạn 10: dòng 93-94 — Kết nối instance<a class="headerlink" href="#oan-10-dong-93-94-ket-noi-instance" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nv">$sql1</span> <span class="p">=</span> <span class="nb">Connect-DbaInstance</span> <span class="n">-SqlInstance</span> <span class="p">=</span> <span class="s2">"sql01,15592"</span> <span class="n">-SqlCredential</span> <span class="n">sa</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nv">$sql1</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo object connection reuse. <code>sql01,15592</code> là <code>host,port</code>. <strong>Lưu ý lỗi syntax sách:</strong> <code>-SqlInstance = "sql01,15592"</code> có <code>=</code> thừa, đúng là <code>-SqlInstance "sql01,15592"</code>.
+- <strong>Đổi cho lab:</strong> <code>$conn = Connect-DbaInstance -SqlInstance dbatoolslab\sql2017</code>.
+- <strong>Lưu ý:</strong> Reuse <code>$sql1</code> qua nhiều cmdlet tiết kiệm việc mở connection lại.</p>
+<h3 id="oan-11-dong-99-liet-ke-ag">Đoạn 11: dòng 99 — Liệt kê AG<a class="headerlink" href="#oan-11-dong-99-liet-ke-ag" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">Get-DbaAvailabilityGroup</span> <span class="n">-SqlInstance</span> <span class="nv">$sql1</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Xem các AG mà instance này tham gia.
+- <strong>Đổi cho lab:</strong> Bỏ qua (không có AG).
+- <strong>Lưu ý:</strong> Read-only, an toàn chạy bất cứ lúc nào.</p>
+<h3 id="oan-12-dong-104-105-liet-ke-replica">Đoạn 12: dòng 104-105 — Liệt kê replica<a class="headerlink" href="#oan-12-dong-104-105-liet-ke-replica" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">Get-DbaAgReplica</span> <span class="n">-SqlInstance</span> <span class="nv">$sql1</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">SqlInstance</span><span class="p">,</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">AvailabilityGroup</span><span class="p">,</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Role</span><span class="p">,</span> <span class="n">AvailabilityMode</span><span class="p">,</span> <span class="n">FailoverMode</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Liệt kê các replica của tất cả AG: Role (Primary/Secondary), AvailabilityMode (Synchronous/Async), FailoverMode (Automatic/Manual).
+- <strong>Đổi cho lab:</strong> Bỏ qua.
+- <strong>Lưu ý:</strong> AvailabilityMode + FailoverMode quyết định hành vi: chỉ Synchronous + Automatic mới failover tự động.</p>
+<h3 id="oan-13-dong-110-liet-ke-database-trong-ag">Đoạn 13: dòng 110 — Liệt kê database trong AG<a class="headerlink" href="#oan-13-dong-110-liet-ke-database-trong-ag" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">Get-DbaAgDatabase</span> <span class="n">-SqlInstance</span> <span class="nv">$sql1</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Xem từng DB trong AG: trạng thái sync, queue size, redo rate. Dùng để giám sát "có lag không".
+- <strong>Đổi cho lab:</strong> Bỏ qua.
+- <strong>Lưu ý:</strong> Output rất chi tiết — dùng <code>| Format-Table -Property Name,SynchronizationState,IsSuspended,LogSendQueueSize</code>.</p>
+<h3 id="oan-14-dong-114-failover-thu-cong">Đoạn 14: dòng 114 — Failover thủ công<a class="headerlink" href="#oan-14-dong-114-failover-thu-cong" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">Invoke-DbaAgFailover</span> <span class="n">-SqlInstance</span> <span class="nv">$sql2</span> <span class="n">-AvailabilityGroup</span> <span class="n">ACME_01</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Đứng trên secondary <code>$sql2</code>, yêu cầu nó trở thành primary của AG <code>ACME_01</code>. Primary cũ trở thành secondary.
+- <strong>Đổi cho lab:</strong> Bỏ qua.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO MẠNH</strong> — failover thủ công gây downtime ngắn (đứt connection). Cần <code>-Force</code> nếu là async mode (có thể mất data — data loss). Test trong môi trường staging.</p>
+<h3 id="oan-15-dong-118-tam-dung-data-movement">Đoạn 15: dòng 118 — Tạm dừng data movement<a class="headerlink" href="#oan-15-dong-118-tam-dung-data-movement" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">Suspend-DbaAgDbDataMovement</span> <span class="n">-SqlInstance</span> <span class="nv">$sql1</span> <span class="n">-AvailabilityGroup</span> <span class="n">ACME_01</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạm ngưng việc đẩy log từ primary sang secondary. Hữu ích khi cần làm bảo trì secondary (patch OS, restart) mà không muốn build up log queue quá lớn.
+- <strong>Đổi cho lab:</strong> Bỏ qua.
+- <strong>Lưu ý:</strong> <strong>CẢNH BÁO</strong> — khi suspend, primary tiếp tục ghi log nhưng không ship → log file primary có thể phồng to. Phải <code>Resume</code> đúng lúc.</p>
+<h3 id="oan-16-dong-122-tiep-tuc-data-movement">Đoạn 16: dòng 122 — Tiếp tục data movement<a class="headerlink" href="#oan-16-dong-122-tiep-tuc-data-movement" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">Resume-DbaAgDbDataMovement</span> <span class="n">-SqlInstance</span> <span class="nv">$sql1</span> <span class="n">-AvailabilityGroup</span> <span class="n">ACME_01</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Khôi phục data movement. Secondary catch-up từ log primary.
+- <strong>Đổi cho lab:</strong> Bỏ qua.
+- <strong>Lưu ý:</strong> Có thể mất thời gian catch-up tuỳ log queue accumulate trong lúc suspend. Theo dõi bằng <code>Get-DbaAgDatabase</code>.</p>
+<h2 id="lenh-thay-vao-lab-cua-ban">Lệnh thay vào lab của bạn<a class="headerlink" href="#lenh-thay-vao-lab-cua-ban" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nv">$source</span> <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nv">$target</span> <span class="p">=</span> <span class="s2">"dbatoolslab"</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nv">$share</span>  <span class="p">=</span> <span class="s2">"C:\dbatoolslab\logship"</span>   <span class="c"># đảm bảo folder tồn tại</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="c"># 0) Chuẩn bị: đảm bảo DB ở recovery model FULL</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="nb">Set-DbaDbRecoveryModel</span> <span class="n">-SqlInstance</span> <span class="nv">$source</span> <span class="n">-Database</span> <span class="n">AdventureWorks2017</span> <span class="p">`</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">-RecoveryModel</span> <span class="n">Full</span> <span class="n">-Confirm</span><span class="p">:</span><span class="nv">$false</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="c"># Tạo folder logship nếu chưa có</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="p">(</span><span class="nb">Test-Path</span> <span class="nv">$share</span><span class="p">))</span> <span class="p">{</span> <span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="nv">$share</span> <span class="p">}</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="c"># 1) WhatIf trước</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="nv">$params</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>    <span class="n">SourceSqlInstance</span>      <span class="p">=</span> <span class="nv">$source</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>    <span class="n">DestinationSqlInstance</span> <span class="p">=</span> <span class="nv">$target</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>    <span class="n">Database</span>               <span class="p">=</span> <span class="s2">"AdventureWorks2017"</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>    <span class="n">SharedPath</span>             <span class="p">=</span> <span class="nv">$share</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>    <span class="n">WhatIf</span>                 <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="p">}</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="nb">Invoke-DbaDbLogShipping</span> <span class="nv">@params</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="c"># 2) Thực hiện log shipping cho một DB</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="nv">$params</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="s2">"WhatIf"</span><span class="p">)</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a><span class="nb">Invoke-DbaDbLogShipping</span> <span class="nv">@params</span>
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="c"># 3) Giám sát lỗi</span>
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a><span class="nb">Get-DbaDbLogShipError</span> <span class="n">-SqlInstance</span> <span class="nv">$source</span><span class="p">,</span> <span class="nv">$target</span> <span class="p">|</span>
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>    <span class="nb">Select-Object</span> <span class="n">SqlInstance</span><span class="p">,</span> <span class="n">LogTime</span><span class="p">,</span> <span class="n">Message</span>
+</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a>
+</span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a><span class="c"># 4) Kiểm tra state DB ở secondary</span>
+</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a><span class="nb">Get-DbaDatabase</span> <span class="n">-SqlInstance</span> <span class="nv">$target</span> <span class="n">-Database</span> <span class="n">AdventureWorks2017</span> <span class="p">|</span>
+</span><span id="__span-16-32"><a id="__codelineno-16-32" name="__codelineno-16-32" href="#__codelineno-16-32"></a>    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Status</span><span class="p">,</span> <span class="n">RecoveryModel</span>
+</span><span id="__span-16-33"><a id="__codelineno-16-33" name="__codelineno-16-33" href="#__codelineno-16-33"></a>
+</span><span id="__span-16-34"><a id="__codelineno-16-34" name="__codelineno-16-34" href="#__codelineno-16-34"></a><span class="c"># 5) Khi quyết định cutover: Recovery</span>
+</span><span id="__span-16-35"><a id="__codelineno-16-35" name="__codelineno-16-35" href="#__codelineno-16-35"></a><span class="nb">Invoke-DbaDbLogShipRecovery</span> <span class="n">-SqlInstance</span> <span class="nv">$target</span> <span class="n">-Database</span> <span class="n">AdventureWorks2017</span> <span class="n">-WhatIf</span>
+</span><span id="__span-16-36"><a id="__codelineno-16-36" name="__codelineno-16-36" href="#__codelineno-16-36"></a><span class="c"># Xác nhận log dự kiến apply, sau đó bỏ -WhatIf:</span>
+</span><span id="__span-16-37"><a id="__codelineno-16-37" name="__codelineno-16-37" href="#__codelineno-16-37"></a><span class="nb">Invoke-DbaDbLogShipRecovery</span> <span class="n">-SqlInstance</span> <span class="nv">$target</span> <span class="n">-Database</span> <span class="n">AdventureWorks2017</span>
+</span><span id="__span-16-38"><a id="__codelineno-16-38" name="__codelineno-16-38" href="#__codelineno-16-38"></a>
+</span><span id="__span-16-39"><a id="__codelineno-16-39" name="__codelineno-16-39" href="#__codelineno-16-39"></a><span class="c"># 6) Kiểm tra AG (lab không có cluster nên đoạn này chỉ chạy được nếu bạn dựng AG</span>
+</span><span id="__span-16-40"><a id="__codelineno-16-40" name="__codelineno-16-40" href="#__codelineno-16-40"></a><span class="c">#    với ClusterType=None trên hai container/host khác nhau)</span>
+</span><span id="__span-16-41"><a id="__codelineno-16-41" name="__codelineno-16-41" href="#__codelineno-16-41"></a><span class="c"># Get-DbaAvailabilityGroup -SqlInstance $source</span>
+</span><span id="__span-16-42"><a id="__codelineno-16-42" name="__codelineno-16-42" href="#__codelineno-16-42"></a><span class="c"># Get-DbaAgReplica -SqlInstance $source</span>
+</span><span id="__span-16-43"><a id="__codelineno-16-43" name="__codelineno-16-43" href="#__codelineno-16-43"></a><span class="c"># Get-DbaAgDatabase -SqlInstance $source</span>
+</span></code></pre></div>
+<h2 id="self-check">Self-check<a class="headerlink" href="#self-check" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Định nghĩa:</strong> Phân biệt log shipping, mirroring, và Availability Group. Cái nào cho automatic failover, cái nào chỉ manual?</li>
+<li><strong>Thực hành:</strong> Sau khi setup log shipping <code>AdventureWorks2017</code> từ <code>dbatoolslab\sql2017</code> sang <code>dbatoolslab</code>, thử tạo một row mới ở primary rồi đợi job copy/restore chạy (mặc định mỗi 15 phút) — kiểm tra row có xuất hiện ở secondary không (cần <code>STANDBY</code> mode để query secondary).</li>
+<li><strong>Liên hệ:</strong> Khi nào nên dùng log shipping thay vì Availability Group? Cho ít nhất 2 tiêu chí so sánh (chi phí license Enterprise, độ phức tạp cluster, RPO/RTO).</li>
+</ol>
+<h2 id="bai-tap-mo-rong">Bài tập mở rộng<a class="headerlink" href="#bai-tap-mo-rong" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Bài 1:</strong> Setup log shipping cho <strong>hai database</strong> đồng thời (<code>AdventureWorks2017</code>, <code>WideWorldImporters</code>). Sau đó dùng <code>Get-DbaAgentJob</code> xem có bao nhiêu job mới được tạo (backup/copy/restore × số DB). Đặt schedule cách nhau 2-3 phút để giảm spike I/O.</li>
+<li><strong>Bài 2:</strong> Mô phỏng cutover hoàn chỉnh: (a) tạo bảng mới ở primary, (b) chạy job backup log thủ công, (c) <code>Invoke-DbaDbLogShipRecovery</code> ở secondary, (d) verify bảng mới có ở secondary, (e) viết script "reverse log shipping" để chuyển chiều primary↔secondary.</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>book_lab/dbatools-lab/bookcode/chapter17.notes.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../chapter16-notes/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Chapter 16 — Copy logins, jobs và các đối tượng instance-level">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chapter18-notes/" class="md-footer__link md-footer__link--next" aria-label="Sau: Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

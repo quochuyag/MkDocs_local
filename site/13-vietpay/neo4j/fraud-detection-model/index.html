@@ -1,0 +1,3394 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../mongodb/webhook-events-model/">
+      
+      
+        <link rel="next" href="../../readme/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Neo4j — Graph Database Model cho Fraud Detection - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#neo4j-graph-database-model-cho-fraud-detection" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Neo4j — Graph Database Model cho Fraud Detection
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            13. VietPay
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Design notes
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../docs/adr/001-data-architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Docs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../huong-dan-chi-tiet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../mongodb/webhook-events-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongodb
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_6" id="__nav_11_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Neo4j
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_6">
+            <span class="md-nav__icon md-icon"></span>
+            Neo4j
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Neo4j — Graph Database Model cho Fraud Detection
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Neo4j — Graph Database Model cho Fraud Detection
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-use-case-phat-hien-vong-gian-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use Case — Phát hiện vòng gian lận
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Use Case — Phát hiện vòng gian lận">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-boi-canh" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Bối cảnh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-tai-sao-phat-hien-gian-lan-can-graph-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Tại sao phát hiện gian lận cần Graph Database?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-tai-sao-ay-la-bai-toan-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Tại sao đây là bài toán Graph
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Tại sao đây là bài toán Graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-multi-hop-traversal-duyet-nhieu-buoc-qua-quan-he" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Multi-hop Traversal — Duyệt nhiều bước qua quan hệ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-real-time-fraud-scoring-cham-iem-gian-lan-thoi-gian-thuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Real-time Fraud Scoring — Chấm điểm gian lận thời gian thực
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-sql-recursive-ctes-gioi-han-thuc-te" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 SQL Recursive CTEs — Giới hạn thực tế
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-pattern-matching-phat-hien-mau-gian-lan-tu-nhien" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Pattern Matching — Phát hiện mẫu gian lận tự nhiên
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-graph-model-mo-hinh-o-thi" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Graph Model — Mô hình đồ thị
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Graph Model — Mô hình đồ thị">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tong-quan-mo-hinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Tổng quan mô hình
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-node-definitions-inh-nghia-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Node Definitions — Định nghĩa Nodes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 Node Definitions — Định nghĩa Nodes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Account
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Device
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-ipaddress" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: IPAddress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-phonenumber" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: PhoneNumber
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Transaction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-merchant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Merchant
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-relationship-definitions-inh-nghia-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Relationship Definitions — Định nghĩa Relationships
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Relationship Definitions — Định nghĩa Relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relationship-owns_device" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: OWNS_DEVICE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-logged_from" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: LOGGED_FROM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-has_phone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: HAS_PHONE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-sent_to" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: SENT_TO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-received_from" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: RECEIVED_FROM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-transacted_with" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: TRANSACTED_WITH
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-mo-hinh-visual-vi-du-fraud-ring" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Mô hình Visual — Ví dụ Fraud Ring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-use-case-scenarios-cac-kich-ban-phat-hien-gian-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Use Case Scenarios — Các kịch bản phát hiện gian lận
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Use Case Scenarios — Các kịch bản phát hiện gian lận">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-scenario-shared-device-fraud-ring" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Scenario: Shared Device Fraud Ring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-scenario-circular-money-flow-money-laundering" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Scenario: Circular Money Flow (Money Laundering)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-scenario-rapid-sequential-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Scenario: Rapid Sequential Transactions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-scenario-community-detection-fraud-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Scenario: Community Detection (Fraud Cluster)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-scenario-shortest-path-between-suspicious-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5 Scenario: Shortest Path Between Suspicious Accounts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-performance-va-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Performance và Scaling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Performance và Scaling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-sizing-estimates" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Sizing Estimates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-hardware-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Hardware Recommendations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-data-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Data Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-integration-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Integration Architecture
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Integration Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-fraud-detection-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 Fraud Detection Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-data-retention-trong-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Data Retention trong Neo4j
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-api-endpoints-cho-fraud-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 API Endpoints cho Fraud Service
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🏦 VietPay — Enterprise Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../requirements-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📋 Take Home Assessment — Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-use-case-phat-hien-vong-gian-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use Case — Phát hiện vòng gian lận
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Use Case — Phát hiện vòng gian lận">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-boi-canh" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Bối cảnh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-tai-sao-phat-hien-gian-lan-can-graph-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Tại sao phát hiện gian lận cần Graph Database?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-tai-sao-ay-la-bai-toan-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Tại sao đây là bài toán Graph
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Tại sao đây là bài toán Graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-multi-hop-traversal-duyet-nhieu-buoc-qua-quan-he" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Multi-hop Traversal — Duyệt nhiều bước qua quan hệ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-real-time-fraud-scoring-cham-iem-gian-lan-thoi-gian-thuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Real-time Fraud Scoring — Chấm điểm gian lận thời gian thực
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-sql-recursive-ctes-gioi-han-thuc-te" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 SQL Recursive CTEs — Giới hạn thực tế
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-pattern-matching-phat-hien-mau-gian-lan-tu-nhien" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Pattern Matching — Phát hiện mẫu gian lận tự nhiên
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-graph-model-mo-hinh-o-thi" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Graph Model — Mô hình đồ thị
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Graph Model — Mô hình đồ thị">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tong-quan-mo-hinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Tổng quan mô hình
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-node-definitions-inh-nghia-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Node Definitions — Định nghĩa Nodes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 Node Definitions — Định nghĩa Nodes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Account
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Device
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-ipaddress" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: IPAddress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-phonenumber" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: PhoneNumber
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Transaction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-merchant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Node: Merchant
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-relationship-definitions-inh-nghia-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Relationship Definitions — Định nghĩa Relationships
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Relationship Definitions — Định nghĩa Relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relationship-owns_device" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: OWNS_DEVICE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-logged_from" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: LOGGED_FROM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-has_phone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: HAS_PHONE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-sent_to" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: SENT_TO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-received_from" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: RECEIVED_FROM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationship-transacted_with" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship: TRANSACTED_WITH
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-mo-hinh-visual-vi-du-fraud-ring" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Mô hình Visual — Ví dụ Fraud Ring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-use-case-scenarios-cac-kich-ban-phat-hien-gian-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Use Case Scenarios — Các kịch bản phát hiện gian lận
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Use Case Scenarios — Các kịch bản phát hiện gian lận">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-scenario-shared-device-fraud-ring" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Scenario: Shared Device Fraud Ring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-scenario-circular-money-flow-money-laundering" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Scenario: Circular Money Flow (Money Laundering)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-scenario-rapid-sequential-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Scenario: Rapid Sequential Transactions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-scenario-community-detection-fraud-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Scenario: Community Detection (Fraud Cluster)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-scenario-shortest-path-between-suspicious-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5 Scenario: Shortest Path Between Suspicious Accounts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-performance-va-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Performance và Scaling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Performance và Scaling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-sizing-estimates" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Sizing Estimates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-hardware-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Hardware Recommendations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-data-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Data Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-integration-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Integration Architecture
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Integration Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-fraud-detection-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 Fraud Detection Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-data-retention-trong-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Data Retention trong Neo4j
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-api-endpoints-cho-fraud-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 API Endpoints cho Fraud Service
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="neo4j-graph-database-model-cho-fraud-detection">Neo4j — Graph Database Model cho Fraud Detection<a class="headerlink" href="#neo4j-graph-database-model-cho-fraud-detection" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Phiên bản</strong>: 1.0<br />
+<strong>Ngày tạo</strong>: 2026-06-23<br />
+<strong>Tác giả</strong>: VietPay DBA Team<br />
+<strong>Trạng thái</strong>: Proposed</p>
+</blockquote>
+<hr />
+<h2 id="muc-luc">Mục lục<a class="headerlink" href="#muc-luc" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-use-case--phát-hiện-vòng-gian-lận">Use Case — Phát hiện vòng gian lận (Fraud Ring Detection)</a></li>
+<li><a href="#2-tại-sao-đây-là-bài-toán-graph">Tại sao đây là bài toán Graph</a></li>
+<li><a href="#3-graph-model--mô-hình-đồ-thị">Graph Model — Mô hình đồ thị</a></li>
+<li><a href="#4-use-case-scenarios--các-kịch-bản-phát-hiện-gian-lận">Use Case Scenarios — Các kịch bản phát hiện gian lận</a></li>
+<li><a href="#5-performance-và-scaling">Performance và Scaling</a></li>
+<li><a href="#6-integration-architecture">Integration Architecture</a></li>
+</ol>
+<hr />
+<h2 id="1-use-case-phat-hien-vong-gian-lan">1. Use Case — Phát hiện vòng gian lận<a class="headerlink" href="#1-use-case-phat-hien-vong-gian-lan" title="Permanent link">&para;</a></h2>
+<h3 id="11-boi-canh">1.1 Bối cảnh<a class="headerlink" href="#11-boi-canh" title="Permanent link">&para;</a></h3>
+<p>VietPay xử lý hàng triệu giao dịch mỗi ngày qua nhiều kênh (ví điện tử, POS, banking, QR code). Các tổ chức gian lận (fraud rings) sử dụng các chiến thuật tinh vi:</p>
+<table>
+<thead>
+<tr>
+<th>Loại gian lận</th>
+<th>Mô tả</th>
+<th>Thiệt hại tiềm tàng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Account Takeover</strong></td>
+<td>Chiếm quyền tài khoản hợp lệ, chuyển tiền ra ngoài</td>
+<td>Mất tiền trực tiếp của người dùng</td>
+</tr>
+<tr>
+<td><strong>Synthetic Identity</strong></td>
+<td>Tạo danh tính giả kết hợp thông tin thật/giả</td>
+<td>Vay tín dụng, mở ví không trả nợ</td>
+</tr>
+<tr>
+<td><strong>Money Laundering</strong></td>
+<td>Chuyển tiền vòng qua nhiều tài khoản để rửa</td>
+<td>Vi phạm AML, phạt nặng từ NHNN</td>
+</tr>
+<tr>
+<td><strong>Collusive Fraud</strong></td>
+<td>Nhóm tài khoản phối hợp giao dịch giả</td>
+<td>Chiếm tiền khuyến mãi, cashback</td>
+</tr>
+<tr>
+<td><strong>Card Testing</strong></td>
+<td>Thử hàng loạt thẻ đánh cắp với giao dịch nhỏ</td>
+<td>Tiền đề cho fraud lớn hơn</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-tai-sao-phat-hien-gian-lan-can-graph-database">1.2 Tại sao phát hiện gian lận cần Graph Database?<a class="headerlink" href="#12-tai-sao-phat-hien-gian-lan-can-graph-database" title="Permanent link">&para;</a></h3>
+<p>Gian lận là bài toán về <strong>mối quan hệ</strong> (relationships), không phải bài toán về <strong>thuộc tính</strong> (attributes):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Ví dụ thực tế:
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>- Account A và Account B dùng chung Device X
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>- Account B và Account C có cùng IP address Y
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>- Account C chuyển tiền cho Account A qua Account D
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>→ A, B, C, D có thể là một fraud ring
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>→ Phát hiện pattern này yêu cầu duyệt qua 3-4 hop relationships
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>→ SQL JOIN hoặc recursive CTE trở nên cực kỳ chậm ở scale này
+</span></code></pre></div>
+<hr />
+<h2 id="2-tai-sao-ay-la-bai-toan-graph">2. Tại sao đây là bài toán Graph<a class="headerlink" href="#2-tai-sao-ay-la-bai-toan-graph" title="Permanent link">&para;</a></h2>
+<h3 id="21-multi-hop-traversal-duyet-nhieu-buoc-qua-quan-he">2.1 Multi-hop Traversal — Duyệt nhiều bước qua quan hệ<a class="headerlink" href="#21-multi-hop-traversal-duyet-nhieu-buoc-qua-quan-he" title="Permanent link">&para;</a></h3>
+<p><strong>Bài toán</strong>: Tìm tất cả accounts kết nối với account nghi vấn qua shared devices, IPs, phone numbers — trong phạm vi 1 đến 5 hops.</p>
+<p><strong>SQL approach (PostgreSQL — Recursive CTE):</strong></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- Tìm accounts chia sẻ device trong 3 hops — SQL CTE</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1">-- ⚠️ Hiệu suất giảm EXPONENTIALLY khi tăng số hops</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">WITH</span><span class="w"> </span><span class="k">RECURSIVE</span><span class="w"> </span><span class="n">connected_accounts</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="c1">-- Base case: accounts dùng chung device với account nghi vấn</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">ad2</span><span class="p">.</span><span class="n">account_id</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">depth</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">account_devices</span><span class="w"> </span><span class="n">ad1</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="k">JOIN</span><span class="w"> </span><span class="n">account_devices</span><span class="w"> </span><span class="n">ad2</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ad1</span><span class="p">.</span><span class="n">device_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ad2</span><span class="p">.</span><span class="n">device_id</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">ad1</span><span class="p">.</span><span class="n">account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ACC_SUSPECT_001'</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="k">AND</span><span class="w"> </span><span class="n">ad2</span><span class="p">.</span><span class="n">account_id</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">'ACC_SUSPECT_001'</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="k">UNION</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="c1">-- Recursive: mở rộng thêm 1 hop</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">ad2</span><span class="p">.</span><span class="n">account_id</span><span class="p">,</span><span class="w"> </span><span class="n">ca</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">connected_accounts</span><span class="w"> </span><span class="n">ca</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="k">JOIN</span><span class="w"> </span><span class="n">account_devices</span><span class="w"> </span><span class="n">ad1</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ca</span><span class="p">.</span><span class="n">account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ad1</span><span class="p">.</span><span class="n">account_id</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="k">JOIN</span><span class="w"> </span><span class="n">account_devices</span><span class="w"> </span><span class="n">ad2</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ad1</span><span class="p">.</span><span class="n">device_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ad2</span><span class="p">.</span><span class="n">device_id</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">ad2</span><span class="p">.</span><span class="n">account_id</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">account_id</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">connected_accounts</span><span class="p">)</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">      </span><span class="k">AND</span><span class="w"> </span><span class="n">ca</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">connected_accounts</span><span class="p">;</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">-- Vấn đề:</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">-- 1. Mỗi hop = thêm 1 JOIN → O(n^k) với k = số hops</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="c1">-- 2. Phải JOINs riêng cho devices, IPs, phones → UNION ALL phức tạp</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="c1">-- 3. Cycle detection phải tự implement</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="c1">-- 4. Với 10M accounts, 3 hops mất &gt; 30 giây</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="c1">-- 5. 5 hops có thể mất hàng phút hoặc timeout</span>
+</span></code></pre></div>
+<p><strong>Neo4j approach (Cypher):</strong></p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Cùng query — tìm connected accounts trong 1-5 hops qua BẤT KỲ shared resource nào</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// ✅ Hoàn thành trong milliseconds, ngay cả ở 5+ hops</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">MATCH</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">suspect</span><span class="p">:</span><span class="n">Account</span><span class="w"> </span><span class="p">{</span><span class="n">account_id</span><span class="p">:</span><span class="w"> </span><span class="s">'ACC_SUSPECT_001'</span><span class="p">})</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">              </span><span class="o">-[</span><span class="p">:</span><span class="n">OWNS_DEVICE</span><span class="p">|</span><span class="n">LOGGED_FROM</span><span class="p">|</span><span class="n">HAS_PHONE</span><span class="p">*</span><span class="m">1</span><span class="p">..</span><span class="m">5</span><span class="o">]-</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">              </span><span class="p">(</span><span class="n">connected</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">suspect</span><span class="w"> </span><span class="p">&lt;&gt;</span><span class="w"> </span><span class="n">connected</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">RETURN</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">connected</span><span class="p">.</span><span class="n">account_id</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">hops</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="k">ASC</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1">// Neo4j sử dụng index-free adjacency:</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1">// - Mỗi node lưu trực tiếp pointer đến neighbors</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1">// - Traversal = pointer following, không cần JOIN</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1">// - O(k) với k = số hops, KHÔNG phụ thuộc vào tổng số nodes</span>
+</span></code></pre></div>
+<h3 id="22-real-time-fraud-scoring-cham-iem-gian-lan-thoi-gian-thuc">2.2 Real-time Fraud Scoring — Chấm điểm gian lận thời gian thực<a class="headerlink" href="#22-real-time-fraud-scoring-cham-iem-gian-lan-thoi-gian-thuc" title="Permanent link">&para;</a></h3>
+<p>Khi một giao dịch mới đến, VietPay cần đánh giá rủi ro <strong>trong &lt; 100ms</strong>:</p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Real-time fraud score: kiểm tra account có liên kết đến known fraud không</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">account</span><span class="p">:</span><span class="n">Account</span><span class="w"> </span><span class="p">{</span><span class="n">account_id</span><span class="p">:</span><span class="w"> </span><span class="err">$</span><span class="n">account_id</span><span class="p">})</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">OPTIONAL</span><span class="w"> </span><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">OWNS_DEVICE</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">d</span><span class="p">:</span><span class="n">Device</span><span class="p">)</span><span class="o">&lt;-[</span><span class="p">:</span><span class="n">OWNS_DEVICE</span><span class="o">]-</span><span class="p">(</span><span class="n">other</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">fraud_flag</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">true</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">WITH</span><span class="w"> </span><span class="n">account</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">fraud_device_connections</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">OPTIONAL</span><span class="w"> </span><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">LOGGED_FROM</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">ip</span><span class="p">:</span><span class="n">IPAddress</span><span class="p">)</span><span class="o">&lt;-[</span><span class="p">:</span><span class="n">LOGGED_FROM</span><span class="o">]-</span><span class="p">(</span><span class="n">other2</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">other2</span><span class="p">.</span><span class="n">fraud_flag</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">true</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">WITH</span><span class="w"> </span><span class="n">account</span><span class="p">,</span><span class="w"> </span><span class="n">fraud_device_connections</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">other2</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">fraud_ip_connections</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">OPTIONAL</span><span class="w"> </span><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">HAS_PHONE</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">PhoneNumber</span><span class="p">)</span><span class="o">&lt;-[</span><span class="p">:</span><span class="n">HAS_PHONE</span><span class="o">]-</span><span class="p">(</span><span class="n">other3</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">other3</span><span class="p">.</span><span class="n">fraud_flag</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">true</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">account</span><span class="p">.</span><span class="n">account_id</span><span class="p">,</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">       </span><span class="n">fraud_device_connections</span><span class="p">,</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">       </span><span class="n">fraud_ip_connections</span><span class="p">,</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">       </span><span class="n">count</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">other3</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">fraud_phone_connections</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">       </span><span class="c1">// Weighted fraud score</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">       </span><span class="n">fraud_device_connections</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="m">40</span><span class="w"> </span><span class="err">+</span><span class="w"> </span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">       </span><span class="n">fraud_ip_connections</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="err">+</span><span class="w"> </span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">       </span><span class="n">count</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">other3</span><span class="p">)</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">fraud_proximity_score</span>
+</span></code></pre></div>
+<h3 id="23-sql-recursive-ctes-gioi-han-thuc-te">2.3 SQL Recursive CTEs — Giới hạn thực tế<a class="headerlink" href="#23-sql-recursive-ctes-gioi-han-thuc-te" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Số hops</th>
+<th>PostgreSQL CTE (10M accounts)</th>
+<th>Neo4j Traversal</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>~50ms</td>
+<td>~5ms</td>
+<td>Cả hai đều nhanh</td>
+</tr>
+<tr>
+<td>2</td>
+<td>~200ms</td>
+<td>~10ms</td>
+<td>SQL bắt đầu chậm</td>
+</tr>
+<tr>
+<td>3</td>
+<td>~2-5s</td>
+<td>~15ms</td>
+<td>SQL chậm rõ rệt</td>
+</tr>
+<tr>
+<td>4</td>
+<td>~30-60s</td>
+<td>~25ms</td>
+<td>SQL không khả thi cho real-time</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Timeout / OOM</td>
+<td>~40ms</td>
+<td>SQL thực tế không thể</td>
+</tr>
+<tr>
+<td>6+</td>
+<td>Không thể</td>
+<td>~60ms</td>
+<td>Chỉ graph DB mới handle được</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nguyên nhân kỹ thuật:</strong>
+- PostgreSQL: Mỗi hop = hash join / nested loop join trên toàn bộ table → cost nhân lên
+- Neo4j: Mỗi hop = follow pointers từ node hiện tại → cost cộng dồn tuyến tính</p>
+<h3 id="24-pattern-matching-phat-hien-mau-gian-lan-tu-nhien">2.4 Pattern Matching — Phát hiện mẫu gian lận tự nhiên<a class="headerlink" href="#24-pattern-matching-phat-hien-mau-gian-lan-tu-nhien" title="Permanent link">&para;</a></h3>
+<p>Neo4j cho phép mô tả fraud patterns bằng <strong>visual ASCII art</strong>, gần giống cách vẽ trên whiteboard:</p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Pattern: Money laundering circle (vòng rửa tiền)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">// A → B → C → D → A (tiền quay vòng trở lại)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">MATCH</span><span class="w"> </span><span class="n">circle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">SENT_TO</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">               </span><span class="o">-[</span><span class="p">:</span><span class="n">SENT_TO</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">SENT_TO</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">d</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">               </span><span class="o">-[</span><span class="p">:</span><span class="n">SENT_TO</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">&lt;&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">&lt;&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">&lt;&gt;</span><span class="w"> </span><span class="n">d</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="n">AND</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">&lt;&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">&lt;&gt;</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">&lt;&gt;</span><span class="w"> </span><span class="n">d</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">circle</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">// Pattern: Star topology (1 tài khoản hub nhận từ nhiều nguồn)</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">source</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span><span class="o">-[</span><span class="n">t</span><span class="p">:</span><span class="n">SENT_TO</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">hub</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">WITH</span><span class="w"> </span><span class="n">hub</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">source</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">source_count</span><span class="p">,</span><span class="w"> </span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">     </span><span class="n">sum</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_received</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">source_count</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">total_received</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">100000000</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">hub</span><span class="p">,</span><span class="w"> </span><span class="n">source_count</span><span class="p">,</span><span class="w"> </span><span class="n">total_received</span>
+</span></code></pre></div>
+<p>Trong SQL, mô tả patterns vòng tròn hoặc star topology yêu cầu self-joins phức tạp và hard-coded cho mỗi pattern size.</p>
+<hr />
+<h2 id="3-graph-model-mo-hinh-o-thi">3. Graph Model — Mô hình đồ thị<a class="headerlink" href="#3-graph-model-mo-hinh-o-thi" title="Permanent link">&para;</a></h2>
+<h3 id="31-tong-quan-mo-hinh">3.1 Tổng quan mô hình<a class="headerlink" href="#31-tong-quan-mo-hinh" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>                    ┌──────────┐
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                    │  Device  │
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                    │ (Node)   │
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                    └────┬─────┘
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>                         │ OWNS_DEVICE
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>                         │
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>┌──────────┐    ┌────────┴────────┐    ┌─────────────┐
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│IPAddress │────│    Account      │────│ PhoneNumber  │
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│ (Node)   │ LF │    (Node)       │ HP │   (Node)     │
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>└──────────┘    └───┬────────┬────┘    └─────────────┘
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>                    │        │
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>              SENT_TO   RECEIVED_FROM
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>                    │        │
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>                ┌───┴────────┴───┐
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>                │  Transaction   │
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>                │    (Node)      │
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>                └───────┬────────┘
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>                        │ TRANSACTED_WITH
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>                        │
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>                  ┌─────┴──────┐
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>                  │  Merchant  │
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>                  │   (Node)   │
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>                  └────────────┘
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>Chú thích:
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>  LF = LOGGED_FROM
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>  HP = HAS_PHONE
+</span></code></pre></div>
+<h3 id="32-node-definitions-inh-nghia-nodes">3.2 Node Definitions — Định nghĩa Nodes<a class="headerlink" href="#32-node-definitions-inh-nghia-nodes" title="Permanent link">&para;</a></h3>
+<h4 id="node-account">Node: Account<a class="headerlink" href="#node-account" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>account_id</code></td>
+<td>String</td>
+<td><strong>PK</strong> — ID tài khoản từ PostgreSQL</td>
+<td><code>"ACC_001"</code></td>
+</tr>
+<tr>
+<td><code>full_name</code></td>
+<td>String</td>
+<td>Tên đầy đủ</td>
+<td><code>"Nguyễn Văn A"</code></td>
+</tr>
+<tr>
+<td><code>phone_primary</code></td>
+<td>String</td>
+<td>SĐT chính</td>
+<td><code>"+84901234567"</code></td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>String</td>
+<td>Email đăng ký</td>
+<td><code>"user@email.com"</code></td>
+</tr>
+<tr>
+<td><code>kyc_level</code></td>
+<td>Integer</td>
+<td>Mức KYC (0-3)</td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><code>account_status</code></td>
+<td>String</td>
+<td>Trạng thái</td>
+<td><code>"active"</code> / <code>"suspended"</code> / <code>"closed"</code></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>DateTime</td>
+<td>Ngày tạo tài khoản</td>
+<td><code>2025-01-15T10:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>fraud_flag</code></td>
+<td>Boolean</td>
+<td>Đã bị đánh dấu gian lận</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>fraud_score</code></td>
+<td>Float</td>
+<td>Điểm rủi ro gian lận (0-100)</td>
+<td><code>15.5</code></td>
+</tr>
+<tr>
+<td><code>risk_tier</code></td>
+<td>String</td>
+<td>Mức rủi ro</td>
+<td><code>"low"</code> / <code>"medium"</code> / <code>"high"</code> / <code>"critical"</code></td>
+</tr>
+<tr>
+<td><code>total_transaction_count</code></td>
+<td>Integer</td>
+<td>Tổng số giao dịch</td>
+<td><code>156</code></td>
+</tr>
+<tr>
+<td><code>total_transaction_volume</code></td>
+<td>Float</td>
+<td>Tổng giá trị giao dịch (VND)</td>
+<td><code>45000000.0</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints &amp; Indexes:</strong>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">account_id_unique</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span><span class="w"> </span><span class="n">REQUIRE</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">account_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">account_fraud_flag</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">fraud_flag</span><span class="p">);</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">account_risk_tier</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">risk_tier</span><span class="p">);</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">account_created_at</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Account</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">created_at</span><span class="p">);</span>
+</span></code></pre></div></p>
+<h4 id="node-device">Node: Device<a class="headerlink" href="#node-device" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>device_id</code></td>
+<td>String</td>
+<td><strong>PK</strong> — Device fingerprint hash</td>
+<td><code>"DEV_FP_abc123"</code></td>
+</tr>
+<tr>
+<td><code>device_type</code></td>
+<td>String</td>
+<td>Loại thiết bị</td>
+<td><code>"mobile"</code> / <code>"desktop"</code> / <code>"tablet"</code></td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td>String</td>
+<td>Hệ điều hành</td>
+<td><code>"Android 14"</code></td>
+</tr>
+<tr>
+<td><code>browser</code></td>
+<td>String</td>
+<td>Trình duyệt (nếu web)</td>
+<td><code>"Chrome 126"</code></td>
+</tr>
+<tr>
+<td><code>brand</code></td>
+<td>String</td>
+<td>Hãng thiết bị</td>
+<td><code>"Samsung"</code></td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>String</td>
+<td>Model</td>
+<td><code>"Galaxy S24"</code></td>
+</tr>
+<tr>
+<td><code>fingerprint_hash</code></td>
+<td>String</td>
+<td>Browser/device fingerprint</td>
+<td><code>"fp_sha256_xyz"</code></td>
+</tr>
+<tr>
+<td><code>first_seen</code></td>
+<td>DateTime</td>
+<td>Lần đầu xuất hiện</td>
+<td><code>2025-06-01T08:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>last_seen</code></td>
+<td>DateTime</td>
+<td>Lần cuối xuất hiện</td>
+<td><code>2026-06-23T14:30:00Z</code></td>
+</tr>
+<tr>
+<td><code>is_emulator</code></td>
+<td>Boolean</td>
+<td>Có phải emulator không</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>is_rooted</code></td>
+<td>Boolean</td>
+<td>Thiết bị đã root/jailbreak</td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints &amp; Indexes:</strong>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">device_id_unique</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="p">:</span><span class="n">Device</span><span class="p">)</span><span class="w"> </span><span class="n">REQUIRE</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">device_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">device_fingerprint</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="p">:</span><span class="n">Device</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">fingerprint_hash</span><span class="p">);</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">device_type</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="p">:</span><span class="n">Device</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">device_type</span><span class="p">);</span>
+</span></code></pre></div></p>
+<h4 id="node-ipaddress">Node: IPAddress<a class="headerlink" href="#node-ipaddress" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_address</code></td>
+<td>String</td>
+<td><strong>PK</strong> — Địa chỉ IP</td>
+<td><code>"113.160.92.100"</code></td>
+</tr>
+<tr>
+<td><code>ip_type</code></td>
+<td>String</td>
+<td>Loại IP</td>
+<td><code>"residential"</code> / <code>"datacenter"</code> / <code>"vpn"</code> / <code>"tor"</code></td>
+</tr>
+<tr>
+<td><code>country_code</code></td>
+<td>String</td>
+<td>Quốc gia (GeoIP)</td>
+<td><code>"VN"</code></td>
+</tr>
+<tr>
+<td><code>city</code></td>
+<td>String</td>
+<td>Thành phố (GeoIP)</td>
+<td><code>"Ho Chi Minh City"</code></td>
+</tr>
+<tr>
+<td><code>isp</code></td>
+<td>String</td>
+<td>Nhà mạng</td>
+<td><code>"Viettel"</code></td>
+</tr>
+<tr>
+<td><code>asn</code></td>
+<td>Integer</td>
+<td>Autonomous System Number</td>
+<td><code>7552</code></td>
+</tr>
+<tr>
+<td><code>is_proxy</code></td>
+<td>Boolean</td>
+<td>Có phải proxy không</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>is_vpn</code></td>
+<td>Boolean</td>
+<td>Có phải VPN không</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>is_tor</code></td>
+<td>Boolean</td>
+<td>Có phải Tor exit node</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>threat_score</code></td>
+<td>Float</td>
+<td>Điểm đe dọa (0-100)</td>
+<td><code>5.0</code></td>
+</tr>
+<tr>
+<td><code>first_seen</code></td>
+<td>DateTime</td>
+<td>Lần đầu xuất hiện</td>
+<td><code>2025-03-15T12:00:00Z</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints &amp; Indexes:</strong>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">ip_address_unique</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">ip</span><span class="p">:</span><span class="n">IPAddress</span><span class="p">)</span><span class="w"> </span><span class="n">REQUIRE</span><span class="w"> </span><span class="n">ip</span><span class="p">.</span><span class="n">ip_address</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">ip_type</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">ip</span><span class="p">:</span><span class="n">IPAddress</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">ip</span><span class="p">.</span><span class="n">ip_type</span><span class="p">);</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">ip_country</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">ip</span><span class="p">:</span><span class="n">IPAddress</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">ip</span><span class="p">.</span><span class="n">country_code</span><span class="p">);</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">ip_threat</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">ip</span><span class="p">:</span><span class="n">IPAddress</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">ip</span><span class="p">.</span><span class="n">threat_score</span><span class="p">);</span>
+</span></code></pre></div></p>
+<h4 id="node-phonenumber">Node: PhoneNumber<a class="headerlink" href="#node-phonenumber" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>phone_number</code></td>
+<td>String</td>
+<td><strong>PK</strong> — SĐT chuẩn hóa E.164</td>
+<td><code>"+84901234567"</code></td>
+</tr>
+<tr>
+<td><code>country_code</code></td>
+<td>String</td>
+<td>Mã quốc gia</td>
+<td><code>"+84"</code></td>
+</tr>
+<tr>
+<td><code>carrier</code></td>
+<td>String</td>
+<td>Nhà mạng</td>
+<td><code>"Viettel"</code></td>
+</tr>
+<tr>
+<td><code>phone_type</code></td>
+<td>String</td>
+<td>Loại SĐT</td>
+<td><code>"mobile"</code> / <code>"landline"</code> / <code>"voip"</code></td>
+</tr>
+<tr>
+<td><code>is_virtual</code></td>
+<td>Boolean</td>
+<td>SĐT ảo (VoIP)</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>registered_name</code></td>
+<td>String</td>
+<td>Tên đăng ký SĐT</td>
+<td><code>"Nguyễn Văn A"</code></td>
+</tr>
+<tr>
+<td><code>first_seen</code></td>
+<td>DateTime</td>
+<td>Lần đầu liên kết</td>
+<td><code>2025-01-15T10:00:00Z</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints &amp; Indexes:</strong>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">phone_unique</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">PhoneNumber</span><span class="p">)</span><span class="w"> </span><span class="n">REQUIRE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">phone_number</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">phone_carrier</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">PhoneNumber</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">carrier</span><span class="p">);</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">phone_virtual</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">PhoneNumber</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">is_virtual</span><span class="p">);</span>
+</span></code></pre></div></p>
+<h4 id="node-transaction">Node: Transaction<a class="headerlink" href="#node-transaction" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transaction_id</code></td>
+<td>String</td>
+<td><strong>PK</strong> — ID giao dịch</td>
+<td><code>"TXN_VP_20260623_001"</code></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>Float</td>
+<td>Số tiền (VND)</td>
+<td><code>1500000.0</code></td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>String</td>
+<td>Loại tiền</td>
+<td><code>"VND"</code></td>
+</tr>
+<tr>
+<td><code>transaction_type</code></td>
+<td>String</td>
+<td>Loại giao dịch</td>
+<td><code>"transfer"</code> / <code>"payment"</code> / <code>"withdrawal"</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>String</td>
+<td>Trạng thái</td>
+<td><code>"completed"</code> / <code>"failed"</code> / <code>"reversed"</code></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td>String</td>
+<td>Kênh giao dịch</td>
+<td><code>"app"</code> / <code>"pos"</code> / <code>"web"</code> / <code>"qr"</code></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>DateTime</td>
+<td>Thời điểm tạo</td>
+<td><code>2026-06-23T14:30:00Z</code></td>
+</tr>
+<tr>
+<td><code>completed_at</code></td>
+<td>DateTime</td>
+<td>Thời điểm hoàn thành</td>
+<td><code>2026-06-23T14:30:02Z</code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>String</td>
+<td>Nội dung chuyển khoản</td>
+<td><code>"Thanh toán đơn hàng"</code></td>
+</tr>
+<tr>
+<td><code>risk_score</code></td>
+<td>Float</td>
+<td>Điểm rủi ro (0-100)</td>
+<td><code>12.0</code></td>
+</tr>
+<tr>
+<td><code>is_flagged</code></td>
+<td>Boolean</td>
+<td>Đã bị flag</td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints &amp; Indexes:</strong>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">txn_id_unique</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">:</span><span class="n">Transaction</span><span class="p">)</span><span class="w"> </span><span class="n">REQUIRE</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">transaction_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">txn_created_at</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">:</span><span class="n">Transaction</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">created_at</span><span class="p">);</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">txn_amount</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">:</span><span class="n">Transaction</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">amount</span><span class="p">);</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">txn_status</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">:</span><span class="n">Transaction</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">status</span><span class="p">);</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">txn_flagged</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">:</span><span class="n">Transaction</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">is_flagged</span><span class="p">);</span>
+</span></code></pre></div></p>
+<h4 id="node-merchant">Node: Merchant<a class="headerlink" href="#node-merchant" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>merchant_id</code></td>
+<td>String</td>
+<td><strong>PK</strong> — ID merchant</td>
+<td><code>"MCH_COFFEE_001"</code></td>
+</tr>
+<tr>
+<td><code>merchant_name</code></td>
+<td>String</td>
+<td>Tên thương hiệu</td>
+<td><code>"Coffee House"</code></td>
+</tr>
+<tr>
+<td><code>mcc</code></td>
+<td>String</td>
+<td>Merchant Category Code</td>
+<td><code>"5814"</code></td>
+</tr>
+<tr>
+<td><code>mcc_description</code></td>
+<td>String</td>
+<td>Mô tả MCC</td>
+<td><code>"Fast Food Restaurants"</code></td>
+</tr>
+<tr>
+<td><code>city</code></td>
+<td>String</td>
+<td>Thành phố</td>
+<td><code>"Ho Chi Minh City"</code></td>
+</tr>
+<tr>
+<td><code>district</code></td>
+<td>String</td>
+<td>Quận/Huyện</td>
+<td><code>"Quận 1"</code></td>
+</tr>
+<tr>
+<td><code>registration_date</code></td>
+<td>DateTime</td>
+<td>Ngày đăng ký</td>
+<td><code>2024-06-01T00:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>risk_tier</code></td>
+<td>String</td>
+<td>Mức rủi ro merchant</td>
+<td><code>"low"</code></td>
+</tr>
+<tr>
+<td><code>chargeback_rate</code></td>
+<td>Float</td>
+<td>Tỷ lệ chargeback (%)</td>
+<td><code>0.15</code></td>
+</tr>
+<tr>
+<td><code>monthly_volume</code></td>
+<td>Float</td>
+<td>Doanh số tháng (VND)</td>
+<td><code>500000000.0</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints &amp; Indexes:</strong>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">merchant_id_unique</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="p">:</span><span class="n">Merchant</span><span class="p">)</span><span class="w"> </span><span class="n">REQUIRE</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">merchant_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">;</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">merchant_mcc</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="p">:</span><span class="n">Merchant</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">mcc</span><span class="p">);</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">merchant_risk</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="p">:</span><span class="n">Merchant</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">risk_tier</span><span class="p">);</span>
+</span></code></pre></div></p>
+<h3 id="33-relationship-definitions-inh-nghia-relationships">3.3 Relationship Definitions — Định nghĩa Relationships<a class="headerlink" href="#33-relationship-definitions-inh-nghia-relationships" title="Permanent link">&para;</a></h3>
+<h4 id="relationship-owns_device">Relationship: OWNS_DEVICE<a class="headerlink" href="#relationship-owns_device" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>(Account)-[:OWNS_DEVICE]-&gt;(Device)
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>first_used</code></td>
+<td>DateTime</td>
+<td>Lần đầu dùng device</td>
+<td><code>2025-06-01T08:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>last_used</code></td>
+<td>DateTime</td>
+<td>Lần cuối dùng</td>
+<td><code>2026-06-23T14:30:00Z</code></td>
+</tr>
+<tr>
+<td><code>login_count</code></td>
+<td>Integer</td>
+<td>Số lần login từ device</td>
+<td><code>245</code></td>
+</tr>
+<tr>
+<td><code>is_primary</code></td>
+<td>Boolean</td>
+<td>Device chính</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>registered_via</code></td>
+<td>String</td>
+<td>Đăng ký qua device này</td>
+<td><code>"app_install"</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ý nghĩa</strong>: Một account có thể sở hữu nhiều devices, và một device bất thường có thể được nhiều accounts sử dụng (dấu hiệu fraud).</p>
+<h4 id="relationship-logged_from">Relationship: LOGGED_FROM<a class="headerlink" href="#relationship-logged_from" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>(Account)-[:LOGGED_FROM]-&gt;(IPAddress)
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>first_login</code></td>
+<td>DateTime</td>
+<td>Lần đầu login từ IP</td>
+<td><code>2025-03-15T12:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>last_login</code></td>
+<td>DateTime</td>
+<td>Lần cuối login</td>
+<td><code>2026-06-23T14:29:00Z</code></td>
+</tr>
+<tr>
+<td><code>login_count</code></td>
+<td>Integer</td>
+<td>Số lần login</td>
+<td><code>89</code></td>
+</tr>
+<tr>
+<td><code>is_usual</code></td>
+<td>Boolean</td>
+<td>IP thường dùng</td>
+<td><code>true</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ý nghĩa</strong>: Nhiều accounts login từ cùng IP datacenter/VPN → potential fraud ring.</p>
+<h4 id="relationship-has_phone">Relationship: HAS_PHONE<a class="headerlink" href="#relationship-has_phone" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>(Account)-[:HAS_PHONE]-&gt;(PhoneNumber)
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>registered_at</code></td>
+<td>DateTime</td>
+<td>Ngày gắn SĐT</td>
+<td><code>2025-01-15T10:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>is_primary</code></td>
+<td>Boolean</td>
+<td>SĐT chính</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>verified</code></td>
+<td>Boolean</td>
+<td>Đã xác minh OTP</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>removed_at</code></td>
+<td>DateTime / null</td>
+<td>Ngày gỡ (nếu có)</td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ý nghĩa</strong>: Nhiều accounts dùng chung SĐT → possible synthetic identity fraud.</p>
+<h4 id="relationship-sent_to">Relationship: SENT_TO<a class="headerlink" href="#relationship-sent_to" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>(Account)-[:SENT_TO {via: Transaction}]-&gt;(Account)
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transaction_id</code></td>
+<td>String</td>
+<td>ID giao dịch</td>
+<td><code>"TXN_VP_001"</code></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>Float</td>
+<td>Số tiền</td>
+<td><code>5000000.0</code></td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>String</td>
+<td>Loại tiền</td>
+<td><code>"VND"</code></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>DateTime</td>
+<td>Thời điểm</td>
+<td><code>2026-06-23T14:30:00Z</code></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td>String</td>
+<td>Kênh</td>
+<td><code>"app"</code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>String</td>
+<td>Nội dung</td>
+<td><code>"Chuyển tiền"</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ý nghĩa</strong>: Mạng lưới chuyển tiền giữa accounts — pattern chuyển tiền vòng = money laundering.</p>
+<h4 id="relationship-received_from">Relationship: RECEIVED_FROM<a class="headerlink" href="#relationship-received_from" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>(Account)-[:RECEIVED_FROM {via: Transaction}]-&gt;(Account)
+</span></code></pre></div>
+<p>Inverse relationship của SENT_TO — cùng properties. Lưu cả hai chiều để query hiệu quả hơn (bidirectional traversal mà không cần reverse direction).</p>
+<h4 id="relationship-transacted_with">Relationship: TRANSACTED_WITH<a class="headerlink" href="#relationship-transacted_with" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>(Account)-[:TRANSACTED_WITH]-&gt;(Merchant)
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Mô tả</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transaction_count</code></td>
+<td>Integer</td>
+<td>Số giao dịch</td>
+<td><code>15</code></td>
+</tr>
+<tr>
+<td><code>total_amount</code></td>
+<td>Float</td>
+<td>Tổng chi tiêu</td>
+<td><code>2500000.0</code></td>
+</tr>
+<tr>
+<td><code>first_transaction</code></td>
+<td>DateTime</td>
+<td>Giao dịch đầu tiên</td>
+<td><code>2025-08-01T09:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>last_transaction</code></td>
+<td>DateTime</td>
+<td>Giao dịch gần nhất</td>
+<td><code>2026-06-23T14:30:00Z</code></td>
+</tr>
+<tr>
+<td><code>avg_amount</code></td>
+<td>Float</td>
+<td>Trung bình mỗi GD</td>
+<td><code>166666.67</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ý nghĩa</strong>: Pattern mua hàng bất thường tại merchant → potential card testing hoặc collusive fraud.</p>
+<h3 id="34-mo-hinh-visual-vi-du-fraud-ring">3.4 Mô hình Visual — Ví dụ Fraud Ring<a class="headerlink" href="#34-mo-hinh-visual-vi-du-fraud-ring" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Fraud Ring Example — 4 accounts dùng chung resources:
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    Account_A ──OWNS_DEVICE──► Device_X ◄──OWNS_DEVICE── Account_B
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>        │                                                      │
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    LOGGED_FROM                                          LOGGED_FROM
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>        │                                                      │
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>        ▼                                                      ▼
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    IP_Datacenter_1 ◄─────────LOGGED_FROM──────────── Account_C
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>                                                           │
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>                                                       HAS_PHONE
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>                                                           │
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>                                                           ▼
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>    Account_D ──────────HAS_PHONE──────────────► Phone_VoIP_1
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>    Money flow: A ──SENT_TO──► B ──SENT_TO──► C ──SENT_TO──► D ──SENT_TO──► A
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>                (vòng tròn chuyển tiền — money laundering pattern)
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>    Detection score:
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>    - 4 accounts chia sẻ device/IP/phone = HIGH risk
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>    - Circular money flow detected = CRITICAL
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>    - VoIP phone number involved = additional risk factor
+</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a>    - Datacenter IP = additional risk factor
+</span></code></pre></div>
+<hr />
+<h2 id="4-use-case-scenarios-cac-kich-ban-phat-hien-gian-lan">4. Use Case Scenarios — Các kịch bản phát hiện gian lận<a class="headerlink" href="#4-use-case-scenarios-cac-kich-ban-phat-hien-gian-lan" title="Permanent link">&para;</a></h2>
+<h3 id="41-scenario-shared-device-fraud-ring">4.1 Scenario: Shared Device Fraud Ring<a class="headerlink" href="#41-scenario-shared-device-fraud-ring" title="Permanent link">&para;</a></h3>
+<p><strong>Mô tả</strong>: Phát hiện nhóm accounts sử dụng chung thiết bị — dấu hiệu mạnh nhất của fraud ring, vì người dùng thật hiếm khi chia sẻ thiết bị.</p>
+<p><strong>Cypher Query</strong>: Xem file <code>cypher-queries.cypher</code> — Query 1</p>
+<p><strong>Tiêu chí phát hiện</strong>:
+- Một device được &gt; 3 accounts sử dụng → <strong>WARNING</strong>
+- Một device được &gt; 5 accounts sử dụng → <strong>CRITICAL</strong>
+- Device là emulator hoặc rooted → nhân risk score × 2</p>
+<h3 id="42-scenario-circular-money-flow-money-laundering">4.2 Scenario: Circular Money Flow (Money Laundering)<a class="headerlink" href="#42-scenario-circular-money-flow-money-laundering" title="Permanent link">&para;</a></h3>
+<p><strong>Mô tả</strong>: Phát hiện tiền chuyển vòng qua chuỗi accounts và quay lại account gốc. Đây là pattern kinh điển của money laundering.</p>
+<p><strong>Cypher Query</strong>: Xem file <code>cypher-queries.cypher</code> — Query 2</p>
+<p><strong>Tiêu chí phát hiện</strong>:
+- Vòng 3-4 accounts, tổng giá trị &gt; 50,000,000 VND → <strong>ALERT</strong>
+- Các giao dịch trong vòng diễn ra trong &lt; 24 giờ → <strong>HIGH RISK</strong>
+- Amount giảm dần (trừ "phí") qua mỗi hop → classic layering pattern</p>
+<h3 id="43-scenario-rapid-sequential-transactions">4.3 Scenario: Rapid Sequential Transactions<a class="headerlink" href="#43-scenario-rapid-sequential-transactions" title="Permanent link">&para;</a></h3>
+<p><strong>Mô tả</strong>: Phát hiện chuỗi giao dịch nhanh bất thường giữa các accounts có kết nối — dấu hiệu automated fraud hoặc cash-out scheme.</p>
+<p><strong>Cypher Query</strong>: Xem file <code>cypher-queries.cypher</code> — Query 3</p>
+<p><strong>Tiêu chí phát hiện</strong>:
+- &gt; 5 giao dịch giữa 2 accounts trong 1 giờ → <strong>SUSPICIOUS</strong>
+- Amounts tăng dần (testing limits) → <strong>HIGH RISK</strong>
+- Account mới (&lt; 7 ngày) + giao dịch lớn → <strong>CRITICAL</strong></p>
+<h3 id="44-scenario-community-detection-fraud-cluster">4.4 Scenario: Community Detection (Fraud Cluster)<a class="headerlink" href="#44-scenario-community-detection-fraud-cluster" title="Permanent link">&para;</a></h3>
+<p><strong>Mô tả</strong>: Sử dụng thuật toán graph community detection để tìm clusters of highly interconnected accounts — có thể là organized fraud ring.</p>
+<p><strong>Cypher Query</strong>: Xem file <code>cypher-queries.cypher</code> — Query 4</p>
+<p><strong>Tiêu chí phát hiện</strong>:
+- Community &gt; 5 accounts với &gt; 10 internal connections → <strong>INVESTIGATE</strong>
+- Community có &gt; 50% accounts mới (&lt; 30 ngày) → <strong>HIGH RISK</strong>
+- Community có tổng giao dịch nội bộ &gt; 100,000,000 VND → <strong>CRITICAL</strong></p>
+<h3 id="45-scenario-shortest-path-between-suspicious-accounts">4.5 Scenario: Shortest Path Between Suspicious Accounts<a class="headerlink" href="#45-scenario-shortest-path-between-suspicious-accounts" title="Permanent link">&para;</a></h3>
+<p><strong>Mô tả</strong>: Khi nhận được report về 2 accounts nghi vấn, tìm đường đi ngắn nhất giữa chúng để hiểu mối liên hệ.</p>
+<p><strong>Cypher Query</strong>: Xem file <code>cypher-queries.cypher</code> — Query 5</p>
+<p><strong>Ứng dụng</strong>:
+- Law enforcement request: "Account A và B có liên quan không?"
+- Internal investigation: "Tìm chuỗi kết nối giữa 2 fraud cases"
+- Compliance: Báo cáo cho NHNN về mạng lưới nghi vấn</p>
+<hr />
+<h2 id="5-performance-va-scaling">5. Performance và Scaling<a class="headerlink" href="#5-performance-va-scaling" title="Permanent link">&para;</a></h2>
+<h3 id="51-sizing-estimates">5.1 Sizing Estimates<a class="headerlink" href="#51-sizing-estimates" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Giá trị ước tính</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accounts</td>
+<td>5,000,000</td>
+<td>Active accounts</td>
+</tr>
+<tr>
+<td>Devices</td>
+<td>8,000,000</td>
+<td>Nhiều devices per account</td>
+</tr>
+<tr>
+<td>IP Addresses</td>
+<td>2,000,000</td>
+<td>Unique IPs</td>
+</tr>
+<tr>
+<td>Phone Numbers</td>
+<td>6,000,000</td>
+<td>Including inactive</td>
+</tr>
+<tr>
+<td>Transactions</td>
+<td>100,000,000/tháng</td>
+<td>Giao dịch tháng</td>
+</tr>
+<tr>
+<td>Merchants</td>
+<td>50,000</td>
+<td>Active merchants</td>
+</tr>
+<tr>
+<td>OWNS_DEVICE relationships</td>
+<td>12,000,000</td>
+<td></td>
+</tr>
+<tr>
+<td>LOGGED_FROM relationships</td>
+<td>15,000,000</td>
+<td></td>
+</tr>
+<tr>
+<td>SENT_TO relationships</td>
+<td>100,000,000/tháng</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Total graph size</strong></td>
+<td><strong>~25 GB in memory</strong></td>
+<td>Working set (3 months)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-hardware-recommendations">5.2 Hardware Recommendations<a class="headerlink" href="#52-hardware-recommendations" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Production Neo4j Cluster:
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>├── Primary (Read/Write)
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>│   ├── RAM: 64 GB (heap: 31 GB + page cache: 25 GB)
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>│   ├── CPU: 16 cores
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>│   ├── Storage: 500 GB NVMe SSD
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>│   └── Network: 10 Gbps
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>│
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>├── Secondary #1 (Read replica)
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>│   └── Same specs — for fraud scoring queries
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>│
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>├── Secondary #2 (Read replica)
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>│   └── Same specs — for analytics/investigation queries
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>│
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>└── Config:
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>    ├── dbms.memory.heap.initial_size=31g
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>    ├── dbms.memory.heap.max_size=31g
+</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>    ├── dbms.memory.pagecache.size=25g
+</span><span id="__span-19-18"><a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a>    └── dbms.jvm.additional=-XX:+UseG1GC
+</span></code></pre></div>
+<h3 id="53-data-pipeline">5.3 Data Pipeline<a class="headerlink" href="#53-data-pipeline" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>PostgreSQL (source of truth)
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    │
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    ├── New Account created ──CDC──► Kafka ──► Neo4j: CREATE Account node
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    ├── New Transaction ──CDC──► Kafka ──► Neo4j: CREATE Transaction + relationships
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    ├── Device login ──CDC──► Kafka ──► Neo4j: MERGE Device + OWNS_DEVICE
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>    └── IP login ──CDC──► Kafka ──► Neo4j: MERGE IPAddress + LOGGED_FROM
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>Lag target: &lt; 5 giây từ PostgreSQL đến Neo4j
+</span></code></pre></div>
+<hr />
+<h2 id="6-integration-architecture">6. Integration Architecture<a class="headerlink" href="#6-integration-architecture" title="Permanent link">&para;</a></h2>
+<h3 id="61-fraud-detection-pipeline">6.1 Fraud Detection Pipeline<a class="headerlink" href="#61-fraud-detection-pipeline" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>Incoming Transaction Request
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>         │
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>         ▼
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>┌─────────────────────┐
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>│  Transaction Service │
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>│  (Microservice)     │
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>└────────┬────────────┘
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>         │ gRPC call (&lt; 100ms SLA)
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>         ▼
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>┌─────────────────────┐     ┌────────────────┐
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>│  Fraud Scoring      │────►│   Neo4j        │
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>│  Service            │     │   (Real-time   │
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>│                     │◄────│    queries)    │
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>└────────┬────────────┘     └────────────────┘
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>         │
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>         │ fraud_score + decision
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>         ▼
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a>┌─────────────────────┐
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>│  Decision Engine    │
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a>│  score &lt; 30: ALLOW  │
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>│  30-70: REVIEW      │
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>│  &gt; 70: BLOCK        │
+</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a>└─────────────────────┘
+</span></code></pre></div>
+<h3 id="62-data-retention-trong-neo4j">6.2 Data Retention trong Neo4j<a class="headerlink" href="#62-data-retention-trong-neo4j" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Retention</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account nodes</td>
+<td>Permanent</td>
+<td>Core entity</td>
+</tr>
+<tr>
+<td>Device/IP/Phone nodes</td>
+<td>1 năm sau last_seen</td>
+<td>Giải phóng memory</td>
+</tr>
+<tr>
+<td>Transaction relationships</td>
+<td>3 tháng</td>
+<td>Working set cho pattern detection</td>
+</tr>
+<tr>
+<td>SENT_TO (aggregated)</td>
+<td>1 năm</td>
+<td>Aggregated counts/amounts</td>
+</tr>
+<tr>
+<td>Fraud flags</td>
+<td>Permanent</td>
+<td>Historical fraud database</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-api-endpoints-cho-fraud-service">6.3 API Endpoints cho Fraud Service<a class="headerlink" href="#63-api-endpoints-cho-fraud-service" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Method</th>
+<th>Neo4j Query</th>
+<th>SLA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/fraud/score/{account_id}</code></td>
+<td>GET</td>
+<td>Fraud proximity score</td>
+<td>&lt; 100ms</td>
+</tr>
+<tr>
+<td><code>/fraud/connections/{account_id}</code></td>
+<td>GET</td>
+<td>Connected accounts (2 hops)</td>
+<td>&lt; 200ms</td>
+</tr>
+<tr>
+<td><code>/fraud/ring-check/{account_id}</code></td>
+<td>GET</td>
+<td>Check membership in fraud ring</td>
+<td>&lt; 500ms</td>
+</tr>
+<tr>
+<td><code>/fraud/path/{from}/{to}</code></td>
+<td>GET</td>
+<td>Shortest path between accounts</td>
+<td>&lt; 300ms</td>
+</tr>
+<tr>
+<td><code>/fraud/community/{account_id}</code></td>
+<td>GET</td>
+<td>Community detection</td>
+<td>&lt; 1s</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<blockquote>
+<p><strong>Tài liệu tham khảo:</strong>
+- <a href="https://neo4j.com/docs/graph-data-science/">Neo4j Graph Data Science Library</a>
+- <a href="https://neo4j.com/use-cases/fraud-detection/">Fraud Detection with Neo4j</a>
+- <a href="https://neo4j.com/developer/guide-fraud-detection/">Financial Crime Pattern Detection</a>
+- NHNN Circular on AML/CFT (Thông tư 09/2023/TT-NHNN)</p>
+</blockquote>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>vietpay/neo4j/fraud-detection-model.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../mongodb/webhook-events-model/" class="md-footer__link md-footer__link--prev" aria-label="Trước: MongoDB — Document Store Model cho VietPay Webhook Events">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                MongoDB — Document Store Model cho VietPay Webhook Events
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../readme/" class="md-footer__link md-footer__link--next" aria-label="Sau: 🏦 VietPay — Enterprise Database Architecture Assessment">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                🏦 VietPay — Enterprise Database Architecture Assessment
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

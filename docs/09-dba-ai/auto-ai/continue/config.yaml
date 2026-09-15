@@ -1,0 +1,88 @@
+# Continue.dev configuration — chia sẻ giữa autocomplete và chat trong VSCode.
+# Cài extension Continue (continue.continue), rồi: trong VSCode mở Command Palette →
+# "Continue: Open config.yaml" → copy nội dung file này vào.
+# Hoặc symlink: %USERPROFILE%\.continue\config.yaml -> file này.
+
+name: auto_ai-local
+version: 0.1.0
+
+# ============ MODELS ============
+models:
+  - name: Coder (Qwen2.5)
+    provider: ollama
+    model: qwen2.5-coder:7b
+    apiBase: http://localhost:11434
+    roles: [chat, edit, apply]
+
+  - name: Coder (DeepSeek)
+    provider: ollama
+    model: deepseek-coder-v2:16b
+    apiBase: http://localhost:11434
+    roles: [chat, edit]
+
+  - name: General (Gemma 4)
+    provider: ollama
+    model: gemma4:latest
+    apiBase: http://localhost:11434
+    roles: [chat]
+
+# ============ AUTOCOMPLETE ============
+tabAutocompleteModel:
+  name: Tab Autocomplete
+  provider: ollama
+  model: qwen2.5-coder:1.5b-base
+  apiBase: http://localhost:11434
+
+# ============ EMBEDDINGS ============
+embeddingsProvider:
+  provider: ollama
+  model: nomic-embed-text
+  apiBase: http://localhost:11434
+
+# ============ CONTEXT PROVIDERS ============
+context:
+  - provider: code
+  - provider: docs
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: folder
+  - provider: codebase
+
+# ============ CUSTOM SLASH COMMANDS ============
+customCommands:
+  - name: explain
+    description: Giải thích code đang chọn (tiếng Việt)
+    prompt: |
+      Giải thích đoạn code sau bằng tiếng Việt. Tập trung vào: mục đích chính,
+      cách hoạt động (3-5 bước), và bẫy dễ mắc.
+      ```
+      {{{ input }}}
+      ```
+
+  - name: review
+    description: Review nhanh code đang chọn
+    prompt: |
+      Review đoạn code sau, liệt kê vấn đề theo mức độ [CRITICAL]/[MAJOR]/[MINOR].
+      Không nịnh, không bịa lỗi.
+      ```
+      {{{ input }}}
+      ```
+
+  - name: test
+    description: Sinh test case cho code đang chọn
+    prompt: |
+      Viết test case cho code sau. Bao gồm: happy path, edge case (empty, null,
+      boundary), và 1 test cho lỗi mong đợi nếu có.
+      ```
+      {{{ input }}}
+      ```
+
+  - name: refactor
+    description: Đề xuất cách refactor (chưa apply)
+    prompt: |
+      Đề xuất cách refactor đoạn code sau. Chỉ refactor nếu thật sự cần — nếu code
+      đã ổn, nói thẳng "không cần refactor".
+      ```
+      {{{ input }}}
+      ```

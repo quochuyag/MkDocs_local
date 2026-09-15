@@ -1,0 +1,2444 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../007-atlas-managed/">
+      
+      
+        <link rel="next" href="../../../mysql/claude/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Runbook 08 — Vagrant Lab (4 VMs Ubuntu 22.04) - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#runbook-08-vagrant-lab-4-vms-ubuntu-2204" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Runbook 08 — Vagrant Lab (4 VMs Ubuntu 22.04)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            06. High Availability (MySQL & MongoDB)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mongo
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Mongo
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../demo/backup-pitr/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Demo
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../multi-db-standard/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chuẩn hoá Vagrant lab cho HA đa-DB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MongoDB High Availability — Toolkit & Runbooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_2_5" id="__nav_6_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Runbooks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_2_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Runbooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 00 — Overview & lựa chọn giải pháp HA cho MongoDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../001-replica-set/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 01 — Replica Set (PSS — Primary + Secondary + Secondary)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../002-psa-topology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 02 — PSA Topology (Primary + Secondary + Arbiter)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../003-sharded-cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 03 — Sharded Cluster
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-hidden-delayed/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 04 — Hidden & Delayed Member
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../005-backup-and-pitr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 05 — Backup & Point-In-Time Recovery (PITR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../006-multi-region/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 06 — Multi-Region (Cross-DC HA / DR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../007-atlas-managed/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 07 — MongoDB Atlas (Managed)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Runbook 08 — Vagrant Lab (4 VMs Ubuntu 22.04)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Runbook 08 — Vagrant Lab (4 VMs Ubuntu 22.04)
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Topology
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-yeu-cau-host-cai-at" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Yêu cầu host &amp; cài đặt
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Yêu cầu host & cài đặt">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-cai-at-tren-windows-powershell-as-administrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Cài đặt trên Windows (PowerShell as Administrator)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-bios-windows-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 BIOS / Windows requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-box-ubuntu-nguon-lay" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Box Ubuntu — nguồn lấy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-oi-noi-luu-vm-files-sang-dvm-virtualboxmongo-ha" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Đổi nơi lưu VM files sang D:\VM VirtualBox\mongo-ha
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Đổi nơi lưu VM files sang D:\VM VirtualBox\mongo-ha">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cach-a-oi-global-default-machine-folder-on-gian-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Cách A — Đổi global default machine folder (đơn giản nhất)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-cach-b-helper-script-tu-ong-e-xuat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Cách B — Helper script tự động (đề xuất)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-cach-c-oi-qua-gui" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Cách C — Đổi qua GUI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-luu-y-neu-vms-a-ton-tai-o-cho-khac" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Lưu ý nếu VMs đã tồn tại ở chỗ khác
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-phan-biet-3-noi-luu-tru" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 Phân biệt 3 nơi lưu trữ
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Quick start
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-provisioner-trong-vagrantfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Provisioner trong Vagrantfile
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-chay-mot-giai-phap-ha-sau-khi-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Chạy một giải pháp HA sau khi bootstrap
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Chạy một giải pháp HA sau khi bootstrap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-replica-set-pss-runbook-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      A — Replica Set PSS (Runbook 01)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-psa-runbook-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      B — PSA (Runbook 02)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-sharded-cluster-runbook-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      C — Sharded Cluster (Runbook 03)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-delayed-hidden-member-runbook-04-build-tren-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      D — Delayed hidden member (Runbook 04, build trên A)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-backup-runbook-05-build-tren-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      E — Backup (Runbook 05, build trên A)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-multi-region-dr-runbook-06-build-tren-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      F — Multi-region DR (Runbook 06, build trên A)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-van-hanh-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Vận hành VM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-snapshot-e-rollback-test-destructive" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Snapshot để rollback test destructive
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-don-dep-hoan-toan" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Dọn dẹp hoàn toàn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-luu-y" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Lưu ý
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../mysql/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mysql
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Topology
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-yeu-cau-host-cai-at" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Yêu cầu host &amp; cài đặt
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Yêu cầu host & cài đặt">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-cai-at-tren-windows-powershell-as-administrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Cài đặt trên Windows (PowerShell as Administrator)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-bios-windows-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 BIOS / Windows requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-box-ubuntu-nguon-lay" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Box Ubuntu — nguồn lấy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-oi-noi-luu-vm-files-sang-dvm-virtualboxmongo-ha" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Đổi nơi lưu VM files sang D:\VM VirtualBox\mongo-ha
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Đổi nơi lưu VM files sang D:\VM VirtualBox\mongo-ha">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cach-a-oi-global-default-machine-folder-on-gian-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Cách A — Đổi global default machine folder (đơn giản nhất)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-cach-b-helper-script-tu-ong-e-xuat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Cách B — Helper script tự động (đề xuất)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-cach-c-oi-qua-gui" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Cách C — Đổi qua GUI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-luu-y-neu-vms-a-ton-tai-o-cho-khac" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Lưu ý nếu VMs đã tồn tại ở chỗ khác
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-phan-biet-3-noi-luu-tru" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 Phân biệt 3 nơi lưu trữ
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Quick start
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-provisioner-trong-vagrantfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Provisioner trong Vagrantfile
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-chay-mot-giai-phap-ha-sau-khi-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Chạy một giải pháp HA sau khi bootstrap
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Chạy một giải pháp HA sau khi bootstrap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-replica-set-pss-runbook-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      A — Replica Set PSS (Runbook 01)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-psa-runbook-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      B — PSA (Runbook 02)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-sharded-cluster-runbook-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      C — Sharded Cluster (Runbook 03)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-delayed-hidden-member-runbook-04-build-tren-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      D — Delayed hidden member (Runbook 04, build trên A)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-backup-runbook-05-build-tren-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      E — Backup (Runbook 05, build trên A)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-multi-region-dr-runbook-06-build-tren-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      F — Multi-region DR (Runbook 06, build trên A)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-van-hanh-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Vận hành VM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-snapshot-e-rollback-test-destructive" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Snapshot để rollback test destructive
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-don-dep-hoan-toan" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Dọn dẹp hoàn toàn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-luu-y" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Lưu ý
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="runbook-08-vagrant-lab-4-vms-ubuntu-2204">Runbook 08 — Vagrant Lab (4 VMs Ubuntu 22.04)<a class="headerlink" href="#runbook-08-vagrant-lab-4-vms-ubuntu-2204" title="Permanent link">&para;</a></h1>
+<p>Spin up nhanh lab 4-node trên máy local để chạy bất kỳ giải pháp HA nào trong Runbook 01-06.</p>
+<h2 id="1-topology">1. Topology<a class="headerlink" href="#1-topology" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>VM</th>
+<th>IP</th>
+<th>vCPU</th>
+<th>RAM</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>192.168.20.11</td>
+<td>2</td>
+<td>2.5 GB</td>
+<td>DB (primary thường)</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.20.12</td>
+<td>2</td>
+<td>2.5 GB</td>
+<td>DB</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.20.13</td>
+<td>2</td>
+<td>2.5 GB</td>
+<td>DB / arbiter (PSA)</td>
+</tr>
+<tr>
+<td>mgmt</td>
+<td>192.168.20.20</td>
+<td>1</td>
+<td>1.5 GB</td>
+<td>mongos / DR secondary / backup host</td>
+</tr>
+</tbody>
+</table>
+<p>Tổng: <strong>7 vCPU, ~9 GB RAM</strong>. Host khuyến nghị RAM ≥ 12 GB, disk free ≥ 30 GB.</p>
+<h2 id="2-yeu-cau-host-cai-at">2. Yêu cầu host &amp; cài đặt<a class="headerlink" href="#2-yeu-cau-host-cai-at" title="Permanent link">&para;</a></h2>
+<h3 id="21-components">2.1 Components<a class="headerlink" href="#21-components" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Min version</th>
+<th>Tải từ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vagrant</td>
+<td>2.3+</td>
+<td><a href="https://developer.hashicorp.com/vagrant/downloads">https://developer.hashicorp.com/vagrant/downloads</a></td>
+</tr>
+<tr>
+<td>VirtualBox</td>
+<td>7.0+</td>
+<td><a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a> (chọn "Windows hosts")</td>
+</tr>
+<tr>
+<td>OpenSSL</td>
+<td>bất kỳ</td>
+<td>Có sẵn trên Git for Windows / WSL; hoặc <a href="https://slproweb.com/products/Win32OpenSSL.html">https://slproweb.com/products/Win32OpenSSL.html</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-cai-at-tren-windows-powershell-as-administrator">2.2 Cài đặt trên Windows (PowerShell as Administrator)<a class="headerlink" href="#22-cai-at-tren-windows-powershell-as-administrator" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c"># Cách A — qua winget (Windows 11 / Windows 10 21H1+):</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">winget</span> <span class="n">install</span> <span class="n">-e</span> <span class="p">-</span><span class="n">-id</span> <span class="n">Hashicorp</span><span class="p">.</span><span class="n">Vagrant</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">winget</span> <span class="n">install</span> <span class="n">-e</span> <span class="p">-</span><span class="n">-id</span> <span class="n">Oracle</span><span class="p">.</span><span class="n">VirtualBox</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c"># Cách B — qua chocolatey:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">choco</span> <span class="n">install</span> <span class="n">vagrant</span> <span class="n">virtualbox</span> <span class="n">openssl</span> <span class="n">-y</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c"># Cách C — installer truyền thống: tải .msi/.exe từ link ở 2.1, double-click cài.</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c"># Sau khi cài, đóng/mở lại PowerShell rồi verify:</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">vagrant</span> <span class="p">-</span><span class="n">-version</span>          <span class="c"># &gt;= 2.3</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">VBoxManage</span> <span class="p">-</span><span class="n">-version</span>       <span class="c"># &gt;= 7.0</span>
+</span></code></pre></div>
+<h3 id="23-bios-windows-requirements">2.3 BIOS / Windows requirements<a class="headerlink" href="#23-bios-windows-requirements" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Bật <strong>Intel VT-x / AMD-V</strong> trong BIOS (thường mặc định đã bật trên Windows 11).</li>
+<li><strong>Tắt Hyper-V</strong> (xung đột với VirtualBox 7.0):</li>
+</ul>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">bcdedit</span> <span class="p">/</span><span class="nb">set </span><span class="n">hypervisorlaunchtype</span> <span class="n">off</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">Disable-WindowsOptionalFeature</span> <span class="n">-Online</span> <span class="n">-FeatureName</span> <span class="n">Microsoft-Hyper-V-All</span> <span class="n">-NoRestart</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c"># Reboot host</span>
+</span></code></pre></div>
+<ul>
+<li>Nếu vẫn dùng Docker Desktop / WSL2 song song → khó cùng tồn tại với VirtualBox; tham khảo <code>VBoxManage modifyvm --paravirtprovider none</code> hoặc đổi sang provider <code>libvirt</code> / <code>hyperv</code>.</li>
+</ul>
+<h3 id="24-box-ubuntu-nguon-lay">2.4 Box Ubuntu — nguồn lấy<a class="headerlink" href="#24-box-ubuntu-nguon-lay" title="Permanent link">&para;</a></h3>
+<p>Box mặc định trong <a href="../vagrant/Vagrantfile">Vagrantfile</a> là <strong><code>bento/ubuntu-22.04</code></strong> từ Vagrant Cloud:</p>
+<ul>
+<li>Trang catalog: <a href="https://portal.cloud.hashicorp.com/vagrant/discover/bento/ubuntu-22.04">https://portal.cloud.hashicorp.com/vagrant/discover/bento/ubuntu-22.04</a></li>
+<li>Vagrant <strong>tự động tải lần đầu</strong> khi <code>vagrant up</code> — không cần thao tác thủ công.</li>
+<li>Tải về 1 lần, cache tại: <code>%USERPROFILE%\.vagrant.d\boxes\bento-VAGRANTSLASH-ubuntu-22.04\&lt;version&gt;\virtualbox\</code></li>
+<li>Box duy nhất, dùng chung cho cả 4 VMs (Vagrant clone từ box → từng VM).</li>
+</ul>
+<p>Tải thủ công trước (tùy chọn, hữu ích khi mạng chậm):</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">vagrant</span> <span class="n">box</span> <span class="n">add</span> <span class="n">bento</span><span class="p">/</span><span class="n">ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04</span> <span class="p">-</span><span class="n">-provider</span> <span class="n">virtualbox</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">vagrant</span> <span class="n">box</span> <span class="n">list</span>                <span class="c"># liệt kê box đã có local</span>
+</span></code></pre></div>
+<p>Alternative boxes (sửa <code>config.vm.box</code> trong Vagrantfile nếu muốn):</p>
+<ul>
+<li><code>ubuntu/jammy64</code> — official Ubuntu 22.04 (đôi khi update chậm hơn bento).</li>
+<li><code>generic/ubuntu2204</code> — multi-provider (VirtualBox / libvirt / Hyper-V).</li>
+</ul>
+<h2 id="3-oi-noi-luu-vm-files-sang-dvm-virtualboxmongo-ha">3. Đổi nơi lưu VM files sang <code>D:\VM VirtualBox\mongo-ha</code><a class="headerlink" href="#3-oi-noi-luu-vm-files-sang-dvm-virtualboxmongo-ha" title="Permanent link">&para;</a></h2>
+<p>Mặc định VirtualBox lưu VM disk (<code>.vdi</code>) tại <code>C:\Users\&lt;username&gt;\VirtualBox VMs\</code> — tốn ổ C. Lab này tạo ~12-20 GB.</p>
+<h3 id="31-cach-a-oi-global-default-machine-folder-on-gian-nhat">3.1 Cách A — Đổi global default machine folder (đơn giản nhất)<a class="headerlink" href="#31-cach-a-oi-global-default-machine-folder-on-gian-nhat" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c"># Tạo thư mục trước</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="s2">"D:\VM VirtualBox\mongo-ha"</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c"># Đổi default machinefolder của VirtualBox (toàn hệ thống — ảnh hưởng MỌI VM tạo sau)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">VBoxManage</span> <span class="n">setproperty</span> <span class="n">machinefolder</span> <span class="s2">"D:\VM VirtualBox\mongo-ha"</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c"># Verify</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">VBoxManage</span> <span class="n">list</span> <span class="n">systemproperties</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="s2">"Default machine folder"</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c"># kỳ vọng: Default machine folder:  D:\VM VirtualBox\mongo-ha</span>
+</span></code></pre></div>
+<p>Sau bước trên, <code>vagrant up</code> sẽ tạo VM tại:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>D:\VM VirtualBox\mongo-ha\mongo-ha-node1\
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>D:\VM VirtualBox\mongo-ha\mongo-ha-node2\
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>D:\VM VirtualBox\mongo-ha\mongo-ha-node3\
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>D:\VM VirtualBox\mongo-ha\mongo-ha-mgmt\
+</span></code></pre></div>
+<p>(tên VM <code>mongo-ha-&lt;name&gt;</code> đến từ <code>vb.name</code> trong <a href="../vagrant/Vagrantfile">Vagrantfile</a>).</p>
+<p>Khôi phục default cũ khi xong (nếu muốn):</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">VBoxManage</span> <span class="n">setproperty</span> <span class="n">machinefolder</span> <span class="k">default</span>
+</span></code></pre></div>
+<h3 id="32-cach-b-helper-script-tu-ong-e-xuat">3.2 Cách B — Helper script tự động (đề xuất)<a class="headerlink" href="#32-cach-b-helper-script-tu-ong-e-xuat" title="Permanent link">&para;</a></h3>
+<p>Repo có sẵn helper <a href="../../vagrant/set-vm-path.ps1">vagrant/set-vm-path.ps1</a>:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd </span><span class="n">vagrant</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="p">.\</span><span class="nb">set-vm</span><span class="n">-path</span><span class="p">.</span><span class="n">ps1</span>                                    <span class="c"># mặc định D:\VM VirtualBox\mongo-ha</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c"># Hoặc đổi target:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">.\</span><span class="nb">set-vm</span><span class="n">-path</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Path</span> <span class="s2">"E:\Labs\mongo-ha"</span>
+</span></code></pre></div>
+<p>Script: tạo thư mục, set machinefolder, hiển thị verify. Chạy 1 lần trước <code>vagrant up</code> lần đầu là đủ.</p>
+<h3 id="33-cach-c-oi-qua-gui">3.3 Cách C — Đổi qua GUI<a class="headerlink" href="#33-cach-c-oi-qua-gui" title="Permanent link">&para;</a></h3>
+<p>VirtualBox Manager → <strong>File → Preferences → General → Default Machine Folder</strong> → trỏ tới <code>D:\VM VirtualBox\mongo-ha</code>.</p>
+<h3 id="34-luu-y-neu-vms-a-ton-tai-o-cho-khac">3.4 Lưu ý nếu VMs đã tồn tại ở chỗ khác<a class="headerlink" href="#34-luu-y-neu-vms-a-ton-tai-o-cho-khac" title="Permanent link">&para;</a></h3>
+<p>VBoxManage setproperty <strong>CHỈ ảnh hưởng VMs tạo MỚI</strong>. Nếu đã chạy <code>vagrant up</code> rồi đổi path:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c"># B1. Destroy VMs cũ</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd </span><span class="n">vagrant</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">vagrant</span> <span class="n">destroy</span> <span class="o">-f</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c"># B2. Đổi machinefolder</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">VBoxManage</span> <span class="n">setproperty</span> <span class="n">machinefolder</span> <span class="s2">"D:\VM VirtualBox\mongo-ha"</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="c"># B3. Up lại</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="n">vagrant</span> <span class="n">up</span>
+</span></code></pre></div>
+<p>Hoặc di chuyển VM hiện tại (phức tạp, không khuyến nghị): <code>VBoxManage movevm &lt;vm-name&gt; --type basic --folder "D:\VM VirtualBox\mongo-ha"</code>.</p>
+<h3 id="35-phan-biet-3-noi-luu-tru">3.5 Phân biệt 3 nơi lưu trữ<a class="headerlink" href="#35-phan-biet-3-noi-luu-tru" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Lưu cái gì</th>
+<th>Path</th>
+<th>Đổi được?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VM disk + .vbox config</td>
+<td><code>D:\VM VirtualBox\mongo-ha\&lt;vm&gt;\</code></td>
+<td>✅ <code>VBoxManage setproperty machinefolder</code></td>
+</tr>
+<tr>
+<td>Box (template Ubuntu)</td>
+<td><code>%USERPROFILE%\.vagrant.d\boxes\</code></td>
+<td>✅ Set env <code>VAGRANT_HOME=D:\vagrant-home</code></td>
+</tr>
+<tr>
+<td>Per-project state</td>
+<td><code>&lt;repo&gt;/vagrant/.vagrant/</code></td>
+<td>Cố định — không đổi (nhỏ, chỉ metadata)</td>
+</tr>
+</tbody>
+</table>
+<p>Đổi box cache sang D: (tùy chọn, save more C: space):</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="no">[Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s2">"VAGRANT_HOME"</span><span class="p">,</span> <span class="s2">"D:\vagrant-home"</span><span class="p">,</span> <span class="s2">"User"</span><span class="p">)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c"># Mở PowerShell mới để biến env có hiệu lực</span>
+</span></code></pre></div>
+<h2 id="4-quick-start">4. Quick start<a class="headerlink" href="#4-quick-start" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>vagrant
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Pipeline đầy đủ:</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>make<span class="w"> </span>full-bootstrap
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># = make ssh-keys → make keyfile → vagrant up → make prep-all → make install-mongo → make trust</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Hoặc step-by-step:</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>make<span class="w"> </span>ssh-keys<span class="w">       </span><span class="c1"># sinh provision/cluster_id_rsa</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>make<span class="w"> </span>keyfile<span class="w">        </span><span class="c1"># sinh provision/keyfile (MongoDB internal auth)</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>make<span class="w"> </span>up<span class="w">             </span><span class="c1"># vagrant up (cài VMs, chỉ chạy provisioner "prep" + "banner")</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>make<span class="w"> </span>prep-all<span class="w">       </span><span class="c1"># OS prep (THP off, swap off, ulimit, sysctl) trên 4 VMs</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>make<span class="w"> </span>install-mongo<span class="w">  </span><span class="c1"># cài MongoDB community + firewall</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>make<span class="w"> </span>trust<span class="w">          </span><span class="c1"># copy keyfile + SSH key vào /root/.ssh</span>
+</span></code></pre></div>
+<h2 id="4-provisioner-trong-vagrantfile">4. Provisioner trong Vagrantfile<a class="headerlink" href="#4-provisioner-trong-vagrantfile" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Provisioner</th>
+<th>Khi nào chạy</th>
+<th>Mục đích</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prep</code></td>
+<td>auto khi <code>vagrant up</code></td>
+<td>/etc/hosts, link env.sh, tools cơ bản</td>
+</tr>
+<tr>
+<td><code>banner</code></td>
+<td>auto</td>
+<td>MOTD khi SSH</td>
+</tr>
+<tr>
+<td><code>common-prep</code></td>
+<td>manual</td>
+<td>Chạy <code>scripts/common/00-prepare-os.sh</code></td>
+</tr>
+<tr>
+<td><code>install-mongo</code></td>
+<td>manual</td>
+<td>Chạy <code>01-install-mongo.sh</code> + <code>02-firewall.sh</code></td>
+</tr>
+<tr>
+<td><code>trust</code></td>
+<td>manual</td>
+<td>Copy keyFile (/etc/mongodb/keyfile) + SSH key</td>
+</tr>
+</tbody>
+</table>
+<p>Lệnh chạy provisioner thủ công:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>vagrant<span class="w"> </span>provision<span class="w"> </span>node1<span class="w"> </span>--provision-with<span class="w"> </span>install-mongo
+</span></code></pre></div></p>
+<h2 id="5-chay-mot-giai-phap-ha-sau-khi-bootstrap">5. Chạy một giải pháp HA sau khi bootstrap<a class="headerlink" href="#5-chay-mot-giai-phap-ha-sau-khi-bootstrap" title="Permanent link">&para;</a></h2>
+<h3 id="a-replica-set-pss-runbook-01">A — Replica Set PSS (Runbook 01)<a class="headerlink" href="#a-replica-set-pss-runbook-01" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/replica-set/node-config.sh"</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">done</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/replica-set/initiate.sh"</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/replica-set/ops.sh status"</span>
+</span></code></pre></div>
+<h3 id="b-psa-runbook-02">B — PSA (Runbook 02)<a class="headerlink" href="#b-psa-runbook-02" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/psa/node-config.sh data"</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node2<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/psa/node-config.sh data"</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/psa/node-config.sh arbiter"</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/psa/initiate-psa.sh"</span>
+</span></code></pre></div>
+<h3 id="c-sharded-cluster-runbook-03">C — Sharded Cluster (Runbook 03)<a class="headerlink" href="#c-sharded-cluster-runbook-03" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Config server RS</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/sharded-cluster/config-server-setup.sh"</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">done</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/sharded-cluster/config-server-setup.sh --init"</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1"># Shard 1 RS</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">  </span>vagrant<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/sharded-cluster/shard-setup.sh"</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">done</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/sharded-cluster/shard-setup.sh --init"</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="c1"># mongos + add shard</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>mgmt<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/sharded-cluster/mongos-setup.sh"</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>mgmt<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/sharded-cluster/add-shard.sh"</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="c1"># Verify từ host:</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>mgmt<span class="w"> </span>-c<span class="w"> </span><span class="s2">"mongosh -u admin -p 'ChangeMe!Admin#2026' --host mgmt:27017/admin --eval 'sh.status({verbose:false})'"</span>
+</span></code></pre></div>
+<h3 id="d-delayed-hidden-member-runbook-04-build-tren-a">D — Delayed hidden member (Runbook 04, build trên A)<a class="headerlink" href="#d-delayed-hidden-member-runbook-04-build-tren-a" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/hidden-delayed/add-delayed-member.sh 192.168.20.13:27017 86400"</span>
+</span></code></pre></div>
+<h3 id="e-backup-runbook-05-build-tren-a">E — Backup (Runbook 05, build trên A)<a class="headerlink" href="#e-backup-runbook-05-build-tren-a" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>mgmt<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/backup-pitr/mongodump.sh 192.168.20.13:27017"</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>mgmt<span class="w"> </span>-c<span class="w"> </span><span class="s2">"ls -la /var/backups/mongo/"</span>
+</span></code></pre></div>
+<h3 id="f-multi-region-dr-runbook-06-build-tren-a">F — Multi-region DR (Runbook 06, build trên A)<a class="headerlink" href="#f-multi-region-dr-runbook-06-build-tren-a" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>mgmt<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/common/01-install-mongo.sh"</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>mgmt<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/replica-set/node-config.sh"</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>vagrant<span class="w"> </span>ssh<span class="w"> </span>node1<span class="w"> </span>-c<span class="w"> </span><span class="s2">"sudo bash /vagrant/scripts/multi-region/add-remote-secondary.sh 192.168.20.20:27017 0 false"</span>
+</span></code></pre></div>
+<h2 id="6-van-hanh-vm">6. Vận hành VM<a class="headerlink" href="#6-van-hanh-vm" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tác vụ</th>
+<th>Lệnh</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trạng thái</td>
+<td><code>make status</code></td>
+</tr>
+<tr>
+<td>SSH</td>
+<td><code>vagrant ssh node1</code></td>
+</tr>
+<tr>
+<td>Halt</td>
+<td><code>make down</code></td>
+</tr>
+<tr>
+<td>Reload 1 VM</td>
+<td><code>vagrant reload node1</code></td>
+</tr>
+<tr>
+<td>Re-run provisioner</td>
+<td><code>vagrant provision node1 --provision-with install-mongo</code></td>
+</tr>
+<tr>
+<td>Destroy + clean</td>
+<td><code>make clean</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-snapshot-e-rollback-test-destructive">7. Snapshot để rollback test destructive<a class="headerlink" href="#7-snapshot-e-rollback-test-destructive" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Snapshot all VMs:</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>save<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>clean<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1"># Restore:</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="k">for</span><span class="w"> </span>N<span class="w"> </span><span class="k">in</span><span class="w"> </span>node1<span class="w"> </span>node2<span class="w"> </span>node3<span class="w"> </span>mgmt<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>vagrant<span class="w"> </span>snapshot<span class="w"> </span>restore<span class="w"> </span><span class="nv">$N</span><span class="w"> </span>clean<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+</span></code></pre></div>
+<p>Rất hữu ích khi test failover (kill primary), network partition, force-reconfig — chạy chaos rồi rollback nhanh về clean state.</p>
+<h2 id="8-troubleshooting">8. Troubleshooting<a class="headerlink" href="#8-troubleshooting" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Giải pháp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vagrant up</code> báo IP conflict <code>192.168.20.0/24</code> trùng</td>
+<td>Đổi NODES IPs trong <code>Vagrantfile</code> + <code>scripts/common/env.sh</code></td>
+</tr>
+<tr>
+<td>mongod start fail "Permissions on keyfile too open"</td>
+<td><code>chmod 400 /etc/mongodb/keyfile &amp;&amp; chown mongodb:mongodb /etc/mongodb/keyfile</code></td>
+</tr>
+<tr>
+<td><code>rs.initiate</code> báo "already initialized"</td>
+<td><code>rm -rf /var/lib/mongodb/local &amp;&amp; systemctl restart mongod</code> rồi initiate lại</td>
+</tr>
+<tr>
+<td><code>bento/ubuntu-22.04</code> không tải được</td>
+<td><code>vagrant box add bento/ubuntu-22.04</code> thủ công, hoặc đổi <code>ubuntu/jammy64</code></td>
+</tr>
+<tr>
+<td>THP vẫn enabled sau restart</td>
+<td><code>systemctl status disable-thp.service</code> — phải <code>active (exited)</code></td>
+</tr>
+<tr>
+<td>Secondary stuck STARTUP2</td>
+<td>Thường initial sync chậm; check <code>db.currentOp({'desc':/repl/i})</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-don-dep-hoan-toan">9. Dọn dẹp hoàn toàn<a class="headerlink" href="#9-don-dep-hoan-toan" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>make<span class="w"> </span>clean<span class="w">              </span><span class="c1"># destroy + xoá SSH key + keyfile</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>rm<span class="w"> </span>-rf<span class="w"> </span>.vagrant/<span class="w">        </span><span class="c1"># nếu vẫn còn</span>
+</span></code></pre></div>
+<h2 id="10-luu-y">10. Lưu ý<a class="headerlink" href="#10-luu-y" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Mỗi VM chỉ chạy 1 mongod (default port 27017) trừ khi chạy Sharded Cluster (cộng thêm port 27018, 27019).</li>
+<li>Synced folder <code>../</code> → <code>/vagrant</code> ⇒ chỉnh script trên host được apply ngay trên VM (không cần copy).</li>
+<li>Mật khẩu mặc định trong <code>scripts/common/env.sh</code> chỉ cho lab — đổi trước khi clone topology này sang production.</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>HA/mongo/runbooks/08-vagrant-lab.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../007-atlas-managed/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Runbook 07 — MongoDB Atlas (Managed)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Runbook 07 — MongoDB Atlas (Managed)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../../mysql/claude/" class="md-footer__link md-footer__link--next" aria-label="Sau: CLAUDE.md">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                CLAUDE.md
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

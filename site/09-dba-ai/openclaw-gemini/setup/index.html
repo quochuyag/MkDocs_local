@@ -1,0 +1,2244 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../runbook/">
+      
+      
+        <link rel="next" href="../../oracle-rman/claude-local/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>OpenClaw — Setup từ đầu - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#openclaw-setup-tu-au" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OpenClaw — Setup từ đầu
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            09. DBA + AI Automation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Auto ai
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_3" id="__nav_8_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Openclaw gemini
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_3">
+            <span class="md-nav__icon md-icon"></span>
+            Openclaw gemini
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runbook/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenClaw + Gemini + Zalo Bot — Runbook
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    OpenClaw — Setup từ đầu
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    OpenClaw — Setup từ đầu
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-cai-openclaw-plugin-npm" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Cài OpenClaw + plugin npm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-onboard-gemini-oauth-qua-gemini-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Onboard Gemini (OAuth qua gemini-cli)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-fix-windows-spawn-bug-enoent-einval" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Fix Windows spawn bug (ENOENT / EINVAL)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-cai-zalo-bot-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Cài Zalo Bot channel
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Cài Zalo Bot channel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-cai-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Cài plugin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-luu-token-vao-file-acld" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Lưu token vào file ACL'd
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-bat-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Bật channel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-pairing-lan-au" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Pairing lần đầu
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-google-skills-gmail-calendar" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Google Skills (Gmail + Calendar)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Google Skills (Gmail + Calendar)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-tren-google-cloud-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1. Trên Google Cloud Console
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-lay-gemini-api-key-cho-triage" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2. Lấy Gemini API key (cho triage)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-cai-deps-bootstrap-oauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3. Cài deps + bootstrap OAuth
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-smoke-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4. Smoke test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-ang-ky-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5. Đăng ký MCP server
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-launcher-skill" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Launcher Skill
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Launcher Skill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-cai-deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1. Cài deps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-cau-hinh-alias" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Cấu hình alias
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-ang-ky-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3. Đăng ký MCP server
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-antigravity-bridge" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Antigravity Bridge
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Antigravity Bridge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-cai-deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1. Cài deps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-ang-ky-mcp-phia-openclaw" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2. Đăng ký MCP phía OpenClaw
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-ang-ky-mcp-phia-antigravity-reverse-direction" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3. Đăng ký MCP phía Antigravity (reverse direction)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-smoke-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.4. Smoke test
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-cron-heartbeat-briefing-7h-sang" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Cron heartbeat (briefing 7h sáng)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Cron heartbeat (briefing 7h sáng)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-upgrade-cli-device-scopes-1-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.1. Upgrade CLI device scopes (1 lần)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-tao-cron" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.2. Tạo cron
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-debug-run-ngay" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.3. Debug-run ngay
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-bat-delivery-qua-zalo-sau-khi-pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.4. Bật delivery qua Zalo (sau khi pair)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-control-script-startstopreload" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Control script (start/stop/reload)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-verify-cuoi-toan-bo-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Verify cuối — toàn bộ stack
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khi-can-tra-sau" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khi cần tra sâu
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../oracle-rman/claude-local/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Oracle rman
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-cai-openclaw-plugin-npm" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Cài OpenClaw + plugin npm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-onboard-gemini-oauth-qua-gemini-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Onboard Gemini (OAuth qua gemini-cli)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-fix-windows-spawn-bug-enoent-einval" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Fix Windows spawn bug (ENOENT / EINVAL)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-cai-zalo-bot-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Cài Zalo Bot channel
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Cài Zalo Bot channel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-cai-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Cài plugin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-luu-token-vao-file-acld" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Lưu token vào file ACL'd
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-bat-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Bật channel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-pairing-lan-au" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Pairing lần đầu
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-google-skills-gmail-calendar" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Google Skills (Gmail + Calendar)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Google Skills (Gmail + Calendar)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-tren-google-cloud-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1. Trên Google Cloud Console
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-lay-gemini-api-key-cho-triage" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2. Lấy Gemini API key (cho triage)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-cai-deps-bootstrap-oauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3. Cài deps + bootstrap OAuth
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-smoke-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4. Smoke test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-ang-ky-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5. Đăng ký MCP server
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-launcher-skill" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Launcher Skill
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Launcher Skill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-cai-deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1. Cài deps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-cau-hinh-alias" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Cấu hình alias
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-ang-ky-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3. Đăng ký MCP server
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-antigravity-bridge" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Antigravity Bridge
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Antigravity Bridge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-cai-deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1. Cài deps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-ang-ky-mcp-phia-openclaw" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2. Đăng ký MCP phía OpenClaw
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-ang-ky-mcp-phia-antigravity-reverse-direction" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3. Đăng ký MCP phía Antigravity (reverse direction)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-smoke-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.4. Smoke test
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-cron-heartbeat-briefing-7h-sang" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Cron heartbeat (briefing 7h sáng)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Cron heartbeat (briefing 7h sáng)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-upgrade-cli-device-scopes-1-lan" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.1. Upgrade CLI device scopes (1 lần)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-tao-cron" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.2. Tạo cron
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-debug-run-ngay" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.3. Debug-run ngay
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-bat-delivery-qua-zalo-sau-khi-pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.4. Bật delivery qua Zalo (sau khi pair)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-control-script-startstopreload" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Control script (start/stop/reload)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-verify-cuoi-toan-bo-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Verify cuối — toàn bộ stack
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khi-can-tra-sau" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khi cần tra sâu
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="openclaw-setup-tu-au">OpenClaw — Setup từ đầu<a class="headerlink" href="#openclaw-setup-tu-au" title="Permanent link">&para;</a></h1>
+<p>Hướng dẫn cài đặt full stack OpenClaw + Gemini + Zalo + Google Skills + Launcher + Antigravity Bridge <strong>trên máy Windows mới</strong>. Tài liệu này thiên về <em>command-first</em> — mỗi bước có lệnh và cách verify, không giải thích sâu. Khi cần biết "tại sao" hay troubleshooting, xem <a href="../runbook/">RUNBOOK.md</a> — runbook là tài liệu nguồn chứa rationale, gotcha và rollback.</p>
+<p>Tổng thời gian setup ước lượng: <strong>45–75 phút</strong> (chưa tính chờ Google Cloud Console enable APIs).</p>
+<hr />
+<h2 id="muc-luc">Mục lục<a class="headerlink" href="#muc-luc" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#0-prerequisites">0. Prerequisites</a></li>
+<li><a href="#1-cài-openclaw--plugin-npm">1. Cài OpenClaw + plugin npm</a></li>
+<li><a href="#2-onboard-gemini-oauth-qua-gemini-cli">2. Onboard Gemini (OAuth qua gemini-cli)</a></li>
+<li><a href="#3-fix-windows-spawn-bug-enoent--einval">3. Fix Windows spawn bug (<code>ENOENT</code> / <code>EINVAL</code>)</a></li>
+<li><a href="#4-cài-zalo-bot-channel">4. Cài Zalo Bot channel</a></li>
+<li><a href="#5-google-skills-gmail--calendar">5. Google Skills (Gmail + Calendar)</a></li>
+<li><a href="#6-launcher-skill">6. Launcher Skill</a></li>
+<li><a href="#7-antigravity-bridge">7. Antigravity Bridge</a></li>
+<li><a href="#8-cron-heartbeat-briefing-7h-sáng">8. Cron heartbeat (briefing 7h sáng)</a></li>
+<li><a href="#9-control-script-startstopreload">9. Control script (start/stop/reload)</a></li>
+<li><a href="#10-verify-cuối--toàn-bộ-stack">10. Verify cuối — toàn bộ stack</a></li>
+</ul>
+<hr />
+<h2 id="0-prerequisites">0. Prerequisites<a class="headerlink" href="#0-prerequisites" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Yêu cầu</th>
+<th>Cách verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows 11, PowerShell 7+</td>
+<td><code>pwsh --version</code></td>
+</tr>
+<tr>
+<td>Node.js 22.14+ (24.x recommended)</td>
+<td><code>node --version</code></td>
+</tr>
+<tr>
+<td>Tài khoản Google cho Gemini OAuth</td>
+<td>sẵn sàng đăng nhập browser</td>
+</tr>
+<tr>
+<td>Tài khoản Google cho Gmail/Calendar</td>
+<td>có thể khác (ở đây: <code>quochuya@gmail.com</code>)</td>
+</tr>
+<tr>
+<td>Project Google Cloud Console</td>
+<td>tên gợi ý: <code>gmail-triage-lab</code></td>
+</tr>
+<tr>
+<td>Zalo Bot token (<code>&lt;id&gt;:&lt;secret&gt;</code>)</td>
+<td>tạo trên Zalo Bot Platform</td>
+</tr>
+</tbody>
+</table>
+<p>Workspace mặc định: <code>d:\Dba_project\dba_ai\openclaw_gemini\</code> — đường dẫn dưới đây giả định layout này. Đổi nếu máy khác.</p>
+<hr />
+<h2 id="1-cai-openclaw-plugin-npm">1. Cài OpenClaw + plugin npm<a class="headerlink" href="#1-cai-openclaw-plugin-npm" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">npm</span> <span class="n">install</span> <span class="n">-g</span> <span class="n">openclaw</span> <span class="nv">@openclaw</span><span class="p">/</span><span class="n">zalo</span> <span class="nv">@openclaw</span><span class="p">/</span><span class="n">zalouser</span> <span class="nv">@google</span><span class="p">/</span><span class="n">gemini-cli</span>
+</span></code></pre></div>
+<p>Verify:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">openclaw</span> <span class="p">-</span><span class="n">-version</span>    <span class="c"># OpenClaw 2026.5.x</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">gemini</span> <span class="p">-</span><span class="n">-version</span>      <span class="c"># 0.41.x</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">where</span><span class="p">.</span><span class="n">exe</span> <span class="n">openclaw</span>    <span class="c"># ...\npm\openclaw.cmd</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">where</span><span class="p">.</span><span class="n">exe</span> <span class="n">gemini</span>      <span class="c"># ...\npm\gemini.cmd</span>
+</span></code></pre></div>
+<hr />
+<h2 id="2-onboard-gemini-oauth-qua-gemini-cli">2. Onboard Gemini (OAuth qua gemini-cli)<a class="headerlink" href="#2-onboard-gemini-oauth-qua-gemini-cli" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">openclaw</span> <span class="n">onboard</span>
+</span></code></pre></div>
+<p>Trong wizard chọn: <strong><code>google-gemini-cli</code></strong> runtime → bật browser → đăng nhập tài khoản Gemini → consent.</p>
+<p>Kết quả mong đợi:</p>
+<ul>
+<li><code>~/.gemini/oauth_creds.json</code> được tạo.</li>
+<li><code>~/.openclaw/agents/main/agent/auth-profiles.json</code> chứa profile với <code>projectId</code>.</li>
+</ul>
+<p>Lấy projectId cho bước 3:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">Get-Content</span> <span class="s2">"$env:USERPROFILE\.openclaw\agents\main\agent\auth-profiles.json"</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">projectId</span>
+</span></code></pre></div>
+<p>Ghi nhớ giá trị (ví dụ <code>celestial-bolt-2fvct</code>) — sẽ dùng làm <code>GOOGLE_CLOUD_PROJECT</code> ở bước kế.</p>
+<hr />
+<h2 id="3-fix-windows-spawn-bug-enoent-einval">3. Fix Windows spawn bug (<code>ENOENT</code> / <code>EINVAL</code>)<a class="headerlink" href="#3-fix-windows-spawn-bug-enoent-einval" title="Permanent link">&para;</a></h2>
+<p>Backup config trước khi sửa:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cp<span class="w"> </span><span class="s2">"/c/Users/</span><span class="nv">$USER</span><span class="s2">/.openclaw/openclaw.json"</span><span class="w"> </span><span class="s2">"/c/Users/</span><span class="nv">$USER</span><span class="s2">/.openclaw/openclaw.json.pre-cmd-fix"</span>
+</span></code></pre></div>
+<p>Áp dụng override (thay <code>HHC_HOME</code> thành username thực, <code>celestial-bolt-2fvct</code> thành projectId của Anh Huy):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"agents":{"defaults":{"cliBackends":{"google-gemini-cli":{"command":"C:\\\\Program Files\\\\nodejs\\\\node.exe","args":["C:\\\\Users\\\\HHC_HOME\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\@google\\\\gemini-cli\\\\bundle\\\\gemini.js","--skip-trust","--output-format","json","--prompt","{prompt}"],"resumeArgs":["C:\\\\Users\\\\HHC_HOME\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\@google\\\\gemini-cli\\\\bundle\\\\gemini.js","--skip-trust","--resume","{sessionId}","--output-format","json","--prompt","{prompt}"],"env":{"GOOGLE_GENAI_USE_GCA":"true","GOOGLE_CLOUD_PROJECT":"celestial-bolt-2fvct"}}}}}}'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="p">|</span><span class="w"> </span>openclaw<span class="w"> </span>config<span class="w"> </span>patch<span class="w"> </span>--stdin<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--replace-path<span class="w"> </span><span class="s2">"agents.defaults.cliBackends.google-gemini-cli.args"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--replace-path<span class="w"> </span><span class="s2">"agents.defaults.cliBackends.google-gemini-cli.resumeArgs"</span>
+</span></code></pre></div>
+<p>Đổi default model sang <code>pro-preview</code> (Flash trả 404 qua OAuth path):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"agents":{"defaults":{"model":{"primary":"google/gemini-3.1-pro-preview"}}}}'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="p">|</span><span class="w"> </span>openclaw<span class="w"> </span>config<span class="w"> </span>patch<span class="w"> </span>--stdin
+</span></code></pre></div>
+<p>Verify:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>openclaw<span class="w"> </span>agent<span class="w"> </span>--local<span class="w"> </span>--agent<span class="w"> </span>main<span class="w"> </span>--message<span class="w"> </span><span class="s2">"What is 2+2? Reply with just the number."</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># → in "4". Warning "Context engine 'legacy' is not registered" có thể bỏ qua.</span>
+</span></code></pre></div>
+<blockquote>
+<p>Chi tiết tại sao 2 lỗi xảy ra → <a href="../runbook/">RUNBOOK.md §2</a>.</p>
+</blockquote>
+<hr />
+<h2 id="4-cai-zalo-bot-channel">4. Cài Zalo Bot channel<a class="headerlink" href="#4-cai-zalo-bot-channel" title="Permanent link">&para;</a></h2>
+<h3 id="41-cai-plugin">4.1. Cài plugin<a class="headerlink" href="#41-cai-plugin" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">openclaw</span> <span class="n">plugins</span> <span class="n">install</span> <span class="nv">@openclaw</span><span class="p">/</span><span class="n">zalo</span>
+</span></code></pre></div>
+<h3 id="42-luu-token-vao-file-acld">4.2. Lưu token vào file ACL'd<a class="headerlink" href="#42-luu-token-vao-file-acld" title="Permanent link">&para;</a></h3>
+<p>Tạo <code>~/.openclaw/secrets/zalo-default.token</code> bằng editor (1 dòng, đúng token, KHÔNG <code>echo &gt;</code> vào shell history).</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">icacls</span> <span class="s2">"$env:USERPROFILE\.openclaw\secrets\zalo-default.token"</span> <span class="p">`</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="nb">r </span><span class="p">`</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>  <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"${env:USERNAME}:(R,W)"</span> <span class="p">`</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"SYSTEM:(R,W)"</span> <span class="p">`</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>  <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"Administrators:(R,W)"</span>
+</span></code></pre></div>
+<h3 id="43-bat-channel">4.3. Bật channel<a class="headerlink" href="#43-bat-channel" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"channels":{"zalo":{"enabled":true,"accounts":{"default":{"enabled":true,"name":"Zalo Bot Default","tokenFile":"C:\\\\Users\\\\HHC_HOME\\\\.openclaw\\\\secrets\\\\zalo-default.token","dmPolicy":"pairing"}}}}}'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="p">|</span><span class="w"> </span>openclaw<span class="w"> </span>config<span class="w"> </span>patch<span class="w"> </span>--stdin
+</span></code></pre></div>
+<p>Verify:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>openclaw<span class="w"> </span>channels<span class="w"> </span>status<span class="w"> </span>--probe
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1"># Mong đợi: "Zalo default ... running, mode:polling, dm:pairing, token:configFile, works"</span>
+</span></code></pre></div>
+<h3 id="44-pairing-lan-au">4.4. Pairing lần đầu<a class="headerlink" href="#44-pairing-lan-au" title="Permanent link">&para;</a></h3>
+<p>Nhắn tin tới bot từ Zalo cá nhân → bot reply mã pairing → trên host:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>openclaw<span class="w"> </span>pairing<span class="w"> </span>list<span class="w"> </span>zalo
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>openclaw<span class="w"> </span>pairing<span class="w"> </span>approve<span class="w"> </span>zalo<span class="w"> </span>&lt;CODE&gt;
+</span></code></pre></div>
+<blockquote>
+<p>Mã có hiệu lực 1 giờ. Group policy không cần cấu hình — Zalo Marketplace bot không add được vào group.</p>
+</blockquote>
+<hr />
+<h2 id="5-google-skills-gmail-calendar">5. Google Skills (Gmail + Calendar)<a class="headerlink" href="#5-google-skills-gmail-calendar" title="Permanent link">&para;</a></h2>
+<h3 id="51-tren-google-cloud-console">5.1. Trên Google Cloud Console<a class="headerlink" href="#51-tren-google-cloud-console" title="Permanent link">&para;</a></h3>
+<p>Project: <code>gmail-triage-lab</code> (hoặc tên Anh Huy chọn).</p>
+<ol>
+<li><strong>APIs &amp; Services → Library:</strong> bật <strong>Gmail API</strong> và <strong>Google Calendar API</strong>.</li>
+<li><strong>OAuth consent screen:</strong> External, <strong>Publishing = Testing</strong>, add <code>quochuya@gmail.com</code> (hoặc email phase-1) vào Test Users; scopes: <code>gmail.readonly</code>, <code>gmail.modify</code>, <code>calendar.readonly</code>, <code>calendar.events</code>.</li>
+<li><strong>Credentials → Create OAuth client ID:</strong> Desktop app → download JSON → đặt vào <code>C:\Users\HHC_HOME\.openclaw\secrets\google-quochuya-credentials.json</code>.</li>
+</ol>
+<p>ACL credentials:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">icacls</span> <span class="s2">"$env:USERPROFILE\.openclaw\secrets\google-quochuya-credentials.json"</span> <span class="p">`</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="nb">r </span><span class="p">`</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>  <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"${env:USERNAME}:(R,W)"</span> <span class="p">`</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>  <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"SYSTEM:(R,W)"</span> <span class="p">`</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>  <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"Administrators:(R,W)"</span>
+</span></code></pre></div>
+<h3 id="52-lay-gemini-api-key-cho-triage">5.2. Lấy Gemini API key (cho triage)<a class="headerlink" href="#52-lay-gemini-api-key-cho-triage" title="Permanent link">&para;</a></h3>
+<p>Lấy ở <a href="https://aistudio.google.com/app/apikey">https://aistudio.google.com/app/apikey</a>, lưu vào <code>C:\Users\HHC_HOME\.openclaw\secrets\gemini-api-key.txt</code> (1 dòng key, không prefix), ACL như trên.</p>
+<h3 id="53-cai-deps-bootstrap-oauth">5.3. Cài deps + bootstrap OAuth<a class="headerlink" href="#53-cai-deps-bootstrap-oauth" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd </span><span class="s2">"d:\Dba_project\dba_ai\openclaw_gemini\skills\google"</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">npm</span> <span class="n">install</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">node</span> <span class="n">auth-init</span><span class="p">.</span><span class="n">mjs</span>
+</span></code></pre></div>
+<p>Browser mở consent → chọn email phase-1 → accept 4 scopes. Output mong đợi:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>Refresh token present: yes
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>Scopes granted: 4 scopes
+</span></code></pre></div>
+<p>ACL token file:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">icacls</span> <span class="s2">"$env:USERPROFILE\.openclaw\secrets\google-quochuya-tokens.json"</span> <span class="p">`</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="nb">r </span><span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"${env:USERNAME}:(R,W)"</span> <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"SYSTEM:(R,W)"</span> <span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">"Administrators:(R,W)"</span>
+</span></code></pre></div>
+<h3 id="54-smoke-test">5.4. Smoke test<a class="headerlink" href="#54-smoke-test" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">node</span> <span class="n">smoke-test</span><span class="p">.</span><span class="n">mjs</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="c"># All three Google APIs answered without auth errors. Phase 1 done.</span>
+</span></code></pre></div>
+<p>Nếu 403 SERVICE_DISABLED → quay lại Console enable API tương ứng, đợi 1 phút, retry. Không cần re-auth.</p>
+<h3 id="55-ang-ky-mcp-server">5.5. Đăng ký MCP server<a class="headerlink" href="#55-ang-ky-mcp-server" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"mcp":{"servers":{"google-skills":{"command":"C:\\\\Program Files\\\\nodejs\\\\node.exe","args":["d:/Dba_project/dba_ai/openclaw_gemini/skills/google/mcp-server.mjs"]}}}}'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="p">|</span><span class="w"> </span>openclaw<span class="w"> </span>config<span class="w"> </span>patch<span class="w"> </span>--stdin
+</span></code></pre></div>
+<p>Verify:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>openclaw<span class="w"> </span>mcp<span class="w"> </span>list<span class="w">                   </span><span class="c1"># có "google-skills"</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>openclaw<span class="w"> </span>mcp<span class="w"> </span>show<span class="w"> </span>google-skills
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>openclaw<span class="w"> </span>agent<span class="w"> </span>--local<span class="w"> </span>--agent<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span>--message<span class="w"> </span><span class="s2">"Use the calendar_today tool to fetch upcoming events for the next 36 hours. Trả lời tiếng Việt."</span>
+</span></code></pre></div>
+<blockquote>
+<p>Re-auth định kỳ: Testing mode hết hạn refresh token sau <strong>7 ngày</strong>. Rerun <code>node auth-init.mjs</code> khi smoke test trả <code>invalid_grant</code>.</p>
+</blockquote>
+<hr />
+<h2 id="6-launcher-skill">6. Launcher Skill<a class="headerlink" href="#6-launcher-skill" title="Permanent link">&para;</a></h2>
+<h3 id="61-cai-deps">6.1. Cài deps<a class="headerlink" href="#61-cai-deps" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">cd </span><span class="s2">"d:\Dba_project\dba_ai\openclaw_gemini\skills\launcher"</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">npm</span> <span class="n">install</span>
+</span></code></pre></div>
+<h3 id="62-cau-hinh-alias">6.2. Cấu hình alias<a class="headerlink" href="#62-cau-hinh-alias" title="Permanent link">&para;</a></h3>
+<p>Edit <a href="../skills/launcher/aliases.yaml">skills/launcher/aliases.yaml</a> — default 4 alias <code>code</code>, <code>terminal</code>, <code>explorer</code>, <code>notepad</code>. Thêm Unity / DBeaver / SQL Developer tuỳ nhu cầu. File được <strong>re-read mỗi tool call</strong> — sửa là live, không cần restart.</p>
+<h3 id="63-ang-ky-mcp-server">6.3. Đăng ký MCP server<a class="headerlink" href="#63-ang-ky-mcp-server" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"mcp":{"servers":{"launcher":{"command":"C:\\\\Program Files\\\\nodejs\\\\node.exe","args":["d:/Dba_project/dba_ai/openclaw_gemini/skills/launcher/mcp-server.mjs"]}}}}'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="p">|</span><span class="w"> </span>openclaw<span class="w"> </span>config<span class="w"> </span>patch<span class="w"> </span>--stdin
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>openclaw<span class="w"> </span>daemon<span class="w"> </span>restart
+</span></code></pre></div>
+<p>Verify:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>openclaw<span class="w"> </span>mcp<span class="w"> </span>list<span class="w">                                           </span><span class="c1"># có "launcher"</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>openclaw<span class="w"> </span>agent<span class="w"> </span>--local<span class="w"> </span>--agent<span class="w"> </span>main<span class="w"> </span>--message<span class="w"> </span><span class="s2">"Use list_launchers tool."</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>openclaw<span class="w"> </span>agent<span class="w"> </span>--local<span class="w"> </span>--agent<span class="w"> </span>main<span class="w"> </span>--message<span class="w"> </span><span class="s2">"Use app_launch to open notepad."</span>
+</span></code></pre></div>
+<hr />
+<h2 id="7-antigravity-bridge">7. Antigravity Bridge<a class="headerlink" href="#7-antigravity-bridge" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>Skip section này nếu chưa cài Antigravity IDE. Có thể bỏ qua hoàn toàn — bridge optional.</p>
+</blockquote>
+<h3 id="71-cai-deps">7.1. Cài deps<a class="headerlink" href="#71-cai-deps" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">cd </span><span class="s2">"d:\Dba_project\dba_ai\openclaw_gemini\skills\antigravity_bridge"</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">npm</span> <span class="n">install</span>
+</span></code></pre></div>
+<h3 id="72-ang-ky-mcp-phia-openclaw">7.2. Đăng ký MCP phía OpenClaw<a class="headerlink" href="#72-ang-ky-mcp-phia-openclaw" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"mcp":{"servers":{"antigravity_bridge":{"command":"C:\\\\Program Files\\\\nodejs\\\\node.exe","args":["d:/Dba_project/dba_ai/openclaw_gemini/skills/antigravity_bridge/mcp-server.mjs"]}}}}'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="p">|</span><span class="w"> </span>openclaw<span class="w"> </span>config<span class="w"> </span>patch<span class="w"> </span>--stdin
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>openclaw<span class="w"> </span>daemon<span class="w"> </span>restart
+</span></code></pre></div>
+<h3 id="73-ang-ky-mcp-phia-antigravity-reverse-direction">7.3. Đăng ký MCP phía Antigravity (reverse direction)<a class="headerlink" href="#73-ang-ky-mcp-phia-antigravity-reverse-direction" title="Permanent link">&para;</a></h3>
+<p>Tạo / sửa <code>~/.gemini/antigravity/mcp_config.json</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>{
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>  "$schema": "https://antigravity.google/schemas/mcp_config.json",
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>  "mcpServers": {
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>    "openclaw_antigravity_bridge": {
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>      "command": "C:/Program Files/nodejs/node.exe",
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>      "args": ["d:/Dba_project/dba_ai/openclaw_gemini/skills/antigravity_bridge/mcp-server.mjs"]
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>    },
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>    "openclaw_launcher": {
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>      "command": "C:/Program Files/nodejs/node.exe",
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>      "args": ["d:/Dba_project/dba_ai/openclaw_gemini/skills/launcher/mcp-server.mjs"]
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>    },
+</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>    "openclaw_google_skills": {
+</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>      "command": "C:/Program Files/nodejs/node.exe",
+</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>      "args": ["d:/Dba_project/dba_ai/openclaw_gemini/skills/google/mcp-server.mjs"],
+</span><span id="__span-25-15"><a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a>      "authProviderType": "google_credentials"
+</span><span id="__span-25-16"><a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>    }
+</span><span id="__span-25-17"><a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a>  }
+</span><span id="__span-25-18"><a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a>}
+</span></code></pre></div>
+<p>Restart Antigravity (Command Palette → "Developer: Reload Window").</p>
+<h3 id="74-smoke-test">7.4. Smoke test<a class="headerlink" href="#74-smoke-test" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">cd </span><span class="s2">"d:\Dba_project\dba_ai\openclaw_gemini\skills\antigravity_bridge"</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="n">node</span> <span class="n">smoke-test</span><span class="p">.</span><span class="n">mjs</span> <span class="p">-</span><span class="n">-no-spawn</span> <span class="p">-</span><span class="n">-clean</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="n">node</span> <span class="n">smoke-test</span><span class="p">.</span><span class="n">mjs</span> <span class="p">-</span><span class="n">-clean</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="n">node</span> <span class="n">direct-mcp-test</span><span class="p">.</span><span class="n">mjs</span>
+</span></code></pre></div>
+<p>PASS khi <code>dispatch elapsed &lt; 2000ms</code>.</p>
+<hr />
+<h2 id="8-cron-heartbeat-briefing-7h-sang">8. Cron heartbeat (briefing 7h sáng)<a class="headerlink" href="#8-cron-heartbeat-briefing-7h-sang" title="Permanent link">&para;</a></h2>
+<h3 id="81-upgrade-cli-device-scopes-1-lan">8.1. Upgrade CLI device scopes (1 lần)<a class="headerlink" href="#81-upgrade-cli-device-scopes-1-lan" title="Permanent link">&para;</a></h3>
+<p>Mở <code>openclaw</code> TUI một lần — dialog confirm tự bật scope upgrade. Verify: <code>openclaw daemon status</code> in <code>admin-capable</code>.</p>
+<h3 id="82-tao-cron">8.2. Tạo cron<a class="headerlink" href="#82-tao-cron" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>openclaw<span class="w"> </span>cron<span class="w"> </span>add<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span>--name<span class="w"> </span>morning-briefing<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span>--cron<span class="w"> </span><span class="s2">"0 7 * * *"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">  </span>--tz<span class="w"> </span><span class="s2">"Asia/Ho_Chi_Minh"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">  </span>--agent<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">  </span>--session<span class="w"> </span>isolated<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">  </span>--no-deliver<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">  </span>--exact<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">  </span>--thinking<span class="w"> </span>low<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">  </span>--timeout-seconds<span class="w"> </span><span class="m">180</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">  </span>--message<span class="w"> </span><span class="s2">"Build briefing buổi sáng cho Anh Huy. Gọi tool calendar_today (horizonHours=17, soonMinutes=30) và gmail_triage (lookback=1d, maxMessages=30). Tiếng Việt ngắn gọn, format: 📅 Lịch hôm nay (in_progress + starting_soon + today_later) / ⚠️ Xung đột (chỉ in nếu có) / ✉️ Mail cần lưu ý (chỉ important_reply + important_fyi). Tối đa 12 dòng."</span>
+</span></code></pre></div>
+<h3 id="83-debug-run-ngay">8.3. Debug-run ngay<a class="headerlink" href="#83-debug-run-ngay" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>openclaw<span class="w"> </span>cron<span class="w"> </span>list<span class="w">                </span><span class="c1"># lấy UUID</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>openclaw<span class="w"> </span>cron<span class="w"> </span>run<span class="w"> </span>&lt;uuid&gt;<span class="w">          </span><span class="c1"># enqueue ngay</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>tail<span class="w"> </span>-1<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.openclaw/cron/runs/&lt;uuid&gt;.jsonl"</span>
+</span></code></pre></div>
+<h3 id="84-bat-delivery-qua-zalo-sau-khi-pair">8.4. Bật delivery qua Zalo (sau khi pair)<a class="headerlink" href="#84-bat-delivery-qua-zalo-sau-khi-pair" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>openclaw<span class="w"> </span>channels<span class="w"> </span>logs<span class="w"> </span>--channel<span class="w"> </span>zalo<span class="w">                    </span><span class="c1"># tìm chatId</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>openclaw<span class="w"> </span>cron<span class="w"> </span>edit<span class="w"> </span>&lt;uuid&gt;<span class="w"> </span>--channel<span class="w"> </span>zalo<span class="w"> </span>--to<span class="w"> </span>&lt;chatId&gt;<span class="w"> </span>--announce
+</span></code></pre></div>
+<hr />
+<h2 id="9-control-script-startstopreload">9. Control script (start/stop/reload)<a class="headerlink" href="#9-control-script-startstopreload" title="Permanent link">&para;</a></h2>
+<p>Script <a href="../scripts/openclaw-ctl.ps1">scripts/openclaw-ctl.ps1</a> wrap <code>openclaw daemon</code> cho 5 thao tác phổ biến.</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">pwsh</span> <span class="o">-File</span> <span class="n">scripts</span><span class="p">/</span><span class="n">openclaw-ctl</span><span class="p">.</span><span class="n">ps1</span> <span class="n">status</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="n">pwsh</span> <span class="o">-File</span> <span class="n">scripts</span><span class="p">/</span><span class="n">openclaw-ctl</span><span class="p">.</span><span class="n">ps1</span> <span class="n">reload</span>    <span class="c"># validate config -&gt; restart -&gt; show status</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="n">pwsh</span> <span class="o">-File</span> <span class="n">scripts</span><span class="p">/</span><span class="n">openclaw-ctl</span><span class="p">.</span><span class="n">ps1</span> <span class="n">restart</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="n">pwsh</span> <span class="o">-File</span> <span class="n">scripts</span><span class="p">/</span><span class="n">openclaw-ctl</span><span class="p">.</span><span class="n">ps1</span> <span class="nb">start</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="n">pwsh</span> <span class="o">-File</span> <span class="n">scripts</span><span class="p">/</span><span class="n">openclaw-ctl</span><span class="p">.</span><span class="n">ps1</span> <span class="n">stop</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="n">pwsh</span> <span class="o">-File</span> <span class="n">scripts</span><span class="p">/</span><span class="n">openclaw-ctl</span><span class="p">.</span><span class="n">ps1</span> <span class="n">logs</span>
+</span></code></pre></div>
+<p>Nếu PowerShell block script:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="nb">Set-ExecutionPolicy</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">-ExecutionPolicy</span> <span class="n">RemoteSigned</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="c"># hoặc per-invoke:</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="n">pwsh</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="n">scripts</span><span class="p">/</span><span class="n">openclaw-ctl</span><span class="p">.</span><span class="n">ps1</span> <span class="n">status</span>
+</span></code></pre></div>
+<p>Khi nào dùng <code>reload</code>:</p>
+<ul>
+<li>Sau khi sửa tay <code>~/.openclaw/openclaw.json</code>.</li>
+<li>Sau khi cài/uninstall plugin hoặc sửa <code>plugins.allow</code>.</li>
+<li>Sau khi đăng ký MCP server mới (MCP bind ở boot time).</li>
+</ul>
+<hr />
+<h2 id="10-verify-cuoi-toan-bo-stack">10. Verify cuối — toàn bộ stack<a class="headerlink" href="#10-verify-cuoi-toan-bo-stack" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>openclaw<span class="w"> </span>doctor<span class="w">                          </span><span class="c1"># mọi mục PASS</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>openclaw<span class="w"> </span>config<span class="w"> </span>validate<span class="w">                 </span><span class="c1"># Config valid</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>openclaw<span class="w"> </span>channels<span class="w"> </span>status<span class="w"> </span>--probe<span class="w">         </span><span class="c1"># Zalo: works</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>openclaw<span class="w"> </span>mcp<span class="w"> </span>list<span class="w">                        </span><span class="c1"># google-skills, launcher, [antigravity_bridge]</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>openclaw<span class="w"> </span>cron<span class="w"> </span>list<span class="w">                       </span><span class="c1"># morning-briefing</span>
+</span></code></pre></div>
+<p>End-to-end smoke (qua agent → MCP tools → Gemini):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>openclaw<span class="w"> </span>agent<span class="w"> </span>--local<span class="w"> </span>--agent<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">  </span>--message<span class="w"> </span><span class="s2">"Use calendar_today (horizonHours=24). Trả lời tiếng Việt, tối đa 5 dòng."</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>openclaw<span class="w"> </span>agent<span class="w"> </span>--local<span class="w"> </span>--agent<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">  </span>--message<span class="w"> </span><span class="s2">"Use gmail_triage (lookback=1d). Chỉ hiện important_reply + important_fyi."</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>openclaw<span class="w"> </span>agent<span class="w"> </span>--local<span class="w"> </span>--agent<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">  </span>--message<span class="w"> </span><span class="s2">"Use list_launchers."</span>
+</span></code></pre></div>
+<p>Bật allowlist plugin sau khi mọi thứ ổn định:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"plugins":{"allow":["zalo","google-skills","launcher","antigravity_bridge"]}}'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="p">|</span><span class="w"> </span>openclaw<span class="w"> </span>config<span class="w"> </span>patch<span class="w"> </span>--stdin
+</span></code></pre></div>
+<blockquote>
+<p>MCP server name (<code>google-skills</code>, <code>launcher</code>, <code>antigravity_bridge</code>) <strong>không</strong> cần trong allowlist — chỉ plugin id (xem <code>openclaw plugins list</code>) cần.</p>
+</blockquote>
+<hr />
+<h2 id="khi-can-tra-sau">Khi cần tra sâu<a class="headerlink" href="#khi-can-tra-sau" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Tại sao Windows lỗi spawn?</strong> → <a href="../runbook/">RUNBOOK.md §2</a></li>
+<li><strong>Re-auth Google 7 ngày một lần?</strong> → <a href="../runbook/">RUNBOOK.md §4b.6</a></li>
+<li><strong>403 SERVICE_DISABLED chi tiết?</strong> → <a href="../runbook/">RUNBOOK.md §4b.5</a></li>
+<li><strong>Rollback config / đổi sang API key?</strong> → <a href="../runbook/">RUNBOOK.md §5</a></li>
+<li><strong>Architecture 4 lớp?</strong> → <a href="CLAUDE.md">CLAUDE.md "Architecture"</a></li>
+<li><strong>Roadmap 5 phase?</strong> → <a href="CLAUDE.md">CLAUDE.md "Roadmap"</a></li>
+</ul>
+<p>Khi sửa lệnh / fix mới phát hiện: cập nhật <strong>RUNBOOK.md</strong> (có rationale + alternatives), rồi mới đồng bộ thay đổi tóm lược vào tài liệu này nếu ảnh hưởng install path.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>dba_ai/openclaw_gemini/SETUP.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../runbook/" class="md-footer__link md-footer__link--prev" aria-label="Trước: OpenClaw + Gemini + Zalo Bot — Runbook">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                OpenClaw + Gemini + Zalo Bot — Runbook
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../oracle-rman/claude-local/" class="md-footer__link md-footer__link--next" aria-label="Sau: CLAUDE.local.md — Ghi chú cá nhân (không commit)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                CLAUDE.local.md — Ghi chú cá nhân (không commit)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

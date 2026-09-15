@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hướng dẫn 7 giải pháp High Availability cho MongoDB</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --panel: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #047857;
+    --primary-dark: #065f46;
+    --accent: #0891b2;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --tag-bg: #ecfdf5;
+    --tag-text: #065f46;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: 100vh;
+  }
+  /* Sidebar / TOC */
+  aside.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 24px 20px;
+  }
+  aside.toc h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  aside.toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  aside.toc ol > li {
+    margin-bottom: 4px;
+  }
+  aside.toc a {
+    display: block;
+    padding: 8px 10px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+  aside.toc a:hover {
+    background: #f1f5f9;
+    border-left-color: var(--primary);
+  }
+  aside.toc a.active {
+    background: var(--tag-bg);
+    color: var(--primary-dark);
+    border-left-color: var(--primary);
+    font-weight: 600;
+  }
+  aside.toc .toc-num {
+    display: inline-block;
+    width: 28px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 12px;
+  }
+  aside.toc .toc-sub {
+    padding-left: 24px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  /* Main content */
+  main {
+    padding: 40px 56px;
+    max-width: 1100px;
+    width: 100%;
+  }
+  header.hero {
+    background: linear-gradient(135deg, #047857 0%, #0891b2 100%);
+    color: white;
+    padding: 36px 40px;
+    border-radius: 12px;
+    margin-bottom: 36px;
+    box-shadow: 0 10px 30px rgba(4, 120, 87, 0.18);
+  }
+  header.hero h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+    font-weight: 700;
+  }
+  header.hero p {
+    margin: 0;
+    opacity: 0.95;
+    font-size: 16px;
+  }
+  header.hero .meta {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  header.hero .meta span {
+    background: rgba(255,255,255,0.18);
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 12px;
+  }
+  section {
+    background: var(--panel);
+    padding: 32px 36px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 28px;
+    scroll-margin-top: 20px;
+  }
+  section h2 {
+    margin-top: 0;
+    color: var(--primary-dark);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 12px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section h2 .badge {
+    background: var(--primary);
+    color: white;
+    font-size: 13px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  section h3 {
+    color: var(--accent);
+    margin-top: 28px;
+    font-size: 18px;
+    border-left: 4px solid var(--accent);
+    padding-left: 12px;
+  }
+  section h4 {
+    color: var(--text);
+    font-size: 15px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+    background: white;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    background: #f0fdf4;
+    font-weight: 600;
+    color: var(--text);
+  }
+  tr:nth-child(even) td { background: #fafbfc; }
+  code {
+    background: #f1f5f9;
+    color: #be185d;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.88em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 16px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 12px 0;
+    position: relative;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+  }
+  pre.lang-bash::before, pre.lang-js::before, pre.lang-json::before, pre.lang-yaml::before, pre.lang-mongo::before, pre.lang-powershell::before, pre.lang-ini::before {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    font-family: sans-serif;
+  }
+  pre.lang-bash::before { content: "BASH"; }
+  pre.lang-js::before { content: "MONGOSH / JS"; }
+  pre.lang-json::before { content: "JSON"; }
+  pre.lang-yaml::before { content: "YAML"; }
+  pre.lang-mongo::before { content: "MONGOSH"; }
+  pre.lang-powershell::before { content: "POWERSHELL"; }
+  pre.lang-ini::before { content: "INI"; }
+  .callout {
+    padding: 14px 18px;
+    border-left: 4px solid;
+    border-radius: 6px;
+    margin: 16px 0;
+    background: #f8fafc;
+  }
+  .callout.info    { border-color: var(--primary);  background: #ecfdf5; }
+  .callout.success { border-color: var(--success);  background: #f0fdf4; }
+  .callout.warning { border-color: var(--warning);  background: #fffbeb; }
+  .callout.danger  { border-color: var(--danger);   background: #fef2f2; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 16px;
+  }
+  .tag {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .tag.amber { background: #fef3c7; color: #92400e; }
+  .tag.rose  { background: #fce7f3; color: #9f1239; }
+  .tag.sky   { background: #e0f2fe; color: #075985; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 8px;
+  }
+  .card h4 { margin-top: 0; color: var(--primary-dark); }
+  ul, ol { padding-left: 24px; }
+  li { margin-bottom: 4px; }
+  .ascii {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 18px 16px;
+    border-radius: 8px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.4;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 16px 0;
+    border: 1px solid #1e293b;
+  }
+  .ascii .role-p { color: #34d399; font-weight: bold; }
+  .ascii .role-s { color: #60a5fa; }
+  .ascii .role-a { color: #fbbf24; }
+  .ascii .role-h { color: #c084fc; }
+  .ascii .role-app { color: #f472b6; }
+  .ascii .arrow { color: #94a3b8; }
+  .ascii .port { color: #fb923c; }
+  .step-list {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 0;
+  }
+  .step-list li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 18px;
+    min-height: 32px;
+  }
+  .step-list li::before {
+    content: "B" counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 38px;
+    height: 30px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .runbook-block {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+  .runbook-block h4 {
+    color: var(--primary-dark);
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .runbook-block h4::before {
+    content: "📋";
+    font-size: 16px;
+  }
+  .when-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .when-block .yes, .when-block .no {
+    padding: 14px 18px;
+    border-radius: 8px;
+    border: 1px solid;
+  }
+  .when-block .yes {
+    background: #f0fdf4;
+    border-color: #86efac;
+  }
+  .when-block .no {
+    background: #fef2f2;
+    border-color: #fca5a5;
+  }
+  .when-block h4 {
+    margin: 0 0 8px;
+  }
+  .when-block .yes h4 { color: #166534; }
+  .when-block .no h4 { color: #991b1b; }
+  .when-block ul { margin: 4px 0; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    padding: 30px 0;
+    font-size: 13px;
+  }
+  a { color: var(--primary); }
+  a:hover { color: var(--primary-dark); }
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    aside.toc { position: relative; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 24px; }
+    .grid-2, .grid-3, .when-block { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="toc">
+  <h2>Mục lục</h2>
+  <ol>
+    <li><a href="#overview"><span class="toc-num">00</span>Tổng quan &amp; ma trận</a></li>
+    <li><a href="#prep"><span class="toc-num">⚙</span>Chuẩn bị môi trường</a></li>
+    <li><a href="#sol-01"><span class="toc-num">01</span>Replica Set (PSS)</a></li>
+    <li><a href="#sol-02"><span class="toc-num">02</span>PSA Topology</a></li>
+    <li><a href="#sol-03"><span class="toc-num">03</span>Sharded Cluster</a></li>
+    <li><a href="#sol-04"><span class="toc-num">04</span>Hidden + Delayed</a></li>
+    <li><a href="#sol-05"><span class="toc-num">05</span>Backup &amp; PITR</a></li>
+    <li><a href="#sol-06"><span class="toc-num">06</span>Multi-region / Zone</a></li>
+    <li><a href="#sol-07"><span class="toc-num">07</span>Atlas (managed)</a></li>
+    <li><a href="#sol-08"><span class="toc-num">08</span>Vagrant Lab</a></li>
+    <li><a href="#pipelines"><span class="toc-num">⚡</span>Pipeline thực hiện</a></li>
+    <li><a href="#tips"><span class="toc-num">💡</span>Lời khuyên chung</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="hero">
+  <h1>Hướng dẫn 7 giải pháp High Availability cho MongoDB</h1>
+  <p>Architecture diagrams, runbook chi tiết, các bước triển khai và vận hành — từ Replica Set cơ bản đến Sharded Cluster đa region.</p>
+  <div class="meta">
+    <span>MongoDB 7.0 Community</span>
+    <span>Ubuntu 22.04 LTS</span>
+    <span>3 DB nodes + 1 mgmt</span>
+    <span>Subnet 192.168.20.0/24</span>
+    <span>Cập nhật: 2026-05-15</span>
+  </div>
+</header>
+
+<!-- ============================ OVERVIEW ============================ -->
+<section id="overview">
+  <h2><span class="badge">00</span>Tổng quan &amp; ma trận lựa chọn</h2>
+
+  <p>Repo này là <strong>toolkit + runbooks</strong> để triển khai các giải pháp HA cho MongoDB. Mọi "code" đều là bash scripts được chạy thủ công trên các nodes theo thứ tự trong runbook. Không có build system, không có CI — validation duy nhất là <em>chạy script thật trên lab VM</em>.</p>
+
+  <h3>Ma trận so sánh các giải pháp</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Đặc tính</th>
+        <th>Replica Set PSS</th>
+        <th>PSA</th>
+        <th>Sharded Cluster</th>
+        <th>Hidden/Delayed</th>
+        <th>Backup + PITR</th>
+        <th>Multi-region</th>
+        <th>Atlas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Loại</td>
+        <td>Native replication</td>
+        <td>RS có arbiter</td>
+        <td>Horizontal scale + RS</td>
+        <td>Add-on cho RS</td>
+        <td>Backup strategy</td>
+        <td>Geo-replication</td>
+        <td>Managed cloud</td>
+      </tr>
+      <tr>
+        <td>Min nodes</td>
+        <td>3</td>
+        <td>2 + 1 arbiter</td>
+        <td>3 cfg + 3 shard + ≥1 mongos</td>
+        <td>+1 RS member</td>
+        <td>1 backup host</td>
+        <td>≥2 DCs</td>
+        <td>0 (managed)</td>
+      </tr>
+      <tr>
+        <td>Auto-failover</td>
+        <td>✅ election ~10s</td>
+        <td>✅ election</td>
+        <td>✅ từng shard</td>
+        <td>—</td>
+        <td>—</td>
+        <td>Có (giới hạn priority)</td>
+        <td>✅ managed</td>
+      </tr>
+      <tr>
+        <td>Write khi 1 node down</td>
+        <td>OK (2/3 majority)</td>
+        <td>⚠ block với <code>w:majority</code></td>
+        <td>OK trong từng shard</td>
+        <td>—</td>
+        <td>—</td>
+        <td>Tuỳ priority</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Scale write</td>
+        <td>Single primary</td>
+        <td>Single primary</td>
+        <td>Multi shard ✅</td>
+        <td>—</td>
+        <td>—</td>
+        <td>Single primary</td>
+        <td>Tùy tier</td>
+      </tr>
+      <tr>
+        <td>Dataset target</td>
+        <td>&lt; 1 TB</td>
+        <td>&lt; 500 GB</td>
+        <td>&gt; 1 TB, unlimited</td>
+        <td>Đi với base RS</td>
+        <td>Bất kỳ size</td>
+        <td>Bất kỳ</td>
+        <td>0–10s TB</td>
+      </tr>
+      <tr>
+        <td>Setup complexity</td>
+        <td>★</td>
+        <td>★★</td>
+        <td>★★★★</td>
+        <td>★</td>
+        <td>★★</td>
+        <td>★★★</td>
+        <td>☆</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Cây quyết định</h3>
+  <div class="ascii">
+Bạn cần HA cho MongoDB?
+├── Dataset &lt; 1 TB, 1 region đủ?
+│   ├── Có 3 host data → <span class="role-p">Replica Set PSS</span> (Sol-01) ★ DEFAULT
+│   └── Chỉ 2 host data + 1 host rẻ → <span class="role-a">PSA</span> (Sol-02) [chấp nhận trade-off]
+│
+├── Dataset &gt; 1 TB hoặc write throughput cao?
+│   └── <span class="role-p">Sharded Cluster</span> (Sol-03) — 3 cfg + N shard RS + ≥1 mongos
+│
+├── Cần phòng "xoá nhầm"?
+│   └── Thêm <span class="role-h">Hidden + Delayed</span> member (Sol-04) lên RS hiện tại
+│
+├── Cần RPO &lt; 5 phút?
+│   └── <span class="role-s">Backup snapshot + oplog tail</span> (Sol-05); Prod: Percona PBM
+│
+├── Cần DR cross-region / data residency?
+│   └── <span class="role-s">Multi-region</span> priority=0 (Sol-06); cluster lớn: zone sharding
+│
+└── Không muốn quản lý OS / mongod / backup?
+    └── <span class="role-app">Atlas managed</span> (Sol-07)
+  </div>
+
+  <h3>Khuyến nghị production theo use case</h3>
+  <table>
+    <thead><tr><th>Use case</th><th>Stack đề xuất</th></tr></thead>
+    <tbody>
+      <tr><td>OLTP medium 1 region, &lt;1 TB</td><td>Replica Set PSS + delayed hidden + oplog tail backup</td></tr>
+      <tr><td>OLTP 2 DCs limited bandwidth</td><td>PSS với cross-DC priority=0 hidden member (Sol-06)</td></tr>
+      <tr><td>OLTP rất lớn, multi-tenant</td><td>Sharded Cluster + zone sharding theo tenant region</td></tr>
+      <tr><td>Internal tool, không DBA</td><td>Atlas M10+ managed</td></tr>
+      <tr><td>DR offsite</td><td>Snapshot LVM/EBS hàng giờ + oplog tail liên tục, test PITR monthly</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <strong>Topology lab tham chiếu</strong>
+    Mọi runbook giả định 4 hosts:
+    <code>node1=192.168.20.11</code> · <code>node2=192.168.20.12</code> · <code>node3=192.168.20.13</code> · <code>mgmt=192.168.20.20</code>.
+    Sửa <code>scripts/common/env.sh</code> nếu thực tế khác. Vagrant lab (Sol-08) đã setup sẵn.
+  </div>
+</section>
+
+<!-- ============================ PREP ============================ -->
+<section id="prep">
+  <h2><span class="badge">⚙</span>Chuẩn bị môi trường (common cho mọi giải pháp)</h2>
+
+  <p>4 script <code>scripts/common/</code> chạy trên <strong>tất cả nodes</strong> trước khi triển khai bất kỳ giải pháp HA nào. Thứ tự cứng:</p>
+
+  <ol class="step-list">
+    <li>
+      <strong>Source biến môi trường</strong> — <code>scripts/common/env.sh</code> chứa IPs, hostnames, ports, mật khẩu, version. Mọi script đều <code>source</code> file này ở đầu.
+      <pre class="lang-bash"><code># Sửa env.sh nếu thực tế khác:
+export NODE1_IP=192.168.20.11
+export RS_NAME=rs0
+export MONGO_ADMIN_PWD='ChangeMe!Admin#2026'
+export MONGO_MAJOR=7.0       # hoặc 8.0</code></pre>
+    </li>
+    <li>
+      <strong>Prepare OS</strong> — <code>00-prepare-os.sh</code>: /etc/hosts, swap off, THP off (yêu cầu cứng của WiredTiger), sysctl, ulimit, NTP.
+      <pre class="lang-bash"><code>bash scripts/common/00-prepare-os.sh   # chạy trên mọi node</code></pre>
+    </li>
+    <li>
+      <strong>Install MongoDB</strong> — <code>01-install-mongo.sh</code>: thêm repo, cài <code>mongodb-org</code>, start mongod chế độ standalone tạm.
+      <pre class="lang-bash"><code>bash scripts/common/01-install-mongo.sh   # mongod sẽ chạy tạm trên 127.0.0.1:27017</code></pre>
+    </li>
+    <li>
+      <strong>Firewall</strong> — <code>02-firewall.sh</code>: mở 27017/27018/27019/27020.
+      <pre class="lang-bash"><code>bash scripts/common/02-firewall.sh</code></pre>
+    </li>
+    <li>
+      <strong>KeyFile internal auth</strong> — <code>03-keyfile.sh</code>: sinh 1024-byte base64 secret. <strong>Phải copy thủ công sang TẤT CẢ nodes</strong> (cùng 1 nội dung) — sai → secondary refuse join.
+      <pre class="lang-bash"><code># Trên mgmt (hoặc node1):
+bash scripts/common/03-keyfile.sh
+# Copy sang các node khác:
+scp /etc/mongodb/keyfile root@node2:/etc/mongodb/keyfile
+scp /etc/mongodb/keyfile root@node3:/etc/mongodb/keyfile
+# Trên mỗi node:
+chown mongodb:mongodb /etc/mongodb/keyfile && chmod 400 /etc/mongodb/keyfile</code></pre>
+    </li>
+    <li>
+      <strong>TLS (tuỳ chọn, khuyến nghị prod)</strong> — <code>04-tls-self-signed.sh</code>: sinh CA + server cert. Production thay bằng PKI thật.
+      <pre class="lang-bash"><code>bash scripts/common/04-tls-self-signed.sh</code></pre>
+    </li>
+  </ol>
+
+  <div class="callout warning">
+    <strong>Quan trọng — KeyFile</strong>
+    KeyFile phải <em>byte-identical</em> trên mọi member của cùng cluster. Trong Vagrant lab, file <code>vagrant/provision/keyfile</code> được sinh 1 lần qua <code>make keyfile</code> và copy lên cả 4 VMs qua provisioner <code>trust</code>.
+  </div>
+
+  <h3>Topology + ports tổng quan</h3>
+  <div class="ascii">
+        ┌──────────────────────────────────────────────────────────────┐
+        │                  Subnet 192.168.20.0/24                      │
+        │                                                              │
+        │  <span class="role-p">node1 :11</span>     <span class="role-s">node2 :12</span>     <span class="role-s">node3 :13</span>     <span class="role-app">mgmt :20</span>     │
+        │  ─────────    ─────────    ─────────    ─────────            │
+        │  <span class="port">:27017</span> mongod  <span class="port">:27017</span> mongod  <span class="port">:27017</span> mongod  <span class="port">:27017</span> mongos   │
+        │  <span class="port">:27018</span> shard   <span class="port">:27018</span> shard   <span class="port">:27018</span> shard            │
+        │  <span class="port">:27019</span> cfgsvr  <span class="port">:27019</span> cfgsvr  <span class="port">:27019</span> cfgsvr           │
+        │                                <span class="port">:27020</span> arbiter          │
+        └──────────────────────────────────────────────────────────────┘
+                   ↑ 1 VM có thể chạy nhiều mongod (lab)
+                   ↑ Production: 1 vai trò = 1 VM
+  </div>
+</section>
+
+<!-- ============================ SOL 01 — Replica Set ============================ -->
+<section id="sol-01">
+  <h2><span class="badge">01</span>Replica Set (PSS — Primary + 2 Secondary)</h2>
+  <div class="tag-row">
+    <span class="tag">Native</span>
+    <span class="tag sky">Auto-failover</span>
+    <span class="tag">3 nodes</span>
+    <span class="tag">Default cho mọi prod</span>
+  </div>
+
+  <p>Giải pháp HA mặc định của MongoDB. <strong>Mọi runbook sau (PITR, Hidden, Multi-region) build trên top của Replica Set.</strong> 3 nodes form quorum: tolerate 1 fault, election tự động ~10 giây.</p>
+
+  <h3>Kiến trúc</h3>
+  <div class="ascii">
+                  ┌────────────────────────────────────┐
+              ┌──▶│  <span class="role-app">App + MongoDB Driver</span>             │
+              │   │  ?replicaSet=rs0&amp;readPref=nearest │
+              │   └────────────┬───────────────────────┘
+   discovery  │                │ TCP <span class="port">:27017</span>
+   topology   │                │
+              │     ┌──────────┴───────────┐
+              │     │                      │
+              │     ▼                      ▼
+      ┌──────────────────┐       ┌──────────────────┐
+      │  <span class="role-p">node1  :27017</span>   │       │  <span class="role-s">node2  :27017</span>   │
+      │  PRIMARY  pri=2  │◀─────▶│  SECONDARY pri=1 │
+      │  rs.isWritable() │ oplog │  RO              │
+      └────────┬─────────┘       └─────────┬────────┘
+               │  oplog tailing            │
+               ▼                           ▼
+               ╲                          ╱
+                ╲       ┌────────────────┘
+                 ╲      │
+                  ▼     ▼
+              ┌──────────────────┐
+              │  <span class="role-s">node3  :27017</span>   │
+              │  SECONDARY pri=1 │
+              └──────────────────┘
+
+  Election: Khi PRIMARY mất → SECONDARY (optime mới nhất) ứng cử
+            → cần ≥2/3 votes → PRIMARY mới trong ~10s
+            → Driver tự reconnect (topology stream)
+  </div>
+
+  <h3>Khi nào dùng</h3>
+  <div class="when-block">
+    <div class="yes">
+      <h4>✅ Dùng được</h4>
+      <ul>
+        <li>OLTP dataset &lt; 1 TB</li>
+        <li>1 data center hoặc 2 DCs LAN (&lt; 5ms RTT)</li>
+        <li>Workload đa số read, write &lt; 50k/sec</li>
+        <li>App có thể connect string list 3 hosts</li>
+      </ul>
+    </div>
+    <div class="no">
+      <h4>❌ Không phù hợp</h4>
+      <ul>
+        <li>Dataset &gt; 1 TB (chuyển sang Sharded — Sol-03)</li>
+        <li>Cross-region latency &gt; 50ms (xem Sol-06 multi-region)</li>
+        <li>Cần multi-master write (Mongo không có; Sharded có thể parallel)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Tiền đề</h3>
+  <ul>
+    <li>3 nodes đã chạy <code>scripts/common/00-prepare-os.sh</code>, <code>01-install-mongo.sh</code>, <code>02-firewall.sh</code></li>
+    <li>KeyFile <code>/etc/mongodb/keyfile</code> giống nhau trên 3 nodes</li>
+    <li>Hostname/IP resolve được giữa các nodes (<code>getent hosts node2</code>)</li>
+  </ul>
+
+  <h3>Runbook chi tiết</h3>
+  <ol class="step-list">
+    <li>
+      <strong>Config mongod cho replication (trên CẢ 3 nodes)</strong>
+      <pre class="lang-bash"><code>bash /vagrant/scripts/replica-set/node-config.sh</code></pre>
+      Script ghi <code>/etc/mongod.conf</code>:
+      <pre class="lang-yaml"><code>storage:
+  dbPath: /var/lib/mongodb
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: 1
+net:
+  port: 27017
+  bindIp: 0.0.0.0
+security:
+  keyFile: /etc/mongodb/keyfile
+  authorization: enabled
+replication:
+  replSetName: rs0
+  oplogSizeMB: 2048</code></pre>
+      Sau đó restart mongod.
+    </li>
+    <li>
+      <strong>Initiate replica set (CHỈ trên node1)</strong>
+      <pre class="lang-bash"><code>bash /vagrant/scripts/replica-set/initiate.sh</code></pre>
+      Script gọi <code>rs.initiate()</code> với 3 members, đợi PRIMARY, sau đó tạo users:
+      <pre class="lang-js"><code>rs.initiate({
+  _id: 'rs0',
+  members: [
+    { _id: 0, host: '192.168.20.11:27017', priority: 2 },
+    { _id: 1, host: '192.168.20.12:27017', priority: 1 },
+    { _id: 2, host: '192.168.20.13:27017', priority: 1 }
+  ]
+});
+
+db.getSiblingDB('admin').createUser({
+  user: 'admin', pwd: '...',
+  roles: [{ role: 'root', db: 'admin' }]
+});
+// Tiếp theo: clusteradmin, backupuser, appuser@appdb</code></pre>
+    </li>
+    <li>
+      <strong>Verify trạng thái</strong>
+      <pre class="lang-bash"><code>bash scripts/replica-set/ops.sh status</code></pre>
+      Kỳ vọng:
+      <pre class="lang-bash"><code>set: rs0  myState=1  term=1
+  192.168.20.11:27017  state=PRIMARY    health=1  lag=0s
+  192.168.20.12:27017  state=SECONDARY  health=1  lag=0s
+  192.168.20.13:27017  state=SECONDARY  health=1  lag=1s</code></pre>
+    </li>
+    <li>
+      <strong>App connection</strong>
+      <pre class="lang-bash"><code>mongodb://appuser:<pwd>@node1:27017,node2:27017,node3:27017/appdb?replicaSet=rs0&w=majority&readPreference=primaryPreferred</code></pre>
+    </li>
+  </ol>
+
+  <div class="runbook-block">
+    <h4>Runbook — Vận hành thường ngày</h4>
+    <table>
+      <thead><tr><th>Tác vụ</th><th>Lệnh</th><th>Khi nào</th></tr></thead>
+      <tbody>
+        <tr><td>Trạng thái RS</td><td><code>ops.sh status</code></td><td>Hằng ngày / khi có alert</td></tr>
+        <tr><td>Kiểm lag</td><td><code>ops.sh lag</code></td><td>Khi alert <code>replication_lag &gt; 60s</code></td></tr>
+        <tr><td>Oplog window</td><td><code>ops.sh oplog</code></td><td>Weekly — cần ≥ 24h</td></tr>
+        <tr><td>Stepdown primary (planned)</td><td><code>ops.sh stepdown 60</code></td><td>Trước maintenance node1</td></tr>
+        <tr><td>Freeze 1 node (không election)</td><td><code>ops.sh freeze 300</code></td><td>Tạm vô hiệu hoá node</td></tr>
+        <tr><td>Add member</td><td><code>ops.sh add node4:27017 1</code></td><td>Scale-out reads</td></tr>
+        <tr><td>Remove member</td><td><code>ops.sh remove node4:27017</code></td><td>Decommission</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="runbook-block">
+    <h4>Runbook — Disaster scenarios</h4>
+    <table>
+      <thead><tr><th>Tình huống</th><th>Phản ứng</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>PRIMARY chết (1/3 down)</td>
+          <td>Election tự động ~10s → 1 SECONDARY thành PRIMARY mới. <strong>Không cần can thiệp.</strong> Driver tự discover.</td>
+        </tr>
+        <tr>
+          <td>2/3 nodes down (mất quorum)</td>
+          <td>Cluster block writes. Khôi phục 1 node trước, hoặc force-reconfig trên node sống:
+          <pre class="lang-js"><code>var cfg = rs.conf();
+cfg.members = cfg.members.filter(m =&gt; m.host === 'node1:27017');
+rs.reconfig(cfg, {force: true});</code></pre>
+          </td>
+        </tr>
+        <tr>
+          <td>SECONDARY lag &gt; oplog window</td>
+          <td>Resync: stop mongod, <code>rm -rf /var/lib/mongodb/*</code>, start lại → initial sync từ PRIMARY.</td>
+        </tr>
+        <tr>
+          <td>"Permissions on keyfile too open"</td>
+          <td><code>chmod 400 /etc/mongodb/keyfile &amp;&amp; chown mongodb:mongodb /etc/mongodb/keyfile</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Write/Read concern khuyến nghị</h3>
+  <table>
+    <thead><tr><th>Mục đích</th><th>writeConcern</th><th>readConcern</th></tr></thead>
+    <tbody>
+      <tr><td>OLTP tài chính (no rollback)</td><td><code>{w:"majority", j:true}</code></td><td><code>"majority"</code></td></tr>
+      <tr><td>OLTP thường</td><td><code>{w:"majority"}</code></td><td><code>"local"</code></td></tr>
+      <tr><td>Log/audit (tốc độ &gt; consistency)</td><td><code>{w:1}</code></td><td><code>"local"</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout danger">
+    <strong>Rollback / tháo replica set</strong>
+    <pre class="lang-bash"><code># Trên mỗi node — XOÁ /local DB sẽ xoá oplog history, không quay đầu:
+systemctl stop mongod
+rm -rf /var/lib/mongodb/local
+# Sửa /etc/mongod.conf bỏ block replication
+systemctl start mongod</code></pre>
+  </div>
+</section>
+
+<!-- ============================ SOL 02 — PSA ============================ -->
+<section id="sol-02">
+  <h2><span class="badge">02</span>PSA Topology (Primary + Secondary + Arbiter)</h2>
+  <div class="tag-row">
+    <span class="tag amber">Compromise</span>
+    <span class="tag">2 data + 1 vote</span>
+    <span class="tag amber">Trade-off cao</span>
+  </div>
+
+  <p>PSA = 2 data nodes + 1 <strong>arbiter</strong> (chỉ vote, không lưu data). Tiết kiệm 1 host disk. <strong>Đánh đổi: write concern <code>w:majority</code> có thể block khi 1 data node down.</strong></p>
+
+  <h3>Kiến trúc</h3>
+  <div class="ascii">
+       ┌──────────────────────────────────┐
+   ┌──▶│  <span class="role-app">App + Driver</span>                  │
+   │   │  replicaSet=rspsa              │
+   │   └─────────┬────────────────────────┘
+   │             │ <span class="port">:27017</span>
+   │      ┌──────┴──────┐
+   │      │             │
+   │      ▼             ▼
+   │  ┌────────────────────┐   ┌────────────────────┐
+   │  │  <span class="role-p">node1 :27017</span>      │   │  <span class="role-s">node2 :27017</span>      │
+   │  │  PRIMARY (data)    │◀─▶│  SECONDARY (data)  │
+   │  │  pri=2 votes=1     │   │  pri=1 votes=1     │
+   │  └─────────┬──────────┘   └─────────┬──────────┘
+   │            │      oplog             │
+   │            └────────┬───────────────┘
+   │                     │ heartbeat (vote-only)
+   │                     ▼
+   │            ┌─────────────────────┐
+   │            │  <span class="role-a">node3 :27020</span>       │
+   └────────────│  ARBITER (no data)  │
+                │  pri=0 votes=1      │
+                └─────────────────────┘
+
+     Quorum:
+     ✅ 1 data + arbiter = 2/3 → election OK
+     ⚠ Nhưng w:majority cần 2 DATA writes — arbiter không thoả
+       → 1 data node down ⇒ writes w:majority BLOCK
+  </div>
+
+  <h3>Khi nào dùng (và khi nào KHÔNG)</h3>
+  <div class="when-block">
+    <div class="yes">
+      <h4>✅ Dùng được</h4>
+      <ul>
+        <li>Chỉ có 2 host data + 1 host rẻ (jump/mgmt)</li>
+        <li>Workload chấp nhận <code>w:1</code> hoặc đôi khi block ngắn với <code>w:majority</code></li>
+        <li>Dev/staging muốn tiết kiệm</li>
+      </ul>
+    </div>
+    <div class="no">
+      <h4>❌ KHÔNG nên</h4>
+      <ul>
+        <li>App yêu cầu <code>w:"majority", j:true</code> 100% thời gian</li>
+        <li>Cluster &gt; vài trăm GB (arbiter không donor recovery)</li>
+        <li>Production critical — MongoDB khuyến nghị PSS, không PSA</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <strong>MongoDB ≥ 5.0 PSA + writeConcern bloat</strong>
+    Với PSA và <code>w:"majority"</code>, nếu secondary mất, primary tiếp tục accept writes nhưng <strong>không commit majority</strong> → WiredTiger giữ all uncommitted snapshots → cache bloat → restart primary có thể rollback writes. Theo dõi:
+    <pre class="lang-bash"><code>mongodb_mongod_replset_member_replication_lag{state="SECONDARY"} &gt; 60
+mongodb_mongod_replset_member_health{state="SECONDARY"} == 0</code></pre>
+  </div>
+
+  <h3>Runbook triển khai</h3>
+  <ol class="step-list">
+    <li>
+      <strong>Config 2 data nodes (node1, node2)</strong>
+      <pre class="lang-bash"><code># Trên node1 và node2:
+bash /vagrant/scripts/psa/node-config.sh data
+# Tạo /etc/mongod-data.conf + systemd unit mongod-data.service
+# port 27017, replSet=rspsa</code></pre>
+    </li>
+    <li>
+      <strong>Config arbiter (node3 hoặc mgmt)</strong>
+      <pre class="lang-bash"><code># Trên node3:
+bash /vagrant/scripts/psa/node-config.sh arbiter
+# port 27020, dataDir riêng, chỉ giữ metadata vote</code></pre>
+    </li>
+    <li>
+      <strong>Initiate PSA (chỉ trên node1)</strong>
+      <pre class="lang-bash"><code>bash /vagrant/scripts/psa/initiate-psa.sh</code></pre>
+      <pre class="lang-js"><code>rs.initiate({
+  _id: 'rspsa',
+  members: [
+    { _id: 0, host: '192.168.20.11:27017', priority: 2 },
+    { _id: 1, host: '192.168.20.12:27017', priority: 1 },
+    { _id: 2, host: '192.168.20.13:27020', arbiterOnly: true }
+  ]
+});</code></pre>
+    </li>
+    <li>
+      <strong>Verify</strong>
+      <pre class="lang-bash"><code>mongosh -u admin -p --eval 'rs.status().members.forEach(m =&gt; print(m.name + " " + m.stateStr))'
+# kỳ vọng: PRIMARY, SECONDARY, ARBITER</code></pre>
+    </li>
+  </ol>
+
+  <div class="runbook-block">
+    <h4>Runbook — Failure scenarios PSA</h4>
+    <table>
+      <thead><tr><th>Tình huống</th><th>Phản ứng</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1 data node down</td>
+          <td>
+            Election OK (1 data + arbiter = 2/3). PRIMARY mới được bầu (hoặc giữ nguyên).<br>
+            <strong>⚠ Writes <code>w:majority</code> BLOCK</strong>. Workaround tạm: chuyển <code>w:1</code> cho non-critical workload.
+          </td>
+        </tr>
+        <tr>
+          <td>Arbiter down</td>
+          <td>2/2 data sống = majority. Cluster vẫn writable. Restart arbiter, không cần resync.</td>
+        </tr>
+        <tr>
+          <td>Mất cả 2 data nodes</td>
+          <td>Cluster offline. Khôi phục từ backup (Sol-05).</td>
+        </tr>
+        <tr>
+          <td>Chuyển PSA → PSS (nâng cấp)</td>
+          <td>
+            <pre class="lang-js"><code>rs.add('node4:27017');           // add data node thứ 3
+rs.remove('node3:27020');         // bỏ arbiter</code></pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================ SOL 03 — Sharded Cluster ============================ -->
+<section id="sol-03">
+  <h2><span class="badge">03</span>Sharded Cluster (horizontal scale)</h2>
+  <div class="tag-row">
+    <span class="tag">Scale write</span>
+    <span class="tag sky">Auto-failover per shard</span>
+    <span class="tag amber">★★★★ complex</span>
+    <span class="tag">Dataset &gt; 1 TB</span>
+  </div>
+
+  <p>Sharded cluster = <strong>mongos router</strong> (stateless) + <strong>config server replica set</strong> (metadata) + <strong>N shard replica sets</strong> (data). Mỗi shard tự HA bằng election như Sol-01.</p>
+
+  <h3>Kiến trúc đầy đủ</h3>
+  <div class="ascii">
+                ┌────────────────────────────────────────┐
+            ┌──▶│  <span class="role-app">App</span> (connect string trỏ vào mongos)  │
+            │   └────────────┬───────────────────────────┘
+            │                │ <span class="port">:27017</span>
+            │      ┌─────────▼──────────────┐
+            │      │  <span class="role-app">mongos #1</span> (router)      │  ← stateless, deploy ≥2 để HA
+            │      │  mgmt :27017           │
+            │      └─────────┬──────────────┘
+            │                │ reads metadata + routes ops
+            │                ▼
+            │    ┌─────────────────────────────────┐
+            │    │  <span class="role-h">Config Server Replica Set</span>      │
+            │    │  cfgrs (3 members, role=configsvr)│
+            │    │  node1:27019  node2:27019  node3:27019
+            │    │  Stores: chunks, balancer state, RS topology
+            │    └─────────────────────────────────┘
+            │                │
+            │    ┌───────────┼───────────┐
+            │    ▼           ▼           ▼
+   ┌────────────────┐  ┌────────────────┐  ┌────────────────┐
+   │  <span class="role-p">Shard 1 RS</span>     │  │  <span class="role-p">Shard 2 RS</span>     │  │  <span class="role-p">Shard N RS</span>     │
+   │  shard1rs       │  │  shard2rs       │  │  shardNrs       │
+   │  ┌──────────┐  │  │  ┌──────────┐  │  │  ┌──────────┐  │
+   │  │ <span class="role-p">PRIMARY</span>  │  │  │  │ <span class="role-p">PRIMARY</span>  │  │  │  │ <span class="role-p">PRIMARY</span>  │  │
+   │  │node1:27018│  │  │  │node4:27018│  │  │  │nodeN:27018│  │
+   │  └────┬─────┘  │  │  └────┬─────┘  │  │  └────┬─────┘  │
+   │  ┌────▼─────┐  │  │  ┌────▼─────┐  │  │  ┌────▼─────┐  │
+   │  │<span class="role-s">SECONDARY</span>│  │  │  │<span class="role-s">SECONDARY</span>│  │  │  │<span class="role-s">SECONDARY</span>│  │
+   │  │node2:27018│  │  │  │node5:27018│  │  │  │       ...│  │
+   │  └────┬─────┘  │  │  └────┬─────┘  │  │  └──────────┘  │
+   │  ┌────▼─────┐  │  │  ┌────▼─────┐  │  └────────────────┘
+   │  │<span class="role-s">SECONDARY</span>│  │  │  │<span class="role-s">SECONDARY</span>│  │
+   │  │node3:27018│  │  │  │node6:27018│  │     Data partitioned
+   │  └──────────┘  │  │  └──────────┘  │     theo shard key
+   └────────────────┘  └────────────────┘     {userId: "hashed"}
+                  │ │
+                  │ └── Balancer di chuyển chunks
+                  └──── giữa shards để cân bằng
+
+   Lab mapping: 3 VMs chạy đồng thời cfgsvr :27019 + shard1 :27018
+                mgmt chạy mongos :27017
+  </div>
+
+  <h3>Khi nào dùng</h3>
+  <div class="when-block">
+    <div class="yes">
+      <h4>✅ Cần shard</h4>
+      <ul>
+        <li>Dataset &gt; 1 TB hoặc working set vượt RAM 1 node</li>
+        <li>Write throughput &gt; 50k/sec (vượt khả năng 1 primary)</li>
+        <li>Cần data residency theo region (zone sharding — Sol-06)</li>
+        <li>Multi-tenant với hot tenants tách shard riêng</li>
+      </ul>
+    </div>
+    <div class="no">
+      <h4>❌ Không cần shard</h4>
+      <ul>
+        <li>Dataset &lt; 500 GB → Replica Set đủ</li>
+        <li>Read-heavy → tăng secondary reads + cache</li>
+        <li>Chưa có shard key strategy → setup sai thì pain</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Tiền đề</h3>
+  <ul>
+    <li>3 nodes đã chạy <code>scripts/common/00..02</code></li>
+    <li>KeyFile <strong>chung</strong> trên tất cả nodes + mgmt</li>
+    <li>mongos host (mgmt) cài <code>mongodb-org-mongos</code> + <code>mongodb-mongosh</code></li>
+  </ul>
+
+  <h3>Runbook triển khai</h3>
+  <ol class="step-list">
+    <li>
+      <strong>Config Server Replica Set</strong>
+      <pre class="lang-bash"><code># Trên node1, node2, node3 (port 27019, role=configsvr):
+bash /vagrant/scripts/sharded-cluster/config-server-setup.sh
+
+# Trên node1 — init RS + tạo admin user:
+bash /vagrant/scripts/sharded-cluster/config-server-setup.sh --init</code></pre>
+      Script ghi <code>/etc/mongod-cfg.conf</code> với <code>sharding.clusterRole: configsvr</code>, systemd unit <code>mongod-cfg.service</code>.
+    </li>
+    <li>
+      <strong>Shard 1 Replica Set</strong>
+      <pre class="lang-bash"><code># Trên node1, node2, node3 (port 27018, role=shardsvr):
+bash /vagrant/scripts/sharded-cluster/shard-setup.sh
+
+# Trên node1 — init RS:
+bash /vagrant/scripts/sharded-cluster/shard-setup.sh --init</code></pre>
+    </li>
+    <li>
+      <strong>mongos router (trên mgmt)</strong>
+      <pre class="lang-bash"><code>bash /vagrant/scripts/sharded-cluster/mongos-setup.sh</code></pre>
+      Script ghi <code>/etc/mongos.conf</code> với configDB string:
+      <pre class="lang-yaml"><code>sharding:
+  configDB: cfgrs/node1:27019,node2:27019,node3:27019
+security:
+  keyFile: /etc/mongodb/keyfile</code></pre>
+    </li>
+    <li>
+      <strong>Add shard + tạo users + enable sharding</strong>
+      <pre class="lang-bash"><code>bash /vagrant/scripts/sharded-cluster/add-shard.sh</code></pre>
+      <pre class="lang-js"><code>// Script chạy các lệnh sau qua mongos:
+sh.addShard('shard1rs/node1:27018,node2:27018,node3:27018');
+
+// Tạo users
+db.getSiblingDB('admin').createUser({...});
+db.getSiblingDB('appdb').createUser({user:'appuser', ...});
+
+// Enable sharding + shard collection mẫu:
+sh.enableSharding('appdb');
+sh.shardCollection('appdb.events', { userId: 'hashed' });</code></pre>
+    </li>
+    <li>
+      <strong>Verify</strong>
+      <pre class="lang-bash"><code>mongosh "mongodb://admin:<pwd>@mgmt:27017/admin" --eval 'sh.status({verbose:false})'</code></pre>
+      Kỳ vọng: 1 shard <code>shard1rs</code>, database <code>appdb</code> partitioned, collection <code>events</code> hashed.
+    </li>
+    <li>
+      <strong>App connection</strong>
+      <pre class="lang-bash"><code># KHÔNG có replicaSet param — driver tự nhận diện sharded cluster:
+mongodb://appuser:<pwd>@mgmt:27017/appdb
+# Nhiều mongos: mongos1,mongos2,mongos3:27017</code></pre>
+    </li>
+  </ol>
+
+  <div class="runbook-block">
+    <h4>Runbook — Vận hành balancer</h4>
+    <table>
+      <thead><tr><th>Tác vụ</th><th>Lệnh</th></tr></thead>
+      <tbody>
+        <tr><td>Trạng thái cluster</td><td><code>balancer-ops.sh status</code></td></tr>
+        <tr><td>Balancer enabled/running</td><td><code>balancer-ops.sh balancer</code></td></tr>
+        <tr><td>Stop balancer (trước backup)</td><td><code>balancer-ops.sh stop</code></td></tr>
+        <tr><td>Schedule window (off-peak)</td><td><code>balancer-ops.sh window 02:00 06:00</code></td></tr>
+        <tr><td>Chunk distribution</td><td><code>balancer-ops.sh chunks appdb.events</code></td></tr>
+        <tr><td>Move chunk thủ công</td><td><code>balancer-ops.sh move-chunk appdb.events '{userId:"u123"}' shard2rs</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="runbook-block">
+    <h4>Runbook — Scale operations</h4>
+    <p><strong>Thêm shard mới:</strong></p>
+    <pre class="lang-bash"><code># 3 nodes mới hoặc port khác trên 3 nodes hiện tại (lab):
+SHARD_PORT=27028 SHARD_RS_NAME=shard2rs bash scripts/sharded-cluster/shard-setup.sh
+SHARD_PORT=27028 SHARD_RS_NAME=shard2rs bash scripts/sharded-cluster/shard-setup.sh --init
+SHARD_PORT=27028 SHARD_RS_NAME=shard2rs bash scripts/sharded-cluster/add-shard.sh
+# Balancer tự chia chunks ~30 phút – vài giờ tuỳ data.</code></pre>
+
+    <p><strong>Loại shard ra (drain):</strong></p>
+    <pre class="lang-js"><code>db.adminCommand({ removeShard: 'shard2rs' });
+// Lặp lệnh trên đến khi state == 'completed'.</code></pre>
+  </div>
+
+  <div class="runbook-block">
+    <h4>Runbook — Disaster scenarios</h4>
+    <table>
+      <thead><tr><th>Tình huống</th><th>Tác động + phản ứng</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Primary của 1 shard chết</td>
+          <td>Election trong shard (~10s). mongos phát hiện qua heartbeat, route lại. <strong>App không thấy gì lạ.</strong></td>
+        </tr>
+        <tr>
+          <td>Config server quorum loss (2/3 cfg down)</td>
+          <td><strong>Cluster READ-ONLY</strong> — không sửa được metadata. Khôi phục node config từ backup hoặc resync.</td>
+        </tr>
+        <tr>
+          <td>1 shard mất hoàn toàn (3/3 down)</td>
+          <td>Data của shard đó không accessible. Reads/writes vào chunks shard khác vẫn OK. Khôi phục shard từ backup (Sol-05).</td>
+        </tr>
+        <tr>
+          <td>mongos chết</td>
+          <td>App reconnect sang mongos khác (nếu connection string có nhiều mongos).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <strong>Shard key — chọn sai = pain cả vòng đời cluster</strong>
+    <ul>
+      <li><code>hashed</code>: chia đều nhưng range query inefficient.</li>
+      <li>Compound <code>{tenant:1, ts:1}</code>: tốt cho time-series multi-tenant.</li>
+      <li>Phải có <strong>index trên prefix shard key</strong> trên mọi collection sharded.</li>
+      <li>Test trên staging với data thật trước. Đổi shard key (Mongo 5.0+) tốn kém.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ SOL 04 — Hidden / Delayed ============================ -->
+<section id="sol-04">
+  <h2><span class="badge">04</span>Hidden + Delayed member</h2>
+  <div class="tag-row">
+    <span class="tag rose">Anti-mistake</span>
+    <span class="tag">Add-on cho RS</span>
+    <span class="tag sky">Dedicated backup host</span>
+  </div>
+
+  <p>Bổ sung trên top Replica Set (Sol-01) — chuyển 1 secondary thành <strong>hidden + priority=0 + delayed N giây</strong>. Mục đích: phòng xoá nhầm, dedicated backup host, reporting offline.</p>
+
+  <h3>Kiến trúc</h3>
+  <div class="ascii">
+              ┌──────────────────────────────────┐
+          ┌──▶│  <span class="role-app">App + Driver</span>                  │
+          │   │  ?replicaSet=rs0               │
+          │   └────────────┬────────────────────┘
+          │                │ <span class="port">:27017</span>
+          │      ┌─────────┴─────────┐
+          │      │                   │
+          │      ▼                   ▼
+   ┌──────────────────┐    ┌──────────────────┐
+   │  <span class="role-p">node1 :27017</span>     │    │  <span class="role-s">node2 :27017</span>     │
+   │  PRIMARY  pri=2  │◀──▶│  SECONDARY pri=1 │
+   └─────────┬────────┘    └─────────┬────────┘
+             │  oplog                │
+             └───────┬───────────────┘
+                     │
+                     │  (chậm 24h)
+                     ▼
+            ┌─────────────────────────┐
+            │  <span class="role-h">node3 :27017</span>             │
+            │  SECONDARY              │
+            │  pri=0  hidden=true     │  ← Driver KHÔNG thấy node này
+            │  delay=86400s (24h)     │  ← Replicate chậm 24h
+            └─────────────────────────┘
+                     │
+                     ▼  (chạy backup không impact primary)
+              <span class="role-h">mongodump --oplog</span>
+
+  Use cases:
+    🛡 Lúc 10:00 ai đó deleteMany({}) trên PRIMARY
+    🛡 Lúc 10:05 alert. Hidden member vẫn còn data của 09:00 (delay 24h)
+    🛡 mongodump từ node3 → restore selectively lên primary
+  </div>
+
+  <h3>Khi nào dùng</h3>
+  <ul>
+    <li><strong>Bảo hiểm xoá nhầm</strong>: 30 phút sau khi ai đó <code>db.users.deleteMany({})</code>, vẫn còn data trên delayed secondary để dump.</li>
+    <li><strong>Backup dedicated host</strong>: hidden + priority=0 → không serve traffic → chạy mongodump thoải mái không tốn IO primary.</li>
+    <li><strong>Reporting/ETL nightly</strong>: hidden member phục vụ 1 job batch qua read pref tag.</li>
+  </ul>
+
+  <h3>Runbook triển khai</h3>
+  <ol class="step-list">
+    <li>
+      <strong>Đảm bảo có RS đã chạy (Sol-01)</strong>
+      <pre class="lang-bash"><code>bash scripts/replica-set/ops.sh status   # 3 nodes ONLINE</code></pre>
+    </li>
+    <li>
+      <strong>Trường hợp A — dùng 1 trong 3 members hiện tại</strong>
+      <pre class="lang-bash"><code># Trên node1 (primary), chuyển node3 thành hidden+delayed 24h:
+bash /vagrant/scripts/hidden-delayed/add-delayed-member.sh node3:27017 86400</code></pre>
+      Script chạy:
+      <pre class="lang-js"><code>const cfg = rs.conf();
+cfg.members.forEach(m =&gt; {
+  if (m.host === 'node3:27017') {
+    m.priority = 0;
+    m.hidden = true;
+    m.secondaryDelaySecs = 86400;   // MongoDB ≥ 5.0
+  }
+});
+rs.reconfig(cfg);</code></pre>
+    </li>
+    <li>
+      <strong>Trường hợp B — thêm node thứ 4 dedicated (khuyến nghị prod)</strong>
+      <pre class="lang-bash"><code>bash scripts/replica-set/ops.sh add node4:27017 0
+bash scripts/hidden-delayed/add-delayed-member.sh node4:27017 86400</code></pre>
+    </li>
+    <li>
+      <strong>Verify</strong>
+      <pre class="lang-bash"><code>mongosh -u admin -p --eval '
+rs.conf().members.forEach(m =&gt;
+  print(m.host + " pri=" + m.priority + " hidden=" + !!m.hidden + " delay=" + (m.secondaryDelaySecs||0) + "s")
+)'</code></pre>
+      Kỳ vọng:
+      <pre class="lang-bash"><code>node3:27017 pri=0 hidden=true delay=86400s</code></pre>
+    </li>
+  </ol>
+
+  <div class="runbook-block">
+    <h4>Runbook — Recovery xoá nhầm</h4>
+    <p>Giả sử lúc 10:00 ai đó <code>db.events.deleteMany({})</code> trên primary. Alert nhận lúc 10:05:</p>
+    <ol class="step-list">
+      <li>
+        <strong>Stop replication trên delayed member để "đóng băng" state lúc 09:00</strong>
+        <pre class="lang-js"><code>// Trên node3 (delayed member):
+db.adminCommand({ fsync: 1, lock: true });</code></pre>
+      </li>
+      <li>
+        <strong>Dump collection từ delayed member</strong>
+        <pre class="lang-bash"><code>mongodump --host node3:27017 -u admin -p ... \
+  --authenticationDatabase admin \
+  --db appdb --collection events \
+  --out /tmp/recovery</code></pre>
+      </li>
+      <li>
+        <strong>Unlock delayed member</strong>
+        <pre class="lang-js"><code>db.fsyncUnlock();</code></pre>
+      </li>
+      <li>
+        <strong>Restore lên primary (collection riêng để không đè data hiện tại)</strong>
+        <pre class="lang-bash"><code>mongorestore --host node1:27017 -u admin -p ... \
+  --nsFrom 'appdb.events' \
+  --nsTo 'appdb.events_recovered' \
+  /tmp/recovery</code></pre>
+      </li>
+      <li>
+        <strong>Merge / swap collection trong app logic</strong>
+      </li>
+    </ol>
+  </div>
+
+  <h3>Trade-offs</h3>
+  <table>
+    <thead><tr><th>Khía cạnh</th><th>Tác động</th></tr></thead>
+    <tbody>
+      <tr><td>Voters</td><td>Hidden member vẫn vote mặc định. Set <code>votes:0</code> nếu không muốn.</td></tr>
+      <tr><td>Disk</td><td>Delayed member chứa full data chậm N giây. Disk ≈ primary.</td></tr>
+      <tr><td>Oplog window</td><td>Phải &gt; delay + buffer. Delay 24h → oplog ≥ 48h.</td></tr>
+      <tr><td>Failover</td><td>Hidden + pri=0 không bao giờ thành primary tự động. DR cần force-reconfig.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <strong>Promote delayed → primary (DR scenario, mất ≤ 24h data)</strong>
+    <pre class="lang-js"><code>var cfg = rs.conf();
+cfg.members = cfg.members.filter(m =&gt; m.host === 'node3:27017');
+cfg.members[0].priority = 1;
+cfg.members[0].hidden = false;
+cfg.members[0].secondaryDelaySecs = 0;
+rs.reconfig(cfg, {force: true});</code></pre>
+  </div>
+</section>
+
+<!-- ============================ SOL 05 — Backup & PITR ============================ -->
+<section id="sol-05">
+  <h2><span class="badge">05</span>Backup &amp; Point-In-Time Recovery</h2>
+  <div class="tag-row">
+    <span class="tag sky">RPO &lt; 5 phút</span>
+    <span class="tag">3 phương thức</span>
+    <span class="tag">Bắt buộc cho mọi prod</span>
+  </div>
+
+  <p>3 chiến lược backup chính: <strong>logical (mongodump)</strong>, <strong>filesystem snapshot (LVM/EBS)</strong>, <strong>Percona PBM / Ops Manager</strong>. PITR đạt được bằng cách combine snapshot + oplog tail liên tục.</p>
+
+  <h3>So sánh phương thức</h3>
+  <table>
+    <thead><tr><th>Phương thức</th><th>Tốc độ</th><th>Storage</th><th>PITR</th><th>Khi nào dùng</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>mongodump --oplog</code></td>
+        <td>Chậm (re-read mọi doc)</td>
+        <td>Nén tốt</td>
+        <td>✅ (<code>--oplogReplay</code>)</td>
+        <td>Cluster nhỏ &lt; 500 GB</td>
+      </tr>
+      <tr>
+        <td>Filesystem snapshot (LVM/EBS)</td>
+        <td>Nhanh (~vài phút)</td>
+        <td>≈ disk usage</td>
+        <td>✅ (+ oplog tail)</td>
+        <td>Production size lớn</td>
+      </tr>
+      <tr>
+        <td>Percona PBM / Ops Manager</td>
+        <td>Tích hợp</td>
+        <td>Variable</td>
+        <td>✅</td>
+        <td>Sharded cluster, multi-RS</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Kiến trúc Backup + PITR</h3>
+  <div class="ascii">
+   <span class="role-p">node1 PRIMARY</span> ──┬──▶ oplog (continuous log of writes)
+                  │
+                  │ replicate
+                  ▼
+       <span class="role-s">node2 SECONDARY</span>  ◀──── mongodump --oplog (cron daily 02:00)
+                                       │
+                                       ▼
+                              <span class="role-h">/var/backups/mongo/</span>
+                              ├── dump-20260515T020000Z/   ← base full dump
+                              ├── dump-20260516T020000Z/
+                              └── oplog/
+                                  ├── oplog-...02:05.bson.gz  ← every 5 min
+                                  ├── oplog-...02:10.bson.gz
+                                  ├── oplog-...02:15.bson.gz
+                                  └── ...
+
+   PITR đến T = 14:32:17 ngày 15/05:
+     1. mongorestore dump-20260515T020000Z với --oplogLimit=T
+     2. Replay tuần tự oplog-*.bson.gz có toT ≤ T
+     3. Result: data state chính xác lúc 14:32:17
+  </div>
+
+  <h3>Phương thức A — Logical (mongodump)</h3>
+  <ol class="step-list">
+    <li>
+      <strong>Full dump consistent snapshot</strong>
+      <pre class="lang-bash"><code># Chạy từ hidden member (Sol-04) để giảm impact:
+bash /vagrant/scripts/backup-pitr/mongodump.sh node3:27017
+# Output: /var/backups/mongo/dump-20260515T120000Z/</code></pre>
+      Cờ <code>--oplog</code> dump kèm window oplog trong lúc dump → restore lại đạt consistent point cuối dump.
+    </li>
+    <li>
+      <strong>Restore toàn bộ</strong>
+      <pre class="lang-bash"><code>bash scripts/backup-pitr/mongorestore.sh /var/backups/mongo/dump-20260515T120000Z node1:27017</code></pre>
+    </li>
+    <li>
+      <strong>Schedule cron daily</strong>
+      <pre class="lang-bash"><code># /etc/cron.d/mongo-backup
+0 2 * * * root bash /vagrant/scripts/backup-pitr/mongodump.sh node3:27017 \
+  &gt;&gt; /var/log/mongo-backup.log 2&gt;&amp;1</code></pre>
+    </li>
+  </ol>
+
+  <h3>Phương thức B — Filesystem snapshot</h3>
+  <p>Tiền đề: <code>dbPath</code> nằm trên LVM logical volume (hoặc EBS volume nếu AWS). Chạy trên <strong>SECONDARY</strong> (không phải primary) — <code>fsyncLock()</code> block writes.</p>
+
+  <ol class="step-list">
+    <li>
+      <strong>Snapshot</strong>
+      <pre class="lang-bash"><code># Trên node2 (secondary):
+bash scripts/backup-pitr/fs-snapshot.sh --vg vg_mongo --lv lv_data
+# Pipeline: fsyncLock → lvcreate snapshot → fsyncUnlock</code></pre>
+    </li>
+    <li>
+      <strong>Copy snapshot đi storage backup</strong>
+      <pre class="lang-bash"><code>mount /dev/vg_mongo/lv_data-snap-20260515T120000Z /mnt/snap
+tar czf /var/backups/mongo/snap-20260515T120000Z.tar.gz -C /mnt/snap .
+umount /mnt/snap
+lvremove -f /dev/vg_mongo/lv_data-snap-20260515T120000Z
+# Hoặc upload lên S3.</code></pre>
+    </li>
+    <li>
+      <strong>Restore (full)</strong>
+      <pre class="lang-bash"><code>systemctl stop mongod
+mv /var/lib/mongodb /var/lib/mongodb.broken
+mkdir /var/lib/mongodb
+tar xzf /var/backups/mongo/snap-20260515T120000Z.tar.gz -C /var/lib/mongodb
+chown -R mongodb:mongodb /var/lib/mongodb
+systemctl start mongod</code></pre>
+    </li>
+  </ol>
+
+  <h3>PITR — continuous oplog tail + replay</h3>
+  <ol class="step-list">
+    <li>
+      <strong>Setup oplog tail (cron mỗi 5 phút)</strong>
+      <pre class="lang-bash"><code># /etc/cron.d/mongo-oplog
+*/5 * * * * root bash /vagrant/scripts/backup-pitr/oplog-tail.sh node2:27017 \
+  &gt;&gt; /var/log/mongo-oplog.log 2&gt;&amp;1</code></pre>
+      Script lưu state ở <code>${OPLOG_BACKUP_DIR}/.last-ts</code> và dump oplog từ ts đó tới hiện tại.
+    </li>
+    <li>
+      <strong>Restore tới thời điểm cụ thể (PITR)</strong>
+      <pre class="lang-bash"><code># Sự cố lúc 14:32:17 UTC ngày 15/05 = 1758804737 Unix.
+# Base dump 02:00 cùng ngày + oplog archives mỗi 5 phút.
+bash scripts/backup-pitr/pitr-restore.sh \
+  /var/backups/mongo/dump-20260515T020000Z \
+  1758804737 \
+  node1:27017</code></pre>
+      Script chạy: restore base dump với <code>--oplogLimit</code>, sau đó apply lần lượt archive oplog có toT ≤ target.
+    </li>
+    <li>
+      <strong>Verify</strong>
+      <pre class="lang-js"><code>// Check 1 row vừa tạo trước thời điểm cố:
+db.events.find({ createdAt: { $lt: ISODate("2026-05-15T14:32:18Z") } })
+        .sort({ createdAt: -1 }).limit(1)</code></pre>
+    </li>
+  </ol>
+
+  <div class="callout warning">
+    <strong>Test restore monthly là BẮT BUỘC</strong>
+    Backup không test = không backup. Lịch trình đề xuất:
+    <ul>
+      <li><strong>Hàng tuần</strong>: restore vào sandbox VM, đếm record, checksum 1 collection.</li>
+      <li><strong>Hàng tháng</strong>: PITR đầy đủ, app smoke test (login, write, read).</li>
+      <li><strong>Hàng quý</strong>: chaos test — destroy primary + restore from backup.</li>
+    </ul>
+  </div>
+
+  <h3>Sharded cluster backup — Percona PBM</h3>
+  <p>Backup nhất quán cho sharded cluster phức tạp (cần đồng bộ snapshot mọi shard + config server). Tự host: dùng <strong>Percona Backup for MongoDB (PBM)</strong>:</p>
+  <pre class="lang-bash"><code># Trên mỗi node + mongos:
+apt install percona-backup-mongodb
+pbm config --file pbm-config.yml          # storage S3/filesystem
+pbm backup --type=physical                 # full backup
+pbm backup --type=logical                  # logical
+pbm restore &lt;backup-name&gt;
+pbm pitr --enable                          # bật continuous oplog backup</code></pre>
+
+  <div class="runbook-block">
+    <h4>Runbook — Retention policy đề xuất</h4>
+    <table>
+      <thead><tr><th>Backup type</th><th>Retention</th><th>Storage</th></tr></thead>
+      <tbody>
+        <tr><td>Dump hàng ngày</td><td>7 days</td><td>Local + S3</td></tr>
+        <tr><td>Filesystem snapshot</td><td>14 days</td><td>S3 / NAS</td></tr>
+        <tr><td>Oplog archive (mỗi 5 phút)</td><td>30 days</td><td>S3</td></tr>
+        <tr><td>Backup tháng (full)</td><td>12 months</td><td>S3 Glacier</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================ SOL 06 — Multi-region ============================ -->
+<section id="sol-06">
+  <h2><span class="badge">06</span>Multi-region / Cross-DC HA / Zone Sharding</h2>
+  <div class="tag-row">
+    <span class="tag">DR cross-region</span>
+    <span class="tag sky">RPO &lt; 1 phút</span>
+    <span class="tag">Data residency</span>
+  </div>
+
+  <p>3 pattern cho multi-region: <strong>Stretched RS</strong> (1 RS spread nhiều DCs), <strong>5-node stretched</strong> (active-active failover), <strong>Sharded + Zone sharding</strong> (data theo region).</p>
+
+  <h3>Pattern A — Stretched Replica Set (DR ready)</h3>
+  <div class="ascii">
+   ┌─────────── DC-A (primary region) ───────────┐  ┌── DC-B (DR region) ──┐
+   │                                              │  │                      │
+   │   ┌────────────┐  ┌────────────┐             │  │   ┌────────────┐    │
+   │   │<span class="role-p">node1 :27017</span>│  │<span class="role-s">node2 :27017</span>│             │  │   │<span class="role-s">node4 :27017</span>│    │
+   │   │PRIMARY pri=2│ │SECONDARY  │             │  │   │SECONDARY   │    │
+   │   │  votes=1    │ │pri=1 v=1  │             │  │   │pri=0 v=0   │    │
+   │   └─────┬──────┘  └─────┬─────┘             │  │   │(DR only)   │    │
+   │         │               │                   │  │   └──────┬─────┘    │
+   │         └───────┬───────┘                   │  │          │          │
+   │                 │  oplog (LAN, &lt;5ms)        │  │          │ async    │
+   │                 ▼                            │  │          │ (WAN ~80ms)
+   │         ┌────────────────┐                  │  │          │          │
+   │         │<span class="role-s">node3 :27017</span> │                  │  │          │          │
+   │         │SECONDARY pri=1 │◀──────────────────┴──┴──────────┘          │
+   │         └────────────────┘                                            │
+   └──────────────────────────────────────────────┘                        │
+                                                  └──────────────────────┘
+
+   3 voters ở DC-A → election KHÔNG bị ảnh hưởng latency DC-B
+   node4 pri=0,v=0 → chỉ replicate, không vote, không thành primary tự động
+   DR procedure: force-reconfig để promote node4 khi DC-A mất hoàn toàn
+  </div>
+
+  <h3>Pattern B — 5-node stretched (active-active failover)</h3>
+  <div class="ascii">
+   ┌── DC-A ────────────┐    ┌── DC-B ────────────┐    ┌── DC-C (neutral) ──┐
+   │                    │    │                    │    │                    │
+   │ <span class="role-p">node1 pri=2 v=1</span>     │    │ <span class="role-s">node3 pri=1 v=1</span>     │    │  <span class="role-a">node5 :27020</span>      │
+   │ <span class="role-s">node2 pri=1 v=1</span>     │    │ <span class="role-s">node4 pri=1 v=1</span>     │    │  ARBITER v=1       │
+   │                    │    │                    │    │                    │
+   └─────────┬──────────┘    └─────────┬──────────┘    └─────────┬──────────┘
+             │                          │                         │
+             └──────────────────────────┼─────────────────────────┘
+                                        │
+            5 voters, tolerate 1 DC mất → vẫn quorum 3/5
+            RTT DC-A↔DC-B PHẢI &lt; 250ms cho w:majority reasonable
+            DC-C tiny VM, chỉ chạy arbiter
+  </div>
+
+  <h3>Pattern C — Sharded + Zone Sharding (data residency)</h3>
+  <div class="ascii">
+              ┌──────────────────────────────┐
+              │  mongos mỗi DC               │
+              └──────────────┬───────────────┘
+                             │
+                ┌────────────┴────────────┐
+                ▼                         ▼
+   ┌────────── DC-A (US) ─────────┐  ┌────────── DC-B (EU) ─────────┐
+   │                              │  │                              │
+   │  <span class="role-p">Shard A</span>  tag=US             │  │  <span class="role-p">Shard B</span>  tag=EU             │
+   │  Chứa documents region='us'  │  │  Chứa documents region='eu'  │
+   │  ┌──────┐ ┌──────┐ ┌──────┐ │  │  ┌──────┐ ┌──────┐ ┌──────┐ │
+   │  │node1 │ │node2 │ │node3 │ │  │  │node4 │ │node5 │ │node6 │ │
+   │  └──────┘ └──────┘ └──────┘ │  │  └──────┘ └──────┘ └──────┘ │
+   └──────────────────────────────┘  └──────────────────────────────┘
+                  │                                   │
+                  └──────────┬────────────────────────┘
+                             ▼
+                ┌────────────────────────────┐
+                │  Config Server RS          │  ← stretched 3 DCs
+                │  (chứa chunk → tag mapping)│
+                └────────────────────────────┘
+
+   Shard key: { region: 1, _id: 1 }
+   sh.addTagRange('appdb.events',
+     {region:'us', _id:MinKey}, {region:'us', _id:MaxKey}, 'US')
+   ⇒ Document có region='eu' KHÔNG BAO GIỜ rời DC-B (compliance)
+  </div>
+
+  <h3>Tiền đề</h3>
+  <ul>
+    <li>Đã có RS PSS (Sol-01) hoặc Sharded Cluster (Sol-03)</li>
+    <li>Network: cross-DC latency &lt; 250ms cho stretched RS</li>
+    <li>TLS bắt buộc cho cross-region traffic (<code>common/04-tls-self-signed.sh</code> cho lab)</li>
+  </ul>
+
+  <h3>Runbook — Pattern A trong lab</h3>
+  <p>Lab có 4 VMs cùng "DC". Giả lập DC-B bằng <code>mgmt</code> làm DR node.</p>
+  <ol class="step-list">
+    <li>
+      <strong>Cài MongoDB + keyFile trên mgmt</strong>
+      <pre class="lang-bash"><code>sudo bash /vagrant/scripts/common/01-install-mongo.sh
+sudo bash /vagrant/scripts/replica-set/node-config.sh
+# (set replSetName=rs0, restart mongod, KHÔNG initiate)</code></pre>
+    </li>
+    <li>
+      <strong>Add mgmt như là DR member</strong>
+      <pre class="lang-bash"><code># Trên node1 (primary):
+bash /vagrant/scripts/multi-region/add-remote-secondary.sh mgmt:27017 0 false
+# args: host:port priority hidden
+# priority=0, votes=0 → DR only, không tự thành primary</code></pre>
+    </li>
+    <li>
+      <strong>Verify replication tới DR</strong>
+      <pre class="lang-bash"><code>mongosh -u admin -p --host node1:27017 --eval '
+rs.printSecondaryReplicationInfo()'
+# kỳ vọng: mgmt:27017 với syncedTo ≈ now</code></pre>
+    </li>
+  </ol>
+
+  <div class="runbook-block">
+    <h4>Runbook — DR failover (manual khi DC-A mất hoàn toàn)</h4>
+    <pre class="lang-js"><code>// Trên mgmt (node sống duy nhất):
+var cfg = rs.conf();
+cfg.members = cfg.members.filter(m =&gt; m.host === 'mgmt:27017');
+cfg.members[0].priority = 1;
+cfg.members[0].votes = 1;
+rs.reconfig(cfg, {force: true});
+
+// Đợi PRIMARY:
+rs.status().myState   // == 1</code></pre>
+    <p>App chuyển connection string sang <code>mongodb://mgmt:27017/appdb</code>.</p>
+  </div>
+
+  <div class="runbook-block">
+    <h4>Runbook — DR failback khi DC-A khôi phục</h4>
+    <pre class="lang-js"><code>// Trên mgmt (đang là primary):
+rs.add({host:'node1:27017', priority:1, votes:1});
+rs.add({host:'node2:27017', priority:1, votes:1});
+rs.add({host:'node3:27017', priority:1, votes:1});
+
+// Đợi 3 nodes sync xong (initial sync nếu lag &gt; oplog window).
+// Sau đó stepDown mgmt và reset priority về 0:
+var cfg = rs.conf();
+cfg.members.forEach(m =&gt; {
+  if (m.host === 'mgmt:27017')  { m.priority = 0; m.votes = 0; }
+  if (m.host === 'node1:27017') { m.priority = 2; }
+});
+rs.reconfig(cfg);
+rs.stepDown(60);</code></pre>
+  </div>
+
+  <h3>Runbook — Zone sharding (Pattern C)</h3>
+  <ol class="step-list">
+    <li>
+      <strong>Add tags cho shards</strong>
+      <pre class="lang-bash"><code>bash scripts/multi-region/zone-sharding.sh shard1rs US
+bash scripts/multi-region/zone-sharding.sh shard2rs EU</code></pre>
+    </li>
+    <li>
+      <strong>Shard collection có field "region"</strong>
+      <pre class="lang-js"><code>sh.shardCollection('appdb.events', { region: 1, _id: 1 });
+
+sh.addTagRange('appdb.events',
+  { region: 'us', _id: MinKey },
+  { region: 'us', _id: MaxKey },
+  'US');
+sh.addTagRange('appdb.events',
+  { region: 'eu', _id: MinKey },
+  { region: 'eu', _id: MaxKey },
+  'EU');</code></pre>
+    </li>
+    <li>
+      <strong>Verify</strong>
+      <pre class="lang-js"><code>sh.status({verbose:true})
+// Kỳ vọng: chunks region='us' nằm hết trên shard1rs (tag US)</code></pre>
+    </li>
+  </ol>
+
+  <div class="callout warning">
+    <strong>Latency &amp; write concern</strong>
+    <ul>
+      <li>Cross-region RTT ảnh hưởng trực tiếp <code>w:majority</code> latency. EU↔US ~80ms → write majority ≥ 80ms.</li>
+      <li>5-node stretched + mất link 2 DCs → DC ít voters block writes. Plan DC-C neutral cho arbiter để giải.</li>
+      <li>Atlas Global Clusters tự động zone sharding — đáng cân nhắc nếu không muốn tự build.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ SOL 07 — Atlas ============================ -->
+<section id="sol-07">
+  <h2><span class="badge">07</span>MongoDB Atlas (managed cloud)</h2>
+  <div class="tag-row">
+    <span class="tag">Zero ops</span>
+    <span class="tag sky">Multi-region 1-click</span>
+    <span class="tag amber">$$ premium</span>
+  </div>
+
+  <p>Managed MongoDB — Atlas tự lo mọi thứ trong Sol-01 → Sol-06. Đánh đổi: chi phí cao hơn tự host, lock-in cloud provider.</p>
+
+  <h3>Kiến trúc Atlas mặc định (≥M10)</h3>
+  <div class="ascii">
+                        ┌──────────────────────────────────┐
+                    ┌──▶│  <span class="role-app">App</span> (driver SRV string)        │
+                    │   │  mongodb+srv://...mongodb.net   │
+                    │   └────────────┬────────────────────┘
+                    │                │
+                    │     DNS SRV records (auto discovery)
+                    │                │
+   ┌────────────────┴────────────────┼──────────────────────┐
+   │   Atlas cloud — managed (AWS / GCP / Azure)            │
+   │                                                         │
+   │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+   │  │ <span class="role-p">PRIMARY</span>     │  │ <span class="role-s">SECONDARY</span>   │  │ <span class="role-s">SECONDARY</span>   │     │
+   │  │ region A    │  │ region A    │  │ region A    │     │
+   │  │ (AZ-1)      │  │ (AZ-2)      │  │ (AZ-3)      │     │
+   │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘     │
+   │         │  oplog (internal Atlas network) │            │
+   │         └──────────┬───────────────────────┘           │
+   │                    │                                    │
+   │                    │  optional: read-only nodes DR region
+   │                    ▼                                    │
+   │           ┌──────────────────┐                          │
+   │           │ <span class="role-h">RO node region B</span>  │ ← electable_nodes=0       │
+   │           │ (DR / read scale)│   read_only_nodes=2      │
+   │           └──────────────────┘                          │
+   │                                                          │
+   │  Auto-managed:                                          │
+   │    ✅ Backup snapshots (M10+) + PITR (continuous)        │
+   │    ✅ TLS bắt buộc, cert tự rotate                       │
+   │    ✅ Encryption at rest (optional customer KMS)         │
+   │    ✅ Auto-scaling tier (M10+)                           │
+   │    ✅ Performance Advisor (gợi ý index)                  │
+   └──────────────────────────────────────────────────────────┘
+  </div>
+
+  <h3>So sánh tier</h3>
+  <table>
+    <thead><tr><th>Tier</th><th>RAM</th><th>Storage</th><th>Use case</th><th>Giá ước tính</th></tr></thead>
+    <tbody>
+      <tr><td>M0 (free)</td><td>512 MB</td><td>5 GB</td><td>Dev / POC</td><td>$0</td></tr>
+      <tr><td>M10</td><td>2 GB</td><td>10 GB</td><td>Small prod</td><td>~$60/mo</td></tr>
+      <tr><td>M30</td><td>8 GB</td><td>40 GB</td><td>Medium prod</td><td>~$280/mo</td></tr>
+      <tr><td>M40+</td><td>16+ GB</td><td>80+ GB</td><td>Large prod</td><td>$$$</td></tr>
+      <tr><td>Serverless</td><td>auto</td><td>auto</td><td>Bursty workload</td><td>Pay-per-op</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Setup nhanh (Atlas UI)</h3>
+  <ol class="step-list">
+    <li>Account → <strong>Create Cluster</strong> → chọn region.</li>
+    <li><strong>Network Access</strong> → IP Allowlist (lab: <code>0.0.0.0/0</code>; prod: VPC peering hoặc CIDR app servers).</li>
+    <li><strong>Database Access</strong> → Create user <code>appuser</code> với <code>readWrite@appdb</code>.</li>
+    <li><strong>Connect</strong> → "Drivers" → copy connection string:
+      <pre class="lang-bash"><code>mongodb+srv://appuser:<pwd>@cluster0.xxxxx.mongodb.net/appdb?retryWrites=true&w=majority</code></pre>
+    </li>
+  </ol>
+
+  <h3>Setup qua Terraform (production IaC)</h3>
+  <pre class="lang-bash"><code>provider "mongodbatlas" {
+  public_key  = var.atlas_public_key
+  private_key = var.atlas_private_key
+}
+
+resource "mongodbatlas_cluster" "prod" {
+  project_id   = var.project_id
+  name         = "prod-cluster"
+  cluster_type = "REPLICASET"
+
+  provider_name               = "AWS"
+  provider_instance_size_name = "M30"
+  provider_region_name        = "AP_SOUTHEAST_1"
+
+  mongo_db_major_version = "7.0"
+  backup_enabled         = true
+  pit_enabled            = true   # Point-in-time recovery
+
+  replication_specs {
+    num_shards = 1
+    regions_config {
+      region_name     = "AP_SOUTHEAST_1"
+      electable_nodes = 3
+      priority        = 7
+    }
+    # DR region:
+    regions_config {
+      region_name     = "AP_NORTHEAST_1"
+      electable_nodes = 0
+      priority        = 0
+      read_only_nodes = 2
+    }
+  }
+}</code></pre>
+
+  <h3>HA features Atlas bao gồm sẵn</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Default</th><th>Ghi chú</th></tr></thead>
+    <tbody>
+      <tr><td>Automatic failover</td><td>✅</td><td>Election như RS tự host</td></tr>
+      <tr><td>Backup snapshots</td><td>M10+</td><td>Continuous + on-demand</td></tr>
+      <tr><td>Point-in-time recovery</td><td>M10+ với <code>pit_enabled</code></td><td>Tới giây trong 24h gần nhất</td></tr>
+      <tr><td>TLS</td><td>Bắt buộc</td><td>Atlas tự rotate cert</td></tr>
+      <tr><td>Encryption at rest</td><td>✅ optional</td><td>Customer KMS support</td></tr>
+      <tr><td>Cross-region replica</td><td>M10+</td><td>UI 1-click</td></tr>
+      <tr><td>Auto-scaling</td><td>M10+ optional</td><td>RAM/disk scale theo load</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Migration self-host → Atlas</h3>
+  <ol>
+    <li><strong>Atlas Live Migrate</strong> (UI): nhập source connection string + target cluster → Atlas auto initial sync + tail oplog → cut-over.</li>
+    <li><strong>mongomirror</strong> (CLI): migration phức tạp / lọc collection.</li>
+    <li><strong>mongodump → mongorestore</strong>: dataset nhỏ &lt; 100 GB (có downtime).</li>
+  </ol>
+
+  <div class="callout info">
+    <strong>Kết luận khi nào chọn Atlas</strong>
+    Atlas thay thế hoàn toàn Sol-01..06 nếu chấp nhận trade-off: chi phí cao hơn nhưng zero ops overhead. Tự host vẫn tốt hơn khi: compliance bắt buộc on-prem, scale rất lớn (cost optimization), cần custom mongo build.
+  </div>
+</section>
+
+<!-- ============================ SOL 08 — Vagrant Lab ============================ -->
+<section id="sol-08">
+  <h2><span class="badge">08</span>Vagrant Lab (4 VMs Ubuntu 22.04)</h2>
+  <div class="tag-row">
+    <span class="tag">Local lab</span>
+    <span class="tag">1 lệnh bootstrap</span>
+    <span class="tag">Snapshot rollback</span>
+  </div>
+
+  <p>Spin up nhanh lab 4-node để chạy bất kỳ Sol-01..06 trên máy local. Không cần cloud, không cần host vật lý riêng.</p>
+
+  <h3>Topology lab</h3>
+  <table>
+    <thead><tr><th>VM</th><th>IP</th><th>vCPU</th><th>RAM</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>node1</td><td>192.168.20.11</td><td>2</td><td>2.5 GB</td><td>DB (primary thường)</td></tr>
+      <tr><td>node2</td><td>192.168.20.12</td><td>2</td><td>2.5 GB</td><td>DB</td></tr>
+      <tr><td>node3</td><td>192.168.20.13</td><td>2</td><td>2.5 GB</td><td>DB / arbiter</td></tr>
+      <tr><td>mgmt</td><td>192.168.20.20</td><td>1</td><td>1.5 GB</td><td>mongos / DR / backup</td></tr>
+    </tbody>
+  </table>
+  <p>Tổng: <strong>7 vCPU, ~9 GB RAM</strong>. Host cần RAM ≥ 12 GB, disk ≥ 30 GB.</p>
+
+  <h3>Yêu cầu host &amp; cài đặt</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Min version</th><th>Tải từ</th></tr></thead>
+    <tbody>
+      <tr><td>Vagrant</td><td>2.3+</td><td><a href="https://developer.hashicorp.com/vagrant/downloads">developer.hashicorp.com/vagrant</a></td></tr>
+      <tr><td>VirtualBox</td><td>7.0+</td><td><a href="https://www.virtualbox.org/wiki/Downloads">virtualbox.org/wiki/Downloads</a></td></tr>
+      <tr><td>OpenSSL</td><td>any</td><td>Git for Windows / WSL có sẵn</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Cài trên Windows (PowerShell as Administrator)</h4>
+  <pre class="lang-powershell"><code># Cách A — winget (Windows 11):
+winget install -e --id Hashicorp.Vagrant
+winget install -e --id Oracle.VirtualBox
+
+# Cách B — chocolatey:
+choco install vagrant virtualbox openssl -y
+
+# Verify:
+vagrant --version       # &gt;= 2.3
+VBoxManage --version    # &gt;= 7.0</code></pre>
+
+  <h4>BIOS / Hyper-V</h4>
+  <ul>
+    <li>Bật <strong>Intel VT-x / AMD-V</strong> trong BIOS</li>
+    <li>Tắt Hyper-V (xung đột VirtualBox 7.0):
+      <pre class="lang-powershell"><code>bcdedit /set hypervisorlaunchtype off
+Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
+# Reboot</code></pre>
+    </li>
+  </ul>
+
+  <h3>Box Ubuntu — nguồn lấy</h3>
+  <p>Box mặc định <code>bento/ubuntu-22.04</code> từ Vagrant Cloud:</p>
+  <ul>
+    <li>Catalog: <a href="https://portal.cloud.hashicorp.com/vagrant/discover/bento/ubuntu-22.04">portal.cloud.hashicorp.com/vagrant/discover/bento/ubuntu-22.04</a></li>
+    <li>Vagrant <strong>tự động tải</strong> lần đầu khi <code>vagrant up</code>.</li>
+    <li>Cache tại: <code>%USERPROFILE%\.vagrant.d\boxes\bento-VAGRANTSLASH-ubuntu-22.04\</code></li>
+  </ul>
+  <p>Pre-download (tuỳ chọn, hữu ích khi mạng chậm):</p>
+  <pre class="lang-powershell"><code>vagrant box add bento/ubuntu-22.04 --provider virtualbox
+vagrant box list</code></pre>
+
+  <h3>Đổi nơi lưu VM sang <code>D:\VM VirtualBox\mongo-ha</code></h3>
+  <p>Mặc định VirtualBox lưu VM tại <code>C:\Users\&lt;user&gt;\VirtualBox VMs\</code> — tốn ổ C. Lab này tạo ~12-20 GB.</p>
+
+  <h4>Cách A — VBoxManage (đơn giản nhất)</h4>
+  <pre class="lang-powershell"><code># Tạo thư mục trước
+New-Item -ItemType Directory -Force -Path "D:\VM VirtualBox\mongo-ha"
+
+# Đổi default machinefolder của VirtualBox (toàn hệ thống)
+VBoxManage setproperty machinefolder "D:\VM VirtualBox\mongo-ha"
+
+# Verify
+VBoxManage list systemproperties | Select-String "Default machine folder"</code></pre>
+
+  <p>Sau bước trên, <code>vagrant up</code> tạo VM tại:</p>
+  <div class="ascii">
+D:\VM VirtualBox\mongo-ha\
+├── mongo-ha-node1\
+│   ├── mongo-ha-node1.vbox
+│   └── mongo-ha-node1.vdi      ← VM disk file
+├── mongo-ha-node2\
+├── mongo-ha-node3\
+└── mongo-ha-mgmt\
+  </div>
+
+  <h4>Cách B — Helper script (đề xuất)</h4>
+  <pre class="lang-powershell"><code>cd vagrant
+.\set-vm-path.ps1                              # mặc định D:\VM VirtualBox\mongo-ha
+.\set-vm-path.ps1 -Path "E:\Labs\mongo-ha"     # custom
+.\set-vm-path.ps1 -Reset                        # khôi phục default</code></pre>
+
+  <h4>Cách C — GUI</h4>
+  <p>VirtualBox Manager → File → Preferences → General → <strong>Default Machine Folder</strong> → trỏ tới <code>D:\VM VirtualBox\mongo-ha</code>.</p>
+
+  <h3>Phân biệt 3 nơi lưu trữ</h3>
+  <table>
+    <thead><tr><th>Lưu cái gì</th><th>Path</th><th>Đổi được?</th></tr></thead>
+    <tbody>
+      <tr><td>VM disk + .vbox config</td><td><code>D:\VM VirtualBox\mongo-ha\&lt;vm&gt;\</code></td><td>✅ VBoxManage setproperty machinefolder</td></tr>
+      <tr><td>Box (template Ubuntu)</td><td><code>%USERPROFILE%\.vagrant.d\boxes\</code></td><td>✅ Set env <code>VAGRANT_HOME</code></td></tr>
+      <tr><td>Per-project state</td><td><code>&lt;repo&gt;/vagrant/.vagrant/</code></td><td>Cố định (nhỏ, chỉ metadata)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Quick start lab</h3>
+  <pre class="lang-bash"><code>cd vagrant
+
+# Pipeline đầy đủ:
+make full-bootstrap
+# = make ssh-keys → make keyfile → vagrant up → make prep-all → make install-mongo → make trust
+
+# Step-by-step:
+make ssh-keys       # sinh provision/cluster_id_rsa
+make keyfile        # sinh provision/keyfile (MongoDB internal auth)
+make up             # vagrant up (provisioner "prep" + "banner" tự chạy)
+make prep-all       # OS prep (THP off, swap off, ulimit) trên 4 VMs
+make install-mongo  # cài MongoDB community + firewall
+make trust          # copy keyfile + SSH key vào /root/.ssh</code></pre>
+
+  <h3>Cấu trúc provisioner trong Vagrantfile</h3>
+  <table>
+    <thead><tr><th>Provisioner</th><th>Khi nào chạy</th><th>Mục đích</th></tr></thead>
+    <tbody>
+      <tr><td><code>prep</code></td><td>auto khi <code>vagrant up</code></td><td>/etc/hosts, link env.sh, tools cơ bản</td></tr>
+      <tr><td><code>banner</code></td><td>auto</td><td>MOTD khi SSH</td></tr>
+      <tr><td><code>common-prep</code></td><td>manual</td><td>Chạy <code>scripts/common/00-prepare-os.sh</code></td></tr>
+      <tr><td><code>install-mongo</code></td><td>manual</td><td><code>01-install-mongo.sh</code> + <code>02-firewall.sh</code></td></tr>
+      <tr><td><code>trust</code></td><td>manual</td><td>Copy keyFile + SSH key</td></tr>
+    </tbody>
+  </table>
+  <pre class="lang-bash"><code># Chạy provisioner thủ công:
+vagrant provision node1 --provision-with install-mongo</code></pre>
+
+  <h3>Snapshot rollback (test destructive)</h3>
+  <pre class="lang-bash"><code># Snapshot tất cả VMs ngay sau bootstrap:
+for N in node1 node2 node3 mgmt; do vagrant snapshot save $N clean; done
+
+# Sau khi test failover / chaos:
+for N in node1 node2 node3 mgmt; do vagrant snapshot restore $N clean; done</code></pre>
+
+  <h3>Troubleshooting</h3>
+  <table>
+    <thead><tr><th>Triệu chứng</th><th>Giải pháp</th></tr></thead>
+    <tbody>
+      <tr><td><code>vagrant up</code> báo IP conflict <code>192.168.20.0/24</code></td><td>Đổi NODES IPs trong Vagrantfile + <code>scripts/common/env.sh</code></td></tr>
+      <tr><td>mongod fail "Permissions on keyfile too open"</td><td><code>chmod 400 /etc/mongodb/keyfile &amp;&amp; chown mongodb:mongodb /etc/mongodb/keyfile</code></td></tr>
+      <tr><td><code>rs.initiate</code> báo "already initialized"</td><td><code>rm -rf /var/lib/mongodb/local &amp;&amp; systemctl restart mongod</code> rồi initiate lại</td></tr>
+      <tr><td><code>bento/ubuntu-22.04</code> không tải được</td><td><code>vagrant box add bento/ubuntu-22.04</code> thủ công, hoặc đổi <code>ubuntu/jammy64</code></td></tr>
+      <tr><td>THP vẫn enabled sau restart</td><td>Check <code>systemctl status disable-thp.service</code> — phải <code>active (exited)</code></td></tr>
+      <tr><td>Secondary stuck STARTUP2</td><td>Initial sync chậm; check <code>db.currentOp({'desc':/repl/i})</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================ PIPELINES ============================ -->
+<section id="pipelines">
+  <h2><span class="badge">⚡</span>Pipeline thực hiện theo giải pháp</h2>
+
+  <p>Quick reference cho từng giải pháp HA — copy paste và chạy trên Vagrant lab sau khi <code>make full-bootstrap</code>.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4>01 — Replica Set PSS</h4>
+      <pre class="lang-bash"><code>for N in node1 node2 node3; do
+  vagrant ssh $N -c \
+    "sudo bash /vagrant/scripts/replica-set/node-config.sh"
+done
+vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/replica-set/initiate.sh"
+vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/replica-set/ops.sh status"</code></pre>
+    </div>
+
+    <div class="card">
+      <h4>02 — PSA topology</h4>
+      <pre class="lang-bash"><code>vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/psa/node-config.sh data"
+vagrant ssh node2 -c \
+  "sudo bash /vagrant/scripts/psa/node-config.sh data"
+vagrant ssh node3 -c \
+  "sudo bash /vagrant/scripts/psa/node-config.sh arbiter"
+vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/psa/initiate-psa.sh"</code></pre>
+    </div>
+
+    <div class="card">
+      <h4>03 — Sharded Cluster</h4>
+      <pre class="lang-bash"><code># Config server RS
+for N in node1 node2 node3; do
+  vagrant ssh $N -c \
+    "sudo bash /vagrant/scripts/sharded-cluster/config-server-setup.sh"
+done
+vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/sharded-cluster/config-server-setup.sh --init"
+
+# Shard 1 RS
+for N in node1 node2 node3; do
+  vagrant ssh $N -c \
+    "sudo bash /vagrant/scripts/sharded-cluster/shard-setup.sh"
+done
+vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/sharded-cluster/shard-setup.sh --init"
+
+# mongos + add shard
+vagrant ssh mgmt -c \
+  "sudo bash /vagrant/scripts/sharded-cluster/mongos-setup.sh"
+vagrant ssh mgmt -c \
+  "sudo bash /vagrant/scripts/sharded-cluster/add-shard.sh"</code></pre>
+    </div>
+
+    <div class="card">
+      <h4>04 — Hidden + Delayed (sau 01)</h4>
+      <pre class="lang-bash"><code>vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/hidden-delayed/add-delayed-member.sh \
+     192.168.20.13:27017 86400"</code></pre>
+    </div>
+
+    <div class="card">
+      <h4>05 — Backup + PITR (sau 01)</h4>
+      <pre class="lang-bash"><code># Full dump:
+vagrant ssh mgmt -c \
+  "sudo bash /vagrant/scripts/backup-pitr/mongodump.sh 192.168.20.13:27017"
+
+# Oplog tail (chạy 1 lần để test, prod set cron):
+vagrant ssh mgmt -c \
+  "sudo bash /vagrant/scripts/backup-pitr/oplog-tail.sh 192.168.20.12:27017"
+
+# PITR restore:
+vagrant ssh mgmt -c \
+  "sudo bash /vagrant/scripts/backup-pitr/pitr-restore.sh \
+     /var/backups/mongo/dump-... 1758804737 192.168.20.11:27017"</code></pre>
+    </div>
+
+    <div class="card">
+      <h4>06 — Multi-region (sau 01)</h4>
+      <pre class="lang-bash"><code># Cài mongod trên mgmt (DR node):
+vagrant ssh mgmt -c \
+  "sudo bash /vagrant/scripts/common/01-install-mongo.sh"
+vagrant ssh mgmt -c \
+  "sudo bash /vagrant/scripts/replica-set/node-config.sh"
+
+# Add mgmt như DR secondary (priority=0):
+vagrant ssh node1 -c \
+  "sudo bash /vagrant/scripts/multi-region/add-remote-secondary.sh \
+     192.168.20.20:27017 0 false"</code></pre>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <strong>Lưu ý chung</strong>
+    Một host trong lab có thể chạy đồng thời <strong>01 + 04 + 05 + 06</strong> (cùng port 27017). Không trộn <strong>01 với 02</strong> (cùng replSet không hợp lệ). <strong>03 (sharded)</strong> dùng port khác (27018, 27019) → có thể coexist với 01 trên cùng VM cho lab; production tách host riêng.
+  </div>
+</section>
+
+<!-- ============================ TIPS ============================ -->
+<section id="tips">
+  <h2><span class="badge">💡</span>Lời khuyên chung / common pitfalls</h2>
+
+  <h3>1. KeyFile permissions</h3>
+  <div class="callout danger">
+    KeyFile <strong>BẮT BUỘC</strong>: <code>mode 400</code> + owner <code>mongodb:mongodb</code> + nội dung <strong>byte-identical</strong> trên mọi member. Sai 1 trong 3 → mongod refuse start hoặc secondary refuse join.
+    <pre class="lang-bash"><code># Standard fix:
+chmod 400 /etc/mongodb/keyfile
+chown mongodb:mongodb /etc/mongodb/keyfile
+# Verify checksum giống nhau giữa nodes:
+md5sum /etc/mongodb/keyfile</code></pre>
+  </div>
+
+  <h3>2. THP (Transparent Huge Pages)</h3>
+  <div class="callout warning">
+    MongoDB/WiredTiger <strong>yêu cầu tắt THP</strong> để tránh thrashing. Script <code>00-prepare-os.sh</code> đã setup systemd unit <code>disable-thp.service</code> chạy khi boot. Verify:
+    <pre class="lang-bash"><code>cat /sys/kernel/mm/transparent_hugepage/enabled
+# Kỳ vọng: always madvise [never]   ← "never" trong []
+systemctl status disable-thp.service
+# Kỳ vọng: Active: active (exited)</code></pre>
+  </div>
+
+  <h3>3. Oplog window</h3>
+  <p>Oplog là <code>local.oplog.rs</code> capped collection lưu mọi write trên primary. Khi secondary lag hơn oplog window → phải resync từ đầu (initial sync). Quy tắc ngón tay cái:</p>
+  <ul>
+    <li><strong>≥ 24h window</strong> cho cluster nhỏ-trung bình.</li>
+    <li><strong>≥ delay + 24h</strong> khi có delayed member (Sol-04).</li>
+    <li>Mặc định <code>oplogSizeMB: 2048</code> (2 GB) trong scripts. Production tuỳ throughput, 5-10 GB phổ biến.</li>
+    <li>Theo dõi: <code>bash scripts/replica-set/ops.sh oplog</code>.</li>
+  </ul>
+
+  <h3>4. WiredTiger cache</h3>
+  <p>Mặc định MongoDB lấy <code>max(50% RAM - 1GB, 256MB)</code>. Script lab set 1 GB. Production: <strong>không quá 50% RAM</strong>, để OS file cache có chỗ.</p>
+
+  <h3>5. Write concern + Read concern</h3>
+  <table>
+    <thead><tr><th>Concern</th><th>Trade-off</th><th>Khi dùng</th></tr></thead>
+    <tbody>
+      <tr><td><code>w:1</code></td><td>Nhanh, có thể mất write nếu primary chết</td><td>Logs, metrics, non-critical</td></tr>
+      <tr><td><code>w:"majority"</code></td><td>Slow hơn (cần majority ack), không rollback</td><td>OLTP thường</td></tr>
+      <tr><td><code>w:"majority", j:true</code></td><td>Chậm nhất, đảm bảo journal disk</td><td>Financial, audit</td></tr>
+      <tr><td><code>readConcern:"local"</code></td><td>Có thể đọc data sẽ bị rollback</td><td>Default — đa số case</td></tr>
+      <tr><td><code>readConcern:"majority"</code></td><td>Chỉ đọc data đã majority commit</td><td>Reporting, billing</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6. Connection string driver</h3>
+  <ul>
+    <li><strong>Replica Set</strong>: list ≥2 hosts + <code>replicaSet=rs0</code> để driver discover topology.</li>
+    <li><strong>Sharded Cluster</strong>: trỏ vào mongos, <strong>không</strong> <code>replicaSet</code>. List nhiều mongos để HA.</li>
+    <li>Atlas: <code>mongodb+srv://</code> dùng DNS SRV — driver tự discover.</li>
+    <li><code>retryWrites=true</code> + <code>retryReads=true</code> đều default trong driver 4.0+.</li>
+  </ul>
+
+  <h3>7. Observability mặc định</h3>
+  <ul>
+    <li><strong>mongodb_exporter</strong> (Prometheus): <a href="https://github.com/percona/mongodb_exporter">github.com/percona/mongodb_exporter</a></li>
+    <li>Grafana dashboards: <strong>MongoDB Overview (2583)</strong>, <strong>MongoDB Exporter (12079)</strong></li>
+    <li>Alerts essential:
+      <ul>
+        <li><code>mongodb_up == 0</code></li>
+        <li><code>mongodb_mongod_replset_member_replication_lag &gt; 60</code></li>
+        <li><code>mongodb_mongod_replset_member_state{state!~"PRIMARY|SECONDARY"}</code></li>
+        <li>Oplog window <code>&lt; 24h</code></li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>8. Common errors &amp; quick fixes</h3>
+  <table>
+    <thead><tr><th>Error message</th><th>Nguyên nhân</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>not authorized on admin to execute command</code></td>
+        <td>Chưa tạo admin user / connect không kèm <code>-u admin</code></td>
+        <td>Connect via localhost exception (chưa có user) hoặc thêm <code>-u admin -p --authenticationDatabase admin</code></td>
+      </tr>
+      <tr>
+        <td><code>BadValue: security.keyFile is required</code></td>
+        <td>Bật authorization mà chưa set keyFile</td>
+        <td>Thêm <code>security.keyFile</code> hoặc tắt <code>authorization</code></td>
+      </tr>
+      <tr>
+        <td><code>Cannot find replication metadata</code></td>
+        <td>local DB bị wipe nhưng config vẫn replSetName</td>
+        <td>rs.initiate() lại nếu là primary mới, hoặc resync nếu là member secondary</td>
+      </tr>
+      <tr>
+        <td><code>NotWritablePrimary</code></td>
+        <td>Connect vào secondary, viết write</td>
+        <td>Driver nên dùng <code>readPreference=primary</code> hoặc include replicaSet param đầy đủ</td>
+      </tr>
+      <tr>
+        <td>Sharded: <code>broadcast.shardNotFound</code></td>
+        <td>mongos cache topology cũ</td>
+        <td>Restart mongos để refresh cache, hoặc <code>db.adminCommand({flushRouterConfig:1})</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>9. Mật khẩu &amp; secrets</h3>
+  <div class="callout warning">
+    Mật khẩu mẫu trong <code>scripts/common/env.sh</code> chỉ để demo (<code>ChangeMe!*</code>). Trước khi deploy thật:
+    <ul>
+      <li>Sinh mật khẩu random ≥ 32 ký tự (<code>openssl rand -base64 32</code>).</li>
+      <li>Inject qua env var hoặc Vault / AWS Secrets Manager — <strong>không hardcode trong env.sh</strong> nếu commit.</li>
+      <li>Rotate cluster key file (keyFile) 6 tháng/lần — rolling restart sequence.</li>
+    </ul>
+  </div>
+
+  <h3>10. Tham khảo official</h3>
+  <ul>
+    <li><a href="https://www.mongodb.com/docs/manual/replication/">Replication — MongoDB Manual</a></li>
+    <li><a href="https://www.mongodb.com/docs/manual/sharding/">Sharding — MongoDB Manual</a></li>
+    <li><a href="https://www.mongodb.com/docs/manual/core/backups/">Backup Methods</a></li>
+    <li><a href="https://docs.percona.com/percona-backup-mongodb/">Percona Backup for MongoDB (PBM)</a></li>
+    <li><a href="https://www.mongodb.com/docs/atlas/">MongoDB Atlas Docs</a></li>
+  </ul>
+</section>
+
+<footer>
+  MongoDB HA Guide v1.0 · Generated 2026-05-15 ·
+  Repo: <code>d:\Dba_project\HA\mongo\</code> · Pair: <code>d:\Dba_project\HA\Mysql\</code>
+</footer>
+
+</main>
+</div>
+
+<script>
+  // Active TOC highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const tocLinks = document.querySelectorAll('aside.toc a');
+
+  function updateActiveSection() {
+    let current = '';
+    const scrollY = window.pageYOffset;
+    sections.forEach(section => {
+      const top = section.offsetTop - 80;
+      if (scrollY >= top) current = section.id;
+    });
+    tocLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveSection, { passive: true });
+  updateActiveSection();
+
+  // Smooth scroll
+  tocLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>

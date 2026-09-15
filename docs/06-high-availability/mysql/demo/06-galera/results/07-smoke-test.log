@@ -1,0 +1,18 @@
+[14:49:36] ================ SMOKE TEST GALERA (ROWS=150) ================
+[14:49:37] ==> Setup schema smoke_db.t (PK, InnoDB)
+[14:49:41] ==> Part 1: Bulk insert 150 rows trên node1
+[14:49:47]     insert 150 rows xong sau 5.589s
+[14:49:52] ==> [node2] thấy 150 rows sau 5.300s
+[14:49:57] ==> [node3] thấy 150 rows sau 4.582s
+[14:49:57] ==> Part 2: Insert song song 50 rows trên mỗi node (multi-master)
+[14:50:02]     [node2] đã insert 50 rows
+[14:50:02]     [node3] đã insert 50 rows
+[14:50:02]     [node1] đã insert 50 rows
+[14:50:04] ==> Sau parallel insert: total expected = 150 + 3*50 = 300
+[14:50:20]     [node1] total=300  node1=200 node2=50 node3=50
+[14:50:37]     [node2] total=300  node1=200 node2=50 node3=50
+[14:50:53]     [node3] total=300  node1=200 node2=50 node3=50
+[14:50:53] ================ KẾT LUẬN ================
+[14:51:06] [OK] Consistency: 3 nodes báo total=300
+[14:51:07] SMOKE_PASS=true  insert=5.589s lag2=5.300 lag3=4.582 parallel_total=300
+SMOKE_PASS=true

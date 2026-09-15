@@ -1,0 +1,2244 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../section-28-row-migration-chaining-senior-guide/">
+      
+      
+        <link rel="next" href="../section-30-table-compression-senior-guide/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Section 29 — Table Fragmentation: Senior DBA Guide - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#section-29-table-fragmentation-senior-dba-guide" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 29 — Table Fragmentation: Senior DBA Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../ke-hoach/000-index/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            Section all new
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-10-server-generated-alerts-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Server-generated Alerts — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-11-statspack-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Statspack — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-12-addm-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADDM (Automatic Database Diagnostic Monitor) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-13-ash-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ASH (Active Session History) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-14-database-service-statistics-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 14 — Database Service Statistics & Module/Action/Client ID — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-15-sql-tracing-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-16-realtime-monitoring-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 16 — Real-time Database Operation Monitoring: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-17-automated-maintenance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 17 — Automated Maintenance Tasks: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-19-enqueue-waits-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 19 — Handling Enqueue Waits: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-20-latch-mutex-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 20 — Latch & Mutex Contention: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-21-shared-pool-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 21 — Shared Pool Tuning: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-26-disk-io-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 26 — Disk I/O Tuning: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-27-index-defrag-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 27 — Index Defragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-28-row-migration-chaining-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Row Migration & Row Chaining — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Section 29 — Table Fragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-30-table-compression-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 30 — Table Compression: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-31-in-memory-column-store-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 31 — In-Memory Column Store: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-32-database-connection-optimization-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 32 — Database Connection Optimization: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-34-os-performance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 34 — OS Performance (Linux Utilities & OSWatcher): Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-35-sql-performance-analyzer-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 35 — SQL Performance Analyzer: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-36-database-replay-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 36 — Database Replay: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-6-time-model-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 6 — Time Model Views: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-8-instance-activity-wait-events-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 8 — Instance Activity & Wait Events — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-9-awr-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="section-29-table-fragmentation-senior-dba-guide">Section 29 — Table Fragmentation: Senior DBA Guide<a class="headerlink" href="#section-29-table-fragmentation-senior-dba-guide" title="Permanent link">&para;</a></h1>
+<p><strong>Nguồn:</strong> Practice 31 (PDF gốc) + section_all guide + Oracle internals
+<strong>Cập nhật:</strong> 2026-07-16
+<strong>Level:</strong> Senior DBA / Production</p>
+<hr />
+<h1 id="lecture-notes">LECTURE NOTES<a class="headerlink" href="#lecture-notes" title="Permanent link">&para;</a></h1>
+<h2 id="1-mental-model">1. Mental Model<a class="headerlink" href="#1-mental-model" title="Permanent link">&para;</a></h2>
+<p>Table fragmentation là bài toán về <strong>High Water Mark (HWM)</strong>, không phải về "block rỗng". Nhiều DBA nghĩ fragmentation nghĩa là "block có nhiều holes sau DELETE" — đúng một nửa. Vấn đề thật sự trên production là: <strong>Full Table Scan luôn đọc tới HWM</strong>, bất kể block đó còn row hay đã rỗng sạch.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Segment:  [====== rows ======][ block rỗng ][ rỗng ][ rỗng ]│ HWM
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                                            ▲
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>FTS đọc từ block đầu đến ĐÂY ────────────────────────────────┘
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>          (dù nửa sau không còn 1 row nào)
+</span></code></pre></div>
+<p>Khi bạn DELETE 50% rows rải khắp bảng, HWM <strong>không tự hạ</strong>. FTS vẫn quét đúng số block như lúc bảng đầy → <code>session logical reads</code> không đổi dù bảng chỉ còn nửa dữ liệu. Đây là lý do fragmentation <strong>chỉ phạt FTS</strong>, gần như không phạt index unique lookup (index đi thẳng tới rowid, không quét khoảng rỗng).</p>
+<p>Câu hỏi đúng khi nghi fragmentation: <strong>"Có bao nhiêu block dưới HWM thực sự còn chứa row?"</strong> — không phải "AVG_SPACE có cao không?".</p>
+<hr />
+<h2 id="2-internals-mechanics">2. Internals &amp; Mechanics<a class="headerlink" href="#2-internals-mechanics" title="Permanent link">&para;</a></h2>
+<h3 id="high-water-mark-va-hai-loai-cua-no-assm">High Water Mark và hai loại của nó (ASSM)<a class="headerlink" href="#high-water-mark-va-hai-loai-cua-no-assm" title="Permanent link">&para;</a></h3>
+<p>HWM là ranh giới "block cao nhất đã từng được dùng" của segment. Trong tablespace <strong>ASSM</strong> (Automatic Segment Space Management — mặc định từ 10g) có hai mốc:</p>
+<ul>
+<li><strong>LHWM (Low HWM):</strong> dưới mốc này <em>mọi</em> block đã được format và từng chứa data.</li>
+<li><strong>HHWM (High HWM):</strong> trên mốc này chưa block nào được dùng.</li>
+<li>Giữa LHWM và HHWM: vùng "xám" — một số block đã format, một số chưa.</li>
+</ul>
+<p>FTS quét tới HHWM. DELETE giải phóng row nhưng <strong>không kéo HWM xuống</strong>. Chỉ ba thao tác hạ được HWM: <code>TRUNCATE</code>, <code>ALTER TABLE MOVE</code>, và <code>ALTER TABLE SHRINK SPACE</code>.</p>
+<h3 id="shrink-space-ba-pha-thuc-chat">SHRINK SPACE — ba pha thực chất<a class="headerlink" href="#shrink-space-ba-pha-thuc-chat" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ALTER TABLE t SHRINK SPACE CASCADE;
+</span></code></pre></div>
+<ol>
+<li><strong>Compact (pha 1):</strong> Oracle đọc row từ các block cuối segment, chèn lại vào block trống phía đầu (dưới LHWM), xóa row ở vị trí cũ. Đây là chuỗi INSERT+DELETE nội bộ → <strong>sinh undo/redo</strong>, và vì row đổi chỗ nên <strong>ROWID đổi</strong> → bắt buộc <code>ENABLE ROW MOVEMENT</code>. Pha này <strong>online</strong>, chỉ khóa từng row đang di chuyển (row-level).</li>
+<li><strong>HWM adjustment (pha 2):</strong> hạ HWM xuống, trả các extent trống về tablespace. Cần một <strong>exclusive lock rất ngắn</strong> trên segment ở cuối pha.</li>
+<li><strong>CASCADE:</strong> áp dụng shrink cho các dependent object (chủ yếu index) trong cùng lệnh. Không có CASCADE thì index vẫn valid (shrink maintain index tự động, khác <code>MOVE</code>) nhưng không được compact.</li>
+</ol>
+<h3 id="vi-sao-index-khong-unusable-sau-shrink-khac-move">Vì sao index KHÔNG UNUSABLE sau SHRINK (khác MOVE)<a class="headerlink" href="#vi-sao-index-khong-unusable-sau-shrink-khac-move" title="Permanent link">&para;</a></h3>
+<p><code>ALTER TABLE MOVE</code> viết lại toàn bộ segment một lần → mọi ROWID đổi đồng loạt → Oracle bỏ mark global index thành UNUSABLE. <code>SHRINK SPACE</code> di chuyển row <strong>từng phần và maintain index đồng thời</strong> trong pha compact → index luôn ở trạng thái valid. Đây là khác biệt kiến trúc quyết định vì sao SHRINK là lựa chọn online, MOVE thì không.</p>
+<h3 id="avg_space-va-cai-bay-cua-analyze">AVG_SPACE và cái bẫy của ANALYZE<a class="headerlink" href="#avg_space-va-cai-bay-cua-analyze" title="Permanent link">&para;</a></h3>
+<p><code>USER_TABLES.AVG_SPACE</code> = trung bình byte trống mỗi block, <strong>chỉ populate bởi <code>ANALYZE TABLE ... COMPUTE/ESTIMATE STATISTICS</code></strong> — không phải <code>DBMS_STATS</code>. Giống Section 27/28: <code>DBMS_STATS</code> (chuẩn cho optimizer) để <code>AVG_SPACE</code> = NULL. Nên trên production, muốn đo fragmentation bằng AVG_SPACE bạn buộc phải ANALYZE (deprecated cho optimizer stats) rồi gather lại bằng DBMS_STATS ngay sau đó.</p>
+<p>Cách hiện đại hơn (không đụng optimizer stats, không lock): so sánh <strong>số block thực sự chứa row</strong> với <strong>số block dưới HWM</strong>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>actual_blocks = ceil(num_rows * avg_row_len / usable_block_space)
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>hwm_blocks    = DBA_SEGMENTS.blocks (hoặc USER_TABLES.blocks sau gather)
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>frag% ≈ (1 - actual_blocks / hwm_blocks) * 100
+</span></code></pre></div>
+<p>Hoặc dùng <code>DBMS_SPACE.SPACE_USAGE</code> (ASSM) để lấy phân bố block theo mức đầy (FS1/FS2/FS3/FS4/FULL) — không cần ANALYZE.</p>
+<h3 id="enable-row-movement-that-bai-khi-bang-ang-dml">ENABLE ROW MOVEMENT thất bại khi bảng đang DML<a class="headerlink" href="#enable-row-movement-that-bai-khi-bang-ang-dml" title="Permanent link">&para;</a></h3>
+<p><code>ALTER TABLE ... ENABLE ROW MOVEMENT</code> là DDL → cần lock <strong>exclusive DDL</strong> ngắn trên bảng, phải chờ mọi transaction đang mở đóng lại. Một vòng lặp UPDATE liên tục (commit thưa) giữ transaction mở gần như liên tục → DDL không lấy được lock → <code>ORA-00054: resource busy</code>. Đây chính xác là điều Practice 31 minh họa (bước 12: lệnh lỗi khi <code>update_cust</code> đang chạy).</p>
+<hr />
+<h2 id="3-production-realities">3. Production Realities<a class="headerlink" href="#3-production-realities" title="Permanent link">&para;</a></h2>
+<h3 id="fragmentation-la-trieu-chung-khong-phai-benh">Fragmentation là triệu chứng, không phải bệnh<a class="headerlink" href="#fragmentation-la-trieu-chung-khong-phai-benh" title="Permanent link">&para;</a></h3>
+<p>Bảng bị fragment vì một <strong>pattern DML</strong>: bulk delete định kỳ (purge dữ liệu cũ), hoặc UPDATE làm row co lại (set cột lớn về NULL). SHRINK dọn hậu quả, nhưng nếu pattern lặp lại thì tuần sau bảng lại fragment. Senior phải hỏi: <em>pattern này có tái diễn không?</em> Nếu có → cân nhắc partitioning (drop partition thay vì delete + shrink), hoặc lịch shrink định kỳ, thay vì shrink một lần rồi quên.</p>
+<h3 id="shrink-sinh-redoundo-khong-mien-phi">SHRINK sinh redo/undo — không "miễn phí"<a class="headerlink" href="#shrink-sinh-redoundo-khong-mien-phi" title="Permanent link">&para;</a></h3>
+<p>Vì pha compact là chuỗi INSERT+DELETE nội bộ, shrink một bảng lớn có thể sinh <strong>redo bằng cỡ dữ liệu di chuyển</strong>. Trên Data Guard, lượng redo này phải truyền sang standby. Shrink bảng 50GB lúc cao điểm có thể làm nghẽn redo transport. Lên lịch off-peak và cân nhắc tách hai pha:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">SHRINK</span><span class="w"> </span><span class="k">SPACE</span><span class="w"> </span><span class="n">COMPACT</span><span class="p">;</span><span class="w">   </span><span class="c1">-- pha 1, online, chạy giờ cao điểm</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">-- ... off-peak:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">SHRINK</span><span class="w"> </span><span class="k">SPACE</span><span class="p">;</span><span class="w">           </span><span class="c1">-- pha 2, hạ HWM (lock ngắn)</span>
+</span></code></pre></div>
+<h3 id="cascade-khong-ung-index-bi-vo-hieu-hoa-boi-ly-do-khac">CASCADE không đụng index bị vô hiệu hóa bởi lý do khác<a class="headerlink" href="#cascade-khong-ung-index-bi-vo-hieu-hoa-boi-ly-do-khac" title="Permanent link">&para;</a></h3>
+<p><code>SHRINK SPACE CASCADE</code> maintain index của chính bảng, nhưng nếu có function-based index, domain index (Text/Spatial), hay bitmap join index, hành vi có thể khác — <code>[⚠️ verify with MOS]</code> cho từng loại trước khi chạy production. Ngoài ra CASCADE <strong>không</strong> shrink LOB segment; LOB cần <code>SHRINK SPACE</code> riêng trên cột LOB.</p>
+<h3 id="bang-co-long-hoac-bang-trong-cluster-khong-shrink-uoc">Bảng có LONG, hoặc bảng trong cluster → không shrink được<a class="headerlink" href="#bang-co-long-hoac-bang-trong-cluster-khong-shrink-uoc" title="Permanent link">&para;</a></h3>
+<p><code>SHRINK SPACE</code> yêu cầu segment nằm trong tablespace ASSM và không thuộc các loại bị loại trừ: bảng có cột <code>LONG</code>, bảng cluster, bảng có materialized view log dạng ROWID, IOT overflow trong vài trường hợp. Với các bảng này, phương án là <code>ALTER TABLE MOVE</code> (cần window) hoặc online redefinition.</p>
+<h3 id="o-bang-logical-reads-khong-bang-thoi-gian">Đo bằng logical reads, không bằng thời gian<a class="headerlink" href="#o-bang-logical-reads-khong-bang-thoi-gian" title="Permanent link">&para;</a></h3>
+<p>Practice đo <code>session logical reads</code> trước/sau — đây là metric đúng vì nó không phụ thuộc cache nóng/lạnh. Nếu bạn đo bằng wall-clock, lần chạy sau (cache đã ấm) luôn nhanh hơn <em>bất kể</em> shrink có tác dụng hay không → dễ kết luận sai. Luôn so logical reads.</p>
+<hr />
+<h2 id="4-decision-framework">4. Decision Framework<a class="headerlink" href="#4-decision-framework" title="Permanent link">&para;</a></h2>
+<p><strong>Khi nào SHRINK SPACE:</strong>
+- Tablespace ASSM, bảng không nằm trong danh sách loại trừ
+- FTS là access path chính của bảng (fragmentation phạt FTS)
+- Fragmentation xác nhận (frag% &gt; ~25-30%, nhiều block dưới HWM rỗng)
+- Cần giữ online (bảng 24x7) → SHRINK thắng MOVE</p>
+<p><strong>Khi nào ALTER TABLE MOVE:</strong>
+- Có maintenance window
+- Cần đổi tablespace / storage attribute cùng lúc
+- Bảng có LONG / không shrink được
+- Chấp nhận rebuild index sau (hoặc dùng <code>MOVE ONLINE</code> 12.2+)</p>
+<p><strong>Khi nào TRUNCATE:</strong>
+- Xóa toàn bộ và nạp lại (staging/ETL table) → HWM về 0 tức thì, không undo</p>
+<p><strong>Khi nào KHÔNG làm gì:</strong>
+- Bảng chủ yếu truy cập qua index unique lookup → fragmentation gần như không phạt
+- Bảng sẽ được INSERT đầy lại ngay (space rỗng sẽ tái dùng — HWM không phải vấn đề)</p>
+<p><strong>Anti-patterns:</strong>
+- Shrink định kỳ mọi bảng không có bằng chứng FTS/fragmentation — tốn redo, vô ích
+- Dùng wall-clock để "chứng minh" shrink có tác dụng — cache làm nhiễu; dùng logical reads
+- Quên gather lại DBMS_STATS sau khi ANALYZE để đo AVG_SPACE → optimizer dùng stats cũ do ANALYZE
+- Chạy <code>ENABLE ROW MOVEMENT</code> rồi để đó — row movement bật vĩnh viễn cho phép Oracle di chuyển row (ví dụ partition update) ngoài ý muốn; cân nhắc tắt lại nếu không cần</p>
+<hr />
+<h2 id="5-key-sql-commands">5. Key SQL / Commands<a class="headerlink" href="#5-key-sql-commands" title="Permanent link">&para;</a></h2>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- 5.1 Fragmentation qua ANALYZE (AVG_SPACE) — cách của course</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">ANALYZE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">soe</span><span class="p">.</span><span class="n">cust</span><span class="w"> </span><span class="n">COMPUTE</span><span class="w"> </span><span class="k">STATISTICS</span><span class="p">;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">blocks</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">       </span><span class="n">blocks</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8192</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w">                    </span><span class="n">total_kb</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">       </span><span class="n">avg_space</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">blocks</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">avg_space</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w">     </span><span class="n">free_kb</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">blocks</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">avg_space</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">blocks</span><span class="o">*</span><span class="mi">8192</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">frag_pct</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">FROM</span><span class="w">   </span><span class="n">user_tables</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">table_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'CUST'</span><span class="p">;</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">-- Nho: gather lai bang DBMS_STATS sau do de tra optimizer stats chuan</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">-- 5.2 Fragmentation KHONG can ANALYZE (DBMS_SPACE.SPACE_USAGE, ASSM)</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="k">SET</span><span class="w"> </span><span class="n">SERVEROUTPUT</span><span class="w"> </span><span class="k">ON</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">DECLARE</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="n">v_unf</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_unfb</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_fs1</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_fs1b</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="n">v_fs2</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_fs2b</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_fs3</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_fs3b</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="n">v_fs4</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_fs4b</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_full</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span><span class="w"> </span><span class="n">v_fullb</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">;</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="k">BEGIN</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="n">DBMS_SPACE</span><span class="p">.</span><span class="n">SPACE_USAGE</span><span class="p">(</span><span class="s1">'SOE'</span><span class="p">,</span><span class="s1">'CUST'</span><span class="p">,</span><span class="s1">'TABLE'</span><span class="p">,</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="n">v_unf</span><span class="p">,</span><span class="n">v_unfb</span><span class="p">,</span><span class="w"> </span><span class="n">v_fs1</span><span class="p">,</span><span class="n">v_fs1b</span><span class="p">,</span><span class="w"> </span><span class="n">v_fs2</span><span class="p">,</span><span class="n">v_fs2b</span><span class="p">,</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="n">v_fs3</span><span class="p">,</span><span class="n">v_fs3b</span><span class="p">,</span><span class="w"> </span><span class="n">v_fs4</span><span class="p">,</span><span class="n">v_fs4b</span><span class="p">,</span><span class="w"> </span><span class="n">v_full</span><span class="p">,</span><span class="n">v_fullb</span><span class="p">);</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="n">DBMS_OUTPUT</span><span class="p">.</span><span class="n">PUT_LINE</span><span class="p">(</span><span class="s1">'FULL blocks (75-100%% used): '</span><span class="o">||</span><span class="n">v_full</span><span class="p">);</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">  </span><span class="n">DBMS_OUTPUT</span><span class="p">.</span><span class="n">PUT_LINE</span><span class="p">(</span><span class="s1">'FS1  blocks (0-25%% used)  : '</span><span class="o">||</span><span class="n">v_fs1</span><span class="p">);</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="n">DBMS_OUTPUT</span><span class="p">.</span><span class="n">PUT_LINE</span><span class="p">(</span><span class="s1">'Unformatted              : '</span><span class="o">||</span><span class="n">v_unf</span><span class="p">);</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="o">/</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="c1">-- 5.3 So sanh actual_blocks vs HWM blocks</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="k">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">num_rows</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">avg_row_len</span><span class="p">,</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">       </span><span class="n">t</span><span class="p">.</span><span class="n">blocks</span><span class="w">                                              </span><span class="n">hwm_blocks</span><span class="p">,</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">       </span><span class="n">CEIL</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">num_rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">avg_row_len</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">8192</span><span class="o">*</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">))</span><span class="w">         </span><span class="n">est_actual_blocks</span><span class="p">,</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">CEIL</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">num_rows</span><span class="o">*</span><span class="n">t</span><span class="p">.</span><span class="n">avg_row_len</span><span class="o">/</span><span class="p">(</span><span class="mi">8192</span><span class="o">*</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">))</span>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">              </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">blocks</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w">                </span><span class="n">frag_pct</span>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="k">FROM</span><span class="w">   </span><span class="n">user_tables</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">table_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'CUST'</span><span class="p">;</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="c1">-- 5.4 Shrink online (3 pha)</span>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">soe</span><span class="p">.</span><span class="n">cust</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="k">ROW</span><span class="w"> </span><span class="n">MOVEMENT</span><span class="p">;</span>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">soe</span><span class="p">.</span><span class="n">cust</span><span class="w"> </span><span class="n">SHRINK</span><span class="w"> </span><span class="k">SPACE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">;</span><span class="w">      </span><span class="c1">-- compact + HWM + indexes</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="c1">-- Tach 2 pha khi can:</span>
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="c1">-- ALTER TABLE soe.cust SHRINK SPACE COMPACT;    -- pha 1 (online, gio cao diem)</span>
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="c1">-- ALTER TABLE soe.cust SHRINK SPACE;            -- pha 2 (ha HWM, lock ngan)</span>
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="c1">-- 5.5 Do impact FTS truoc/sau (logical reads — khong dung wall-clock)</span>
+</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="c1">-- (lab dung _toolkit/before_after.sql; day la ban rut gon)</span>
+</span><span id="__span-4-44"><a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">v$mystat</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">v$statname</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">statistic</span><span class="o">#=</span><span class="n">s</span><span class="p">.</span><span class="n">statistic</span><span class="o">#</span>
+</span><span id="__span-4-45"><a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="k">WHERE</span><span class="w">  </span><span class="n">n</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'session logical reads'</span><span class="p">;</span>
+</span><span id="__span-4-46"><a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>
+</span><span id="__span-4-47"><a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a><span class="c1">-- 5.6 Ai dang giu transaction mo khien ENABLE ROW MOVEMENT loi ORA-00054</span>
+</span><span id="__span-4-48"><a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">sid</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="nb">serial</span><span class="o">#</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">username</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">module</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">used_ublk</span>
+</span><span id="__span-4-49"><a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a><span class="k">FROM</span><span class="w">   </span><span class="n">v$transaction</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">v$session</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">taddr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">addr</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="6-senior-checklist">6. Senior Checklist<a class="headerlink" href="#6-senior-checklist" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Xác nhận fragmentation phạt FTS thật:</strong> access path chính của bảng có phải FTS/scan không? Nếu chỉ index unique lookup → shrink gần như vô ích</li>
+<li><strong>Đo bằng logical reads, không wall-clock:</strong> cache nóng/lạnh làm nhiễu thời gian; <code>session logical reads</code> là bằng chứng khách quan trước/sau</li>
+<li><strong>AVG_SPACE cần ANALYZE, không DBMS_STATS:</strong> nếu dùng ANALYZE để đo → gather lại DBMS_STATS ngay sau để không bỏ optimizer stats kiểu cũ trên bảng</li>
+<li><strong>Kiểm tra bảng có shrink được không:</strong> tablespace ASSM? có cột LONG / cluster / loại bị loại trừ? nếu không → MOVE hoặc redefinition</li>
+<li><strong>Lường trước redo:</strong> shrink = INSERT+DELETE nội bộ, sinh redo cỡ dữ liệu di chuyển; bảng lớn → off-peak, cân nhắc tách COMPACT/HWM, chú ý Data Guard</li>
+<li><strong>Xử lý concurrent DML:</strong> <code>ENABLE ROW MOVEMENT</code> và pha HWM cần DDL lock ngắn → ORA-00054 nếu bảng đang DML liên tục; có kế hoạch quiesce ngắn hoặc chọn cửa sổ ít DML</li>
+<li><strong>Truy nguồn gốc pattern:</strong> DELETE/UPDATE gì gây fragment? có tái diễn? nếu purge định kỳ → cân nhắc partitioning (drop partition) thay vì shrink lặp lại</li>
+</ol>
+<hr />
+<h1 id="lab-exercises">LAB EXERCISES<a class="headerlink" href="#lab-exercises" title="Permanent link">&para;</a></h1>
+<h2 id="exercise-1-chung-minh-fragmentation-chi-phat-fts-khong-phat-index-lookup">Exercise 1 — Chứng minh Fragmentation chỉ phạt FTS, không phạt Index Lookup<a class="headerlink" href="#exercise-1-chung-minh-fragmentation-chi-phat-fts-khong-phat-index-lookup" title="Permanent link">&para;</a></h2>
+<p><strong>Scenario:</strong> Một bảng <code>CUST</code> bị DELETE ~33% và UPDATE co row ~50% qua nhiều tháng. Team app phàn nàn "report chạy chậm" (report dùng FTS) nhưng "màn hình tra cứu khách theo ID vẫn nhanh" (index unique lookup). Bạn cần chứng minh bằng số vì sao hai access path phản ứng khác nhau với cùng một bảng fragment.</p>
+<p><strong>Tasks:</strong>
+1. Tạo <code>CUST</code> fragment (INSERT 100k, UPDATE chẵn co row, DELETE bội-3) như Practice 31; giữ cả index unique trên <code>CUSTOMER_NO</code>.
+2. Đo <code>session logical reads</code> cho một workload <strong>FTS</strong> (query trên cột không index) 1000 lần.
+3. Đo <code>session logical reads</code> cho một workload <strong>index unique lookup</strong> (query trên <code>CUSTOMER_NO</code> có index) 1000 lần.
+4. SHRINK SPACE CASCADE, rồi lặp lại cả hai phép đo.</p>
+<p><strong>Expected Findings:</strong>
+- Trước shrink: FTS đọc rất nhiều block (tới HWM); index lookup đọc ~vài block/query bất kể fragment.
+- Sau shrink: FTS logical reads <strong>giảm mạnh</strong> (HWM hạ); index lookup <strong>gần như không đổi</strong>.
+- Kết luận: fragmentation là bài toán HWM → chỉ phạt access path quét (FTS).</p>
+<p><strong>Debrief Questions:</strong>
+- Vì sao index unique lookup miễn nhiễm với HWM cao?
+- Nếu bảng chỉ được truy cập qua index, con số nào biện minh cho việc <strong>không</strong> shrink?
+- <code>session logical reads</code> hay wall-clock — cái nào là bằng chứng đúng, và vì sao?</p>
+<hr />
+<h2 id="exercise-2-shrink-online-duoi-tai-dml-xu-ly-ora-00054">Exercise 2 — SHRINK Online dưới tải DML: xử lý ORA-00054<a class="headerlink" href="#exercise-2-shrink-online-duoi-tai-dml-xu-ly-ora-00054" title="Permanent link">&para;</a></h2>
+<p><strong>Scenario:</strong> Bảng <code>CUST</code> 24x7 đang bị một batch UPDATE liên tục (commit mỗi vài update). Bạn phải shrink nó mà không dừng batch — nhưng <code>ENABLE ROW MOVEMENT</code> cứ báo <code>ORA-00054: resource busy</code>.</p>
+<p><strong>Tasks:</strong>
+1. Từ session 2, chạy vòng lặp UPDATE liên tục lên <code>CUST</code> (mô phỏng batch).
+2. Từ session 1, thử <code>ALTER TABLE CUST ENABLE ROW MOVEMENT</code> → quan sát ORA-00054.
+3. Dùng <code>V$TRANSACTION</code> + <code>V$SESSION</code> tìm session đang giữ transaction mở.
+4. Thử hai cách: (a) <code>ALTER TABLE ... ENABLE ROW MOVEMENT</code> với <code>DDL_LOCK_TIMEOUT</code> đặt trước; (b) tạm dừng batch để lấy lock, rồi bật row movement và <code>SHRINK SPACE COMPACT</code> (pha 1 online) trong khi batch chạy lại.
+5. Chứng minh pha COMPACT chạy song song với DML; pha HWM (<code>SHRINK SPACE</code>) mới cần lock ngắn.</p>
+<p><strong>Expected Findings:</strong>
+- <code>ENABLE ROW MOVEMENT</code> (DDL) không lấy được lock khi transaction mở → ORA-00054.
+- Đặt <code>ALTER SESSION SET DDL_LOCK_TIMEOUT = 30</code> khiến DDL <strong>chờ</strong> thay vì fail ngay.
+- <code>SHRINK SPACE COMPACT</code> tiến triển cùng lúc batch UPDATE chạy (row-level lock).
+- Pha hạ HWM cần một khoảnh khắc exclusive → có thể vẫn vướng nếu DML quá dày.</p>
+<p><strong>Debrief Questions:</strong>
+- <code>DDL_LOCK_TIMEOUT</code> giải quyết gốc rễ hay chỉ hoãn vấn đề?
+- Vì sao COMPACT online được nhưng hạ HWM thì không hoàn toàn online?
+- Trên bảng thật sự 24x7 không thể dừng DML, chiến lược nào an toàn hơn shrink?</p>
+<hr />
+<h2 id="exercise-3-troubleshooting-scenario-expert-level">Exercise 3 — Troubleshooting Scenario (Expert Level)<a class="headerlink" href="#exercise-3-troubleshooting-scenario-expert-level" title="Permanent link">&para;</a></h2>
+<p><strong>Incident Brief:</strong>
+Thứ Hai 08:30. Report tài chính <code>MONTHLY_REVENUE</code> (FTS trên <code>SALES_ARCHIVE</code>) sáng nay chạy 22 phút, tháng trước chạy 6 phút. Không có thay đổi code, không có tăng trưởng dữ liệu — thực tế <code>SALES_ARCHIVE</code> <strong>giảm</strong> số row tháng này vì team vừa purge 40% dữ liệu 2019 cuối tuần. On-call DBA đề xuất "gather stats lại rồi chạy lại". Bạn được gọi cho ý kiến hai.</p>
+<p><strong>Evidence Provided:</strong></p>
+<p>AWR SQL ordered by Physical Reads (report window):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>SQL_ID        Reads      Execs  Reads/Exec  Module
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>------------- ---------- -----  ----------  ----------------
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>7xk2p9mnza01  4,812,006     1   4,812,006   MONTHLY_REVENUE
+</span></code></pre></div></p>
+<p>Segment/space snapshot của SALES_ARCHIVE:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>NUM_ROWS (sau purge)      : 3,100,000   (thang truoc: 5,150,000)
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>BLOCKS (USER_TABLES/HWM)  : 61,400      (thang truoc: 61,400)  ← khong doi
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>AVG_ROW_LEN               : 118
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Tablespace segment mgmt   : AUTO (ASSM)
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>Cot LONG?                 : khong
+</span></code></pre></div></p>
+<p>DBMS_SPACE.SPACE_USAGE trên SALES_ARCHIVE:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>FULL blocks       : 22,900
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>FS1 (0-25% used)  : 31,800   ← rat nhieu block gan rong
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>FS2/FS3/FS4       : 6,100
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Unformatted       : 600
+</span></code></pre></div></p>
+<p><code>ANALYZE ... COMPUTE</code> (chạy ngoài giờ):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>AVG_SPACE : 5,980   (block 8192)  → ~73% moi block la free
+</span></code></pre></div></p>
+<p><strong>Your Mission:</strong>
+1. On-call muốn gather stats. Điều đó có sửa được thời gian report không? Vì sao có/không?
+2. Đọc bằng chứng: xác định chính xác nguyên nhân report chậm gấp ~3.6 lần dù dữ liệu <strong>giảm</strong>.
+3. <code>BLOCKS</code> không đổi (61,400) dù purge 40% — điều này nói lên cơ chế gì? Liên hệ FTS.
+4. Đề xuất fix cụ thể + thứ tự thực hiện; ước lượng report sẽ đọc bao nhiêu block sau fix.
+5. Purge 40% là thao tác định kỳ hàng năm. Đề xuất thay đổi kiến trúc để năm sau không tái diễn.</p>
+<p><strong>Evaluation Criteria:</strong>
+- Nhận ra gather stats <strong>không</strong> sửa được: fragmentation là vấn đề HWM/space, không phải bad plan; FTS vẫn quét 61,400 block dù stats mới; gather chỉ giúp CBO chọn plan, mà report đã là FTS đúng bản chất.
+- Xác định root cause: purge để lại HWM ở 61,400 block, 31,800 block giờ ở FS1 (gần rỗng) → FTS vẫn đọc đủ 61,400 block cho chỉ 3.1M row → logical/physical reads cao → chậm.
+- Giải thích BLOCKS không đổi: DELETE không hạ HWM; chỉ TRUNCATE/MOVE/SHRINK mới hạ → đây là bằng chứng cốt lõi rằng cần shrink.
+- Fix đúng: <code>ENABLE ROW MOVEMENT</code> + <code>SHRINK SPACE CASCADE</code> (off-peak, lường redo), sau đó gather DBMS_STATS; ước lượng sau shrink actual_blocks ≈ CEIL(3.1M×118/(8192×0.9)) ≈ 49,600 → thực tế ~ số FULL blocks + phần gộp, giảm rõ; FTS đọc ~ nửa số block cũ.
+- Kiến trúc: <code>SALES_ARCHIVE</code> nên <strong>range-partition theo năm</strong> → purge = <code>DROP/TRUNCATE PARTITION</code> (hạ space tức thì, không undo, không cần shrink); hoặc lịch shrink ngay sau purge hàng năm.
+- <strong>Bonus:</strong> chỉ ra rủi ro redo/Data Guard khi shrink 60k block một lần; đề xuất <code>SHRINK SPACE COMPACT</code> trước (giờ làm việc) rồi hạ HWM off-peak; và cảnh báo ROW MOVEMENT bật vĩnh viễn nên đánh giá tác động.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/section_all_new/section_29_table_fragmentation_senior_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../section-28-row-migration-chaining-senior-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Row Migration &amp; Row Chaining — Deep Dive for Senior DBA">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Row Migration & Row Chaining — Deep Dive for Senior DBA
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../section-30-table-compression-senior-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Section 30 — Table Compression: Senior DBA Guide">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Section 30 — Table Compression: Senior DBA Guide
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

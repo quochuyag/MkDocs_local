@@ -1,0 +1,34 @@
+[19:34:10] ================ SMOKE TEST PROXYSQL (ROWS=100) ================
+[19:34:10] ==> [appuser:6033] CREATE TABLE appdb.t
+[19:34:18] ==> INSERT 100 rows qua :6033
+[19:34:26]     insert 100 rows xong sau 8.258s
+[19:34:26] ==> 8 SELECT @@hostname qua :6033 (kỳ vọng round-robin reader)
+[19:34:34]     hit #1 → node2
+[19:34:42]     hit #2 → node1
+[19:34:50]     hit #3 → node2
+[19:34:58]     hit #4 → node1
+[19:35:07]     hit #5 → node1
+[19:35:15]     hit #6 → node2
+[19:35:26]     hit #7 → node1
+[19:35:36]     hit #8 → node1
+[19:35:36]     Phân phối hits:
+[19:35:36]       node2 = 3
+[19:35:36]       node1 = 5
+[19:35:37] ==> stats_mysql_connection_pool (admin)
+10	192.168.10.11	SHUNNED	0	0	0
+10	192.168.10.12	SHUNNED	0	0	0
+10	192.168.10.13	ONLINE	1	0	206
+11	192.168.10.11	ONLINE	0	0	0
+11	192.168.10.12	ONLINE	0	0	0
+20	192.168.10.11	ONLINE	1	0	11
+20	192.168.10.12	ONLINE	1	0	8
+[19:35:47] ==> Top 5 query digest
+0x3A1E6B3BE0787B4D	200	911544	appdb	10	INSERT INTO t(val) VALUES(?)
+0x0DEE1959D1E650F8	2	48176	information_schema	10	CREATE TABLE appdb.t(id BIGINT PRIMARY KEY AUTO_INCREMENT,val VARCHAR(?) NOT NUL
+0x5E8D453832C81FB3	2	39626	information_schema	10	CREATE DATABASE IF NOT EXISTS appdb
+0x24CFEC6EE20FD0AB	2	26798	information_schema	10	DROP TABLE IF EXISTS appdb.t
+0xA8027DF9CE26E2FF	17	19974	information_schema	20	SELECT @@hostname
+[19:36:06]     count qua proxy:6033 = 100 (kỳ vọng = 100)
+[19:36:06] ================ KẾT LUẬN ================
+[19:36:06] SMOKE_PASS=true
+SMOKE_PASS=true

@@ -1,0 +1,37 @@
+# Ollama — chạy LLM cục bộ qua Docker.
+# Có volume bền để model không phải pull lại sau restart.
+# Nếu có GPU NVIDIA: bỏ comment block `deploy.resources` bên dưới.
+
+name: auto_ai
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: auto_ai_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+      # Cho phép Open-WebUI và Continue.dev gọi không bị CORS chặn
+      - OLLAMA_ORIGINS=*
+      # Số request đồng thời cho phép (mặc định 1, tăng nếu RAM lớn)
+      - OLLAMA_NUM_PARALLEL=2
+      # Giữ model load sẵn trong RAM (đỡ chờ load lại)
+      - OLLAMA_MAX_LOADED_MODELS=2
+
+    # ===== Bỏ comment đoạn dưới nếu có GPU NVIDIA =====
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  ollama_data:
+    name: auto_ai_ollama_data

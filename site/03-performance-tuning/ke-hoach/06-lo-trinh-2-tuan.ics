@@ -1,0 +1,804 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//oratune14//Oracle Performance Tuning//VI
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:14 Đêm Oracle Tuning
+X-WR-TIMEZONE:Asia/Ho_Chi_Minh
+BEGIN:VTIMEZONE
+TZID:Asia/Ho_Chi_Minh
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0700
+TZOFFSETTO:+0700
+TZNAME:+07
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:oratune14-d01-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260824T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260824T215000
+SUMMARY:Đêm 01 · Ôn + chuẩn bị — Nhận phòng lab — môi tr
+ ường và bộ đồ nghề
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Đêm đầu chưa có bài cũ — thay bằng 10 phút đọc labs
+ /SO_TAY_MO_HINH.html\, riêng mô hình M1 (cây quyết định DB Time
+ ).\n• Thuộc 3 lệnh mở màn trong labs/README.md phần “Bắt 
+ đầu mỗi buổi”.\n\nCHUẨN BỊ:\n• vagrant up rồi vagrant s
+ sh -c "echo 'oracle:oracle_4U' | sudo chpasswd".\n• Chạy _toolkit/00
+ _env_check.sql — phải PASS toàn bộ trước khi đi tiếp.\n\nM
+ Ở MÁY:\ncd D:\\Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 
+ && vagrant up\nsqlplus -S -L "system/oracle_4U@//localhost:15210/ORADB" 
+ "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 01 · Ôn + chuẩn bị — Nhận phòng lab — môi
+  trường và bộ đồ nghề
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d01-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260824T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260824T230000
+SUMMARY:Đêm 01 — Nhận phòng lab — môi trường và bộ đồ 
+ nghề
+DESCRIPTION:GIẢNG (25'):\n• Vì sao khóa này đo mọi thứ bằng
+  DB Time chứ không phải wall clock hay hit ratio.\n• Chuỗi sinh
+  tải 4 mắt xích: credential LAB_OS_CRED → external job LAB_SOE_DR
+ IVER → soe_load.sh → N phiên sqlplus soe/soe thật. Job PLSQL_BLOC
+ K chạy bằng slave J00x là background — không tính vào DB time.
+ \n• 9 script _toolkit/ và đúng thứ tự dùng chúng.\n\nLAB (35'
+ ) — dự đoán trước mỗi script:\n• labs/section_2/ bằng use
+ r system: @01_setup.sql (khám sức khỏe) → @02_workload.sql (smoke
+  test ~1 phút) → @99_cleanup.sql.\n• Trong lúc smoke test đang ch
+ ạy\, mở session thứ hai chạy thử time_model.sql\, top_waits.sq
+ l\, ash_now.sql để thấy tải hiện ra ở đâu.\n\nCHỐT (10') 
+ — phải ghi lại:\n• SOE segments: phải đúng 49 — nhiều h
+ ơn là object lab cũ còn sót\n• statistics_level: TYPICAL\n• DB 
+ time: tăng ~60s sau smoke test\, job LAB_SOE_DRIVER = SUCCEEDED\n• co
+ n_dbid: ghi lại dbid của PDB ORADB — đêm AWR sẽ cần\n\nKẾT
+  THÚC: @99_cleanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d02-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260825T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260825T215000
+SUMMARY:Đêm 02 · Ôn + chuẩn bị — DB Time đi đâu — Time Mod
+ el và Wait Events
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Chuỗi sinh tải gồm 4 mắt xích nào? Vì sao không dùng jo
+ b PLSQL_BLOCK cho tiện?\n• Đặt statistics_level=BASIC thì nhữn
+ g công cụ nào của khóa này chết?\n• SOE có bao nhiêu segme
+ nt gốc? Thấy nhiều hơn nghĩa là gì?\n\nCHUẨN BỊ:\n• Đ
+ ọc phần Mental Model của section_all_new/section_6_time_model_seni
+ or_guide.md.\n• vagrant up + env check.\n\nMỞ MÁY:\ncd D:\\Dba_proj
+ ect\\vagrant-projects\\OracleDatabase\\19.3.0 && vagrant up\nsqlplus -S 
+ -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\\_toolkit\\00_env_c
+ heck.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 02 · Ôn + chuẩn bị — DB Time đi đâu — Time
+  Model và Wait Events
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d02-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260825T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260825T230000
+SUMMARY:Đêm 02 — DB Time đi đâu — Time Model và Wait Events
+DESCRIPTION:GIẢNG (25'):\n• DB Time = tổng thời gian foreground s
+ ession ở trong DB (CPU + wait). Phân rã bằng V$SYS_TIME_MODEL: DB 
+ CPU\, parse time\, PL/SQL\, sequence load…\n• V$SESS_TIME_MODEL đ
+ ể quy trách nhiệm về từng session\; hiệu số 2 lần đọc 
+ mới có ý nghĩa (tm_snap.sql).\n• Wait event: class\, V$SYSTEM_EVE
+ NT (tích lũy từ startup) vs V$SESSION_WAIT (đang chờ ngay lúc n
+ ày). Một event lớn chỉ có nghĩa khi so với DB Time cùng kho
+ ảng.\n\nLAB (35') — dự đoán trước mỗi script:\n• section_
+ 6/: 01 → 02_workload (3 mức tải 2/4/8 user) → 03_diagnose → 04
+ _usecase_top_sessions → 99.\n• section_8/: 01 (chạy bằng soe) 
+ → 02 → 03 → 04_usecase_hung_session (lock_demo.sh) → 99.\n\nCH
+ ỐT (10') — phải ghi lại:\n• % DB CPU / DB Time: ở cả 3 m
+ ức tải 2 / 4 / 8 user\n• Top 3 wait event: tên + thời gian ch
+ ờ + % so với DB Time\n• Hung session: SID nào\, đang chờ event
+  gì\, ai giữ\n\nKẾT THÚC: @99_cleanup.sql → ghi số vào runboo
+ k → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d03-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260826T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260826T215000
+SUMMARY:Đêm 03 · Ôn + chuẩn bị — AWR — bộ nhớ dài hạn 
+ của database
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • DB Time khác Elapsed Time chỗ nào?\n• Một wait event chờ 4
+ 00 giây — có phải vấn đề không? Lấy gì làm mẫu số đ
+ ể trả lời?\n• V$SESSION_WAIT khác V$SYSTEM_EVENT ở điểm n
+ ào?\n\nCHUẨN BỊ:\n• Đọc section_all_new/section_9_awr_senior_g
+ uide.md\, phần 2 stream AWR.\n• Lấy lại con_dbid đã ghi ở đ
+ êm 1.\n\nMỞ MÁY:\ncd D:\\Dba_project\\vagrant-projects\\OracleDataba
+ se\\19.3.0 && vagrant up\nsqlplus -S -L "system/oracle_4U@//localhost:15
+ 210/ORADB" "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 03 · Ôn + chuẩn bị — AWR — bộ nhớ dài h
+ ạn của database
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d03-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260826T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260826T230000
+SUMMARY:Đêm 03 — AWR — bộ nhớ dài hạn của database
+DESCRIPTION:GIẢNG (25'):\n• Hai stream AWR: CDB root và PDB-local c
+ ó dbid khác nhau — chạy report nhầm dbid là đọc nhầm datab
+ ase.\n• Snapshot / interval / retention\; MMON sinh snapshot thế nà
+ o\; baseline khác snapshot thường ra sao.\n• Thứ tự đọc m
+ ột AWR report: DB Time & Load Profile → Top 10 Foreground Events →
+  Time Model → SQL ordered by Elapsed. Không đọc hit ratio trước
+ .\n\nLAB (35') — dự đoán trước mỗi script:\n• section_9/: 0
+ 1_setup (settings) → awr_snap + 02_workload + awr_snap → 03_diagnose
+  → 04_usecase_baseline → 99.\n• Còn giờ thì thêm 05_usecase_p
+ lan_regression (⚠️ nhóm 05–09 chưa kiểm chứng VM — bạn l
+ à người chốt số).\n\nCHỐT (10') — phải ghi lại:\n• sna
+ p_id: trước / sau workload\n• DB Time trong report: và Top FG even
+ t #1 chiếm bao nhiêu %\n• Baseline: tên + khoảng snap đã tạo
+ \n\nKẾT THÚC: @99_cleanup.sql → ghi số vào runbook → vagrant h
+ alt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d04-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260827T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260827T215000
+SUMMARY:Đêm 04 · Ôn + chuẩn bị — Cảnh báo tự động và S
+ tatspack
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Trong AWR report bạn đọc mục nào trước\, vì sao?\n• Ba
+ seline AWR để làm gì mà snapshot thường không làm được?\n
+ • Chạy awrrpt cho PDB thì chọn dbid nào?\n\nCHUẨN BỊ:\n• S
+ enior guide Section 10 + 11.\n• ⚠️ Lab 10 phải chạy bằng SYS
+  qua CDB root — sai chỗ này là ORA-65040.\n\nMỞ MÁY:\ncd D:\\Db
+ a_project\\vagrant-projects\\OracleDatabase\\19.3.0 && vagrant up\nsqlpl
+ us -S -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\\_toolkit\\00
+ _env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 04 · Ôn + chuẩn bị — Cảnh báo tự động v
+ à Statspack
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d04-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260827T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260827T230000
+SUMMARY:Đêm 04 — Cảnh báo tự động và Statspack
+DESCRIPTION:GIẢNG (25'):\n• Server-generated alert: stateful (ngưỡ
+ ng\, tự clear) vs stateless (sự kiện)\; DBA_OUTSTANDING_ALERTS vs 
+ DBA_ALERT_HISTORY\; metric view là nguồn của ngưỡng.\n• Statsp
+ ack: bản tiền-AWR\, không cần Diagnostic Pack — vẫn còn giá
+  trị trên Standard Edition. Thiếu gì so với AWR: ASH\, ADDM\, ba
+ seline tự động\, giao diện EM.\n\nLAB (35') — dự đoán trư
+ ớc mỗi script:\n• section_10/: 01 → 02 (lock_storm.sh) → 03 
+ → 04_usecase_clear → 99.\n• section_11/ 3 vai: SYS cài PERFSTAT 
+ → system sinh tải → PERFSTAT chạy report → 04_usecase_baseline
+ _purge → 99.\n\nCHỐT (10') — phải ghi lại:\n• Alert bắt đ
+ ược: metric nào\, ngưỡng bao nhiêu\, giá trị thực bao nhiê
+ u\n• Statspack: snap id + Top 5 timed events trong spreport\n\nKẾT T
+ HÚC: @99_cleanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d05-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260828T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260828T215000
+SUMMARY:Đêm 05 · Ôn + chuẩn bị — ADDM và ASH — máy chẩn 
+ đoán\, máy quay chậm
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Alert stateful khác stateless chỗ nào?\n• Statspack thiếu nh
+ ững gì so với AWR?\n• Vì sao Statspack vẫn chạy được tr
+ ên Standard Edition?\n\nCHUẨN BỊ:\n• Senior guide Section 12 + 13
+ .\n• vagrant up + env check.\n\nMỞ MÁY:\ncd D:\\Dba_project\\vagran
+ t-projects\\OracleDatabase\\19.3.0 && vagrant up\nsqlplus -S -L "system/
+ oracle_4U@//localhost:15210/ORADB" "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 05 · Ôn + chuẩn bị — ADDM và ASH — máy ch
+ ẩn đoán\, máy quay chậm
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d05-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260828T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260828T230000
+SUMMARY:Đêm 05 — ADDM và ASH — máy chẩn đoán\, máy quay ch
+ ậm
+DESCRIPTION:GIẢNG (25'):\n• ADDM = phân tích DB Time tự động g
+ iữa 2 snapshot: finding → recommendation → rationale\, xếp theo 
+ impact %. Giới hạn: chỉ thấy cái nằm trong DB.\n• ASH = ả
+ nh chụp mỗi giây các session đang active. Các chiều quan trọ
+ ng: sql_id\, event\, blocking_session\, current_obj# / row#.\n• Khi n
+ ào ASH thắng AWR: sự cố ngắn 3 phút lúc 2 giờ sáng — AWR
+  trung bình hóa mất\, ASH vẫn giữ.\n\nLAB (35') — dự đoán 
+ trước mỗi script:\n• section_12/: 01 → 02 → 03 (DBMS_ADDM tr
+ ên snapshot PDB-local) → 04_usecase_compare → 99.\n• section_13/:
+  01 → 02 (ash_lock_demo.sh) → 03 → 04_usecase_dimensions (lần t
+ ới đúng ROW bị khóa) → 05_ash_report → 99.\n\nCHỐT (10') 
+ — phải ghi lại:\n• Finding lớn nhất: tên + impact % DB Time
+ \n• ASH truy vết: blocking_session + object và row đích danh\n\nK
+ ẾT THÚC: @99_cleanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d06-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260829T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260829T215000
+SUMMARY:Đêm 06 · Ôn + chuẩn bị — Dán nhãn workload và soi b
+ ằng SQL Trace
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • ADDM lấy dữ liệu từ đâu\, và nó mù với loại vấn 
+ đề nào?\n• ASH lấy mẫu bao lâu một lần? Hết chỗ trong
+  bộ nhớ thì dữ liệu đi đâu?\n• current_obj# trong ASH dùn
+ g để làm gì?\n\nCHUẨN BỊ:\n• Senior guide Section 14 + 15.\n
+ • ⚠️ Lab 15 chạy trong VM (trcsess/tkprof là lệnh OS): vagran
+ t ssh → sudo -u oracle -i → cd /labs/section_15.\n• Cuối tuần 
+ — nếu còn hứng có thể kéo dài tới 23:30.\n\nMỞ MÁY:\ncd
+  D:\\Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 && vagrant up
+ \nsqlplus -S -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\\_tool
+ kit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 06 · Ôn + chuẩn bị — Dán nhãn workload và so
+ i bằng SQL Trace
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d06-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260829T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260829T230000
+SUMMARY:Đêm 06 — Dán nhãn workload và soi bằng SQL Trace
+DESCRIPTION:GIẢNG (25'):\n• Service / module / action / client_id: c
+ ách gắn nhãn để quy DB Time về đúng ứng dụng (DBMS_APPLIC
+ ATION_INFO\, V$SERVICE_STATS).\n• DBMS_MONITOR bật trace theo sessio
+ n\, service\, module\, action — không cần sửa code ứng dụng.\
+ n• Trace 10046 các level\; tkprof đọc gì\; trcsess gom nhiều fi
+ le trace của một client.\n\nLAB (35') — dự đoán trước mỗi
+  script:\n• section_14/: 01–03 → 04_usecase_modact → 05_usecase_
+ clientid_etl (etl_load.sh: APPEND → enq: TM) → 99.\n• section_15/ 
+ (trong VM): 01 → 02 (traced_workload.sh) → 03 → 04_usecase_tkprof 
+ → 99.\n\nCHỐT (10') — phải ghi lại:\n• DB Time theo service/
+ module: cái nào ăn nhiều nhất\n• tkprof: elapsed\, disk\, query
+ \, rows của câu tốn nhất\n\nKẾT THÚC: @99_cleanup.sql → ghi 
+ số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d07-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260830T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260830T215000
+SUMMARY:Đêm 07 · Ôn + chuẩn bị — Giám sát thời gian thực\
+ , việc bảo trì tự động — và chạy mù lần đầu
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Module và action nên đặt ở tầng nào của ứng dụng?\n
+ • Khi nào phải dùng trcsess thay vì đọc thẳng file trace?\n
+ • Trace level 12 có thêm gì so với level 8?\n\nCHUẨN BỊ:\n•
+  Senior guide Section 16 + 17.\n• Chuẩn bị tinh thần: cuối bu
+ ổi có bài chạy mù\, không được mở đáp án trước.\n\nM
+ Ở MÁY:\ncd D:\\Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 
+ && vagrant up\nsqlplus -S -L "system/oracle_4U@//localhost:15210/ORADB" 
+ "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 07 · Ôn + chuẩn bị — Giám sát thời gian th
+ ực\, việc bảo trì tự động — và chạy mù lần đầu
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d07-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260830T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260830T230000
+SUMMARY:Đêm 07 — Giám sát thời gian thực\, việc bảo trì t
+ ự động — và chạy mù lần đầu
+DESCRIPTION:GIẢNG (25'):\n• Real-time SQL Monitoring: tự bật khi 
+ SQL vượt 5 giây CPU/IO hoặc chạy parallel\; V$SQL_MONITOR cho pl
+ an đang chạy kèm số dòng thực tế từng bước.\n• DBOP co
+ mposite: gộp nhiều câu lệnh của một job thành một đơn v
+ ị đo được.\n• Automated maintenance: 3 task (optimizer stats\, 
+ segment advisor\, SQL tuning advisor)\, maintenance window\, resource pl
+ an — vì sao stats gathering hay là thủ phạm của sự cố lúc
+  22 giờ.\n\nLAB (35') — dự đoán trước mỗi script:\n• sect
+ ion_16/: 01 → 02 (monitor_client.sh) → 03 (plan sống) → 04_useca
+ se_report → 99.\n• section_17/: 01 → 03 → 04_usecase_task_onoff 
+ → 99 (99 khôi phục window về mặc định).\n• Chạy mù: b
+ ốc ngẫu nhiên một lab trong {6\, 8\, 9\, 10} — chỉ chạy 01+
+ 02\, tự chẩn đoán bằng _toolkit/\, xong mới mở 03_diagnose.s
+ ql chấm điểm.\n\nCHỐT (10') — phải ghi lại:\n• SQL đư
+ ợc monitor: sql_id + elapsed + IO\n• Maintenance window: cửa sổ 
+ nào đang mở\, task nào ENABLED\n• Chạy mù: đoán đúng hay s
+ ai\, sai ở bước nào của chuỗi chẩn đoán\n\nKẾT THÚC: @9
+ 9_cleanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d08-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260831T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260831T215000
+SUMMARY:Đêm 08 · Ôn + chuẩn bị — Contention tầng 1 — Enqueu
+ e\, Latch và Mutex
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Điều kiện nào khiến một SQL tự động vào V$SQL_MONITO
+ R?\n• Tắt auto stats gathering thì cái gì hỏng sau vài tuần?
+ \n• Kết quả chạy mù đêm qua: bạn đi chệch ở bước n
+ ào?\n\nCHUẨN BỊ:\n• Senior guide Section 19 + 20.\n• Mở sẵn
+  labs/SO_TAY_MO_HINH.html mô hình M5 (wait event → root cause).\n\nM
+ Ở MÁY:\ncd D:\\Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 
+ && vagrant up\nsqlplus -S -L "system/oracle_4U@//localhost:15210/ORADB" 
+ "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 08 · Ôn + chuẩn bị — Contention tầng 1 — En
+ queue\, Latch và Mutex
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d08-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260831T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260831T230000
+SUMMARY:Đêm 08 — Contention tầng 1 — Enqueue\, Latch và Mutex
+DESCRIPTION:GIẢNG (25'):\n• Enqueue = khóa có hàng đợi: TX (row
+  lock\, ITL\, index dup key)\, TM (DDL/DML bảo vệ bảng)\, mode 6 e
+ xclusive vs mode 4 share.\n• V$LOCK đọc theo 3 thì: ai giữ (BLOC
+ K=1)\, ai chờ (REQUEST>0)\, giữ cái gì (ID1/ID2).\n• Latch/mutex
+  = serialize cấu trúc trong SGA\, đơn vị micro giây\, spin rồi
+  sleep. Library cache mutex sinh ra từ hard parse literal\; cache buff
+ ers chains sinh ra từ hot block.\n\nLAB (35') — dự đoán trước
+  mỗi script:\n• section_19/: 01 → 02 (lock_pair.sh 120s) → 03 (V
+ $LOCK) → 04_usecase_recent_past → 99.\n• section_20/: 01 → 02 (h
+ ard_parse.sh literal) → 03 → 04_fix (bind variable) → 05_cbc_pin (
+ cần SYS\, X$BH) → 99.\n\nCHỐT (10') — phải ghi lại:\n• enq
+ : TX: chờ bao lâu\, ai block ai\n• Hard parse: số lần/giây tr
+ ước và sau khi chuyển sang bind\n• Mutex: thời gian chờ mute
+ x giảm bao nhiêu\n\nKẾT THÚC: @99_cleanup.sql → ghi số vào ru
+ nbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d09-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260901T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260901T215000
+SUMMARY:Đêm 09 · Ôn + chuẩn bị — Shared Pool — parse\, cursor
+  cache\, result cache
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Enqueue TX mode 6 khác mode 4 ở tình huống nào?\n• Vì sao 
+ literal SQL lại sinh contention ở library cache?\n• cache buffers 
+ chains nói lên điều gì về workload?\n\nCHUẨN BỊ:\n• Senior
+  guide Section 21.\n• Lab này không restart DB — mọi thay đổi
+  làm bằng ALTER SESSION.\n\nMỞ MÁY:\ncd D:\\Dba_project\\vagrant-p
+ rojects\\OracleDatabase\\19.3.0 && vagrant up\nsqlplus -S -L "system/ora
+ cle_4U@//localhost:15210/ORADB" "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 09 · Ôn + chuẩn bị — Shared Pool — parse\, cu
+ rsor cache\, result cache
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d09-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260901T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260901T230000
+SUMMARY:Đêm 09 — Shared Pool — parse\, cursor cache\, result cache
+DESCRIPTION:GIẢNG (25'):\n• Shared pool = library cache + row cache +
+  free. Hard parse / soft parse / softer-soft (session cursor cache) khá
+ c nhau ở chỗ nào dừng lại.\n• Session cursor cache: bỏ qua 
+ cả bước tìm trong library cache — đo bằng session cursor cach
+ e hits.\n• Result cache: cache kết quả chứ không phải plan\; 
+ invalidate ngay khi bảng nguồn có DML — chỉ hợp bảng ít đ
+ ổi.\n• Đọc ORA-04031: thiếu ở subpool nào\, request bao nhi
+ êu byte.\n\nLAB (35') — dự đoán trước mỗi script:\n• secti
+ on_21/: 01 → 02 → 03 → 04_usecase_session_cursor_cache → 05_usec
+ ase_result_cache → 06_usecase_library_cache_pin (cần SYS\, X$KGLOB) 
+ → 99.\n\nCHỐT (10') — phải ghi lại:\n• parse count (hard): t
+ rước / sau\n• session cursor cache hits: trước / sau khi tăng c
+ ache\n• Result cache: thời gian query lần 1 vs lần 2 + hit count
+ \n\nKẾT THÚC: @99_cleanup.sql → ghi số vào runbook → vagrant h
+ alt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d10-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260902T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260902T215000
+SUMMARY:Đêm 10 · Ôn + chuẩn bị — Bộ nhớ đọc và bộ nh
+ ớ làm việc — Buffer Cache\, PGA
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Soft parse vẫn tốn cái gì?\n• Result cache mất hiệu lự
+ c trong tình huống nào?\n• ORA-04031 khác ORA-04030 ở chỗ nà
+ o?\n\nCHUẨN BỊ:\n• Senior guide Section 22 + 23.\n• ⚠️ secti
+ on_22/01 cần SYS grant V_$MYSTAT cho soe.\n\nMỞ MÁY:\ncd D:\\Dba_pr
+ oject\\vagrant-projects\\OracleDatabase\\19.3.0 && vagrant up\nsqlplus -
+ S -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\\_toolkit\\00_env
+ _check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 10 · Ôn + chuẩn bị — Bộ nhớ đọc và bộ
+  nhớ làm việc — Buffer Cache\, PGA
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d10-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260902T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260902T230000
+SUMMARY:Đêm 10 — Bộ nhớ đọc và bộ nhớ làm việc — Buf
+ fer Cache\, PGA
+DESCRIPTION:GIẢNG (25'):\n• Buffer cache: LRU + touch count\, logical
+  vs physical read\, vì sao hit ratio cao vẫn có thể là hệ thố
+ ng bệnh.\n• KEEP pool: giữ segment nhỏ nóng khỏi bị lũ ful
+ l scan đẩy ra.\n• PGA: workarea optimal / onepass / multipass\; PGA
+ _AGGREGATE_TARGET là mục tiêu mềm\, _LIMIT mới là trần cứng
+ \; đọc V$PGA_TARGET_ADVICE phải bỏ các dòng overallocation trư
+ ớc.\n\nLAB (35') — dự đoán trước mỗi script:\n• section_2
+ 2/: 01 → 02 (lũ full scan) → 03 → 04_fix (KEEP pool) → 05_useca
+ se_flash_cache (tùy chọn\, trong VM\, 2 lần restart) → 99.\n• s
+ ection_23/: 01 → 02 (pga_sort.sh) → 03 → 04_usecase_pga_advice →
+  99.\n\nCHỐT (10') — phải ghi lại:\n• Physical reads: trước
+  / sau khi dùng KEEP pool\n• Workarea: số lần optimal / onepass /
+  multipass\n• Temp: dung lượng temp bị dùng khi sort tràn\n\nK
+ ẾT THÚC: @99_cleanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d11-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260903T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260903T215000
+SUMMARY:Đêm 11 · Ôn + chuẩn bị — Đường ghi và trần CPU 
+ — Redo\, CPU Bottleneck
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Touch count dùng để làm gì trong thuật toán LRU?\n• Buffe
+ r cache hit ratio 99% có nghĩa hệ thống khỏe không?\n• Workar
+ ea rơi từ optimal xuống onepass thì cái gì đắt lên?\n\nCHU
+ ẨN BỊ:\n• ⚠️ vagrant snapshot save truoc_lab_24 — lab 24 đ
+ ổi cấu hình redo ở cấp CDB.\n• Lab 24 chạy trong VM: vagran
+ t ssh → sudo -u oracle -i → cd /labs/section_24.\n\nMỞ MÁY:\ncd D
+ :\\Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 && vagrant up\n
+ sqlplus -S -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\\_toolki
+ t\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 11 · Ôn + chuẩn bị — Đường ghi và trần C
+ PU — Redo\, CPU Bottleneck
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d11-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260903T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260903T230000
+SUMMARY:Đêm 11 — Đường ghi và trần CPU — Redo\, CPU Bottlene
+ ck
+DESCRIPTION:GIẢNG (25'):\n• Redo path: log buffer → LGWR → online
+  redo log. log file sync (session chờ commit) khác log file parallel 
+ write (LGWR chờ đĩa) — nhầm hai cái là chữa sai chỗ.\n• 
+ Giảm redo thật sự: bớt commit vụn\, direct path / nologging đ
+ úng chỗ\, chứ không phải phình log buffer.\n• CPU: DB CPU (ti
+ me model) vs OS CPU (V$OSSTAT). Discriminator là %Busy CPU — tải ng
+ oài DB làm ASH mù hoàn toàn.\n\nLAB (35') — dự đoán trước 
+ mỗi script:\n• section_24/ (trong VM): 01 → 02 → 03 → 04_fix 
+ → 99 — thu redo còn 10MB\, đo\, rồi phục hồi.\n• section_2
+ 5/: 02 (cpu_load.sh db) → 03 + cpu_sample.sql → 04_usecase_external_
+ cpu (cpu_load.sh external) → 05_parse_cpu → 99.\n\nCHỐT (10') — 
+ phải ghi lại:\n• log file sync: avg ms trước / sau\n• %Busy C
+ PU: ở cả 2 kịch bản DB và external\n• ASH: kịch bản nào 
+ ASH chỉ được đích danh sql_id\, kịch bản nào mù\n\nKẾT T
+ HÚC: @99_cleanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d12-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260904T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260904T215000
+SUMMARY:Đêm 12 · Ôn + chuẩn bị — Đĩa và chỉ mục — I/O 
+ bùng nổ\, index phình
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • log file sync khác log file parallel write chỗ nào? Mỗi cái c
+ hỉ về đâu?\n• Vì sao ASH không nhìn thấy tải CPU ngoài d
+ atabase?\n• %Busy CPU tính từ hai nguồn số nào?\n\nCHUẨN B
+ Ị:\n• Senior guide Section 26 + 27.\n• ⚠️ Chỉ chạy 26/05_c
+ alibrate_io khi đã snapshot — nó restart và quiesce ~9 phút.\n\nM
+ Ở MÁY:\ncd D:\\Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 
+ && vagrant up\nsqlplus -S -L "system/oracle_4U@//localhost:15210/ORADB" 
+ "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 12 · Ôn + chuẩn bị — Đĩa và chỉ mục — 
+ I/O bùng nổ\, index phình
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d12-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260904T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260904T230000
+SUMMARY:Đêm 12 — Đĩa và chỉ mục — I/O bùng nổ\, index ph
+ ình
+DESCRIPTION:GIẢNG (25'):\n• db file sequential read (index/rowid\, đ
+ ọc 1 block) vs db file scattered read (multiblock full scan) vs direct
+  path read — mỗi event tố cáo một đường truy cập.\n• AL
+ TER TABLE MOVE làm index UNUSABLE → equality lookup rơi xuống full
+  scan → I/O nổ. Đây là sự cố kinh điển sau bảo trì.\n
+ • Index không tự trả space: COALESCE gộp lá (giảm LF_BLKS\, 
+ giữ BLOCKS) vs REBUILD (giảm cả hai) vs SHRINK. Huyền thoại 
+ “B-tree tự cân bằng nên không cần gì” sai ở chỗ nào.\
+ n\nLAB (35') — dự đoán trước mỗi script:\n• section_26/: 01
+  → 02 → 03 → 04_fix (REBUILD ONLINE) → 99\; tùy chọn 05_calib
+ rate_io.\n• section_27/: 01 → 02 → 03 → 04_fix (COALESCE vs REBU
+ ILD) → 05_shrink_and_dml (idx_dml_load.sh làm REBUILD ONLINE treo ở
+  enq: TX) → 99.\n\nCHỐT (10') — phải ghi lại:\n• Physical re
+ ads: trước / sau khi rebuild index\n• LF_BLKS & BLOCKS: sau COALESC
+ E và sau REBUILD — khác nhau ra sao\n\nKẾT THÚC: @99_cleanup.sql 
+ → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d13-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260905T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260905T215000
+SUMMARY:Đêm 13 · Ôn + chuẩn bị — Hình dạng dữ liệu trong
+  block — migration\, HWM\, nén
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • db file sequential read nhiều nói lên đường truy cập nào 
+ đang chiếm ưu thế?\n• COALESCE trả space lại cho ai — segm
+ ent hay tablespace?\n• Vì sao REBUILD ONLINE có thể treo\, treo 
+ ở event gì?\n\nCHUẨN BỊ:\n• Senior guide Section 28\, 29\, 30. 
+ Lab 28 là lab mẫu đã có số thật — chạy nhanh để lấy 
+ đà.\n• Cuối tuần: 3 lab\, cần đủ 2 tiếng\, có thể kéo
+  tới 23:30.\n\nMỞ MÁY:\ncd D:\\Dba_project\\vagrant-projects\\Oracl
+ eDatabase\\19.3.0 && vagrant up\nsqlplus -S -L "system/oracle_4U@//local
+ host:15210/ORADB" "@labs\\_toolkit\\00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 13 · Ôn + chuẩn bị — Hình dạng dữ liệu t
+ rong block — migration\, HWM\, nén
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d13-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260905T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260905T230000
+SUMMARY:Đêm 13 — Hình dạng dữ liệu trong block — migration\,
+  HWM\, nén
+DESCRIPTION:GIẢNG (25'):\n• Row migration (row lớn lên\, không đ
+ ủ chỗ\, dời đi để lại con trỏ) vs row chaining (row quá t
+ o cho một block\, hoặc >255 cột) — cùng triệu chứng table f
+ etch continued row\, cách chữa khác hẳn nhau.\n• Table fragmenta
+ tion: bulk delete không hạ HWM → full scan vẫn quét tới HWM. C
+ hỉ phạt full scan\, không phạt truy cập qua index.\n• Compres
+ sion: BASIC chỉ nén khi nạp direct-path\; ADVANCED nén cả DML th
+ ường nhưng cần license ACO. Symbol table nằm ở cấp block nê
+ n tỉ lệ nén phụ thuộc độ lặp trong block.\n\nLAB (35') —
+  dự đoán trước mỗi script:\n• section_28/: 01 → 02 → 03 (
+ LIST CHAINED ROWS) → 04_fix → 05_row_chaining_32k → 99.\n• secti
+ on_29/: 01 → 02 → 03 (3 góc đo HWM) → 04_fix (SHRINK SPACE CASCA
+ DE) → 99.\n• section_30/: 01 → 02 → 03 (GET_COMPRESSION_RATIO) 
+ → 04_usecase_query_perf → 99.\n\nCHỐT (10') — phải ghi lại:\
+ n• table fetch continued row: trước / sau khi chữa migration\n•
+  Blocks dưới HWM: trước / sau SHRINK SPACE\n• Compression: số 
+ block và thời gian nạp của 3 kiểu bảng\n\nKẾT THÚC: @99_cl
+ eanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d14-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260906T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260906T215000
+SUMMARY:Đêm 14 · Ôn + chuẩn bị — Cột\, đường truyền và
+  tầng OS
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • PCTFREE thấp gây ra hiện tượng gì\, ở loại workload nà
+ o?\n• SHRINK SPACE CASCADE có làm index hỏng không? Khác gì MOV
+ E?\n• Nén BASIC bỏ sót trường hợp nào?\n\nCHUẨN BỊ:\n•
+  ⚠️ vagrant snapshot save truoc_lab_31 — lab 31 đổi INMEMORY_SI
+ ZE + SGA và restart\; cần license In-Memory.\n• Senior guide Sectio
+ n 31\, 32\, 34. Lab 34 là lab shell\, không SQL.\n\nMỞ MÁY:\ncd D:\
+ \Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 && vagrant up\nsq
+ lplus -S -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\\_toolkit\
+ \00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 14 · Ôn + chuẩn bị — Cột\, đường truyền
+  và tầng OS
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d14-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260906T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260906T230000
+SUMMARY:Đêm 14 — Cột\, đường truyền và tầng OS
+DESCRIPTION:GIẢNG (25'):\n• In-Memory: dual format (row trên đĩa\,
+  column trong IM store)\, populate bất đồng bộ — đo sớm là 
+ đo sai\; dấu hiệu trong plan là TABLE ACCESS INMEMORY FULL\; IM th
+ ay được index phục vụ phân tích.\n• Connection: round-trip =
+  CEIL(rows / arraysize) — ARRAYSIZE là đòn bẩy lớn nhất\, SDU
+ /socket buffer chỉ đáng kể khi latency cao. SQL*Net message from c
+ lient là idle\, không phải chậm.\n• Tầng OS theo USE method (U
+ tilization–Saturation–Errors): vmstat\, iostat\, mpstat\, top\; cầ
+ u SPID nối process OS với session DB.\n\nLAB (35') — dự đoán t
+ rước mỗi script:\n• section_31/ (trong VM): 01 → 02 (chờ POPU
+ LATE_STATUS=COMPLETED) → 03 → 04_usecase_compress_col → 99 / resto
+ re snapshot.\n• section_32/: 01 → 02 → 03 (AUTOTRACE\, cần PLUST
+ RACE) → 04_usecase_sdu_socket → 99.\n• section_34/ (shell trong VM
+ ): 01_setup.sh → os_stress.sh cpu|io → 02_map_os_to_db.sql → 99_cl
+ eanup.sh.\n\nCHỐT (10') — phải ghi lại:\n• INMEMORY: thời gi
+ an query trước / sau populate + dung lượng IM so với segment\n
+ • Round-trip: arraysize 15 vs 100 vs 1000\n• SPID → SID: process n
+ gốn CPU nhất tương ứng session/sql_id nào\n\nKẾT THÚC: @99_c
+ leanup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d15-a@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260907T213000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260907T215000
+SUMMARY:Đêm 15 · Ôn + chuẩn bị — Change assurance — SPA và D
+ atabase Replay
+DESCRIPTION:ÔN BÀI (trả lời trước\, không mở tài liệu):\n
+ • Populate bất đồng bộ ảnh hưởng thế nào tới lần đ
+ o đầu tiên?\n• ARRAYSIZE quá lớn thì trả giá ở đâu?\n
+ • USE method gồm ba thành phần nào?\n\nCHUẨN BỊ:\n• ⚠️
+  Snapshot bắt buộc\; cả hai lab chạy trong VM\; cần license Re
+ al Application Testing.\n• Senior guide Section 35 + 36 — đọc tr
+ ước phần vòng đời 5 pha của DB Replay.\n\nMỞ MÁY:\ncd D:\\
+ Dba_project\\vagrant-projects\\OracleDatabase\\19.3.0 && vagrant up\nsql
+ plus -S -L "system/oracle_4U@//localhost:15210/ORADB" "@labs\\_toolkit\\
+ 00_env_check.sql"
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Đêm 15 · Ôn + chuẩn bị — Change assurance — SPA v
+ à Database Replay
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:oratune14-d15-b@local
+DTSTAMP:20260818T151709Z
+DTSTART;TZID=Asia/Ho_Chi_Minh:20260907T215000
+DTEND;TZID=Asia/Ho_Chi_Minh:20260907T230000
+SUMMARY:Đêm 15 — Change assurance — SPA và Database Replay
+DESCRIPTION:GIẢNG (25'):\n• Hai tầng bảo hiểm khi thay đổi h
+ ệ thống: SPA bắt plan regression ở mức từng câu SQL (nhẹ\
+ , chạy sớm\, nhưng mù với concurrency)\; DB Replay phát lại t
+ oàn workload nên bắt được contention và throughput.\n• SPA: S
+ TS từ cursor cache → TEST EXECUTE trước/sau → COMPARE PERFORMAN
+ CE → improved / regressed / plan changed. Trên production dùng EXPLA
+ IN PLAN thay vì chạy thật.\n• DB Replay 5 pha: Capture → Prepro
+ cess → [thay đổi] → Replay (wrc) → Report. Divergence khác 0 t
+ rên lab một VM là do thiếu restore-to-SCN\, không phải do “up
+ grade hỏng”.\n\nLAB (35') — dự đoán trước mỗi script:\n
+ • section_35/: 01 → 02_capture (STS) → 03_change_compare (OFE 11.2
+  → 12.2) → 99.\n• section_36/: 01 → 02_capture → 03_preprocess
+ _change → 04_replay (wrc_replay.sh) → 99.\n• Tổng kết: chạy 
+ mù một lab bất kỳ của tuần 2\, rồi cập nhật progress.md
+ .\n\nCHỐT (10') — phải ghi lại:\n• SPA report: bao nhiêu SQL 
+ improved / regressed / plan changed\n• Replay: divergence bao nhiêu v
+ à giải thích vì sao khác 0\n• Tổng kết: 3 chủ đề bạn 
+ thấy yếu nhất → xếp lịch học lại\n\nKẾT THÚC: @99_cle
+ anup.sql → ghi số vào runbook → vagrant halt
+LOCATION:VM srv1 · sqlplus //localhost:15210/ORADB
+TRANSP:OPAQUE
+URL:https://claude.ai/code/artifact/175b3ab1-2e50-4311-805a-23f9e41d6291
+END:VEVENT
+END:VCALENDAR

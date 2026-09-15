@@ -1,0 +1,2716 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../module-04/module-04-guide/">
+      
+      
+        <link rel="next" href="../../module-06/module-06-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📘 Module 05: Global Resource Management & Performance Tuning - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-05-global-resource-management-performance-tuning" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📘 Module 05: Global Resource Management & Performance Tuning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            04. RAC Administration
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn tiếp tục cho khoá học Oracle RAC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-01/module-01-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 01
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-02/module-02-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 02
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-03/module-03-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 03
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-04/module-04-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 04
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_3_5" id="__nav_5_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Module 05
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Module 05
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📘 Module 05: Global Resource Management & Performance Tuning
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 05: Global Resource Management & Performance Tuning
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bai-hoc-trong-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Bài học trong Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-global-resource-management-in-oracle-rac" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Global Resource Management in Oracle RAC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Global Resource Management in Oracle RAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-tu-single-instance-en-global-concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Từ Single Instance đến Global Concurrency Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-global-resource-directory-grd" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Global Resource Directory (GRD)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-mastering-shadowing-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3 Mastering &amp; Shadowing Instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-remastering-chuyen-quyen-master" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4 Remastering (chuyển quyền master)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-global-cache-management-cac-scenario-cho-mot-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5 Global Cache Management — các scenario cho một block
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-monitoring-and-tuning-oracle-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Monitoring and Tuning Oracle RAC Database
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Monitoring and Tuning Oracle RAC Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-nguyen-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Nguyên tắc
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-global-cache-wait-events-thuoc-cluster-wait-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Global Cache Wait Events (thuộc "Cluster Wait Class")
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-global-enqueue-wait-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Global Enqueue Wait Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-session-system-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Session &amp; System Statistics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-meo-tuning-rac-phia-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Mẹo tuning RAC (phía application)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-awr-ash-addm-trong-rac" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 AWR, ASH, ADDM trong RAC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-practice-7-monitoring-and-tuning-oracle-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Practice 7: Monitoring and Tuning Oracle RAC Database
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-e-nho-lau" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Tóm tắt để nhớ lâu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sau-khi-hoc-xong-hay-tu-lam" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Sau khi học xong, hãy tự làm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Module tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-06/module-06-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 06
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-07/module-07-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 07
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-08/module-08-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 08
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-09/module-09-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 09
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-10/module-10-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 10
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-11/module-11-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 11
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-12/module-12-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 12
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-13/module-13-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 13
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-14/module-14-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 14
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tiến độ học Oracle RAC Administration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Oracle Database RAC Administration — Mục lục khóa học
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scenarios/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🧩 10 tình huống thực tế Oracle RAC & cách giải quyết
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database RAC Administration Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bai-hoc-trong-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Bài học trong Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-global-resource-management-in-oracle-rac" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Global Resource Management in Oracle RAC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Global Resource Management in Oracle RAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-tu-single-instance-en-global-concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Từ Single Instance đến Global Concurrency Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-global-resource-directory-grd" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Global Resource Directory (GRD)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-mastering-shadowing-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3 Mastering &amp; Shadowing Instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-remastering-chuyen-quyen-master" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4 Remastering (chuyển quyền master)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-global-cache-management-cac-scenario-cho-mot-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5 Global Cache Management — các scenario cho một block
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-monitoring-and-tuning-oracle-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Monitoring and Tuning Oracle RAC Database
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Monitoring and Tuning Oracle RAC Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-nguyen-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Nguyên tắc
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-global-cache-wait-events-thuoc-cluster-wait-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Global Cache Wait Events (thuộc "Cluster Wait Class")
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-global-enqueue-wait-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Global Enqueue Wait Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-session-system-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Session &amp; System Statistics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-meo-tuning-rac-phia-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Mẹo tuning RAC (phía application)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-awr-ash-addm-trong-rac" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 AWR, ASH, ADDM trong RAC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-practice-7-monitoring-and-tuning-oracle-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Practice 7: Monitoring and Tuning Oracle RAC Database
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-e-nho-lau" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Tóm tắt để nhớ lâu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sau-khi-hoc-xong-hay-tu-lam" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Sau khi học xong, hãy tự làm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Module tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="module-05-global-resource-management-performance-tuning">📘 Module 05: Global Resource Management &amp; Performance Tuning<a class="headerlink" href="#module-05-global-resource-management-performance-tuning" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Section</strong>: 05/14
+<strong>Khóa học</strong>: Oracle Database RAC Administration Course (Ahmed Baraka)
+<strong>Thời gian học ước tính</strong>: 4-5 giờ</p>
+</blockquote>
+<hr />
+<h2 id="bai-hoc-trong-module">📋 Bài học trong Module<a class="headerlink" href="#bai-hoc-trong-module" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Bài học</th>
+<th>File nguồn</th>
+<th>Loại</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Global Resource Management in Oracle RAC</td>
+<td><code>Section 05/Global Resource Management in Oracle RAC.pdf</code></td>
+<td>Lý thuyết</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Monitoring and Tuning Oracle RAC Database</td>
+<td><code>Section 05/Monitoring and Tuning Oracle RAC Database.pdf</code></td>
+<td>Lý thuyết</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Practice 7: Monitoring and Tuning</td>
+<td><code>Section 05/Practice 7 ...pdf</code> + <code>Section 05/scripts/</code></td>
+<td>🔧 Thực hành</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="muc-tieu-module">🎯 Mục tiêu Module<a class="headerlink" href="#muc-tieu-module" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Hiểu <strong>Global Concurrency Control</strong> và <strong>Global Resource Directory (GRD)</strong>.</li>
+<li>Phân biệt <strong>mastering instance</strong> và <strong>shadowing instance</strong>, cơ chế <strong>remastering</strong>.</li>
+<li>Đi qua các <strong>scenario Cache Fusion</strong> cho một block và các <strong>buffer states</strong> (SCUR, XCUR, CR, PI).</li>
+<li>Nhận diện <strong>Global Cache</strong> và <strong>Global Enqueue</strong> wait events.</li>
+<li>Xử lý các vấn đề RAC thường gặp (sequence contention, HW enqueue, TX enqueue) và dùng <strong>AWR/ASH/ADDM</strong>.</li>
+</ul>
+<hr />
+<h2 id="noi-dung-chinh">📋 Nội dung chính<a class="headerlink" href="#noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<h3 id="1-global-resource-management-in-oracle-rac">1. Global Resource Management in Oracle RAC<a class="headerlink" href="#1-global-resource-management-in-oracle-rac" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>📄 Nguồn: <code>Section 05/Global Resource Management in Oracle RAC.pdf</code></p>
+</blockquote>
+<h4 id="11-tu-single-instance-en-global-concurrency-control">1.1 Từ Single Instance đến Global Concurrency Control<a class="headerlink" href="#11-tu-single-instance-en-global-concurrency-control" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Cơ chế concurrency</th>
+<th>Single Instance</th>
+<th>Oracle RAC (Global)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory structure</td>
+<td>latches / mutexes</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Library &amp; row cache</td>
+<td>—</td>
+<td><strong>global locks</strong></td>
+</tr>
+<tr>
+<td>Resource (enqueue)</td>
+<td>enqueue</td>
+<td><strong>global enqueues</strong> (GES)</td>
+</tr>
+<tr>
+<td>Buffer cache</td>
+<td>buffer pins</td>
+<td><strong>cache fusion</strong> (GCS)</td>
+</tr>
+</tbody>
+</table>
+<p>Trong RAC, kiểm soát đồng thời được <strong>nâng lên phạm vi toàn cluster</strong>.</p>
+<h4 id="12-global-resource-directory-grd">1.2 Global Resource Directory (GRD)<a class="headerlink" href="#12-global-resource-directory-grd" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Một đối tượng nằm dưới global concurrency control gọi là <strong>resource</strong>.</li>
+<li><strong>Metadata</strong> của resource được giữ trong <strong>GRD</strong>.</li>
+<li>GRD <strong>phân tán</strong> giữa <strong>tất cả instance</strong> đang active (mỗi database/ASM environment).</li>
+<li>GRD dùng bộ nhớ từ <strong>shared pool</strong>; nó lưu <strong>instance nào đang giữ resource nào</strong>.</li>
+</ul>
+<h4 id="13-mastering-shadowing-instance">1.3 Mastering &amp; Shadowing Instance<a class="headerlink" href="#13-mastering-shadowing-instance" title="Permanent link">&para;</a></h4>
+<p>Đây là ý tưởng cốt lõi cần hiểu đúng:</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph GRD
+      M["Master metadata (Inst.1)"]
+      S1["Shadow metadata (Inst.2)"]
+      S2["Shadow metadata (Inst.3)"]
+    end
+    I1[Instance 1] --- M
+    I2[Instance 2] --- S1
+    I3[Instance 3] --- S2</code></pre>
+<ul>
+<li>Khi một entity được <strong>truy cập lần đầu</strong>, một resource được cấp trong GRD gọi là <strong>master metadata</strong>; instance chứa nó là <strong>resource master</strong>.</li>
+<li>Khi instance khác cần cùng entity: nó gửi yêu cầu tới <strong>mastering instance</strong>; instance master gửi image qua <strong>interconnect</strong> và cấp <strong>shadow metadata</strong> ở instance yêu cầu (<strong>shadowing instance</strong>), đồng thời <strong>cập nhật master metadata</strong>.</li>
+<li><strong>Master metadata</strong> giữ thông tin lock của entity <strong>ở mọi instance</strong>; <strong>shadow metadata</strong> chỉ giữ thông tin lock <strong>ở instance hiện tại</strong>.</li>
+<li>Mỗi instance có thể là master cho <strong>một phần</strong> các entity.</li>
+</ul>
+<h4 id="14-remastering-chuyen-quyen-master">1.4 Remastering (chuyển quyền master)<a class="headerlink" href="#14-remastering-chuyen-quyen-master" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Khi nào xảy ra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Instance-level (lazy remastering)</strong></td>
+<td>Mastering instance shutdown nhẹ nhàng, hoặc có instance mới start</td>
+</tr>
+<tr>
+<td><strong>File affinity</strong></td>
+<td>Yêu cầu truy cập block của một <strong>datafile</strong> đến chủ yếu từ instance khác master</td>
+</tr>
+<tr>
+<td><strong>Object affinity</strong></td>
+<td>Yêu cầu truy cập block của một <strong>object</strong> đến chủ yếu từ instance khác master</td>
+</tr>
+</tbody>
+</table>
+<h4 id="15-global-cache-management-cac-scenario-cho-mot-block">1.5 Global Cache Management — các scenario cho một block<a class="headerlink" href="#15-global-cache-management-cac-scenario-cho-mot-block" title="Permanent link">&para;</a></h4>
+<p>Các kịch bản: <strong>Read from Disk, Read-Read, Read-Write, Write-Write, Write-Read, Write to Disk</strong>. Vai chính là process <strong>LMS</strong> (chuyển block/grant qua interconnect).</p>
+<p><strong>Ví dụ "Read from Disk"</strong> (foreground ở Instance 2, master ở Instance 1):</p>
+<ol>
+<li>Foreground → LMS cục bộ (Inst.2) → LMS gửi qua interconnect tới LMS của <strong>master (Inst.1)</strong>.</li>
+<li>LMS Inst.1 cập nhật master metadata và phát <strong>"grant"</strong> cho Inst.2.</li>
+<li>Inst.2 tạo <strong>shadow metadata</strong>, đặt buffer state = <strong>SCUR</strong>.</li>
+<li>Foreground được báo để <strong>đọc block từ disk</strong> vào buffer cache của Inst.2.</li>
+</ol>
+<p><strong>Buffer States (tra trong <code>V$BH.STATUS</code>):</strong></p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SCUR</strong> (Shared Current)</td>
+<td>Image trong buffer <strong>khớp với disk</strong></td>
+</tr>
+<tr>
+<td><strong>XCUR</strong> (Exclusive Current)</td>
+<td>Block <strong>sắp/đã được cập nhật</strong></td>
+</tr>
+<tr>
+<td><strong>CR</strong> (Consistent Read)</td>
+<td>Image nhất quán với một thời điểm <strong>trong quá khứ</strong></td>
+</tr>
+<tr>
+<td><strong>PI</strong> (Past Image)</td>
+<td>Từng là XCUR nhưng <strong>đã ship</strong> sang instance khác qua cache fusion</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 Trong Read-Write: khi Inst.3 muốn update block đang SCUR ở Inst.2, Inst.2 hạ trạng thái xuống <strong>CR</strong> rồi ship image; Inst.3 nhận <strong>XCUR</strong>, tăng SCN, cập nhật. Trong Write-Write: instance đang giữ XCUR ship image sang instance mới nhưng <strong>giữ lại PI</strong> cho tới khi block được ghi xuống disk.</p>
+</blockquote>
+<hr />
+<h3 id="2-monitoring-and-tuning-oracle-rac-database">2. Monitoring and Tuning Oracle RAC Database<a class="headerlink" href="#2-monitoring-and-tuning-oracle-rac-database" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>📄 Nguồn: <code>Section 05/Monitoring and Tuning Oracle RAC Database.pdf</code></p>
+</blockquote>
+<h4 id="21-nguyen-tac">2.1 Nguyên tắc<a class="headerlink" href="#21-nguyen-tac" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Tune như single-instance trước.</strong> Bottleneck của single-instance sẽ <strong>trầm trọng hơn</strong> trong RAC.</li>
+<li>Vùng đặc thù RAC: <strong>interconnect traffic</strong>.</li>
+<li>Công cụ: <strong>V$ views</strong> (wait events + system/RAC/instance stats), <strong>AWR/Statspack</strong>, <strong>EM</strong> (Cloud Control/Express).</li>
+</ul>
+<h4 id="22-global-cache-wait-events-thuoc-cluster-wait-class">2.2 Global Cache Wait Events (thuộc "Cluster Wait Class")<a class="headerlink" href="#22-global-cache-wait-events-thuoc-cluster-wait-class" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Wait event</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gc [current/cr] block 2/3-way</code></td>
+<td>Nhận block sau 2-3 network hop, không phải chờ</td>
+</tr>
+<tr>
+<td><code>gc [current/cr] block busy</code></td>
+<td>Đã nhận nhưng <strong>không gửi ngay</strong></td>
+</tr>
+<tr>
+<td><code>gc [current/cr] grant 2-way</code></td>
+<td>Không có sẵn, không master cục bộ; nhận <strong>grant</strong> ngay (90% &lt; 2ms ⇒ mạng ổn)</td>
+</tr>
+<tr>
+<td><code>gc current grant busy</code></td>
+<td>Grant nhận <strong>có độ trễ</strong></td>
+</tr>
+<tr>
+<td><code>gc ... congested</code></td>
+<td>Nhận trễ do <strong>thiếu CPU/memory</strong></td>
+</tr>
+<tr>
+<td><code>gc ... failure/retry</code></td>
+<td>Không nhận được do <strong>lỗi</strong></td>
+</tr>
+<tr>
+<td><code>gc buffer busy</code></td>
+<td>Block đến sớm hơn thời gian pin buffer</td>
+</tr>
+<tr>
+<td><code>gc current/cr request</code></td>
+<td>Placeholder trong khi request đang chạy</td>
+</tr>
+<tr>
+<td><code>gc remaster / gcs drm freeze / gc quiesce</code></td>
+<td>Đang <strong>remastering</strong></td>
+</tr>
+</tbody>
+</table>
+<h4 id="23-global-enqueue-wait-events">2.3 Global Enqueue Wait Events<a class="headerlink" href="#23-global-enqueue-wait-events" title="Permanent link">&para;</a></h4>
+<p>Enqueue không phải riêng RAC nhưng trong RAC có thao tác <strong>global lock</strong>. Các loại thường gặp:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TX</strong></td>
+<td>Transaction enqueue — chống update đồng thời</td>
+</tr>
+<tr>
+<td><strong>TM</strong></td>
+<td>Table/partition — bảo vệ định nghĩa bảng khi DML</td>
+</tr>
+<tr>
+<td><strong>HW</strong></td>
+<td>High-water mark — đồng bộ khi cấp block mới</td>
+</tr>
+<tr>
+<td><strong>SQ</strong></td>
+<td>Sequence — serialize khi tăng sequence</td>
+</tr>
+<tr>
+<td><strong>US</strong></td>
+<td>Undo segment (AUM)</td>
+</tr>
+<tr>
+<td><strong>TA</strong></td>
+<td>Dùng cho transaction recovery khi instance recovery</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Truy vấn <code>V$ENQUEUE_STATISTICS</code> để biết enqueue nào ảnh hưởng service time nhiều nhất.</p>
+</blockquote>
+<h4 id="24-session-system-statistics">2.4 Session &amp; System Statistics<a class="headerlink" href="#24-session-system-statistics" title="Permanent link">&para;</a></h4>
+<p><code>V$SYSSTAT</code>, <code>V$SESSTAT</code> (+<code>V$STATNAME</code>), và đặc biệt <strong><code>V$INSTANCE_CACHE_TRANSFER</code></strong> (block chuyển giữa các instance qua interconnect).</p>
+<h4 id="25-meo-tuning-rac-phia-application">2.5 Mẹo tuning RAC (phía application)<a class="headerlink" href="#25-meo-tuning-rac-phia-application" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Giảm <strong>full-table scan dài</strong> trong OLTP.</li>
+<li><strong>Bật và tăng cache của sequence.</strong></li>
+<li>Dùng <strong>partitioning</strong> để phân tán workload.</li>
+<li>Tránh parse thừa; loại <strong>index không chọn lọc</strong>; giám sát/ cấu hình <strong>interconnect</strong>; giảm locking.</li>
+</ul>
+<p><strong>Sequence trong RAC:</strong> insert nhiều gây <strong>leaf block contention</strong> ⇒ nhiều block current/CR chuyển giữa node. Giải pháp: tăng cache sequence, hoặc mỗi instance dùng dải riêng.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">SEQUENCE</span><span class="w"> </span><span class="n">seq_rac_test</span><span class="w"> </span><span class="k">CACHE</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>High-watermark (HW) contention:</strong> nhiều instance insert dồn dập vào cùng segment tại HWM ⇒ triệu chứng <code>enq: HW - contention</code> + <code>gc current grant</code>. Khắc phục: <strong>extent size lớn, đồng nhất</strong> hoặc dùng <strong>partition</strong>.</p>
+<h4 id="26-awr-ash-addm-trong-rac">2.6 AWR, ASH, ADDM trong RAC<a class="headerlink" href="#26-awr-ash-addm-trong-rac" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Công cụ</th>
+<th>Đặc điểm trong RAC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AWR</strong></td>
+<td>Thu thập mỗi giờ; lưu <strong>theo từng instance</strong> (không phải cả cluster); report ở mức instance hoặc database; có section Cluster; <strong>cần license</strong> (không có thì dùng Statspack)</td>
+</tr>
+<tr>
+<td><strong>ASH</strong></td>
+<td>Dựa trên <code>V$ACTIVE_SESSION_HISTORY</code> (snapshot mỗi giây); chạy <code>ashrpt.sql</code></td>
+</tr>
+<tr>
+<td><strong>ADDM</strong></td>
+<td>Phân tích AWR tự động; có 3 mức: <strong>Database ADDM</strong> (cả cluster), <strong>Local</strong> (1 instance), <strong>Partial</strong> (tập instance); phát hiện instance congestion, object contention, <strong>lost blocks</strong>, sự cố/độ trễ <strong>interconnect</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="3-practice-7-monitoring-and-tuning-oracle-rac-database">3. Practice 7: Monitoring and Tuning Oracle RAC Database<a class="headerlink" href="#3-practice-7-monitoring-and-tuning-oracle-rac-database" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>📄 Nguồn: <code>Section 05/Practice 7 ...pdf</code> — Scripts: <code>Section 05/scripts/</code></p>
+</blockquote>
+<p><strong>A. Giám sát cluster &amp; bộ nhớ GRD</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>crsctl<span class="w"> </span>check<span class="w"> </span>crs
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>crs_stat<span class="w"> </span>-t
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>srvctl<span class="w"> </span>status<span class="w"> </span>nodeapps<span class="w"> </span>-n<span class="w"> </span>srv1
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>srvctl<span class="w"> </span>status<span class="w"> </span>database<span class="w"> </span>-d<span class="w"> </span>rac
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>srvctl<span class="w"> </span>status<span class="w"> </span>asm
+</span></code></pre></div>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">-- bộ nhớ GRD (ges/gcs) trong shared pool</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">BYTES</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">SIZE_MB</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SGASTAT</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">BYTES</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&gt;</span><span class="mi">0</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'ges %'</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'gcs %'</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1">-- xu hướng GRD 3 ngày qua từ DBA_HIST_SGASTAT (tăng/giảm đột ngột ⇒ điều tra)</span>
+</span></code></pre></div>
+<p><strong>B. Dùng EM Express để tune session chậm</strong></p>
+<p>Kịch bản: user OLTP bình thường, nhưng một <strong>report</strong> chạy rất lâu dù trả ít dữ liệu.</p>
+<ol>
+<li>Gán module/action để nhận diện session: <code>DBMS_APPLICATION_INFO.SET_MODULE('REPORTING','Customer Report')</code>.</li>
+<li>EM Express → Performance Hub → Activity → Wait Class drop → <strong>Top Dimensions → Action</strong> → chọn <code>Customer Report</code> → click Top SQL ID.</li>
+<li><strong>Tune SQL</strong> → ADDM đề xuất (ví dụ <strong>tạo index</strong>, cải thiện &gt; 99%) → <strong>View Details</strong> (so explain plan) → <strong>Implement</strong>.</li>
+<li>Đo lại thời gian trước/sau ⇒ cải thiện rõ rệt.</li>
+</ol>
+<p><strong>C. Case study Sequence</strong> — so sánh 3 cách sinh khóa chính (dùng <code>showstats&lt;n&gt;.sql</code> xem top wait events):</p>
+<ul>
+<li><strong>Case 1</strong>: dùng bảng đếm (<code>SN</code>) → chậm, nhiều wait.</li>
+<li><strong>Case 2</strong>: dùng <strong>sequence</strong> (không cache) → nhanh hơn ~85%, mất bớt wait event.</li>
+<li><strong>Case 3</strong>: sequence <strong>CACHE 1000</strong> → nhanh nhất. <em>Đánh đổi</em>: số sinh ra <strong>không tuần tự</strong> giữa các instance — application phải chấp nhận.</li>
+</ul>
+<p><strong>D. Case study <code>enq: TX</code></strong> — dùng <strong>AWR</strong> để phân tích:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">DBMS_WORKLOAD_REPOSITORY</span><span class="p">.</span><span class="n">CREATE_SNAPSHOT</span><span class="p">;</span><span class="w">              </span><span class="c1">-- tạo snapshot thủ công</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">-- tạo baseline "NORMAL WORKLOAD" cho khoảng workload bình thường</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="o">@?/</span><span class="n">rdbms</span><span class="o">/</span><span class="k">admin</span><span class="o">/</span><span class="n">awrgdrpt</span><span class="p">.</span><span class="k">sql</span><span class="w">   </span><span class="c1">-- AWR Compare Period Report (RAC; single-instance dùng awrddrpt.sql)</span>
+</span></code></pre></div>
+<p>Trong report → <strong>Wait Stats → Enqueue Activity</strong>: so <code>TX-Transaction</code> giữa 2 kỳ; kỳ có sự cố tăng vọt ⇒ enqueue lock. Rồi truy <code>DBA_HIST_ACTIVE_SESS_HISTORY</code> (lọc <code>EVENT LIKE 'enq: TX%'</code>) để tìm <strong>SQL_ID</strong> thủ phạm (thường là UPDATE giữ transaction mở lâu trước khi commit).</p>
+<blockquote>
+<p>📊 3 bảng RAC-specific trong AWR nên theo dõi định kỳ: <strong>Global Cache Load Profile</strong>, <strong>Global Cache and Enqueue Services – Workload Characteristics</strong> (thời gian xử lý Current/CR = pin/build + send + flush), <strong>Global Cache and Enqueue Services – Messaging Statistics</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="tom-tat-e-nho-lau">🧠 Tóm tắt để nhớ lâu<a class="headerlink" href="#tom-tat-e-nho-lau" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>GRD</strong> = "sổ đăng ký" resource, phân tán trên mọi instance, dùng shared pool.</li>
+<li><strong>Master metadata</strong> (ở resource master) biết lock ở <strong>mọi</strong> instance; <strong>shadow metadata</strong> chỉ biết lock <strong>cục bộ</strong>. <strong>Remastering</strong> có 3 mức: instance-level (lazy), file-affinity, object-affinity.</li>
+<li>Cache Fusion vận hành qua <strong>LMS</strong> + interconnect; nhớ 4 buffer state <strong>SCUR / XCUR / CR / PI</strong> (<code>V$BH.STATUS</code>).</li>
+<li>Wait event RAC thuộc <strong>Cluster Wait Class</strong> — <code>gc ...</code> (global cache) và <code>enq: ...</code> (global enqueue).</li>
+<li>Vấn đề kinh điển: <strong>sequence contention</strong> (⇒ CACHE), <strong>HW enqueue</strong> (⇒ extent lớn/partition), <strong>TX enqueue</strong> (⇒ commit sớm).</li>
+<li>Trong RAC, <strong>AWR lưu theo từng instance</strong>; <strong>ADDM</strong> có mức Database/Local/Partial và phát hiện sự cố <strong>interconnect / lost blocks</strong>.</li>
+</ul>
+<hr />
+<h2 id="sau-khi-hoc-xong-hay-tu-lam">🛠️ Sau khi học xong, hãy tự làm<a class="headerlink" href="#sau-khi-hoc-xong-hay-tu-lam" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Vẽ luồng "Read from Disk" và "Read-Write" theo master/shadow + buffer state.</li>
+<li>Giải thích khác nhau giữa <strong>GCS</strong> và <strong>GES</strong>, giữa <strong>master</strong> và <strong>shadow metadata</strong>.</li>
+<li>Chạy query đo bộ nhớ GRD (<code>V$SGASTAT</code>) và theo dõi xu hướng.</li>
+<li>Tái hiện case sequence: so <code>NOCACHE</code> vs <code>CACHE 1000</code> bằng <code>showstats</code>.</li>
+<li>Tạo AWR baseline + Compare Period Report, tìm SQL gây <code>enq: TX</code>.</li>
+</ol>
+<hr />
+<h2 id="module-tiep-theo">⏭️ Module tiếp theo<a class="headerlink" href="#module-tiep-theo" title="Permanent link">&para;</a></h2>
+<p><strong>Module 06: Services, Load Balancing &amp; Application Continuity</strong> — dynamic services, LBA/TAF, FAN/FCF, Application Continuity &amp; Transaction Guard.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-RAC-Administration-Course/modules/module_05/module_05_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../module-04/module-04-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📘 Module 04: RAC Basic Administration &amp; Backup">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 04: RAC Basic Administration & Backup
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../module-06/module-06-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📘 Module 06: Services, Load Balancing &amp; Application Continuity">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 06: Services, Load Balancing & Application Continuity
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

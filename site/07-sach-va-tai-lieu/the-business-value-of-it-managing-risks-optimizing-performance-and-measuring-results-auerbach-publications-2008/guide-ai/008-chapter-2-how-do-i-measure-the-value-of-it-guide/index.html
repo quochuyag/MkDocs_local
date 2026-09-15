@@ -1,0 +1,2969 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../007-chapter-1-what-should-the-business-expect-from-it-guide/">
+      
+      
+        <link rel="next" href="../009-chapter-3-how-much-it-is-enough-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📚 Bài Giảng 08: Làm Thế Nào Để Đo Lường Giá Trị IT? - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bai-giang-08-lam-the-nao-e-o-luong-gia-tri-it" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📚 Bài Giảng 08: Làm Thế Nào Để Đo Lường Giá Trị IT?
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            07. Sach & Tai lieu (PDF da chuyen doi)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../devsecops-in-oracle-cloud-securing-and-automating-oracle-cloud-infrastructure-for-sebastian-hassinger/guide-ai/012-introduction-to-oci-and-devsecops-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Devsecops in oracle cloud securing and automating oracle cloud infrastructure for sebastian hassinger
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../itil-foundation-v5/guide-ai/001-itil-foundation-version5-official-book-en-v50-prpdf-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Itil foundation v5
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../managing-it-performance-to-create-business-value/guide-ai/004-chapter-1-designing-performance-based-strategic-planning-systems-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Managing it performance to create business value
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../references/guide-structure/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    References
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../skill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Book Study Guide — Tạo Bài Giảng Từ Sách
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_8" id="__nav_7_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    The business value of it managing risks optimizing performance and measuring results auerbach publications 2008
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_8">
+            <span class="md-nav__icon md-icon"></span>
+            The business value of it managing risks optimizing performance and measuring results auerbach publications 2008
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_8_1" id="__nav_7_8_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Guide ai
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_8_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            Guide ai
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../003-introduction-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng: Giới Thiệu — Giá Trị Kinh Doanh của Công Nghệ Thông Tin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-about-the-authors-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng: Giới Thiệu Tác Giả — Ai Đứng Sau Cuốn Sách Này?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../005-list-of-commonly-used-acronyms-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 05: Danh Mục Từ Viết Tắt Thường Dùng
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../006-part-i-what-does-it-contribute-to-the-business-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 06: Phần I — IT Đóng Góp Gì Cho Doanh Nghiệp?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../007-chapter-1-what-should-the-business-expect-from-it-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 07: Doanh Nghiệp Nên Kỳ Vọng Gì Từ IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 08: Làm Thế Nào Để Đo Lường Giá Trị IT?
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 08: Làm Thế Nào Để Đo Lường Giá Trị IT?
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Tóm tắt nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-o-luong-gia-tri-it-lai-phuc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao đo lường giá trị IT lại phức tạp?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-phuong-phap-o-luong-tai-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các phương pháp đo lường tài chính
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-luong-phi-tai-chinh-va-a-chieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đo lường phi tài chính và đa chiều
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-phan-cap-va-business-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard phân cấp và Business Case
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔑 Khái niệm quan trọng">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cong-thuc-gia-tri-grady-gradys-value-formula" class="md-nav__link">
+    <span class="md-ellipsis">
+      Công Thức Giá Trị Grady (Grady's Value Formula)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tco-tong-chi-phi-so-huu-total-cost-of-ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      TCO — Tổng Chi Phí Sở Hữu (Total Cost of Ownership)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roi-voi-irr-va-payback-period-return-on-investment" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROI với IRR và Payback Period (Return on Investment)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eva-gia-tri-kinh-te-gia-tang-economic-value-added" class="md-nav__link">
+    <span class="md-ellipsis">
+      EVA — Giá Trị Kinh Tế Gia Tăng (Economic Value Added)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-luong-a-chieu-multi-dimensional-it-valuation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đo Lường Đa Chiều (Multi-Dimensional IT Valuation)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#balanced-scorecard-bsc-the-iem-can-bang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Balanced Scorecard (BSC — Thẻ Điểm Cân Bằng)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#business-case-ho-so-kinh-doanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Business Case (Hồ Sơ Kinh Doanh)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-phan-cap-hierarchical-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard Phân Cấp (Hierarchical Dashboard)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roie-loi-tuc-ha-tang-it-return-on-infrastructure-employed" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROIE — Lợi Tức Hạ Tầng IT (Return on Infrastructure Employed)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-growth-bank-vs-old-bank-hai-thai-cuc-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Growth Bank vs Old Bank — Hai Thái Cực ROI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-tinh-business-case-cho-legacy-it-bai-hoc-amazon" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Tính Business Case cho Legacy IT — Bài Học Amazon
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-dashboard-it-cho-ceo-tu-du-lieu-en-quyet-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Dashboard IT cho CEO — Từ Dữ Liệu Đến Quyết Định
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-cac-phuong-phap-o-luong-tai-chinh-it-so-sanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng: Các phương pháp đo lường tài chính IT so sánh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-4-loai-au-tu-it-va-thuoc-o-gia-tri-tuong-ung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng: 4 loại đầu tư IT và thước đo giá trị tương ứng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#so-o-chuoi-gia-tri-it-tu-au-tu-en-ket-qua-kinh-doanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sơ đồ: Chuỗi giá trị IT từ đầu tư đến kết quả kinh doanh
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh-key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh (Key Takeaways)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../009-chapter-3-how-much-it-is-enough-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 09: Bao Nhiêu IT Là Đủ?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../010-chapter-4-am-i-paying-too-much-for-it-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Tôi Có Đang Trả Quá Nhiều Cho IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../011-part-ii-why-should-we-care-about-it-governance-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Tại Sao Chúng Ta Cần Quan Tâm Đến IT Governance?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../012-chapter-5-who-governs-it-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Ai Quản Trị IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../013-chapter-6-what-models-should-it-use-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: IT Nên Dùng Những Mô Hình Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../014-chapter-7-are-we-outsourcing-effectively-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chương 7 — Chúng Ta Đang Outsource Hiệu Quả Không?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../015-chapter-8-what-tools-should-it-use-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chương 8 — IT Nên Dùng Công Cụ Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../016-part-iii-why-should-we-measure-it-performance-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Part III — Tại Sao Chúng Ta Phải Đo Lường Hiệu Suất IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../017-chapter-9-how-do-i-measure-it-performance-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chương 9 — Đo Lường Hiệu Suất IT Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../018-chapter-10-is-it-operating-effectively-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chapter 10 — IT Có Đang Hoạt Động Hiệu Quả Không?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../019-chapter-11-where-are-we-in-relation-to-industry-peers-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chapter 11 — IT Đứng Ở Đâu So Với Đồng Nghiệp Ngành?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../020-chapter-12-how-can-we-do-it-better-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 12 — Làm Thế Nào Để Làm Tốt Hơn IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../021-part-iv-how-should-we-change-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Phần IV — Chúng Ta Nên Thay Đổi Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../022-chapter-13-how-can-we-manage-it-changes-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 13 — Chúng Ta Có Thể Quản Lý Thay Đổi IT Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../023-chapter-14-how-should-it-manage-risk-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 14 — IT Nên Quản Lý Rủi Ro Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../024-chapter-15-how-should-it-manage-its-people-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 15 — IT Nên Quản Lý Con Người Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../025-chapter-16-what-should-it-expect-from-the-business-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 16 — IT Nên Kỳ Vọng Gì Từ Business?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trạng Thái Guide — The Business Value of IT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Tóm tắt nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-o-luong-gia-tri-it-lai-phuc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao đo lường giá trị IT lại phức tạp?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-phuong-phap-o-luong-tai-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các phương pháp đo lường tài chính
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-luong-phi-tai-chinh-va-a-chieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đo lường phi tài chính và đa chiều
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-phan-cap-va-business-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard phân cấp và Business Case
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔑 Khái niệm quan trọng">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cong-thuc-gia-tri-grady-gradys-value-formula" class="md-nav__link">
+    <span class="md-ellipsis">
+      Công Thức Giá Trị Grady (Grady's Value Formula)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tco-tong-chi-phi-so-huu-total-cost-of-ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      TCO — Tổng Chi Phí Sở Hữu (Total Cost of Ownership)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roi-voi-irr-va-payback-period-return-on-investment" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROI với IRR và Payback Period (Return on Investment)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eva-gia-tri-kinh-te-gia-tang-economic-value-added" class="md-nav__link">
+    <span class="md-ellipsis">
+      EVA — Giá Trị Kinh Tế Gia Tăng (Economic Value Added)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-luong-a-chieu-multi-dimensional-it-valuation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đo Lường Đa Chiều (Multi-Dimensional IT Valuation)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#balanced-scorecard-bsc-the-iem-can-bang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Balanced Scorecard (BSC — Thẻ Điểm Cân Bằng)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#business-case-ho-so-kinh-doanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Business Case (Hồ Sơ Kinh Doanh)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-phan-cap-hierarchical-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard Phân Cấp (Hierarchical Dashboard)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roie-loi-tuc-ha-tang-it-return-on-infrastructure-employed" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROIE — Lợi Tức Hạ Tầng IT (Return on Infrastructure Employed)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-growth-bank-vs-old-bank-hai-thai-cuc-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Growth Bank vs Old Bank — Hai Thái Cực ROI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-tinh-business-case-cho-legacy-it-bai-hoc-amazon" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Tính Business Case cho Legacy IT — Bài Học Amazon
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-dashboard-it-cho-ceo-tu-du-lieu-en-quyet-inh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Dashboard IT cho CEO — Từ Dữ Liệu Đến Quyết Định
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-cac-phuong-phap-o-luong-tai-chinh-it-so-sanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng: Các phương pháp đo lường tài chính IT so sánh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-4-loai-au-tu-it-va-thuoc-o-gia-tri-tuong-ung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng: 4 loại đầu tư IT và thước đo giá trị tương ứng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#so-o-chuoi-gia-tri-it-tu-au-tu-en-ket-qua-kinh-doanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sơ đồ: Chuỗi giá trị IT từ đầu tư đến kết quả kinh doanh
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh-key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh (Key Takeaways)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="bai-giang-08-lam-the-nao-e-o-luong-gia-tri-it">📚 Bài Giảng 08: Làm Thế Nào Để Đo Lường Giá Trị IT?<a class="headerlink" href="#bai-giang-08-lam-the-nao-e-o-luong-gia-tri-it" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Nguồn:</strong> The Business Value of IT — Chapter 2: How Do I Measure the Value of IT?<br />
+<strong>Ngày tạo:</strong> 25/04/2026<br />
+<strong>Thời gian học ước tính:</strong> 55 phút</p>
+</blockquote>
+<hr />
+<h2 id="muc-tieu-hoc-tap">🎯 Mục tiêu học tập<a class="headerlink" href="#muc-tieu-hoc-tap" title="Permanent link">&para;</a></h2>
+<p>Sau khi hoàn thành chapter này, bạn sẽ có thể:</p>
+<ul>
+<li><strong>Giải thích</strong> định nghĩa giá trị IT theo công thức Grady: Value = Benefits − Costs với 4 loại lợi ích</li>
+<li><strong>Phân biệt</strong> 6 phương pháp đo lường tài chính (TCO, ROI, EVA, ROV, ROA, ROIE) và biết khi nào dùng cái nào</li>
+<li><strong>Mô tả</strong> 3 cách tiếp cận đo lường đa chiều (multi-criteria, strategy framework, portfolio management)</li>
+<li><strong>Áp dụng</strong> Balanced Scorecard (BSC) 4 tầng để đánh giá giá trị IT gắn với chiến lược kinh doanh</li>
+<li><strong>Thiết kế</strong> cấu trúc dashboard phân cấp phù hợp với từng cấp ra quyết định trong doanh nghiệp</li>
+<li><strong>Đánh giá</strong> khi nào một business case IT đủ mạnh để được phê duyệt và cách theo dõi giá trị sau triển khai</li>
+</ul>
+<hr />
+<h2 id="tom-tat-noi-dung-chinh">📋 Tóm tắt nội dung chính<a class="headerlink" href="#tom-tat-noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<h3 id="tai-sao-o-luong-gia-tri-it-lai-phuc-tap">Tại sao đo lường giá trị IT lại phức tạp?<a class="headerlink" href="#tai-sao-o-luong-gia-tri-it-lai-phuc-tap" title="Permanent link">&para;</a></h3>
+<p>Chapter mở đầu bằng nhận định: "giá trị đẹp trong mắt người nhìn" — giống như cái đẹp, giá trị IT mang tính chủ quan. Định nghĩa đơn giản nhất theo Grady: Value = Benefits − Costs. Lợi ích (Benefits) gồm 4 loại: (1) product capability — tăng doanh thu hay giảm chi phí; (2) time to market — giá trị từ việc ra sản phẩm sớm hơn; (3) timeliness — giá trị từ giao đúng hạn cam kết; (4) product evolution — khả năng nâng cấp dễ dàng trong tương lai. Chi phí gồm: development, rework, và knowledge recovery. Điểm quan trọng: doanh nghiệp phải giữ quyền kiểm soát quy trình đánh giá giá trị — không được để IT Providers tự định nghĩa "giá trị" mà họ tạo ra.</p>
+<h3 id="cac-phuong-phap-o-luong-tai-chinh">Các phương pháp đo lường tài chính<a class="headerlink" href="#cac-phuong-phap-o-luong-tai-chinh" title="Permanent link">&para;</a></h3>
+<p>IT không tạo giá trị trực tiếp — giá trị IT chỉ xuất hiện qua tác động lên quy trình kinh doanh. Sáu phương pháp tài chính phổ biến: <strong>TCO</strong> (tổng chi phí sở hữu suốt vòng đời), <strong>ROI</strong> (tỷ lệ lợi tức so với đầu tư, dùng IRR và payback period), <strong>EVA</strong> (Economic Value Added — tương tự ROI nhưng benchmark là chi phí cơ hội), <strong>ROV</strong> (Real Options Valuation — tính giá trị tương lai của hạ tầng IT cho các dự án sau này), <strong>ROA</strong> (Return on Assets — áp dụng cho tài sản IT riêng biệt, cần CMDB), <strong>ROIE</strong> (Return on Infrastructure Employed — đánh giá dịch vụ IT thay vì tài sản). Mỗi phương pháp có ưu và nhược điểm riêng; không có phương pháp nào là hoàn hảo duy nhất.</p>
+<h3 id="o-luong-phi-tai-chinh-va-a-chieu">Đo lường phi tài chính và đa chiều<a class="headerlink" href="#o-luong-phi-tai-chinh-va-a-chieu" title="Permanent link">&para;</a></h3>
+<p>Vấn đề lớn của đo lường tài chính thuần: một dự án IT có ROI như nhau dù nó tăng hay phá hủy customer intimacy. Cần đo lường đa chiều gồm 3 cách tiếp cận: (1) <strong>multi-criteria</strong> — kết hợp nhiều tiêu chí thành điểm tổng hợp nhân với ROI (Information Economics, AIE, TEI, TVO); (2) <strong>strategy framework</strong> — đánh giá IT theo mức đóng góp cho mục tiêu chiến lược (Balanced Scorecard, IT Scorecard); (3) <strong>portfolio management</strong> — nhóm IT investments theo mục tiêu chung (Giga framework, Ross &amp; Beath quadrants, MIT pyramid). Ngoài ra, các yếu tố phi tài chính của Lutchen như kỹ năng IT, morale, và khả năng hấp thụ thay đổi cũng cần được theo dõi.</p>
+<h3 id="dashboard-phan-cap-va-business-case">Dashboard phân cấp và Business Case<a class="headerlink" href="#dashboard-phan-cap-va-business-case" title="Permanent link">&para;</a></h3>
+<p>Mọi đo lường chỉ có giá trị khi được dùng để ra quyết định. Dashboard phân cấp trình bày 4–10 metrics quan trọng nhất cho từng cấp quản lý, với khả năng drill-down chi tiết. Sáu metrics IT cốt lõi: System Performance, IT Support Performance, Partnership Ratio, Service-level Effectiveness, New Projects Index, IT Total Cost Ratio. Business Case là công cụ chính để đánh giá và theo dõi giá trị IT — cần xây dựng cho cả dự án mới lẫn chi phí vận hành hệ thống cũ (legacy "keep the lights on"). Value Visualization Framework (VVF) của DCG là cách tiếp cận tổng thể để liên tục hiển thị giá trị IT theo thời gian.</p>
+<hr />
+<h2 id="khai-niem-quan-trong">🔑 Khái niệm quan trọng<a class="headerlink" href="#khai-niem-quan-trong" title="Permanent link">&para;</a></h2>
+<h3 id="cong-thuc-gia-tri-grady-gradys-value-formula">Công Thức Giá Trị Grady <em>(Grady's Value Formula)</em><a class="headerlink" href="#cong-thuc-gia-tri-grady-gradys-value-formula" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Value = Benefits − Costs, trong đó Benefits gồm 4 loại: product capability, time to market, timeliness, product evolution</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Là nền tảng tư duy về giá trị IT — buộc phải định lượng cả lợi ích lẫn chi phí một cách cụ thể</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>Hệ thống bán vé Olympic ra sớm 3 tuần → time to market value = doanh thu từ 3 tuần bán vé thêm</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>ROI, TCO, Business Case, Benefits Realization</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tco-tong-chi-phi-so-huu-total-cost-of-ownership">TCO — Tổng Chi Phí Sở Hữu <em>(Total Cost of Ownership)</em><a class="headerlink" href="#tco-tong-chi-phi-so-huu-total-cost-of-ownership" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Toàn bộ chi phí của một IT asset từ mua ban đầu đến triển khai, vận hành, bảo trì, và thanh lý</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Cho phép so sánh hai giải pháp đáp ứng cùng nhu cầu kinh doanh dựa trên chi phí thực tế toàn vòng đời</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>Phần mềm A giá mua $10K nhưng TCO 5 năm = $80K. Phần mềm B giá mua $20K nhưng TCO 5 năm = $50K → B tốt hơn</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>ROI, ROIE, CMDB, legacy systems</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roi-voi-irr-va-payback-period-return-on-investment">ROI với IRR và Payback Period <em>(Return on Investment)</em><a class="headerlink" href="#roi-voi-irr-va-payback-period-return-on-investment" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Tỷ lệ lợi tức thu được so với vốn đầu tư IT; thường đi kèm IRR (tỷ suất hoàn vốn nội bộ) và payback period (thời gian hoàn vốn)</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Ngưỡng thực tế phổ biến: IRR tối thiểu 20%, payback period 1–3 năm — nếu không đạt, dự án nên bị bác</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>Dự án IT tốn $2.5M, dự kiến tạo $10M doanh thu trong 5 năm → ROI = 300% tổng, ~25%/năm</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>IRR, EVA, ROV, business case, payback period</td>
+</tr>
+</tbody>
+</table>
+<h3 id="eva-gia-tri-kinh-te-gia-tang-economic-value-added">EVA — Giá Trị Kinh Tế Gia Tăng <em>(Economic Value Added)</em><a class="headerlink" href="#eva-gia-tri-kinh-te-gia-tang-economic-value-added" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Tương tự ROI nhưng benchmark là chi phí cơ hội (opportunity cost) — đặt câu hỏi "tiền này đầu tư vào chỗ khác có tốt hơn không?"</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Phù hợp khi đánh giá liệu đầu tư IT có thực sự tốt hơn các lựa chọn đầu tư khác của tổ chức</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>Dự án IT ROI 18%/năm, nhưng đầu tư tài sản tài chính khác có thể đạt 22% → EVA âm → nên xem xét lại</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>ROI, IRR, opportunity cost, Value for Money</td>
+</tr>
+</tbody>
+</table>
+<h3 id="o-luong-a-chieu-multi-dimensional-it-valuation">Đo Lường Đa Chiều <em>(Multi-Dimensional IT Valuation)</em><a class="headerlink" href="#o-luong-a-chieu-multi-dimensional-it-valuation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Cách tiếp cận kết hợp đo lường tài chính với các yếu tố chiến lược, rủi ro, và phi tài chính để đánh giá toàn diện giá trị IT</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Đo lường tài chính thuần không phân biệt được đầu tư IT tăng hay phá hủy giá trị chiến lược</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>Dự án IT ROI = 30% nhưng phá hủy customer intimacy của ngân hàng → đo lường đa chiều sẽ cho thấy giá trị thực âm</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>Balanced Scorecard, portfolio management, strategy alignment</td>
+</tr>
+</tbody>
+</table>
+<h3 id="balanced-scorecard-bsc-the-iem-can-bang">Balanced Scorecard <em>(BSC — Thẻ Điểm Cân Bằng)</em><a class="headerlink" href="#balanced-scorecard-bsc-the-iem-can-bang" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Framework đánh giá tổ chức qua 4 tầng: tài chính, khách hàng, quy trình nội bộ, và học tập &amp; tăng trưởng — mỗi tầng có metrics liên kết với nhau</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Liên kết đầu tư IT với mục tiêu chiến lược kinh doanh theo từng tầng, tránh tối ưu một chiều</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>IT đầu tư vào CRM (tầng khách hàng) → cải thiện retention → tăng doanh thu (tầng tài chính) → chuỗi nguyên nhân-kết quả</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>IT Scorecard, strategy framework, GQM, KPI</td>
+</tr>
+</tbody>
+</table>
+<h3 id="business-case-ho-so-kinh-doanh">Business Case <em>(Hồ Sơ Kinh Doanh)</em><a class="headerlink" href="#business-case-ho-so-kinh-doanh" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Tài liệu chính thức định lượng giá trị (tangible và intangible) của một dự án IT so với chi phí, được theo dõi xuyên suốt vòng đời dự án</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Là công cụ quản lý chính để phê duyệt, giám sát, và điều chỉnh đầu tư IT — phải xây dựng cho cả dự án mới lẫn chi phí duy trì hệ thống cũ</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>Nếu lợi ích toàn bộ là intangible và không thể đo lường → advisability of starting the project should be seriously questioned</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>ROI, TCO, EVA, benefits realization, risk management</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboard-phan-cap-hierarchical-dashboard">Dashboard Phân Cấp <em>(Hierarchical Dashboard)</em><a class="headerlink" href="#dashboard-phan-cap-hierarchical-dashboard" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Hệ thống trình bày thông tin IT theo cấp bậc: CEO thấy 4–10 KPI tổng hợp, quản lý vận hành thấy chi tiết — có thể drill-down</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Mọi đo lường chỉ có giá trị khi được trình bày đúng định dạng cho đúng người ra quyết định</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>CEO thấy "doanh số tháng giảm" → drill-down → thấy một business unit cụ thể có vấn đề → drill-down tiếp → thấy nguyên nhân IT</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>GQM, SLA, Partnership Ratio, System Performance</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roie-loi-tuc-ha-tang-it-return-on-infrastructure-employed">ROIE — Lợi Tức Hạ Tầng IT <em>(Return on Infrastructure Employed)</em><a class="headerlink" href="#roie-loi-tuc-ha-tang-it-return-on-infrastructure-employed" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Định nghĩa</strong></td>
+<td>Tỷ lệ lợi tức tính trên chi phí dịch vụ IT (gồm cả khấu hao), tập trung vào dịch vụ thay vì tài sản như ROA</td>
+</tr>
+<tr>
+<td><strong>Tại sao quan trọng</strong></td>
+<td>Phù hợp để so sánh hiệu suất của các IT Providers khác nhau (in-house vs outsourced) cung cấp cùng loại dịch vụ</td>
+</tr>
+<tr>
+<td><strong>Ví dụ</strong></td>
+<td>Nếu doanh thu công ty giảm nhưng IT không cắt giảm chi phí tương ứng → ROIE xấu đi → cần xem xét điều chỉnh</td>
+</tr>
+<tr>
+<td><strong>Liên quan đến</strong></td>
+<td>ROA, TCO, IT Providers, outsourcing comparison</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vi-du-thuc-te-case-study">🌍 Ví dụ thực tế &amp; Case Study<a class="headerlink" href="#vi-du-thuc-te-case-study" title="Permanent link">&para;</a></h2>
+<h3 id="case-study-growth-bank-vs-old-bank-hai-thai-cuc-roi">Case Study: Growth Bank vs Old Bank — Hai Thái Cực ROI<a class="headerlink" href="#case-study-growth-bank-vs-old-bank-hai-thai-cuc-roi" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Hai ngân hàng top 10, hai triết lý đầu tư IT hoàn toàn đối lập nhau.</p>
+<p><strong>Vấn đề gặp phải:</strong> Mỗi ngân hàng đều thành công theo cách riêng nhưng cũng chịu hậu quả từ chính triết lý của mình.</p>
+<p><strong>Growth Bank:</strong> Tin tưởng tuyệt đối vào ROI — "bỏ $1 để kiếm $2 là tốt." Tăng trưởng bùng nổ nhưng sau nhiều năm, IT trở nên rất đắt so với peer groups, các ứng dụng xây dựng độc lập dẫn đến trùng lặp lớn, không có kiến trúc tổng thể. TCO không được theo dõi đúng cách.</p>
+<p><strong>Old Bank:</strong> Mỗi dự án phải có ROI tối thiểu 5:1 và payback 2 năm. Chi phí IT luôn thấp hơn peer groups. Nhưng hệ quả: đổi mới hiếm, time to market chậm, tăng trưởng chủ yếu qua M&amp;A (mua lại) thay vì nội tại.</p>
+<p><strong>Kết quả:</strong> Cả hai đều trong top 10 — nhưng bằng những cách tốn chi phí khác nhau. ROI đơn lẻ không phải câu trả lời duy nhất.</p>
+<p><strong>📌 Bài học rút ra:</strong></p>
+<ul>
+<li>ROI là một chiều trong quyết định đa chiều — cần kết hợp với TCO, strategic alignment, và risk</li>
+<li>Thiếu kiến trúc tổng thể (target architecture) dẫn đến chi phí IT "ngầm" khổng lồ về lâu dài</li>
+</ul>
+<p><strong>🇻🇳 Liên hệ thực tế Việt Nam:</strong>
+VPBank (aggressive growth IT investment) và một số ngân hàng nhà nước (conservative ROI requirements) thể hiện hai triết lý tương tự. Bài học: cả hai cực đều có rủi ro — cần cân bằng giữa đầu tư chiến lược và kiểm soát chi phí dài hạn.</p>
+<hr />
+<h3 id="case-study-tinh-business-case-cho-legacy-it-bai-hoc-amazon">Case Study: Tính Business Case cho Legacy IT — Bài Học Amazon<a class="headerlink" href="#case-study-tinh-business-case-cho-legacy-it-bai-hoc-amazon" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Một công ty e-commerce Việt Nam đang cân nhắc có nên tiếp tục chi tiền bảo trì hệ thống thanh toán 5 tuổi hay đầu tư thay mới hoàn toàn.</p>
+<p><strong>Vấn đề gặp phải:</strong> Đội tài chính không thể đưa ra business case cho chi phí bảo trì vì "nó chỉ giữ hệ thống chạy, không tạo ra doanh thu mới."</p>
+<p><strong>Phân tích theo framework Chapter 2:</strong>
+Sách dạy: business case cho legacy IT phải tính <strong>cost avoidance</strong> — chi phí tiết kiệm được nhờ hệ thống không bị lỗi. Ví dụ từ sách: một ngày Amazon.com downtime gây mất doanh thu khổng lồ và thiệt hại uy tín không đo được. Với công ty e-commerce Việt Nam: nếu hệ thống thanh toán down 4 tiếng trong ngày sale lớn → mất bao nhiêu đơn hàng? Đó chính là giá trị "vô hình" của chi phí bảo trì.</p>
+<p><strong>Kết quả:</strong> Khi tính đúng cost avoidance, business case cho bảo trì hệ thống cũ trở nên rõ ràng — và giúp ban lãnh đạo ra quyết định có nên đầu tư thay mới hay không.</p>
+<p><strong>📌 Bài học rút ra:</strong></p>
+<ul>
+<li>Legacy IT có giá trị — nhưng giá trị đó ẩn trong "cost avoidance" không phải "revenue generation"</li>
+<li>Business case phải xây dựng cho CẢ dự án mới lẫn chi phí vận hành hệ thống cũ</li>
+</ul>
+<p><strong>🇻🇳 Liên hệ thực tế Việt Nam:</strong>
+Các ngân hàng Việt Nam với hệ thống core banking 10–15 tuổi đang đối mặt chính xác vấn đề này: chi phí bảo trì ngày càng tăng, nhưng rủi ro downtime của hệ thống cũ cũng rất cao. Business case đúng phải tính cả hai phía.</p>
+<hr />
+<h3 id="case-study-dashboard-it-cho-ceo-tu-du-lieu-en-quyet-inh">Case Study: Dashboard IT cho CEO — Từ Dữ Liệu Đến Quyết Định<a class="headerlink" href="#case-study-dashboard-it-cho-ceo-tu-du-lieu-en-quyet-inh" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> CIO một tập đoàn bán lẻ cần thuyết phục CEO rằng IT đang hoạt động tốt và tạo ra giá trị.</p>
+<p><strong>Vấn đề gặp phải:</strong> CEO nhận được báo cáo IT dày 50 trang mỗi tháng nhưng không biết bắt đầu đọc từ đâu hay liệu IT có đang "tốt" không.</p>
+<p><strong>Giải pháp theo framework Chapter 2:</strong>
+Xây dựng dashboard phân cấp theo 6 metrics: (1) System Performance — % uptime của hệ thống critical; (2) IT Support Performance — SLA của helpdesk; (3) Partnership Ratio — % dự án kinh doanh có IT tham gia từ đầu; (4) Service-level Effectiveness — điểm satisfaction khảo sát người dùng; (5) New Projects Index — % dự án on time/on budget; (6) IT Total Cost Ratio — chi phí IT/doanh thu. CEO chỉ thấy 6 con số này. Khi thấy bất thường, drill-down chi tiết.</p>
+<p><strong>Kết quả:</strong> CEO có thể theo dõi IT chỉ trong 5 phút mỗi tuần, và chỉ cần đọc sâu hơn khi có chỉ số bất thường.</p>
+<p><strong>📌 Bài học rút ra:</strong></p>
+<ul>
+<li>Dashboard không phải để "báo cáo tất cả" mà để "hiển thị đúng thứ cho đúng người"</li>
+<li>Partnership Ratio là metric thú vị nhất — chỉ doanh nghiệp mới biết tổng số dự án, IT không thể tự đo</li>
+</ul>
+<p><strong>🇻🇳 Liên hệ thực tế Việt Nam:</strong>
+Hầu hết CIO Việt Nam vẫn đang báo cáo theo kiểu kỹ thuật (số tickets, uptime %) thay vì theo ngôn ngữ kinh doanh. Xây dựng 6 metrics trong dashboard theo chuẩn Chapter 2 sẽ giúp thay đổi cuộc đối thoại với CEO.</p>
+<hr />
+<h2 id="so-o-bang-tong-hop">📊 Sơ đồ &amp; Bảng tổng hợp<a class="headerlink" href="#so-o-bang-tong-hop" title="Permanent link">&para;</a></h2>
+<h3 id="bang-cac-phuong-phap-o-luong-tai-chinh-it-so-sanh">Bảng: Các phương pháp đo lường tài chính IT so sánh<a class="headerlink" href="#bang-cac-phuong-phap-o-luong-tai-chinh-it-so-sanh" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Phương pháp</th>
+<th>Đo lường cái gì</th>
+<th>Ưu điểm</th>
+<th>Hạn chế chính</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCO</td>
+<td>Tổng chi phí vòng đời</td>
+<td>So sánh chi phí đầy đủ giữa các lựa chọn</td>
+<td>Không đo lợi ích</td>
+</tr>
+<tr>
+<td>ROI</td>
+<td>Lợi tức so với đầu tư</td>
+<td>Phổ biến, dễ hiểu, có payback period</td>
+<td>Khó dự báo tương lai chính xác</td>
+</tr>
+<tr>
+<td>EVA</td>
+<td>ROI so với chi phí cơ hội</td>
+<td>Tính đến cơ hội thay thế</td>
+<td>Phức tạp hơn ROI</td>
+</tr>
+<tr>
+<td>ROV</td>
+<td>Giá trị hạ tầng cho dự án tương lai</td>
+<td>Phù hợp cho đầu tư hạ tầng chung</td>
+<td>Tính toán phức tạp</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>Lợi tức từ tài sản IT</td>
+<td>Gắn IT với báo cáo tài chính doanh nghiệp</td>
+<td>Cần CMDB chính xác</td>
+</tr>
+<tr>
+<td>ROIE</td>
+<td>Lợi tức từ dịch vụ IT</td>
+<td>So sánh providers khác nhau</td>
+<td>Cần dữ liệu dịch vụ chi tiết</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bang-4-loai-au-tu-it-va-thuoc-o-gia-tri-tuong-ung">Bảng: 4 loại đầu tư IT và thước đo giá trị tương ứng<a class="headerlink" href="#bang-4-loai-au-tu-it-va-thuoc-o-gia-tri-tuong-ung" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Loại đầu tư</th>
+<th>Mục tiêu</th>
+<th>Kết quả điển hình</th>
+<th>Thước đo chính</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strategic</td>
+<td>Lợi thế cạnh tranh, thị phần</td>
+<td>50% thất bại, một số thành công vượt trội</td>
+<td>Revenue growth, ROI, ROA</td>
+</tr>
+<tr>
+<td>Informational</td>
+<td>Thông tin tốt hơn, kiểm soát tốt hơn</td>
+<td>Chất lượng cao hơn, time to market ngắn hơn</td>
+<td>Time-to-market, product quality</td>
+</tr>
+<tr>
+<td>Transactional</td>
+<td>Xử lý giao dịch khối lượng cao, giảm chi phí</td>
+<td>ROI 25–40%, ROA cao, rủi ro thấp</td>
+<td>Cost per transaction, ROI</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>Nền tảng hạ tầng dùng chung</td>
+<td>Hỗ trợ và tạo điều kiện cho thay đổi</td>
+<td>Infrastructure availability, cost per user</td>
+</tr>
+</tbody>
+</table>
+<h3 id="so-o-chuoi-gia-tri-it-tu-au-tu-en-ket-qua-kinh-doanh">Sơ đồ: Chuỗi giá trị IT từ đầu tư đến kết quả kinh doanh<a class="headerlink" href="#so-o-chuoi-gia-tri-it-tu-au-tu-en-ket-qua-kinh-doanh" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>[Đầu tư IT] → [Quy trình Kinh Doanh Được Cải Thiện] → [Giá Trị Kinh Doanh]
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>      ↓                         ↓                              ↓
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>[Business Case]         [Operational Metrics]        [Financial / Strategic KPIs]
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>      ↓                         ↓                              ↓
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  TCO / ROI             System Performance             Revenue / Cost Savings
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                         Partnership Ratio              Customer Satisfaction
+</span></code></pre></div>
+<hr />
+<h2 id="cau-hoi-on-tap">❓ Câu hỏi ôn tập<a class="headerlink" href="#cau-hoi-on-tap" title="Permanent link">&para;</a></h2>
+<p><strong>Câu 1 (Nhớ):</strong> Theo Grady, công thức tính giá trị phần mềm/IT là gì? Liệt kê 4 loại lợi ích (Benefits) và ít nhất 2 loại chi phí (Costs).</p>
+<blockquote>
+<p>💡 <em>Gợi ý: Value = Benefits − Costs; lợi ích gồm 4 loại liên quan đến sản phẩm, thời gian, cam kết, và tuổi thọ</em></p>
+<p>📝 <strong>Đáp án:</strong> Theo Grady, Value = Benefits − Costs. Bốn loại lợi ích là: (1) <strong>Product capability</strong> — giá trị từ việc tăng doanh thu hoặc giảm chi phí cho khách hàng (ví dụ: hệ thống mới giúp tự động hóa quy trình, giảm 30% nhân công); (2) <strong>Time to market</strong> — giá trị từ việc ra sản phẩm sớm hơn (ví dụ: bán vé Olympic 3 tuần sớm hơn = 3 tuần doanh thu thêm); (3) <strong>Timeliness</strong> — giá trị từ việc giao đúng hạn cam kết (ví dụ: hệ thống mới phải xong trước khi hợp đồng bảo trì hệ thống cũ hết hạn); (4) <strong>Product evolution</strong> — giá trị từ khả năng nâng cấp dễ dàng trong tương lai (ví dụ: chuyển từ COBOL sang Java giúp bảo trì rẻ hơn). Chi phí gồm: development cost, rework cost, và knowledge recovery cost. Điều quan trọng là doanh nghiệp phải tự xác định và kiểm soát quá trình đánh giá giá trị này, không để IT Providers tự làm.</p>
+</blockquote>
+<p><strong>Câu 2 (Nhớ):</strong> Liệt kê 6 metrics trong dashboard IT mà sách đề xuất IT Providers báo cáo cho doanh nghiệp. Metric nào đặc biệt nhất và tại sao?</p>
+<blockquote>
+<p>💡 <em>Gợi ý: 6 metrics cover system, support, partnership, satisfaction, projects, và cost. Một trong chúng chỉ doanh nghiệp mới biết đầy đủ</em></p>
+<p>📝 <strong>Đáp án:</strong> Sáu metrics trong dashboard IT gồm: (1) <strong>System Performance</strong> — % thời gian hệ thống critical hoạt động đúng mức yêu cầu; (2) <strong>IT Support Performance</strong> — mức độ sẵn sàng và hiệu quả của đội hỗ trợ IT; (3) <strong>Partnership Ratio</strong> — % dự án kinh doanh có IT Providers tham gia từ giai đoạn hoạch định chiến lược; (4) <strong>Service-level Effectiveness</strong> — mức độ hài lòng của người dùng qua khảo sát (đo SLA có đúng nhu cầu không, không chỉ đo SLA có đạt không); (5) <strong>New Projects Index</strong> — % dự án IT mới hoàn thành đúng yêu cầu, đúng thời hạn, đúng ngân sách; (6) <strong>IT Total Cost Ratio</strong> — tổng chi phí IT trực tiếp và gián tiếp so với doanh thu. Metric đặc biệt nhất là <strong>Partnership Ratio</strong> vì chỉ doanh nghiệp mới biết tổng số dự án đang chạy — IT Providers không thể tự đo metric này nếu không có sự hợp tác đầy đủ từ phía kinh doanh.</p>
+</blockquote>
+<p><strong>Câu 3 (Hiểu):</strong> Tại sao đo lường tài chính thuần (như ROI) là không đủ khi đánh giá giá trị IT? Cho một ví dụ cụ thể về trường hợp ROI cao nhưng giá trị thực sự thấp.</p>
+<blockquote>
+<p>💡 <em>Gợi ý: Nghĩ về chiến lược kinh doanh — một dự án ROI cao có thể phá hủy điều gì quan trọng hơn tiền?</em></p>
+<p>📝 <strong>Đáp án:</strong> Đo lường tài chính thuần không phân biệt được liệu một đầu tư IT có phù hợp với chiến lược kinh doanh hay không. Sách nêu ví dụ: ROI của một dự án IT là như nhau dù dự án đó tăng hay phá hủy customer intimacy của doanh nghiệp theo đuổi chiến lược "customer intimacy." Ví dụ cụ thể: một ngân hàng muốn cạnh tranh bằng dịch vụ khách hàng cá nhân hóa. IT đề xuất hệ thống tự động hóa call center, giảm 40% chi phí nhân sự → ROI = 35%. Nhưng hệ thống này thay thế tư vấn viên thật bằng chatbot → khách hàng không hài lòng → tỷ lệ giữ chân khách hàng giảm 20% → mất doanh thu dài hạn vượt xa khoản tiết kiệm nhân sự. Đo lường đa chiều (ví dụ: BSC tầng "khách hàng") sẽ phát hiện vấn đề này trước khi quyết định triển khai, trong khi ROI đơn lẻ sẽ chấp thuận dự án.</p>
+</blockquote>
+<p><strong>Câu 4 (Hiểu):</strong> Sách phân biệt EVA (Economic Value Added) với Earned Value Analysis (cũng viết tắt là EVA) như thế nào? Hãy giải thích cả hai khái niệm và khi nào dùng cái nào.</p>
+<blockquote>
+<p>💡 <em>Gợi ý: Hai từ viết tắt giống nhau nhưng hoàn toàn khác nhau — một dùng để đánh giá đầu tư, một dùng để theo dõi tiến độ dự án</em></p>
+<p>📝 <strong>Đáp án:</strong> Đây là một điểm dễ nhầm lẫn vì cả hai đều viết tắt là EVA nhưng hoàn toàn khác nhau. <strong>Economic Value Added (EVA)</strong> là phương pháp đánh giá đầu tư IT: tính lợi tức thu được so với chi phí cơ hội (opportunity cost) của việc dùng tiền đó đầu tư vào chỗ khác. Dùng trước khi ra quyết định đầu tư để so sánh các lựa chọn. Ví dụ: "Nếu tôi không đầu tư $1M vào dự án IT này mà gửi ngân hàng lãi 10%/năm, thì lựa chọn nào tốt hơn?" <strong>Earned Value Analysis (EVA)</strong> là công cụ theo dõi tiến độ dự án đang chạy: đo % công việc hoàn thành so với ngân sách và thời gian đã dùng. Dùng trong khi dự án đang thực hiện để phát hiện sai lệch sớm. Sách nhấn mạnh: Earned Value Analysis kết thúc khi dự án bàn giao, còn Business Case tiếp tục theo dõi giá trị thực tế sau khi hệ thống đi vào vận hành — Earned Value Analysis chỉ là một phần nhỏ trong toàn bộ vòng đời đầu tư IT.</p>
+</blockquote>
+<p><strong>Câu 5 (Áp dụng):</strong> Bạn là CIO của một công ty logistics đang xem xét đầu tư $500,000 vào hệ thống tối ưu hóa tuyến đường giao hàng bằng AI. CEO yêu cầu bạn xây dựng business case. Dựa vào framework của Chapter 2, hãy liệt kê 5 yếu tố cụ thể bạn sẽ đưa vào business case này.</p>
+<blockquote>
+<p>💡 <em>Gợi ý: Business case cần cả financial measures (ROI, TCO) và non-financial measures (strategic alignment, risk, benefits visualization)</em></p>
+<p>📝 <strong>Đáp án:</strong> Business case cho hệ thống AI tối ưu tuyến đường logistics cần 5 yếu tố: (1) <strong>Định lượng Benefits theo công thức Grady:</strong> product capability (tiết kiệm chi phí xăng, giảm số xe cần thiết → ước tính $200K/năm); time to market (giao hàng nhanh hơn → giữ chân khách hàng hiện tại + thu hút khách mới → ước tính $150K/năm doanh thu thêm). (2) <strong>TCO đầy đủ:</strong> không chỉ $500K ban đầu mà còn chi phí tích hợp với hệ thống hiện có, training tài xế, bảo trì AI model, và subscription phần mềm theo năm → tổng TCO 5 năm thực tế có thể là $800K. (3) <strong>ROI và payback period:</strong> với benefits $350K/năm và TCO $800K → payback ~2.3 năm, ROI ~44%/năm → vượt ngưỡng IRR 20%, payback trong 3 năm → đủ tiêu chí phê duyệt. (4) <strong>Strategic alignment:</strong> liên kết với chiến lược "operational excellence" của công ty — đánh giá theo Balanced Scorecard tầng "quy trình nội bộ." (5) <strong>Kế hoạch theo dõi sau triển khai:</strong> cam kết đo metrics hàng tháng sau khi go-live — actual vs planned fuel savings, delivery time, customer satisfaction — để xác nhận ROI thực tế và điều chỉnh kịp thời nếu cần.</p>
+</blockquote>
+<hr />
+<h2 id="ghi-nho-nhanh-key-takeaways">💡 Ghi nhớ nhanh (Key Takeaways)<a class="headerlink" href="#ghi-nho-nhanh-key-takeaways" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ <strong>Value = Benefits − Costs</strong> (Grady): 4 loại lợi ích — product capability, time to market, timeliness, product evolution</li>
+<li>✅ TCO so sánh chi phí toàn vòng đời; ROI đo lợi tức; cả hai cần thiết để ra quyết định đầu tư đúng</li>
+<li>✅ <strong>6 Dashboard metrics</strong> cốt lõi: System Performance, IT Support Performance, Partnership Ratio, Service-level Effectiveness, New Projects Index, IT Total Cost Ratio</li>
+<li>✅ <strong>Business Case</strong> phải xây cho cả dự án mới lẫn legacy "keep the lights on" — legacy value = cost avoidance</li>
+<li>⚠️ <strong>EVA có 2 nghĩa khác nhau:</strong> Economic Value Added (đánh giá đầu tư) ≠ Earned Value Analysis (theo dõi tiến độ dự án)</li>
+<li>⚠️ Cost savings phải là "tiền thật" — "tiết kiệm 10% thời gian nhân viên" chỉ có giá trị nếu dẫn đến giảm thực sự số lượng nhân viên hoặc tái phân bổ sang công việc có giá trị hơn</li>
+<li>🔗 Chapter 3 tiếp theo sẽ trả lời: với tất cả công cụ đo lường này — bao nhiêu IT là đủ?</li>
+</ul>
+<hr />
+<h2 id="giai-thich-thuat-ngu-chuyen-nganh">📖 Giải thích thuật ngữ chuyên ngành<a class="headerlink" href="#giai-thich-thuat-ngu-chuyen-nganh" title="Permanent link">&para;</a></h2>
+<p><strong>TCO</strong> <em>(Total Cost of Ownership — Tổng Chi Phí Sở Hữu)</em>
+Tổng tất cả chi phí liên quan đến một hệ thống IT trong suốt vòng đời: mua, triển khai, vận hành, bảo trì, đào tạo, bảo mật, và thanh lý. Giống như tính chi phí thực sự của ô tô gồm xăng, bảo hiểm, bảo dưỡng — không chỉ giá mua. Quan trọng vì cho phép so sánh công bằng giữa các giải pháp có giá mua ban đầu khác nhau.</p>
+<p><strong>ROI</strong> <em>(Return on Investment — Lợi Tức Đầu Tư)</em>
+Tỷ lệ lợi tức thu được so với vốn đầu tư ban đầu. Trong IT, thường dùng kèm IRR (tỷ suất hoàn vốn tối thiểu chấp nhận được) và payback period (thời gian hoàn vốn). Ngưỡng thực tế phổ biến: IRR ≥ 20%, payback 1–3 năm. Hạn chế lớn: dự đoán tương lai khó chính xác và thường bị lạc quan hóa quá mức.</p>
+<p><strong>IRR</strong> <em>(Internal Rate of Return — Tỷ Suất Hoàn Vốn Nội Bộ)</em>
+Tỷ lệ chiết khấu làm cho NPV (Net Present Value) của dòng tiền bằng 0. Trong quyết định đầu tư IT, IRR thường được so sánh với chi phí vốn của doanh nghiệp. Nếu IRR &gt; chi phí vốn → dự án đáng đầu tư. Giống như "lãi suất thực" mà dự án IT tạo ra.</p>
+<p><strong>EVA — Economic Value Added</strong> <em>(Giá Trị Kinh Tế Gia Tăng)</em>
+Phương pháp đánh giá đầu tư dựa trên chi phí cơ hội thay vì IRR cố định. Hỏi: "Tiền này đầu tư vào đây có tốt hơn lựa chọn thay thế tốt nhất không?" Không nhầm với Earned Value Analysis (cùng viết tắt EVA) — cái sau là công cụ theo dõi tiến độ dự án.</p>
+<p><strong>ROV</strong> <em>(Real Options Valuation — Định Giá Quyền Chọn Thực)</em>
+Phương pháp tính giá trị của hạ tầng IT dựa trên giá trị tùy chọn mà nó tạo ra cho các dự án tương lai. Giống như "mua đất để có thể xây nhà sau" — hạ tầng hôm nay tạo ra quyền chọn cho cơ hội tương lai. Đặc biệt hữu ích để justify đầu tư hạ tầng chung mà không một business unit nào có thể tự justify một mình.</p>
+<p><strong>BSC</strong> <em>(Balanced Scorecard — Thẻ Điểm Cân Bằng)</em>
+Framework đánh giá tổ chức qua 4 tầng liên kết nhau: tài chính (financial), khách hàng (customer), quy trình nội bộ (internal process), và học tập &amp; tăng trưởng (learning &amp; growth). "Balanced" vì không chỉ nhìn vào tài chính. Mỗi tầng có objectives và metrics, liên kết theo chuỗi nguyên nhân-kết quả (strategy map).</p>
+<p><strong>MMF</strong> <em>(Minimum Marketable Feature — Tính Năng Tối Thiểu Có Thể Thương Mại Hóa)</em>
+Đơn vị nhỏ nhất của phần mềm có giá trị độc lập cho khách hàng. Tương tự "MVP" (Minimum Viable Product) trong Agile. Mỗi MMF phải trả lời: tạo ra loại giá trị gì? Đo bằng gì? Rủi ro là gì? Giá trị của các MMF có thể phụ thuộc vào thứ tự giao hàng.</p>
+<p><strong>CMDB</strong> <em>(Configuration Management Database)</em>
+Cơ sở dữ liệu lưu trữ thông tin về tất cả tài sản IT (Configuration Items) của tổ chức, bao gồm phần cứng, phần mềm, và mối quan hệ giữa chúng. Là nền tảng bắt buộc để tính ROA chính xác và quản lý ITIL change management. Sách nhắc ITIL và CMMI đều có quy trình configuration management.</p>
+<p><strong>Business Case</strong> <em>(Hồ Sơ Kinh Doanh)</em>
+Tài liệu chính thức định lượng giá trị của đầu tư IT so với chi phí, bao gồm cả tangible và intangible benefits. Không dừng lại khi dự án bàn giao — cần theo dõi "actual vs planned" suốt vòng đời đầu tư. Sách nhấn mạnh: nếu tất cả lợi ích đều intangible và không đo được → nên nghiêm túc xem xét lại có nên khởi động dự án không.</p>
+<p><strong>Partnership Ratio</strong> <em>(Tỷ Lệ Đối Tác)</em>
+Phần trăm dự án kinh doanh mà IT Providers tham gia từ giai đoạn hoạch định chiến lược. Metric này đặc biệt vì chỉ doanh nghiệp mới biết tổng số dự án đang chạy — IT Providers không có visibility vào các dự án họ không được mời tham gia. Tỷ lệ thấp là tín hiệu IT đang bị "gọi vào sau" thay vì là đối tác chiến lược.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>pdf_md/the-business-value-of-it-managing-risks-optimizing-performance-and-measuring-results-auerbach-publications-2008/guide_ai/08_chapter-2-how-do-i-measure-the-value-of-it_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../007-chapter-1-what-should-the-business-expect-from-it-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📚 Bài Giảng 07: Doanh Nghiệp Nên Kỳ Vọng Gì Từ IT?">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📚 Bài Giảng 07: Doanh Nghiệp Nên Kỳ Vọng Gì Từ IT?
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../009-chapter-3-how-much-it-is-enough-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📚 Bài Giảng 09: Bao Nhiêu IT Là Đủ?">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📚 Bài Giảng 09: Bao Nhiêu IT Là Đủ?
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

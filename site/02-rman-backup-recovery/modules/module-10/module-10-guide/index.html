@@ -1,0 +1,2524 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../module-09/module-09-guide/">
+      
+      
+        <link rel="next" href="../../module-11/module-11-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📘 Module 10: RMAN-Encrypted Backups - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-10-rman-encrypted-backups" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📘 Module 10: RMAN-Encrypted Backups
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            02. Backup & Recovery voi RMAN
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../module2-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 2: Nền tảng Backup & Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview-sample-answers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🎤 Câu Trả Lời Mẫu Chi Tiết — 5 Tình Huống Trọng Điểm
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview-scenarios-dba/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🎯 10 Tình Huống Phỏng Vấn Oracle DBA — Phân tích theo JD
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-01/module-01-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 01
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-02/module-02-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 02
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-03/module-03-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 03
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-04/module-04-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 04
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-05/module-05-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 05
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-06/module-06-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 06
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-07/module-07-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 07
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-08/module-08-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 08
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-09/module-09-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 09
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_12" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_12" id="__nav_3_3_12_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Module 10
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3_12">
+            <span class="md-nav__icon md-icon"></span>
+            Module 10
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📘 Module 10: RMAN-Encrypted Backups
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 10: RMAN-Encrypted Backups
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-11/module-11-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 11
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-12/module-12-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 12
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-13/module-13-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 13
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-14/module-14-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 14
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-15/module-15-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 15
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-16/module-16-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 16
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-17/module-17-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 17
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tiến độ học Oracle RMAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tong-hop-17-modules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tổng hợp 17 Modules — Oracle RMAN Backup & Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../reviews-all/2026-20260418-firedrill-storagecrash/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Reviews all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../tools/setup-gdrive/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Tools
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="module-10-rman-encrypted-backups">📘 Module 10: RMAN-Encrypted Backups<a class="headerlink" href="#module-10-rman-encrypted-backups" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Module</strong>: 10/17
+<strong>Phạm vi</strong>: Bài 31 (Lý thuyết) &amp; Bài 32 - Practice 10 (Thực hành)
+<strong>Giảng viên</strong>: Ahmed Baraka (Packt Publishing)
+<strong>Thời gian học ước tính</strong>: 1.5 giờ
+<strong>Tiền điều kiện</strong>: Đã hoàn thành Module 09 (Using RMAN Recovery Catalog)
+<strong>Nguồn PDF</strong>: <code>pdf_extracted/module_10/</code></p>
+</blockquote>
+<hr />
+<h2 id="muc-luc">📑 Mục lục<a class="headerlink" href="#muc-luc" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#-bài-31-using-rman-encrypted-backups">Bài 31: Using RMAN-Encrypted Backups</a></li>
+<li><a href="#-bài-32-practice-10---using-rman-encrypted-backups">Bài 32: Practice 10 - Using RMAN-Encrypted Backups</a></li>
+<li><a href="#-bảng-tổng-hợp-module-10">Bảng tổng hợp Module 10</a></li>
+<li><a href="#-câu-hỏi-ôn-tập-tổng-hợp">Câu hỏi ôn tập tổng hợp</a></li>
+</ul>
+<hr />
+<h1 id="bai-31-using-rman-encrypted-backups">📖 Bài 31: Using RMAN-Encrypted Backups<a class="headerlink" href="#bai-31-using-rman-encrypted-backups" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>📄 Nguồn: <code>Using RMAN-Encrypted Backups.pdf</code> — 17 slides</p>
+</blockquote>
+<h2 id="muc-tieu-bai-hoc-objectives">🎯 Mục tiêu bài học (Objectives)<a class="headerlink" href="#muc-tieu-bai-hoc-objectives" title="Permanent link">&para;</a></h2>
+<p>Theo bài giảng gốc, sau bài này bạn sẽ học cách sử dụng 3 chế độ mã hóa (Encryption modes) trong RMAN Backups:
+- ✅ <strong>Transparent Encryption</strong> (Mã hóa trong suốt bằng Keystore).
+- ✅ <strong>Password Encryption</strong> (Mã hóa bằng mật khẩu).
+- ✅ <strong>Dual mode Encryption</strong> (Mã hóa kép - kết hợp cả hai).</p>
+<hr />
+<h2 id="noi-dung-chinh">📋 Nội dung chính<a class="headerlink" href="#noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<h3 id="1-tong-quan-ve-rman-encryption-ma-hoa-rman">1. Tổng quan về RMAN Encryption (Mã hóa RMAN) ⭐⭐<a class="headerlink" href="#1-tong-quan-ve-rman-encryption-ma-hoa-rman" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Mục đích: Tạo ra các file backup được mã hóa (encrypted backup files) để bảo vệ chúng khỏi truy cập trái phép. (Đề phòng hacker hoặc ai đó copy trộm file backup và đem đi restore ở chỗ khác).</li>
+<li><strong>Yêu cầu hệ thống:</strong></li>
+<li>Chỉ có mặt trên Oracle Database <strong>Enterprise Edition</strong>.</li>
+<li>Parameter <code>COMPATIBLE</code> phải thiết lập là <code>10.2.0</code> trở lên.</li>
+<li>Cần license tính năng <strong>Oracle Advanced Security</strong> (Tuy nhiên, được miễn phí license nếu backup lên Oracle Database Backup Cloud service).</li>
+<li><strong>Khác biệt:</strong> Tính năng này độc lập và khác với Oracle Secure Backup (OSB) encryption.</li>
+</ul>
+<hr />
+<h3 id="2-ba-che-o-ma-hoa-cua-rman">2. Ba chế độ mã hóa của RMAN ⭐⭐⭐<a class="headerlink" href="#2-ba-che-o-ma-hoa-cua-rman" title="Permanent link">&para;</a></h3>
+<h4 id="a-transparent-encryption-ma-hoa-trong-suot">A. Transparent Encryption (Mã hóa trong suốt)<a class="headerlink" href="#a-transparent-encryption-ma-hoa-trong-suot" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Sử dụng cấu hình TDE (Transparent Data Encryption). RMAN lấy <strong>Key</strong> (TDE key) trực tiếp từ một túi tiền (Keystore/Wallet).</li>
+<li>Vì sao gọi là "trong suốt"? Vì quá trình lấy Key từ Keystore diễn ra tự động ngầm.</li>
+<li><strong>Có 2 loại Keystore:</strong></li>
+<li><em>Autologin software keystore:</em> Luôn luôn "mở cửa". Không cần sự can thiệp của DBA (tuyệt vời cho việc chạy cronjob ban đêm tự động). ⚠️ Tuyệt đối không sao lưu file autologin cùng chỗ với file data backup.</li>
+<li><em>Password-based software keystore:</em> Cần DBA nhập lệnh mở thủ công trước khi có thể chạy việc backup mã hóa. (An toàn hơn, có thể sao lưu chung với file backup).</li>
+<li>Phù hợp nhất cho hệ thống <strong>Day-to-day backups</strong>.</li>
+<li>⚠️ Cảnh báo: Tệp Backup sẽ VÔ DỤNG (không thể restore) nếu làm mất keystore.</li>
+</ul>
+<h4 id="b-password-encryption-ma-hoa-dung-mat-khau">B. Password Encryption (Mã hóa dùng Mật khẩu)<a class="headerlink" href="#b-password-encryption-ma-hoa-dung-mat-khau" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Không dùng Keystore. Chỉ dựa vào Passsword.</li>
+<li>DBA cung cấp "mật mã" ngay lúc chạy lệnh Backup và cung cấp lại lúc chạy lệnh Restore.</li>
+<li>Phù hợp với: Các bản backup dùng 1 lần (One-off backups) đặc biệt là khi phải gửi sang location nằm ngoài Data Center (ví dụ: gửi dữ liệu cho đối tác hoặc trung tâm pháp y).</li>
+<li>⚠️ Cảnh báo: Không thể restore nếu quên Password.</li>
+</ul>
+<h4 id="c-dual-mode-encryption-ma-hoa-kep">C. Dual Mode Encryption (Mã hóa Kép)<a class="headerlink" href="#c-dual-mode-encryption-ma-hoa-kep" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Là sự kết hợp cực hay! Backup được tạo ra có thể giải mã bằng Keystore (tại On-site nội bộ) <strong>HOẶC</strong> giải mã bằng Password (khi gửi đi Offsite nơi không có Keystore).</li>
+</ul>
+<hr />
+<h3 id="3-cau-hinh-software-keystore-chuan-bi-cho-tde">3. Cấu hình Software Keystore (Chuẩn bị cho TDE)<a class="headerlink" href="#3-cau-hinh-software-keystore-chuan-bi-cho-tde" title="Permanent link">&para;</a></h3>
+<p><strong>Bước 1:</strong> Khai báo vị trí Keystore trong file <code>sqlnet.ora</code>.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ENCRYPTION_WALLET_LOCATION =  
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>(SOURCE =
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  (METHOD = FILE)  
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  (METHOD_DATA =
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    (DIRECTORY = /u01/app/oracle/orcl/kstore)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  )
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>)
+</span></code></pre></div></p>
+<p><strong>Bước 2:</strong> Đăng nhập dưới quyền <code>SYSKM</code> (hoặc <code>SYSDBA</code>) và tạo Keystore.
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- Tạo Keystore loại Password-based:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="n">KEYSTORE</span><span class="w"> </span><span class="s1">'/u01/app/oracle/orcl/kstore'</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">-- Tạo Keystore loại Auto-login từ Keystore ở trên (Tùy chọn):</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="n">AUTO_LOGIN</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">KEYSTORE</span><span class="w"> </span><span class="s1">'/u01/app/oracle/orcl/kstore'</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="p">;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">-- Mở Keystore (với Password-based):</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">KEYSTORE</span><span class="w"> </span><span class="k">OPEN</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="p">;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">-- Tạo Master Encryption Key (Chìa khóa gốc):</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="s1">'bkp_key'</span><span class="w"> </span><span class="p">;</span>
+</span></code></pre></div></p>
+<hr />
+<h3 id="4-bat-ma-hoa-trong-rman">4. Bật Mã hóa trong RMAN ⭐⭐<a class="headerlink" href="#4-bat-ma-hoa-trong-rman" title="Permanent link">&para;</a></h3>
+<h4 id="a-muc-persistent-cau-hinh-cung-cho-transparent-encryption">A. Mức Persistent (Cấu hình cứng cho Transparent Encryption)<a class="headerlink" href="#a-muc-persistent-cau-hinh-cung-cho-transparent-encryption" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">-- Mã hóa toàn bộ Database bằng Transparent</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CONFIGURE</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">-- Chỉ mã hóa riêng Tablespace nhạy cảm</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CONFIGURE</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">hr_data</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">-- Thay đổi thuật toán mã hóa (Mặc định là AES128)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CONFIGURE</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="n">ALGORITHM</span><span class="w"> </span><span class="s1">'AES256'</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="b-muc-moi-truong-hien-tai-session-level-dung-session-hoac-job">B. Mức Môi trường hiện tại / Session-level (Dùng Session hoặc Job)<a class="headerlink" href="#b-muc-moi-truong-hien-tai-session-level-dung-session-hoac-job" title="Permanent link">&para;</a></h4>
+<p>Lệnh gõ ở dấu nhắc RMAN hoặc trong khối RUN {}:
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- Dành cho Transparent Encryption</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span><span class="w"> </span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">-- Dành cho Password Encryption </span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">-- (Lưu ý chữ ONLY có nghĩa là CHỈ dùng Password, nếu không có ONLY thì thành Dual-mode)</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">MyP</span><span class="o">@</span><span class="n">ssw0rd</span><span class="w"> </span><span class="k">ONLY</span><span class="p">;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">-- Dành cho Dual-Mode Encryption</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">MyP</span><span class="o">@</span><span class="n">ssw0rd</span><span class="p">;</span>
+</span></code></pre></div></p>
+<hr />
+<h3 id="5-nhung-luu-y-quan-trong-considerations">5. Những lưu ý Quan trọng (Considerations) ⭐<a class="headerlink" href="#5-nhung-luu-y-quan-trong-considerations" title="Permanent link">&para;</a></h3>
+<ul>
+<li>❌ RMAN Encryption <strong>không hỗ trợ Image Copies</strong>. Chỉ áp dụng cho định dạng <strong>Backup Sets</strong>.</li>
+<li>Sau mỗi lần tạo mới một file backup mã hóa, hệ thống sẽ sinh ra một Key mới.</li>
+<li>Quá trình mã hóa có tác động tiêu cực đến tốc độ ghi ổ cứng (tốn thêm CPU để mã hóa). Nếu hiệu năng là vấn đề, chỉ nên mã hóa riêng Tablespace chứa dữ liệu nhạy cảm hoặc tăng số lượng Channel lên chạy song song.</li>
+</ul>
+<h2 id="-">---<a class="headerlink" href="#-" title="Permanent link">&para;</a></h2>
+<h1 id="bai-32-practice-10-using-rman-encrypted-backups">📖 Bài 32: Practice 10 - Using RMAN-Encrypted Backups<a class="headerlink" href="#bai-32-practice-10-using-rman-encrypted-backups" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>📄 Nguồn: <code>Practice 10 - Using RMAN-Encrypted Backups.pdf</code></p>
+</blockquote>
+<h2 id="muc-tieu-thuc-hanh">🎯 Mục tiêu thực hành<a class="headerlink" href="#muc-tieu-thuc-hanh" title="Permanent link">&para;</a></h2>
+<p>Làm quen ngay kỹ năng tạo mã hóa TDE và sau đó kích hoạt tạo Backup với đủ 3 phương pháp. Mọi cấu hình thực hiện trên DB <code>ORADB</code> tại appliance <code>srv1</code>.</p>
+<blockquote>
+<p>[!TIP]
+Hãy tạo Snapshot máy ảo trước khi bắt đầu bài tập này vì việc xử lý keystore có rủi ro tạo lỗi nếu làm sai các bước.</p>
+</blockquote>
+<h2 id="huong-dan-tung-buoc">📋 Hướng dẫn từng bước<a class="headerlink" href="#huong-dan-tung-buoc" title="Permanent link">&para;</a></h2>
+<h3 id="phan-a-cau-hinh-transparent-data-encryption-tde">Phần A: Cấu hình Transparent Data Encryption (TDE)<a class="headerlink" href="#phan-a-cau-hinh-transparent-data-encryption-tde" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Tạo thư mục chứa Keystore:</strong> (Dưới quyền user oracle <code>os</code>)
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>$<span class="w"> </span>mkdir<span class="w"> </span>/u01/app/oracle/oradata/ORADB/keystore
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Chỉ định vị trí vào file <code>sqlnet.ora</code>:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>$<span class="w"> </span>vi<span class="w"> </span><span class="nv">$TNS_ADMIN</span>/sqlnet.ora
+</span></code></pre></div>
+Thêm dòng sau:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ENCRYPTION_WALLET_LOCATION = 
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a> (SOURCE = 
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a> (METHOD = FILE) (METHOD_DATA = 
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a> (DIRECTORY = /u01/app/oracle/oradata/ORADB/keystore)))
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Truy cập Database và khởi tạo Keystore:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$<span class="w"> </span>sqlplus<span class="w"> </span>/<span class="w"> </span>as<span class="w"> </span>sysdba
+</span></code></pre></div>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">-- Tạo Keystore file</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="n">KEYSTORE</span><span class="w"> </span><span class="s1">'/u01/app/oracle/oradata/ORADB/keystore'</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="p">;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1">-- Mở Keystore</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">KEYSTORE</span><span class="w"> </span><span class="k">OPEN</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="p">;</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1">-- Tạo Master Encryption Key</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="s1">'for_rman'</span><span class="p">;</span>
+</span></code></pre></div></p>
+<blockquote>
+<p>👉 <em>Lưu ý: Bạn có thể exit ra bash gõ lệnh <code>ls -al /u01/app/oracle/oradata/ORADB/keystore</code> để thấy file <code>ewallet.p12</code> vừa được sinh ra.</em></p>
+</blockquote>
+</li>
+</ol>
+<hr />
+<h3 id="phan-b-tao-ban-backup-ma-hoa-trong-suot-transparent-mode">Phần B: Tạo bản Backup Mã hóa trong suốt (Transparent Mode)<a class="headerlink" href="#phan-b-tao-ban-backup-ma-hoa-trong-suot-transparent-mode" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Mở RMAN:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>$<span class="w"> </span>rman<span class="w"> </span>target<span class="w"> </span>/
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Tạo backup đã được mã hóa:
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">TAG</span><span class="w"> </span><span class="s1">'ENCRYPTED_USERS'</span><span class="p">;</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Gõ <code>LIST BACKUPSET TAG 'ENCRYPTED_USERS';</code> bạn sẽ <strong>không thấy</strong> chỗ nào ghi là nó bị mã hóa. Phải query truy vấn V$VIEW để kiểm chứng:
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">RECID</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="ss">"BS_REC"</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">.</span><span class="n">RECID</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="ss">"BP_REC"</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">.</span><span class="k">ENCRYPTED</span><span class="w"> </span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">     </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$BACKUP_PIECE</span><span class="w"> </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">V$BACKUP_SET</span><span class="w"> </span><span class="n">S</span><span class="w"> </span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">     </span><span class="k">WHERE</span><span class="w"> </span><span class="n">P</span><span class="p">.</span><span class="n">SET_STAMP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">SET_STAMP</span><span class="w"> </span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">     </span><span class="k">AND</span><span class="w"> </span><span class="n">P</span><span class="p">.</span><span class="n">SET_COUNT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">SET_COUNT</span><span class="w"> </span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">     </span><span class="k">AND</span><span class="w"> </span><span class="n">P</span><span class="p">.</span><span class="n">TAG</span><span class="w"> </span><span class="o">=</span><span class="s1">'ENCRYPTED_USERS'</span><span class="p">;</span>
+</span></code></pre></div>
+<em>(Cột <code>ENCRYPTED</code> sẽ trả về giá trị YES).</em></p>
+</li>
+<li>
+<p><strong>Trải nghiệm lỗi Wallet is not open:</strong></p>
+</li>
+<li>Hãy Restart lại DB (Shutdown Immediate rồi Startup).</li>
+<li>Thử kết nối RMAN chạy lại lệnh Backup ở bước 2.</li>
+<li>🔴 Lỗi nhận được: <code>ORA-28365: wallet is not open</code>.</li>
+<li>Lý do: Tùy chọn Keystore mặc định yêu cầu bạn mở thủ công mỗi khi Database khởi động lại.</li>
+<li>
+<p>Xử lý mở lại: <code>RMAN&gt; sql 'ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY oracle';</code></p>
+</li>
+<li>
+<p><strong>Giải quyết bằng Auto-Login Keystore:</strong>
+Trưởng hợp bạn chạy RMAN qua con bot (cron), sẽ không có ai ngồi trực để gõ lệnh Open Wallet, bạn cần tạo tính năng Auto-Login Keystore.
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ADMINISTER</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">MANAGEMENT</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="n">AUTO_LOGIN</span><span class="w"> </span><span class="n">KEYSTORE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">KEYSTORE</span><span class="w"> </span><span class="s1">'/u01/app/oracle/oradata/ORADB/keystore'</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">oracle</span><span class="p">;</span>
+</span></code></pre></div>
+<em>(Bây giờ trong thư mục sẽ có thêm file <code>cwallet.sso</code>. Từ giờ bạn thoải mái restart DB xong vào RMAN backup luôn, không sợ ORA-28365 nữa).</em></p>
+</li>
+</ol>
+<hr />
+<h3 id="phan-c-tao-ban-backup-ma-hoa-mat-khau-password-mode">Phần C: Tạo bản Backup Mã hóa Mật khẩu (Password Mode)<a class="headerlink" href="#phan-c-tao-ban-backup-ma-hoa-mat-khau-password-mode" title="Permanent link">&para;</a></h3>
+<p><div class="language-sql highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">Orapass123</span><span class="w"> </span><span class="k">ONLY</span><span class="p">;</span><span class="w"> </span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">TAG</span><span class="w"> </span><span class="s1">'PENCRYPTED_USERS'</span><span class="p">;</span>
+</span></code></pre></div>
+<em>(Hãy để ý từ khóa <code>ONLY</code>. Nó mang ý nghĩa file bkp được sinh ra sẽ chỉ có thể dùng được nếu như người mở biết Password Orapass123. TDE Keystore bị phớt lờ, do đó mang file backup này vứt sang nhà bạn thân, bạn thân vẫn restore được như bình thường nếu có pass).</em></p>
+<hr />
+<h3 id="phan-d-tao-ban-backup-ma-hoa-kep-dual-mode">Phần D: Tạo bản Backup Mã hóa Kép (Dual-mode)<a class="headerlink" href="#phan-d-tao-ban-backup-ma-hoa-kep-dual-mode" title="Permanent link">&para;</a></h3>
+<p><div class="language-sql highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">ENCRYPTION</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">Orapass123</span><span class="p">;</span><span class="w"> </span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">TAG</span><span class="w"> </span><span class="s1">'DENCRYPTED_USERS'</span><span class="p">;</span>
+</span></code></pre></div>
+<em>(Tuyệt vời. Tháo chữ ONLY ra và bạn được quyền sử dụng cả 2 chế độ. Người nhà dùng <code>Keystore</code> để tự động khôi phục. Người ngoài nhà đem bản này đi nhưng có được mật khẩu thì cũng tự khôi phục được bằng password.)</em></p>
+<blockquote>
+<p><strong>Dọn dẹp sau bài học:</strong>
+<code>DELETE NOPROMPT BACKUPSET TAG 'ENCRYPTED_USERS';</code>
+<code>DELETE NOPROMPT BACKUPSET TAG 'PENCRYPTED_USERS';</code>
+<code>DELETE NOPROMPT BACKUPSET TAG 'DENCRYPTED_USERS';</code></p>
+</blockquote>
+<hr />
+<h1 id="bang-tong-hop-module-10">📊 Bảng tổng hợp Module 10<a class="headerlink" href="#bang-tong-hop-module-10" title="Permanent link">&para;</a></h1>
+<table>
+<thead>
+<tr>
+<th>Tính năng / Lệnh</th>
+<th>Ý nghĩa kỹ thuật</th>
+<th>Lấy Key từ đâu?</th>
+<th>Nơi sử dụng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transparent Encryption</strong></td>
+<td>Backup ngầm tự động mã hóa</td>
+<td>TDE Keystore</td>
+<td>Backup hàng ngày, On-site</td>
+</tr>
+<tr>
+<td><strong>Password Encryption</strong> (có chữ ONLY)</td>
+<td>Mã hóa chỉ dựa vào mật khẩu</td>
+<td>Password gõ bằng tay</td>
+<td>Backup một lần gửi đi xa (Off-site)</td>
+</tr>
+<tr>
+<td><strong>Dual Mode Encryption</strong></td>
+<td>Mã hóa 2 ngã</td>
+<td>TDE Keystore <strong>Hoặc</strong> Password</td>
+<td>Nhu cầu lai (vừa back onsite vừa đi offsite)</td>
+</tr>
+<tr>
+<td><code>sqlnet.ora</code> (<code>ENCRYPTION_WALLET_LOCATION</code>)</td>
+<td>Cấu hình báo cho DB biết đường dẫn thư mục lưu ví mã hóa</td>
+<td></td>
+<td>Hệ thống mạng hạ tầng</td>
+</tr>
+<tr>
+<td><code>ADMINISTER KEY MANAGEMENT...</code></td>
+<td>Bộ Lệnh quản trị Keystore mới của Oracle (còn gọi là TDE)</td>
+<td></td>
+<td>SQL*Plus sysdba</td>
+</tr>
+<tr>
+<td><code>SET ENCRYPTION ON;</code></td>
+<td>Lệnh RMAN kích hoạt Transparent</td>
+<td></td>
+<td>RMAN Prompt</td>
+</tr>
+<tr>
+<td><code>SET ENCRYPTION ON IDENTIFIED BY pass [ONLY];</code></td>
+<td>Lệnh RMAN kích hoạt Dual Mode / [Password]</td>
+<td></td>
+<td>RMAN Prompt</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="cau-hoi-on-tap-tong-hop">🎯 Câu hỏi ôn tập tổng hợp<a class="headerlink" href="#cau-hoi-on-tap-tong-hop" title="Permanent link">&para;</a></h1>
+<p><strong>1. Điều gì sẽ xảy ra nếu file Backup chứa thông tin quan trọng được cấu hình lấy chế độ Password Encryption bằng chữ <code>ONLY</code> và người quản trị quên mật khẩu?</strong></p>
+<details>
+<summary>💡 Đáp án</summary>
+DBA đó hoàn thành vé lấy xe đi về! 
+Với Password Encryption, Keystore sẽ không được sử dụng. Hoàn toàn phụ thuộc vào đoạn Text. Mất Text => Mất bản Backup mãi mãi. Không có backdoor nào cho việc này.
+</details>
+
+<p><strong>2. RMAN cho phép mã hóa tài nguyên nào và từ chối mã hóa định dạng backup nào?</strong></p>
+<details>
+<summary>💡 Đáp án</summary>
+RMAN chỉ chấp nhận mã hóa các file định dạng **Backup Sets**. Mọi định dạng nguyên gốc như **Image Copy** đều sẽ không được mã hóa.
+</details>
+
+<p><strong>3. Vì sao Oracle cảnh báo KHÔNG copy chung file Auto-login (*.sso) sang hệ thống Tape Backup cùng lúc với dữ liệu?</strong></p>
+<details>
+<summary>💡 Đáp án</summary>
+Vì bản chất của việc mã hóa trên hệ thống Database là "Khóa tủ" để người sao chép trộm dữ liệu cũng chẳng xài được. Nếu gửi gắm file khóa `.sso` (Autologin - chìa khóa vạn năng tự động mở) đi chung với file Backup giống việc ghi Password chung với thẻ ATM. Hacker nẫng được cả cụm Data + `.sso` sẽ ung dung restore ra xài ở một DB mới bằng phương pháp Transparent.
+</details>
+
+<hr />
+<h2 id="bai-tiep-theo">➡️ Bài tiếp theo<a class="headerlink" href="#bai-tiep-theo" title="Permanent link">&para;</a></h2>
+<p><strong>Module 11: Cross-Platform Transport</strong>
+- Bài 33 &amp; 34: Giới thiệu cách di chuyển dữ liệu chéo nền tảng (Ví dụ: Chạy từ Solaris sang Linux, Windows sang Linux) &amp; Cross-Platform Transportable Tablespace.
+- Bài 35: Practice 11 — Thực hành dời nhà cho Tablespace.</p>
+<blockquote>
+<p>Bạn đã sẵn sàng để tiếp tục với <strong>Module 11</strong> về chiêu chuyển gốc hệ điều hành chéo chưa? 🚀 Hoặc nếu bạn muốn, mình có thể thảo luận sâu hơn về cách kết hợp TDE và RMAN trên hạ tầng thực tế.</p>
+</blockquote>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>Oracle-Database-Backup-and-Recovery-using-RMAN/modules/module_10/module_10_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../module-09/module-09-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📘 Module 09: Chinh phục Bộ Đĩa Trung Tâm (RMAN Recovery Catalog)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 09: Chinh phục Bộ Đĩa Trung Tâm (RMAN Recovery Catalog)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../module-11/module-11-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📘 Module 11: Common Backup Practices">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 11: Common Backup Practices
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

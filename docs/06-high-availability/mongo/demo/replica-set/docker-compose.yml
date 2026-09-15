@@ -1,0 +1,94 @@
+# Demo nhanh Replica Set PSS bằng Docker — 1 phút bootstrap, không cần Vagrant/VirtualBox.
+#
+# Yêu cầu:  Docker Desktop on Windows (hoặc Docker engine trên Linux/macOS).
+# Sử dụng:
+#   cd demo/replica-set
+#   docker compose up -d
+#   bash init-rs.sh          # initiate replica set + tạo users
+#   bash demo-failover.sh    # kill primary, xem election xảy ra
+#   docker compose down -v   # cleanup
+#
+# Topology: 3 mongod containers cùng network 'mongo-net':
+#   mongo1:27017 (primary, exposed host port 27017)
+#   mongo2:27017 (secondary, exposed 27018)
+#   mongo3:27017 (secondary, exposed 27019)
+# Keyfile shared qua volume mount.
+
+services:
+  mongo1:
+    image: mongo:7.0
+    container_name: mongo1
+    hostname: mongo1
+    ports:
+      - "27017:27017"
+    networks:
+      - mongo-net
+    volumes:
+      - mongo1-data:/data/db
+      - ./keyfile:/etc/mongo-keyfile:ro
+    command: >
+      mongod
+      --replSet rs0
+      --bind_ip_all
+      --keyFile /etc/mongo-keyfile
+      --oplogSize 256
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ping:1}).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  mongo2:
+    image: mongo:7.0
+    container_name: mongo2
+    hostname: mongo2
+    ports:
+      - "27018:27017"
+    networks:
+      - mongo-net
+    volumes:
+      - mongo2-data:/data/db
+      - ./keyfile:/etc/mongo-keyfile:ro
+    command: >
+      mongod
+      --replSet rs0
+      --bind_ip_all
+      --keyFile /etc/mongo-keyfile
+      --oplogSize 256
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ping:1}).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  mongo3:
+    image: mongo:7.0
+    container_name: mongo3
+    hostname: mongo3
+    ports:
+      - "27019:27017"
+    networks:
+      - mongo-net
+    volumes:
+      - mongo3-data:/data/db
+      - ./keyfile:/etc/mongo-keyfile:ro
+    command: >
+      mongod
+      --replSet rs0
+      --bind_ip_all
+      --keyFile /etc/mongo-keyfile
+      --oplogSize 256
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ping:1}).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+networks:
+  mongo-net:
+    driver: bridge
+
+volumes:
+  mongo1-data:
+  mongo2-data:
+  mongo3-data:

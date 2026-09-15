@@ -1,0 +1,39 @@
+[08:09:24] ================ FAILOVER TEST ================
+[08:09:24] Mục tiêu: node1 chết -> promote node2 -> reconfigure node3
+[08:09:28] ==> Insert sentinel row trên node1 (val='failover-sentinel-1779412168')
+[08:09:36]     sentinel id=201
+[08:09:40]     [node2] đã thấy sentinel
+[08:09:44]     [node3] đã thấy sentinel
+[08:09:56] ==> gtid trước halt: node1=019b4510-557a-11f1-9a54-08002716ddef:1-208 | node2=019b4510-557a-11f1-9a54-08002716ddef:1-208 | node3=019b4510-557a-11f1-9a54-08002716ddef:1-208
+[08:09:57] ==> Halt node1 (simulate crash)
+==> node1: Forcing shutdown of VM...
+[08:10:04] ==> Đợi node2 phát hiện master chết (poll Last_IO_Error)
+[08:10:54]     Detected after 50s: Error reconnecting to source 'repl@node1:3306'. This was attempt 1/86400, with a delay of 60 seconds between attempts. Message
+[08:10:54] ==> Promote node2 (chạy manual-failover.sh)
+[01:11:05] ==> 1) Đảm bảo replica đã apply hết relay log
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:11:05]    SQL thread đã apply hết relay log
+[01:11:05] ==> 2) Tắt replication trên host này, mở write
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:11:05] ==> 3) Trỏ các replica khác sang master mới
+[01:11:05]    reconfigure node3 -> 192.168.10.12
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:11:06] ==> 4) (Tuỳ chọn) Move VIP về host này
+[01:11:06]     ip addr add 192.168.10.100/24 dev eth0 && arping -U -I eth0 192.168.10.100 -c 3
+[01:11:06] ==> Failover xong. Cập nhật app/ProxySQL/DNS trỏ về 192.168.10.12.
+[08:10:59]     promote xong sau 5s
+[08:11:03] ==> [node2] super_read_only=0 (expect 0)
+[08:11:17] ==> [node3] Source=192.168.10.12 IO=ON SQL=ON (expect node2-ish, ON, ON)
+[08:11:17] ==> Write 50 rows lên node2 (master mới)
+[08:11:22]     insert 50 rows xong sau 4.431s
+[08:11:22] ==> Chờ node3 nhận 50 rows mới
+[08:11:30]     [node3] OK: 251/251
+[08:11:30] ================ KẾT LUẬN ================
+[08:11:30] FAILOVER_PASS=true  detect_sec=50 promote_sec=5 write_sec=4.431
+FAILOVER_PASS=true
+[08:11:30] 
+[08:11:30] Để recover node1 thành replica của node2 mới:
+[08:11:30]   vagrant up node1
+[08:11:30]   vagrant ssh node1 -c "mysql -uroot -p'ChangeMe!Root#2026' -e \"...\""  # xem 08-failover-test.md §'Khôi phục node1'
+[08:11:30] 
+[08:11:30] Để reset toàn bộ và demo lại: bash demo/01-async-semisync/09-rollback.sh

@@ -1,0 +1,2309 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../004-huong-dan-swingbench/">
+      
+      
+        <link rel="next" href="../../labs/frag-check/readme/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Hướng dẫn SSH vào VM srv1 & thực hành trực tiếp trong Linux - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#huong-dan-ssh-vao-vm-srv1-thuc-hanh-truc-tiep-trong-linux" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hướng dẫn SSH vào VM srv1 & thực hành trực tiếp trong Linux
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ke hoach
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ke_hoach/ — Kế hoạch & Nhật ký xây dựng môi trường học
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../001-learning-plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kế hoạch Code Lab & Lộ trình học — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../002-phase2-environment-vagrant-plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Giai đoạn 2 — Kế hoạch chi tiết: Môi trường thực hành với Vagrant
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../003-phase2-setup-log/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nhật ký thực hiện Giai đoạn 2 — Dựng môi trường Vagrant (step-by-step)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-huong-dan-swingbench/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn cài đặt & cấu hình Swingbench 2.5 (Bước 3 — bạn tự thao tác GUI)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Hướng dẫn SSH vào VM srv1 & thực hành trực tiếp trong Linux
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn SSH vào VM srv1 & thực hành trực tiếp trong Linux
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-bang-tai-khoan-mat-khau-host-tra-cuu-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Bảng tài khoản / mật khẩu / host (tra cứu nhanh)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Bảng tài khoản / mật khẩu / host (tra cứu nhanh)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ssh-vao-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      SSH vào VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-khoan-database-pdb-oradb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tài khoản database (PDB ORADB)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-string-trong-vm-khac-ngoai-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connect string — TRONG VM khác NGOÀI HOST
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ba-cach-ssh-vao-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Ba cách SSH vào VM
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Ba cách SSH vào VM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-vagrant-ssh-cach-chuan-khuyen-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. vagrant ssh — cách chuẩn, khuyên dùng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-ssh-truc-tiep-bang-key-khong-can-ung-o-thu-muc-vagrant" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. SSH trực tiếp bằng key — không cần đứng ở thư mục Vagrant
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-chay-lenh-mot-phat-tu-host-khong-can-vao-shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Chạy lệnh một phát từ host (không cần vào shell)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tro-thanh-user-oracle-va-moi-truong-san-co" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Trở thành user oracle và môi trường sẵn có
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-mount-labs-scripts-lab-dung-truc-tiep-trong-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Mount /labs — scripts lab dùng trực tiếp trong VM
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Mount /labs — scripts lab dùng trực tiếp trong VM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#co-che-a-cau-hinh-xong-2026-07-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cơ chế (đã cấu hình xong 2026-07-14)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chay-lab-hoan-toan-trong-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chạy lab hoàn toàn trong VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#luu-y-vboxsf-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lưu ý vboxsf (quan trọng)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-cong-cu-os-trong-vm-cho-cac-section-sau" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Công cụ OS trong VM cho các section sau
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-xu-ly-su-co-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Xử lý sự cố nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-a-kiem-chung-2026-07-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Đã kiểm chứng (2026-07-14)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all-new/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-bang-tai-khoan-mat-khau-host-tra-cuu-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Bảng tài khoản / mật khẩu / host (tra cứu nhanh)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Bảng tài khoản / mật khẩu / host (tra cứu nhanh)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ssh-vao-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      SSH vào VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-khoan-database-pdb-oradb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tài khoản database (PDB ORADB)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-string-trong-vm-khac-ngoai-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connect string — TRONG VM khác NGOÀI HOST
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ba-cach-ssh-vao-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Ba cách SSH vào VM
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Ba cách SSH vào VM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-vagrant-ssh-cach-chuan-khuyen-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. vagrant ssh — cách chuẩn, khuyên dùng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-ssh-truc-tiep-bang-key-khong-can-ung-o-thu-muc-vagrant" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. SSH trực tiếp bằng key — không cần đứng ở thư mục Vagrant
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-chay-lenh-mot-phat-tu-host-khong-can-vao-shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Chạy lệnh một phát từ host (không cần vào shell)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tro-thanh-user-oracle-va-moi-truong-san-co" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Trở thành user oracle và môi trường sẵn có
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-mount-labs-scripts-lab-dung-truc-tiep-trong-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Mount /labs — scripts lab dùng trực tiếp trong VM
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Mount /labs — scripts lab dùng trực tiếp trong VM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#co-che-a-cau-hinh-xong-2026-07-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cơ chế (đã cấu hình xong 2026-07-14)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chay-lab-hoan-toan-trong-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chạy lab hoàn toàn trong VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#luu-y-vboxsf-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lưu ý vboxsf (quan trọng)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-cong-cu-os-trong-vm-cho-cac-section-sau" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Công cụ OS trong VM cho các section sau
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-xu-ly-su-co-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Xử lý sự cố nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-a-kiem-chung-2026-07-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Đã kiểm chứng (2026-07-14)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="huong-dan-ssh-vao-vm-srv1-thuc-hanh-truc-tiep-trong-linux">Hướng dẫn SSH vào VM srv1 &amp; thực hành trực tiếp trong Linux<a class="headerlink" href="#huong-dan-ssh-vao-vm-srv1-thuc-hanh-truc-tiep-trong-linux" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Tạo ngày: 2026-07-14 (buổi 9) · Môi trường: VM <code>srv1</code> (Vagrant, OL7.9, Oracle 19c EE)
+Bổ sung cho <a href="../003-phase2-setup-log/">03_phase2_setup_log.md</a> — tập trung vào làm việc BÊN TRONG VM.
+Scripts lab được mount sẵn tại <strong><code>/labs</code></strong> trong VM (cấu hình ở mục 4).</p>
+</blockquote>
+<hr />
+<h2 id="1-bang-tai-khoan-mat-khau-host-tra-cuu-nhanh">1. Bảng tài khoản / mật khẩu / host (tra cứu nhanh)<a class="headerlink" href="#1-bang-tai-khoan-mat-khau-host-tra-cuu-nhanh" title="Permanent link">&para;</a></h2>
+<h3 id="ssh-vao-vm">SSH vào VM<a class="headerlink" href="#ssh-vao-vm" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thông số</th>
+<th>Giá trị</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Host</td>
+<td><code>127.0.0.1</code> (localhost)</td>
+</tr>
+<tr>
+<td>Port SSH</td>
+<td><code>2222</code> (VirtualBox forward 2222 → 22)</td>
+</tr>
+<tr>
+<td>User OS</td>
+<td><code>vagrant</code></td>
+</tr>
+<tr>
+<td>Xác thực</td>
+<td><strong>Key</strong> (không cần password): <code>D:\Dba_project\vagrant-projects\OracleDatabase\19.3.0\.vagrant\machines\srv1\virtualbox\private_key</code></td>
+</tr>
+<tr>
+<td>Password dự phòng</td>
+<td>user <code>vagrant</code> / pass <code>vagrant</code> (mặc định của box, chỉ dùng được nếu sshd cho phép password auth)</td>
+</tr>
+<tr>
+<td>User chạy Oracle</td>
+<td><code>oracle</code> — <strong>không có password</strong>, vào bằng <code>sudo</code> từ vagrant (mục 2.3)</td>
+</tr>
+<tr>
+<td>root</td>
+<td><code>sudo -i</code> từ vagrant (NOPASSWD)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-khoan-database-pdb-oradb">Tài khoản database (PDB <code>ORADB</code>)<a class="headerlink" href="#tai-khoan-database-pdb-oradb" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tài khoản</th>
+<th>Password</th>
+<th>Dùng cho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sys</code> (as sysdba)</td>
+<td><code>oracle_4U</code></td>
+<td>Grant trên object SYS, thí nghiệm 32K (qua CDB <code>ORCLCDB</code>)</td>
+</tr>
+<tr>
+<td><code>system</code></td>
+<td><code>oracle_4U</code></td>
+<td>Toolkit chẩn đoán, DBA thường ngày</td>
+</tr>
+<tr>
+<td><code>pdbadmin</code></td>
+<td><code>oracle_4U</code></td>
+<td>Admin riêng PDB (ít dùng)</td>
+</tr>
+<tr>
+<td><code>soe</code></td>
+<td><code>soe</code></td>
+<td>Schema thực hành (lab, Swingbench)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="connect-string-trong-vm-khac-ngoai-host">Connect string — TRONG VM khác NGOÀI HOST<a class="headerlink" href="#connect-string-trong-vm-khac-ngoai-host" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Từ đâu</th>
+<th>Connect string</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Trong VM</strong></td>
+<td><code>//localhost:1521/ORADB</code></td>
+<td>Listener chuẩn 1521</td>
+</tr>
+<tr>
+<td><strong>Trong VM</strong> (CDB root)</td>
+<td><code>//localhost:1521/ORCLCDB</code></td>
+<td>Cho thí nghiệm cần instance-level</td>
+</tr>
+<tr>
+<td><strong>Trong VM</strong> (user oracle)</td>
+<td><code>sqlplus / as sysdba</code></td>
+<td>Vào thẳng CDB root, không cần password</td>
+</tr>
+<tr>
+<td>Từ host Windows</td>
+<td><code>//localhost:15210/ORADB</code></td>
+<td>⚠️ 15210, KHÔNG phải 1521 (host có tnslsnr local chiếm 1521)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-ba-cach-ssh-vao-vm">2. Ba cách SSH vào VM<a class="headerlink" href="#2-ba-cach-ssh-vao-vm" title="Permanent link">&para;</a></h2>
+<h3 id="21-vagrant-ssh-cach-chuan-khuyen-dung">2.1. <code>vagrant ssh</code> — cách chuẩn, khuyên dùng<a class="headerlink" href="#21-vagrant-ssh-cach-chuan-khuyen-dung" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">Dba_project</span><span class="p">\</span><span class="n">vagrant-projects</span><span class="p">\</span><span class="n">OracleDatabase</span><span class="p">\</span><span class="n">19</span><span class="p">.</span><span class="n">3</span><span class="p">.</span><span class="n">0</span>   <span class="c"># BẮT BUỘC đứng ở thư mục project</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">vagrant</span> <span class="n">up</span>      <span class="c"># nếu VM chưa chạy</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">vagrant</span> <span class="n">ssh</span>     <span class="c"># → vào thẳng shell của user vagrant</span>
+</span></code></pre></div>
+<h3 id="22-ssh-truc-tiep-bang-key-khong-can-ung-o-thu-muc-vagrant">2.2. SSH trực tiếp bằng key — không cần đứng ở thư mục Vagrant<a class="headerlink" href="#22-ssh-truc-tiep-bang-key-khong-can-ung-o-thu-muc-vagrant" title="Permanent link">&para;</a></h3>
+<p>Dùng khi muốn SSH từ terminal bất kỳ, hoặc cấu hình cho MobaXterm/PuTTY/WinSCP:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">ssh</span> <span class="n">-i</span> <span class="s2">"D:\Dba_project\vagrant-projects\OracleDatabase\19.3.0\.vagrant\machines\srv1\virtualbox\private_key"</span> <span class="p">`</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">-p</span> <span class="n">2222</span> <span class="n">-o</span> <span class="n">StrictHostKeyChecking</span><span class="p">=</span><span class="n">no</span> <span class="n">vagrant</span><span class="nv">@127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span>
+</span></code></pre></div>
+<p>Tiện hơn: thêm block sau vào <code>C:\Users\HHC_HOME\.ssh\config</code>, từ đó chỉ cần gõ <strong><code>ssh srv1</code></strong> (VS Code Remote-SSH cũng nhận):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Host srv1
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  HostName 127.0.0.1
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  Port 2222
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  User vagrant
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  IdentityFile D:/Dba_project/vagrant-projects/OracleDatabase/19.3.0/.vagrant/machines/srv1/virtualbox/private_key
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  StrictHostKeyChecking no
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  UserKnownHostsFile NUL
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  PubkeyAcceptedKeyTypes +ssh-rsa
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>  HostKeyAlgorithms +ssh-rsa
+</span></code></pre></div>
+<blockquote>
+<p>2 dòng cuối bắt buộc: key của box là ssh-rsa, OpenSSH mới mặc định từ chối.
+⚠️ Key này bị Vagrant thay mới nếu <code>vagrant destroy &amp;&amp; vagrant up</code> — khi đó chỉ cần giữ nguyên config, key tự trỏ đúng file.</p>
+</blockquote>
+<h3 id="23-chay-lenh-mot-phat-tu-host-khong-can-vao-shell">2.3. Chạy lệnh một phát từ host (không cần vào shell)<a class="headerlink" href="#23-chay-lenh-mot-phat-tu-host-khong-can-vao-shell" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">Dba_project</span><span class="p">\</span><span class="n">vagrant-projects</span><span class="p">\</span><span class="n">OracleDatabase</span><span class="p">\</span><span class="n">19</span><span class="p">.</span><span class="n">3</span><span class="p">.</span><span class="n">0</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">vagrant</span> <span class="n">ssh</span> <span class="n">-c</span> <span class="s2">"sudo -u oracle -i bash -c 'sqlplus -S / as sysdba @/labs/_toolkit/00_env_check.sql'"</span>
+</span></code></pre></div>
+<hr />
+<h2 id="3-tro-thanh-user-oracle-va-moi-truong-san-co">3. Trở thành user <code>oracle</code> và môi trường sẵn có<a class="headerlink" href="#3-tro-thanh-user-oracle-va-moi-truong-san-co" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Sau khi SSH vào (đang là vagrant):</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sudo<span class="w"> </span>-u<span class="w"> </span>oracle<span class="w"> </span>-i<span class="w">        </span><span class="c1"># -i = login shell → tự nạp ORACLE_HOME, PATH, ORACLE_SID</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Kiểm tra môi trường đã nạp:</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$ORACLE_HOME</span><span class="w">        </span><span class="c1"># /opt/oracle/product/19c/dbhome_1</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$ORACLE_SID</span><span class="w">         </span><span class="c1"># ORCLCDB</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>which<span class="w"> </span>sqlplus<span class="w">            </span><span class="c1"># $ORACLE_HOME/bin/sqlplus</span>
+</span></code></pre></div>
+<p>Không đặt password cho <code>oracle</code> — <code>sudo -u oracle -i</code> là đủ và an toàn hơn (lab VM chỉ NAT, nhưng tạo thói quen tốt).</p>
+<p>Các đường dẫn quan trọng trong VM:</p>
+<table>
+<thead>
+<tr>
+<th>Đường dẫn</th>
+<th>Là gì</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/labs</code></td>
+<td><strong>Scripts lab mount từ host</strong> (mục 4)</td>
+</tr>
+<tr>
+<td><code>/vagrant</code></td>
+<td>Thư mục Vagrant project trên host (trao đổi file chung)</td>
+</tr>
+<tr>
+<td><code>/opt/oracle/product/19c/dbhome_1</code></td>
+<td>ORACLE_HOME</td>
+</tr>
+<tr>
+<td><code>/opt/oracle/oradata/ORCLCDB/ORADB/</code></td>
+<td>Datafiles của PDB ORADB (kể cả <code>soetbs01.dbf</code>, <code>tbs32k.dbf</code>)</td>
+</tr>
+<tr>
+<td><code>/opt/oracle/diag/rdbms/orclcdb/ORCLCDB/trace/</code></td>
+<td>Alert log + trace files (<code>alert_ORCLCDB.log</code>)</td>
+</tr>
+<tr>
+<td><code>/home/oracle</code></td>
+<td>Chỗ đặt file cần I/O thật (dump của impdp — vboxsf không hỗ trợ async I/O)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-mount-labs-scripts-lab-dung-truc-tiep-trong-vm">4. Mount <code>/labs</code> — scripts lab dùng trực tiếp trong VM<a class="headerlink" href="#4-mount-labs-scripts-lab-dung-truc-tiep-trong-vm" title="Permanent link">&para;</a></h2>
+<h3 id="co-che-a-cau-hinh-xong-2026-07-14">Cơ chế (đã cấu hình xong 2026-07-14)<a class="headerlink" href="#co-che-a-cau-hinh-xong-2026-07-14" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Vagrantfile</code> thêm tham số <code>VM_LABS_DIR</code> + <code>config.vm.synced_folder VM_LABS_DIR, "/labs"</code></li>
+<li><code>config.local.yaml</code> đặt: <code>VM_LABS_DIR: 'D:/Dba_project/The-Oracle-Database-Performance-Tuning-Course/labs'</code></li>
+<li>Áp dụng thay đổi: <code>vagrant reload</code> (chỉ cần 1 lần; các lần <code>vagrant up</code> sau tự mount)</li>
+</ul>
+<p><strong>Lợi ích:</strong> sửa script trên host (VS Code) → hiệu lực NGAY trong VM, không copy qua lại; <code>@../_toolkit/</code> giữ nguyên cấu trúc nên lab chạy y hệt như từ host.</p>
+<h3 id="chay-lab-hoan-toan-trong-vm">Chạy lab hoàn toàn trong VM<a class="headerlink" href="#chay-lab-hoan-toan-trong-vm" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sudo<span class="w"> </span>-u<span class="w"> </span>oracle<span class="w"> </span>-i<span class="w">                </span><span class="c1"># thành oracle</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">cd</span><span class="w"> </span>/labs/section_28<span class="w">              </span><span class="c1"># BẮT BUỘC đứng trong thư mục lab (script gọi ../_toolkit/)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Lab chính (user soe):</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>sqlplus<span class="w"> </span>soe/soe@//localhost:1521/ORADB
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>@01_setup.sql
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>@02_workload.sql<span class="w"> </span><span class="m">100000</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>@03_diagnose.sql
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>@04_fix.sql<span class="w"> </span><span class="m">100000</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1"># Mở rộng 32K + dọn dẹp (SYS qua CDB root — trong VM dùng "/ as sysdba" là xong):</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>sqlplus<span class="w"> </span>/<span class="w"> </span>as<span class="w"> </span>sysdba
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>@05_row_chaining_32k.sql
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>@99_cleanup.sql
+</span></code></pre></div>
+<blockquote>
+<p>Trong VM, <code>sqlplus / as sysdba</code> vào thẳng CDB root — thay được cách connect <code>sys/oracle_4U@//localhost:15210/ORCLCDB as sysdba</code> từ host.</p>
+</blockquote>
+<p>Toolkit chẩn đoán trong VM (user system):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span>/labs/_toolkit
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>sqlplus<span class="w"> </span>system/oracle_4U@//localhost:1521/ORADB
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>@time_model.sql
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>@top_waits.sql
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>@ash_now.sql
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>@top_sql.sql<span class="w"> </span>ELAPSED
+</span></code></pre></div>
+<h3 id="luu-y-vboxsf-quan-trong">Lưu ý vboxsf (quan trọng)<a class="headerlink" href="#luu-y-vboxsf-quan-trong" title="Permanent link">&para;</a></h3>
+<ul>
+<li>❌ <strong>KHÔNG</strong> để Data Pump đọc/ghi dump trên <code>/labs</code> hay <code>/vagrant</code> (ORA-27061, async I/O) → copy vào <code>/home/oracle</code> trước</li>
+<li>❌ KHÔNG đặt datafile/redo/tempfile trên vboxsf</li>
+<li>⚠️ <code>SPOOL</code> từ sqlplus ra <code>/labs/...</code> sẽ ghi thẳng vào repo trên host — muốn giữ output tạm thì spool ra <code>/tmp/</code> hoặc <code>/home/oracle/</code></li>
+<li>✅ Đọc script <code>.sql</code>, file config, README: hoàn toàn ổn</li>
+</ul>
+<hr />
+<h2 id="5-cong-cu-os-trong-vm-cho-cac-section-sau">5. Công cụ OS trong VM cho các section sau<a class="headerlink" href="#5-cong-cu-os-trong-vm-cho-cac-section-sau" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Lệnh</th>
+<th>Section</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sar -u 5 3</code>, <code>sar -d</code>, <code>sar -r</code></td>
+<td>34</td>
+<td>sysstat đã bật (<code>systemctl status sysstat</code>)</td>
+</tr>
+<tr>
+<td><code>iostat -xm 5</code>, <code>vmstat 5</code>, <code>top</code></td>
+<td>25/26/34</td>
+<td>có sẵn</td>
+</tr>
+<tr>
+<td><code>stress-ng --cpu 2 --timeout 60s</code></td>
+<td>25</td>
+<td>tạo CPU load nhân tạo</td>
+</tr>
+<tr>
+<td><code>tail -f /opt/oracle/diag/rdbms/orclcdb/ORCLCDB/trace/alert_ORCLCDB.log</code></td>
+<td>nhiều</td>
+<td>theo dõi alert log khi chạy lab</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-xu-ly-su-co-nhanh">6. Xử lý sự cố nhanh<a class="headerlink" href="#6-xu-ly-su-co-nhanh" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Xử lý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vagrant ssh</code> báo "not created"</td>
+<td>Đứng sai thư mục — <code>cd D:\Dba_project\vagrant-projects\OracleDatabase\19.3.0</code></td>
+</tr>
+<tr>
+<td>SSH trực tiếp bị từ chối key</td>
+<td>Thiếu 2 dòng <code>+ssh-rsa</code> trong ssh config (mục 2.2)</td>
+</tr>
+<tr>
+<td><code>/labs</code> trống hoặc không có</td>
+<td><code>vagrant reload</code> (mount chỉ áp dụng sau reload); kiểm tra <code>VM_LABS_DIR</code> trong <code>config.local.yaml</code></td>
+</tr>
+<tr>
+<td>sqlplus trong VM: "command not found"</td>
+<td>Chưa vào login shell — dùng <code>sudo -u oracle -i</code> (có <code>-i</code>)</td>
+</tr>
+<tr>
+<td>ORA-12541 trong VM</td>
+<td>DB/listener chưa start: <code>sudo systemctl status oracle-rdbms</code> rồi <code>sudo systemctl start oracle-rdbms</code></td>
+</tr>
+<tr>
+<td>Shared folder lỗi sau update VirtualBox</td>
+<td>Cảnh báo Guest Additions lệch version — thường vẫn chạy; nếu hỏng thật: <code>vagrant plugin install vagrant-vbguest</code> rồi reload</td>
+</tr>
+<tr>
+<td>Output sqlplus trong VM hiện <code>???</code> thay cho dấu <code>—</code></td>
+<td>Locale terminal của VM không render UTF-8 tiếng Việt — vô hại, chỉ là hiển thị</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-a-kiem-chung-2026-07-14">7. Đã kiểm chứng (2026-07-14)<a class="headerlink" href="#7-a-kiem-chung-2026-07-14" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>vagrant reload</code> → mount <code>/labs</code> OK (cả <code>/vagrant</code> giữ nguyên)</li>
+<li>User <code>oracle</code> đọc được <code>/labs</code>, chạy <code>@../_toolkit/00_env_check.sql</code> từ <code>/labs/section_28</code> → <strong>8/8 PASS</strong></li>
+<li>Sửa script trên host bằng VS Code → thấy ngay trong VM (không cần reload)</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/ke_hoach/05_huong_dan_ssh_vm.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../004-huong-dan-swingbench/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Hướng dẫn cài đặt &amp; cấu hình Swingbench 2.5 (Bước 3 — bạn tự thao tác GUI)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Hướng dẫn cài đặt & cấu hình Swingbench 2.5 (Bước 3 — bạn tự thao tác GUI)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../labs/frag-check/readme/" class="md-footer__link md-footer__link--next" aria-label="Sau: `_frag_check/` — Bộ script kiểm tra mức độ phân mảnh toàn hệ thống Oracle">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                `_frag_check/` — Bộ script kiểm tra mức độ phân mảnh toàn hệ thống Oracle
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

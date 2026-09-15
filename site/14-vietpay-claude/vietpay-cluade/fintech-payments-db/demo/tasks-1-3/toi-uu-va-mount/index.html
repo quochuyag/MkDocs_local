@@ -1,0 +1,1948 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../results/report/">
+      
+      
+        <link rel="next" href="../../tasks-4-6/000-overview/">
+      
+      
+      <link rel="icon" href="../../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Tối ưu VM & Mount thư mục ngoài — Nhật ký các bước đã làm - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#toi-uu-vm-mount-thu-muc-ngoai-nhat-ky-cac-buoc-a-lam" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tối ưu VM & Mount thư mục ngoài — Nhật ký các bước đã làm
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_12" id="__nav_12_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            14. VietPay (Claude)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../huong-dan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HƯỚNG DẪN CHI TIẾT — VietPay Database Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../ket-qua-kiem-tra/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kết quả kiểm tra lại (re-validation log)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12_4" id="__nav_12_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Vietpay cluade
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_12_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12_4">
+            <span class="md-nav__icon md-icon"></span>
+            Vietpay cluade
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../fintech-demo-exports/results/report/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Fintech demo exports
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12_4_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12_4_2" id="__nav_12_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Fintech payments db
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_12_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fintech payments db
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12_4_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12_4_2_1" id="__nav_12_4_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Demo
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_12_4_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12_4_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Demo
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo & Test toàn bộ bài (Task 1–6) trên Vagrant
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12_4_2_1_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12_4_2_1_2" id="__nav_12_4_2_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Tasks 1 3
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_12_4_2_1_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12_4_2_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tasks 1 3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo Task 1–3 trên máy ảo Vagrant — Tổng quan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo & Test Task 1–3 trên Vagrant VM (PostgreSQL 16)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../results/report/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Results
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Tối ưu VM & Mount thư mục ngoài — Nhật ký các bước đã làm
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Tối ưu VM & Mount thư mục ngoài — Nhật ký các bước đã làm
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-boi-canh" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Bối cảnh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tu-ong-toi-uu-cpuram-cho-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Tự động tối ưu CPU/RAM cho VM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-tinh-chinh-virtualbox-giam-overhead-ao-hoa" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Tinh chỉnh VirtualBox (giảm overhead ảo hoá)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tune-postgresql-theo-ram-cua-vm-trang-thai-tot-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Tune PostgreSQL theo RAM của VM (trạng thái "tốt nhất")
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-mount-code-log-ra-thu-muc-ngoai-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Mount code &amp; log ra thư mục NGOÀI repo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-giu-minh-hoa-spill-deterministic" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Giữ minh hoạ "spill" deterministic
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-script-destroy" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Script destroy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ket-qua-a-chay-that-3m-dong-vm-toi-uu" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Kết quả đã chạy thật (3M dòng, VM tối ưu)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-tom-tat-cac-lenh" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Tóm tắt các lệnh
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../tasks-4-6/000-overview/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Tasks 4 6
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-boi-canh" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Bối cảnh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-tu-ong-toi-uu-cpuram-cho-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Tự động tối ưu CPU/RAM cho VM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-tinh-chinh-virtualbox-giam-overhead-ao-hoa" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Tinh chỉnh VirtualBox (giảm overhead ảo hoá)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tune-postgresql-theo-ram-cua-vm-trang-thai-tot-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Tune PostgreSQL theo RAM của VM (trạng thái "tốt nhất")
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-mount-code-log-ra-thu-muc-ngoai-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Mount code &amp; log ra thư mục NGOÀI repo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-giu-minh-hoa-spill-deterministic" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Giữ minh hoạ "spill" deterministic
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-script-destroy" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Script destroy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ket-qua-a-chay-that-3m-dong-vm-toi-uu" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Kết quả đã chạy thật (3M dòng, VM tối ưu)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-tom-tat-cac-lenh" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Tóm tắt các lệnh
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="toi-uu-vm-mount-thu-muc-ngoai-nhat-ky-cac-buoc-a-lam">Tối ưu VM &amp; Mount thư mục ngoài — Nhật ký các bước đã làm<a class="headerlink" href="#toi-uu-vm-mount-thu-muc-ngoai-nhat-ky-cac-buoc-a-lam" title="Permanent link">&para;</a></h1>
+<p>Tài liệu ghi lại <strong>những gì đã thực hiện để đưa VM demo về trạng thái tối ưu</strong> và
+<strong>mount code/log/kết quả ra thư mục ngoài repo để đọc lại từ host</strong>, kèm lý do và
+bằng chứng đã chạy thật (PostgreSQL 16 trên Vagrant/VirtualBox, Windows host).</p>
+<blockquote>
+<p>Liên quan: tổng quan demo <a href="../000-overview/"><code>00-overview.md</code></a>, cách dùng
+<a href="../readme/"><code>README.md</code></a>.</p>
+</blockquote>
+<hr />
+<h2 id="0-boi-canh">0. Bối cảnh<a class="headerlink" href="#0-boi-canh" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Host: <strong>16 vCPU, 63.7 GB RAM</strong> (≈40 GB trống), VirtualBox 7.0.20, Vagrant 2.4.9.</li>
+<li>Mục tiêu: VM chạy nhanh nhất có thể, và mọi log/kết quả đọc được trực tiếp từ
+  một thư mục trên host (không cần SSH vào VM).</li>
+</ul>
+<hr />
+<h2 id="1-tu-ong-toi-uu-cpuram-cho-vm">1. Tự động tối ưu CPU/RAM cho VM<a class="headerlink" href="#1-tu-ong-toi-uu-cpuram-cho-vm" title="Permanent link">&para;</a></h2>
+<p><strong>Làm gì:</strong> <code>vagrant/Vagrantfile</code> tự dò tài nguyên host (Ruby, đa nền tảng:
+<code>Etc.nprocessors</code>; RAM qua PowerShell trên Windows / <code>/proc/meminfo</code> Linux /
+<code>sysctl</code> macOS) rồi cấp phát:</p>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th>Công thức</th>
+<th>Trên máy này</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vCPU</td>
+<td><code>clamp(host_cpu / 4, 2..6)</code></td>
+<td><strong>4</strong></td>
+</tr>
+<tr>
+<td>RAM</td>
+<td><code>clamp(host_ram_mb / 16, 2048..6144)</code> MB</td>
+<td><strong>~4078 MB</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tại sao:</strong> đủ mạnh để sinh 3M dòng + build index nhanh, nhưng không chiếm hết
+host. Ghi đè khi cần: <code>VM_CPUS=6 VM_RAM=8192 vagrant up</code>.</p>
+<p><strong>Bằng chứng:</strong> <code>VBoxManage showvminfo fintech-pg-db</code> → <code>cpus=4</code>, <code>memory=4078</code>.</p>
+<hr />
+<h2 id="2-tinh-chinh-virtualbox-giam-overhead-ao-hoa">2. Tinh chỉnh VirtualBox (giảm overhead ảo hoá)<a class="headerlink" href="#2-tinh-chinh-virtualbox-giam-overhead-ao-hoa" title="Permanent link">&para;</a></h2>
+<p>Thêm vào provider trong <code>Vagrantfile</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--paravirtprovider kvm</code></td>
+<td>giao tiếp paravirt nhanh cho Linux guest</td>
+</tr>
+<tr>
+<td><code>--nestedpaging on</code></td>
+<td>dùng MMU ảo hoá phần cứng (EPT/NPT)</td>
+</tr>
+<tr>
+<td><code>--largepages on</code></td>
+<td>giảm TLB miss</td>
+</tr>
+<tr>
+<td><code>--vtxvpid on</code>, <code>--vtxux on</code></td>
+<td>ít TLB flush khi context switch; unrestricted guest</td>
+</tr>
+<tr>
+<td><code>--audio-driver none</code>, <code>--usb off</code>, <code>--usbehci off</code></td>
+<td>bỏ thiết bị không dùng, giảm overhead</td>
+</tr>
+<tr>
+<td><code>linked_clone = true</code></td>
+<td>clone tức thời, tiết kiệm đĩa</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-tune-postgresql-theo-ram-cua-vm-trang-thai-tot-nhat">3. Tune PostgreSQL theo RAM của VM (trạng thái "tốt nhất")<a class="headerlink" href="#3-tune-postgresql-theo-ram-cua-vm-trang-thai-tot-nhat" title="Permanent link">&para;</a></h2>
+<p><strong>Làm gì:</strong> <code>03-install-postgres.sh</code> ghi <code>conf.d/99-fintech-tuning.conf</code>, tính
+động theo RAM VM, rồi restart.</p>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th>Giá trị (VM 4GB)</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shared_buffers</code></td>
+<td>25% RAM (≈972 MB)</td>
+<td>cache trang trong Postgres</td>
+</tr>
+<tr>
+<td><code>effective_cache_size</code></td>
+<td>~66% RAM (≈2594 MB)</td>
+<td>gợi ý planner về cache → chọn index hợp lý</td>
+</tr>
+<tr>
+<td><code>maintenance_work_mem</code></td>
+<td>RAM/8, trần 512 MB (≈486 MB)</td>
+<td>build index / VACUUM / backfill nhanh</td>
+</tr>
+<tr>
+<td><code>work_mem</code></td>
+<td>16 MB</td>
+<td>đủ cho sort/hash thường</td>
+</tr>
+<tr>
+<td><code>random_page_cost</code></td>
+<td><strong>1.1</strong></td>
+<td>phần cứng SSD/cloud (mặc định 4 = ổ quay đời cũ)</td>
+</tr>
+<tr>
+<td><code>effective_io_concurrency</code></td>
+<td>200</td>
+<td>SSD đọc song song</td>
+</tr>
+<tr>
+<td><code>max_wal_size</code> / <code>min_wal_size</code></td>
+<td>2 GB / 256 MB</td>
+<td>ít checkpoint khi bulk-load</td>
+</tr>
+<tr>
+<td><code>checkpoint_completion_target</code></td>
+<td>0.9</td>
+<td>trải I/O checkpoint, tránh spike</td>
+</tr>
+<tr>
+<td><code>wal_compression</code></td>
+<td>on</td>
+<td>giảm WAL</td>
+</tr>
+<tr>
+<td><code>synchronous_commit</code></td>
+<td><strong>off</strong> ⚠</td>
+<td>DEMO: nhanh hơn nhiều khi bulk-load; vẫn nhất quán (chỉ mất vài commit cuối nếu mất điện). PROD bật lại.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tại sao <code>random_page_cost=1.1</code> là then chốt:</strong> ở lần chạy đầu, planner chọn
+Seq Scan + HashAggregate thay vì covering index. Nguyên nhân: mặc định
+<code>random_page_cost=4</code> (giả định ổ đĩa quay) phạt index-scan quá nặng. Hạ về 1.1
+(chuẩn SSD) → planner chọn đúng <strong>Index Only Scan + GroupAggregate</strong>.</p>
+<hr />
+<h2 id="4-mount-code-log-ra-thu-muc-ngoai-repo">4. Mount code &amp; log ra thư mục NGOÀI repo<a class="headerlink" href="#4-mount-code-log-ra-thu-muc-ngoai-repo" title="Permanent link">&para;</a></h2>
+<p><strong>Làm gì:</strong>
+- <code>Vagrantfile</code> mount thêm <code>EXPORT_DIR</code> (mặc định thư mục anh em của repo:
+  <code>…/vietpay_cluade/fintech-demo-exports</code>) vào VM tại <code>/exports</code>, với
+  <code>mount_options: ["dmode=777","fmode=777"]</code> để user <code>postgres</code> ghi được.
+- <code>03-install-postgres.sh</code> bật <code>logging_collector</code> và đặt
+  <code>log_directory='/exports/pg-logs'</code> → <strong>log server Postgres ghi thẳng ra host</strong>
+  (kèm <code>log_min_duration_statement=200ms</code>, <code>log_checkpoints</code>, <code>log_lock_waits</code>,
+  <code>log_autovacuum_min_duration=0</code>).
+- <code>07-verify-report.sh</code> copy <code>report.md</code>, plan, log từng bước, và <code>pg-settings.txt</code>
+  sang <code>EXPORT_DIR</code>.
+- Code repo vốn đã mount sẵn tại <code>/vagrant</code> (scripts <code>psql -f</code> thẳng vào file gốc).</p>
+<p><strong>Tại sao:</strong> đọc lại kết quả/log từ host không cần SSH; tách khỏi repo nên không
+lẫn vào Git.</p>
+<p><strong>Cây thư mục ngoài sau khi chạy:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>fintech-demo-exports/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── pg-logs/postgresql-2026-06-24.log   # log server (autovacuum, slow query, checkpoint…)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── pg-settings.txt                     # snapshot tham số tuning
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>└── results/                            # report.md, explain_*_live.txt, *.log, run-all.summary
+</span></code></pre></div></p>
+<p><strong>Bằng chứng (pg-settings.txt, trích):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>random_page_cost            1.1
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>shared_buffers              124416 (8kB)  -&gt; ~972MB
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>effective_cache_size        332032 (8kB)  -&gt; ~2594MB
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>synchronous_commit          off
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>log_directory               /exports/pg-logs
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>logging_collector           on
+</span></code></pre></div></p>
+<hr />
+<h2 id="5-giu-minh-hoa-spill-deterministic">5. Giữ minh hoạ "spill" deterministic<a class="headerlink" href="#5-giu-minh-hoa-spill-deterministic" title="Permanent link">&para;</a></h2>
+<p>Vì server giờ đặt <code>work_mem=16MB</code>, <code>task2_before.sql</code> &amp; <code>task2_after.sql</code> tự
+<code>SET work_mem='4MB'</code> (mô phỏng server bận) để <strong>BEFORE buộc HashAggregate spill</strong>
+còn <strong>AFTER GroupAggregate vẫn không spill</strong> — so sánh công bằng, lặp lại được.</p>
+<hr />
+<h2 id="6-script-destroy">6. Script destroy<a class="headerlink" href="#6-script-destroy" title="Permanent link">&para;</a></h2>
+<p>Thêm <code>09-destroy.sh</code>:
+- mặc định: <code>vagrant destroy -f</code> VM, <strong>giữ box</strong> (box dùng chung lab khác).
+- <code>--clean</code>: xoá thêm log/plan trong <code>results/</code>.
+- <code>--remove-box</code>: gỡ cả box (có cảnh báo).
+- <code>--yes</code>: không hỏi.
+<code>Makefile</code> thêm target <code>destroy</code> / <code>clean</code>.</p>
+<hr />
+<h2 id="7-ket-qua-a-chay-that-3m-dong-vm-toi-uu">7. Kết quả đã chạy thật (3M dòng, VM tối ưu)<a class="headerlink" href="#7-ket-qua-a-chay-that-3m-dong-vm-toi-uu" title="Permanent link">&para;</a></h2>
+<p><code>run-all.sh --fresh</code> → <strong>ALL OK in ~331s</strong>. Trích <code>results/report.md</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Kết quả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1 — Toàn vẹn</strong></td>
+<td>số dư CASH 10000 / FEE 200 / ví 9800; PASS: bút toán lệch, sai currency, idempotency trùng đều bị từ chối</td>
+</tr>
+<tr>
+<td><strong>2 — Hiệu năng</strong></td>
+<td>BEFORE: HashAggregate <strong>spill</strong>, buffers hit≈947.905, <strong>~1113ms</strong> → AFTER: <strong>Index Only Scan + GroupAggregate</strong>, Heap Fetches 0, <strong>không spill</strong>, buffers hit≈4.665, <strong>~185ms</strong> (~6× nhanh, ~200× ít buffer), chỉ quét <strong>1 partition</strong></td>
+</tr>
+<tr>
+<td><strong>3 — Migration</strong></td>
+<td>guard chặn khi còn NULL → backfill → <code>NOT NULL</code> + validate FK → rollback (U03) sạch</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-tom-tat-cac-lenh">8. Tóm tắt các lệnh<a class="headerlink" href="#8-tom-tat-cac-lenh" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Chạy đầy đủ (tự tối ưu + mount + tune)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bash<span class="w"> </span>demo/tasks-1-3/run-all.sh<span class="w"> </span>--fresh
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Chạy nhanh</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nv">DEMO_ROWS</span><span class="o">=</span><span class="m">500000</span><span class="w"> </span>bash<span class="w"> </span>demo/tasks-1-3/run-all.sh
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Ghi đè tài nguyên / thư mục export</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nv">VM_CPUS</span><span class="o">=</span><span class="m">6</span><span class="w"> </span><span class="nv">VM_RAM</span><span class="o">=</span><span class="m">8192</span><span class="w"> </span><span class="nv">EXPORT_DIR</span><span class="o">=</span>D:/ket-qua<span class="w"> </span>bash<span class="w"> </span>demo/tasks-1-3/run-all.sh<span class="w"> </span>--fresh
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Đọc lại kết quả từ host (không cần SSH)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1">#   &lt;repo&gt;/../fintech-demo-exports/{results, pg-logs, pg-settings.txt}</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Dọn dẹp</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>bash<span class="w"> </span>demo/tasks-1-3/09-destroy.sh<span class="w"> </span>--yes
+</span></code></pre></div>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>vietpay_cluade/vietpay_cluade/fintech-payments-db/demo/tasks-1-3/TOI_UU_VA_MOUNT.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../results/report/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Báo cáo demo Task 1–3 (PostgreSQL trên Vagrant VM)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Báo cáo demo Task 1–3 (PostgreSQL trên Vagrant VM)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../tasks-4-6/000-overview/" class="md-footer__link md-footer__link--next" aria-label="Sau: Demo Task 4–6 trên máy ảo Vagrant — Tổng quan">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Demo Task 4–6 trên máy ảo Vagrant — Tổng quan
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

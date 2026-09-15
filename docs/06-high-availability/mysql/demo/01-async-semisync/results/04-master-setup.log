@@ -1,0 +1,977 @@
+[23:15:44] ==> Trigger master-setup trên node1
+[16:15:51] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:15:51] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[16:15:51] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[16:16:01] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+gtid_executed
+5c733903-52d4-11f1-820c-08002716ddef:1-4
+[16:16:01] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[23:16:00] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
+plugin_name	plugin_status
+rpl_semi_sync_source	ACTIVE
+Variable_name	Value
+rpl_semi_sync_source_enabled	ON
+rpl_semi_sync_source_timeout	10000
+rpl_semi_sync_source_trace_level	32
+rpl_semi_sync_source_wait_for_replica_count	1
+rpl_semi_sync_source_wait_no_replica	ON
+rpl_semi_sync_source_wait_point	AFTER_SYNC
+Variable_name	Value
+Rpl_semi_sync_source_clients	0
+Rpl_semi_sync_source_net_avg_wait_time	0
+Rpl_semi_sync_source_net_wait_time	0
+Rpl_semi_sync_source_net_waits	0
+Rpl_semi_sync_source_no_times	1
+Rpl_semi_sync_source_no_tx	4
+Rpl_semi_sync_source_status	OFF
+Rpl_semi_sync_source_timefunc_failures	0
+Rpl_semi_sync_source_tx_avg_wait_time	0
+Rpl_semi_sync_source_tx_wait_time	0
+Rpl_semi_sync_source_tx_waits	0
+Rpl_semi_sync_source_wait_pos_backtraverse	0
+Rpl_semi_sync_source_wait_sessions	0
+Rpl_semi_sync_source_yes_tx	0
+user	host	plugin
+repl	%	mysql_native_password
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 5c733903-52d4-11f1-820c-08002716ddef:1-4
+[23:16:07] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[07:07:44] ==> Trigger master-setup trên node1
+[00:07:49] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:07:49] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[00:07:49] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[00:07:59] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 6efd3d11-5316-11f1-b754-08002716ddef:1-4 |
++------------------------------------------+
+[00:07:59] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[07:07:58] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 6efd3d11-5316-11f1-b754-08002716ddef:1-4
+[07:08:02] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[14:02:42] ==> Trigger master-setup trên node1
+[07:02:49] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:02:49] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[07:02:49] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:02:59] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000007
+         Position: 1187
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4,
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:1-210:1000005-1000055
+gtid_executed
+69300ec1-532a-11f1-b389-08002716ddef:1-4,\naaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:1-210:1000005-1000055
+[07:02:59] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[14:02:58] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
+plugin_name	plugin_status
+rpl_semi_sync_source	ACTIVE
+Variable_name	Value
+rpl_semi_sync_source_enabled	ON
+rpl_semi_sync_source_timeout	10000
+rpl_semi_sync_source_trace_level	32
+rpl_semi_sync_source_wait_for_replica_count	1
+rpl_semi_sync_source_wait_no_replica	ON
+rpl_semi_sync_source_wait_point	AFTER_SYNC
+Variable_name	Value
+Rpl_semi_sync_source_clients	0
+Rpl_semi_sync_source_net_avg_wait_time	0
+Rpl_semi_sync_source_net_wait_time	0
+Rpl_semi_sync_source_net_waits	0
+Rpl_semi_sync_source_no_times	1
+Rpl_semi_sync_source_no_tx	4
+Rpl_semi_sync_source_status	OFF
+Rpl_semi_sync_source_timefunc_failures	0
+Rpl_semi_sync_source_tx_avg_wait_time	0
+Rpl_semi_sync_source_tx_wait_time	0
+Rpl_semi_sync_source_tx_waits	0
+Rpl_semi_sync_source_wait_pos_backtraverse	0
+Rpl_semi_sync_source_wait_sessions	0
+Rpl_semi_sync_source_yes_tx	0
+user	host	plugin
+repl	%	mysql_native_password
+*************************** 1. row ***************************
+             File: mysql-bin.000007
+         Position: 1187
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 69300ec1-532a-11f1-b389-08002716ddef:1-4,
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:1-210:1000005-1000055
+[14:03:03] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[14:55:25] ==> Trigger master-setup trên node1
+[07:55:31] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:31] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[07:55:31] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:55:41] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| b8dadb95-5357-11f1-b126-08002716ddef:1-4 |
++------------------------------------------+
+[07:55:41] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[14:55:40] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: b8dadb95-5357-11f1-b126-08002716ddef:1-4
+[14:55:44] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[15:41:07] ==> Trigger master-setup trên node1
+[08:41:13] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:13] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[08:41:13] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:41:23] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 0f949689-535e-11f1-b599-08002716ddef:1-4 |
++------------------------------------------+
+[08:41:23] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[15:41:22] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 0f949689-535e-11f1-b599-08002716ddef:1-4
+[15:41:28] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[14:14:10] ==> Trigger master-setup trên node1
+[07:14:18] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:18] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[07:14:18] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[07:14:29] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4 |
++------------------------------------------+
+[07:14:29] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[14:14:25] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-4
+[14:14:28] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[15:20:13] ==> Trigger master-setup trên node1
+[08:20:21] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:20:21] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[08:20:21] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:20:21] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 68750
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
++--------------------------------------------+
+| gtid_executed                              |
++--------------------------------------------+
+| 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211 |
++--------------------------------------------+
+[08:20:21] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[15:20:17] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 2     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 415   |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | ON    |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 326   |
+| Rpl_semi_sync_source_tx_wait_time          | 67551 |
+| Rpl_semi_sync_source_tx_waits              | 207   |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 207   |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 68750
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 19f3c70d-541b-11f1-b1b8-08002716ddef:1-211
+[15:20:21] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[22:09:39] ==> Trigger master-setup trên node1
+[15:09:47] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:09:47] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[15:09:47] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:09:57] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 94c885e0-545d-11f1-8791-08002716ddef:1-4 |
++------------------------------------------+
+[15:09:57] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[22:09:53] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 94c885e0-545d-11f1-8791-08002716ddef:1-4
+[22:09:57] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[22:31:03] ==> Trigger master-setup trên node1
+[15:31:11] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:11] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[15:31:11] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:31:21] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 9bb1f917-5460-11f1-876d-08002716ddef:1-4 |
++------------------------------------------+
+[15:31:21] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[22:31:17] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 9bb1f917-5460-11f1-876d-08002716ddef:1-4
+[22:31:21] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[22:59:09] ==> Trigger master-setup trên node1
+[15:59:17] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:17] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[15:59:17] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:59:27] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 8126668d-5464-11f1-9d2a-08002716ddef:1-4 |
++------------------------------------------+
+[15:59:27] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[22:59:23] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 8126668d-5464-11f1-9d2a-08002716ddef:1-4
+[22:59:28] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[15:02:55] ==> Trigger master-setup trên node1
+[08:03:06] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:06] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[08:03:06] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[08:03:16] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4 |
++------------------------------------------+
+[08:03:16] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[15:03:09] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 24eacb7b-54eb-11f1-8dd2-08002716ddef:1-4
+[15:03:13] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[20:33:56] ==> Trigger master-setup trên node1
+[13:34:08] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:08] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[13:34:08] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[13:34:18] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 5d9b0501-5519-11f1-a370-08002716ddef:1-4 |
++------------------------------------------+
+[13:34:18] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[20:34:11] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 5d9b0501-5519-11f1-a370-08002716ddef:1-4
+[20:34:16] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[22:02:20] ==> Trigger master-setup trên node1
+[15:02:32] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:02:32] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[15:02:32] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[15:02:42] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| ba73baac-5525-11f1-bb96-08002716ddef:1-4 |
++------------------------------------------+
+[15:02:42] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[22:02:35] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: ba73baac-5525-11f1-bb96-08002716ddef:1-4
+[22:02:40] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[08:05:46] ==> Trigger master-setup trên node1
+[01:05:57] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:05:57] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[01:05:57] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[01:06:08] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| 019b4510-557a-11f1-9a54-08002716ddef:1-4 |
++------------------------------------------+
+[01:06:08] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[08:06:00] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 019b4510-557a-11f1-9a54-08002716ddef:1-4
+[08:06:04] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh
+[11:31:49] ==> Trigger master-setup trên node1
+[04:32:01] ==> [1/4] Cài plugin semi-sync source (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:01] ==> [2/4] Ghi config bền vững vào zz-semisync.cnf
+[04:32:01] ==> [3/4] Tạo / cập nhật replication user (idempotent)
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[04:32:11] ==> [4/4] Xuất master state (GTID set) cho bước add replica
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
++------------------------------------------+
+| gtid_executed                            |
++------------------------------------------+
+| d22204fd-5596-11f1-aadd-08002716ddef:1-4 |
++------------------------------------------+
+[04:32:11] ==> Master sẵn sàng. Tiếp theo: chạy replica-setup.sh trên node2/node3.
+[11:32:04] ==> Verify plugin + user repl + master status
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------+---------------+
+| plugin_name          | plugin_status |
++----------------------+---------------+
+| rpl_semi_sync_source | ACTIVE        |
++----------------------+---------------+
++---------------------------------------------+------------+
+| Variable_name                               | Value      |
++---------------------------------------------+------------+
+| rpl_semi_sync_source_enabled                | ON         |
+| rpl_semi_sync_source_timeout                | 10000      |
+| rpl_semi_sync_source_trace_level            | 32         |
+| rpl_semi_sync_source_wait_for_replica_count | 1          |
+| rpl_semi_sync_source_wait_no_replica        | ON         |
+| rpl_semi_sync_source_wait_point             | AFTER_SYNC |
++---------------------------------------------+------------+
++--------------------------------------------+-------+
+| Variable_name                              | Value |
++--------------------------------------------+-------+
+| Rpl_semi_sync_source_clients               | 0     |
+| Rpl_semi_sync_source_net_avg_wait_time     | 0     |
+| Rpl_semi_sync_source_net_wait_time         | 0     |
+| Rpl_semi_sync_source_net_waits             | 0     |
+| Rpl_semi_sync_source_no_times              | 1     |
+| Rpl_semi_sync_source_no_tx                 | 4     |
+| Rpl_semi_sync_source_status                | OFF   |
+| Rpl_semi_sync_source_timefunc_failures     | 0     |
+| Rpl_semi_sync_source_tx_avg_wait_time      | 0     |
+| Rpl_semi_sync_source_tx_wait_time          | 0     |
+| Rpl_semi_sync_source_tx_waits              | 0     |
+| Rpl_semi_sync_source_wait_pos_backtraverse | 0     |
+| Rpl_semi_sync_source_wait_sessions         | 0     |
+| Rpl_semi_sync_source_yes_tx                | 0     |
++--------------------------------------------+-------+
++------+------+-----------------------+
+| user | host | plugin                |
++------+------+-----------------------+
+| repl | %    | mysql_native_password |
++------+------+-----------------------+
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 1143
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: d22204fd-5596-11f1-aadd-08002716ddef:1-4
+[11:32:09] ==> Bước 4 hoàn tất. Tiếp theo: bash demo/01-async-semisync/05-replica-setup.sh

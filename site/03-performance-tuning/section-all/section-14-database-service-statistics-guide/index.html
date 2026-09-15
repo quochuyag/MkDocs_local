@@ -1,0 +1,3228 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../section-13-ash-guide/">
+      
+      
+        <link rel="next" href="../section-15-sql-tracing-guide/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Section 14 — Database Service Performance Statistics & Module/Action/Client ID - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#section-14-database-service-performance-statistics-moduleactionclient-id" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 14 — Database Service Performance Statistics & Module/Action/Client ID
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../ke-hoach/000-index/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            Section all
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-10-server-generated-alerts-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 10 — Server-generated Alerts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-11-statspack-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 11 — Statspack
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-12-addm-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 12 — ADDM (Automatic Database Diagnostic Monitor)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-13-ash-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 13 — ASH (Active Session History)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Section 14 — Database Service Performance Statistics & Module/Action/Client ID
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Section 14 — Database Service Performance Statistics & Module/Action/Client ID
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tong-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tổng quan
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-13-database-service-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice 13: Database Service Statistics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practice 13: Database Service Statistics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-la-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service là gì?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-views-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các views chính
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-xem-danh-sach-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Xem danh sách Services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sessions-hien-tai-theo-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Sessions hiện tại theo Service
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-so-ket-noi-trong-30-phut-qua-tu-ash" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Số kết nối trong 30 phút qua (từ ASH)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-service-level-performance-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Service-level Performance Statistics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Service-level Performance Statistics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-tu-khi-instance-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics từ khi instance startup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tinh-wait-time-tu-vservice_stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tính Wait Time từ V$SERVICE_STATS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-theo-awr-snapshot-lich-su" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics theo AWR snapshot (lịch sử)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-service-level-wait-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Service-level Wait Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-service-level-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Service-level Metrics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-14-module-action-va-client-identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice 14: Module, Action, và Client Identifier
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practice 14: Module, Action, và Client Identifier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#khai-niem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khái niệm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#moduleaction-statistics-tu-dictionary-views" class="md-nav__link">
+    <span class="md-ellipsis">
+      Module/Action Statistics từ Dictionary Views
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Module/Action Statistics từ Dictionary Views">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sessions-hien-tai-voi-moduleaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sessions hiện tại với module/action
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#moduleaction-trong-30-phut-qua-tu-ash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Module/Action trong 30 phút qua (từ ASH)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#top-module-theo-db-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      Top Module theo DB Time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#top-moduleaction-theo-db-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      Top Module/Action theo DB Time
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-moduleaction-statistics-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable Module/Action Statistics Aggregation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enable Module/Action Statistics Aggregation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bat-aggregation-cho-module-cu-the" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bật aggregation cho module cụ thể
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiem-tra-aggregation-a-bat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kiểm tra aggregation đã bật
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-cua-module-ang-uoc-aggregate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics của module đang được aggregate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tat-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tắt aggregation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-client-identifier-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable Client Identifier Aggregation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enable Client Identifier Aggregation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#at-client-identifier-trong-session-phia-ung-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đặt Client Identifier trong session (phía ứng dụng)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bat-aggregation-cho-client-identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bật aggregation cho client identifier
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-cua-client-identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics của client identifier
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tat-va-bat-lai-e-reset-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tắt và bật lại để reset statistics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-phat-hien-van-e-qua-client-id-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Phát hiện vấn đề qua Client ID Aggregation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-15-sql-tracing-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 15 — SQL Tracing với DBMS_MONITOR
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-16-realtime-monitoring-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 16 — Real-time Database Operation Monitoring
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-17-automated-maintenance-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 17 — Automated Maintenance Tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-19-enqueue-waits-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 19 — Handling Enqueue Waits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-2-preparing-environment-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 2 — Chuẩn bị Môi trường Thực hành (Practice 1)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-20-latch-mutex-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 20 — Latch & Mutex Contention
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-21-shared-pool-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 21 — Shared Pool Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-22-buffer-cache-flash-cache-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 22 — Buffer Cache & Smart Flash Cache Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-23-pga-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 23 — PGA Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-24-redo-path-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 24 — Redo Path Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-25-cpu-bottleneck-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 25 — CPU Bottleneck Detection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-26-disk-io-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 26 — Disk I/O Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-27-index-defrag-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 27 — Index Defragmentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-28-row-migration-chaining-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 28 — Row Migration & Row Chaining
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-29-table-fragmentation-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 29 — Table Fragmentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-30-table-compression-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 30 — Table Compression
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-31-in-memory-column-store-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 31 — In-Memory Column Store
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-32-database-connection-optimization-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 32 — Database Connection Optimization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-34-os-performance-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 34 — OS Performance (Linux, OSWatcher)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-35-sql-performance-analyzer-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 35 — SQL Performance Analyzer (SPA)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-36-database-replay-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 36 — Database Replay
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-6-time-model-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 6 — Time Model Views
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-8-instance-activity-wait-events-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 8 — Instance Activity & Wait Events
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-9-awr-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 9 — AWR (Automatic Workload Repository)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all-new/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tong-quan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tổng quan
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-13-database-service-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice 13: Database Service Statistics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practice 13: Database Service Statistics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-la-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service là gì?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cac-views-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Các views chính
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-xem-danh-sach-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Xem danh sách Services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sessions-hien-tai-theo-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Sessions hiện tại theo Service
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-so-ket-noi-trong-30-phut-qua-tu-ash" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Số kết nối trong 30 phút qua (từ ASH)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-service-level-performance-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Service-level Performance Statistics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Service-level Performance Statistics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-tu-khi-instance-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics từ khi instance startup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tinh-wait-time-tu-vservice_stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tính Wait Time từ V$SERVICE_STATS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-theo-awr-snapshot-lich-su" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics theo AWR snapshot (lịch sử)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-service-level-wait-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Service-level Wait Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-service-level-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Service-level Metrics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-14-module-action-va-client-identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice 14: Module, Action, và Client Identifier
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practice 14: Module, Action, và Client Identifier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#khai-niem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Khái niệm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#moduleaction-statistics-tu-dictionary-views" class="md-nav__link">
+    <span class="md-ellipsis">
+      Module/Action Statistics từ Dictionary Views
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Module/Action Statistics từ Dictionary Views">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sessions-hien-tai-voi-moduleaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sessions hiện tại với module/action
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#moduleaction-trong-30-phut-qua-tu-ash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Module/Action trong 30 phút qua (từ ASH)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#top-module-theo-db-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      Top Module theo DB Time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#top-moduleaction-theo-db-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      Top Module/Action theo DB Time
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-moduleaction-statistics-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable Module/Action Statistics Aggregation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enable Module/Action Statistics Aggregation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bat-aggregation-cho-module-cu-the" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bật aggregation cho module cụ thể
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiem-tra-aggregation-a-bat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kiểm tra aggregation đã bật
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-cua-module-ang-uoc-aggregate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics của module đang được aggregate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tat-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tắt aggregation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-client-identifier-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable Client Identifier Aggregation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enable Client Identifier Aggregation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#at-client-identifier-trong-session-phia-ung-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đặt Client Identifier trong session (phía ứng dụng)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bat-aggregation-cho-client-identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bật aggregation cho client identifier
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xem-statistics-cua-client-identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xem statistics của client identifier
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tat-va-bat-lai-e-reset-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tắt và bật lại để reset statistics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-phat-hien-van-e-qua-client-id-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study: Phát hiện vấn đề qua Client ID Aggregation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="section-14-database-service-performance-statistics-moduleactionclient-id">Section 14 — Database Service Performance Statistics &amp; Module/Action/Client ID<a class="headerlink" href="#section-14-database-service-performance-statistics-moduleactionclient-id" title="Permanent link">&para;</a></h1>
+<h2 id="tong-quan">Tổng quan<a class="headerlink" href="#tong-quan" title="Permanent link">&para;</a></h2>
+<p>Oracle cho phép thu thập thống kê hiệu năng theo các chiều khác nhau:
+- <strong>Service level</strong>: theo tên service kết nối (VD: ORADB, BATCH_SVC)
+- <strong>Module/Action level</strong>: theo tên module/action do ứng dụng đặt
+- <strong>Client Identifier level</strong>: theo định danh client do ứng dụng đặt</p>
+<p><strong>Practice 13 — Using Database Service Performance Statistics</strong>
+<strong>Practice 14 — Using Module, Action, and Client Identifier Attributes</strong></p>
+<hr />
+<h2 id="practice-13-database-service-statistics">Practice 13: Database Service Statistics<a class="headerlink" href="#practice-13-database-service-statistics" title="Permanent link">&para;</a></h2>
+<h3 id="service-la-gi">Service là gì?<a class="headerlink" href="#service-la-gi" title="Permanent link">&para;</a></h3>
+<p><strong>Database Service</strong> là một alias để client kết nối đến database. Một database có thể có nhiều service, mỗi service phục vụ một ứng dụng khác nhau. Khi có nhiều service, DBA có thể theo dõi hiệu năng theo từng service.</p>
+<h3 id="cac-views-chinh">Các views chính<a class="headerlink" href="#cac-views-chinh" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DBA_SERVICES</code></td>
+<td>Danh sách services đã đăng ký trong database</td>
+</tr>
+<tr>
+<td><code>V$SERVICES</code></td>
+<td>Services đang active</td>
+</tr>
+<tr>
+<td><code>V$SERVICE_STATS</code></td>
+<td>Thống kê tổng từ khi instance startup</td>
+</tr>
+<tr>
+<td><code>DBA_HIST_SERVICE_STAT</code></td>
+<td>Lịch sử của V$SERVICE_STATS (lưu trong AWR)</td>
+</tr>
+<tr>
+<td><code>V$SERVICE_EVENT</code></td>
+<td>Wait events theo service</td>
+</tr>
+<tr>
+<td><code>V$SERVICEMETRIC</code></td>
+<td>Metrics theo service (5 giây và 1 phút gần nhất)</td>
+</tr>
+<tr>
+<td><code>V$SERVICEMETRIC_HISTORY</code></td>
+<td>Lịch sử metric trong 1 giờ qua</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="1-xem-danh-sach-services">1. Xem danh sách Services<a class="headerlink" href="#1-xem-danh-sach-services" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">set</span><span class="w"> </span><span class="n">linesize</span><span class="w"> </span><span class="mi">180</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">col</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a20</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">SERVICE_ID</span><span class="p">,</span><span class="w"> </span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">-- Kiểm tra service đã đăng ký với listener chưa</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">host</span><span class="w"> </span><span class="n">lsnrctl</span><span class="w"> </span><span class="n">services</span>
+</span></code></pre></div>
+<blockquote>
+<p><code>NAME_HASH</code> là giá trị dùng trong các views khác để identify service.</p>
+</blockquote>
+<h3 id="2-sessions-hien-tai-theo-service">2. Sessions hiện tại theo Service<a class="headerlink" href="#2-sessions-hien-tai-theo-service" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">col</span><span class="w"> </span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a30</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">SERVICE_NAME</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="n">SID</span><span class="p">)</span><span class="w"> </span><span class="n">CNT</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SESSION</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">CLIENT_INFO</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'Swingbench%'</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">SERVICE_NAME</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="3-so-ket-noi-trong-30-phut-qua-tu-ash">3. Số kết nối trong 30 phút qua (từ ASH)<a class="headerlink" href="#3-so-ket-noi-trong-30-phut-qua-tu-ash" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">.</span><span class="n">CNT</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICES</span><span class="w"> </span><span class="n">S</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">SERVICE_HASH</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">SESSION_ID</span><span class="p">)</span><span class="w"> </span><span class="n">CNT</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">   </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$ACTIVE_SESSION_HISTORY</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">   </span><span class="k">WHERE</span><span class="w"> </span><span class="n">SAMPLE_TIME</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30'</span><span class="w"> </span><span class="k">MINUTE</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">   </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">SERVICE_HASH</span><span class="p">)</span><span class="w"> </span><span class="n">V</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="p">.</span><span class="n">SERVICE_HASH</span><span class="p">;</span>
+</span></code></pre></div>
+<blockquote>
+<p>Muốn lấy thống kê tuần trước → thay <code>V$ACTIVE_SESSION_HISTORY</code> bằng <code>DBA_HIST_ACTIVE_SESS_HISTORY</code>.</p>
+</blockquote>
+<hr />
+<h3 id="4-service-level-performance-statistics">4. Service-level Performance Statistics<a class="headerlink" href="#4-service-level-performance-statistics" title="Permanent link">&para;</a></h3>
+<h4 id="xem-statistics-tu-khi-instance-startup">Xem statistics từ khi instance startup<a class="headerlink" href="#xem-statistics-tu-khi-instance-startup" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">col</span><span class="w"> </span><span class="n">STAT_NAME</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a35</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">STAT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">VALUE</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICE_STATS</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span></code></pre></div>
+<blockquote>
+<p><code>DB time</code> và <code>CPU time</code> trong view này tính bằng <strong>microseconds</strong>.</p>
+</blockquote>
+<h4 id="tinh-wait-time-tu-vservice_stats">Tính Wait Time từ V$SERVICE_STATS<a class="headerlink" href="#tinh-wait-time-tu-vservice_stats" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Wait Time = DB Time - DB CPU Time (đổi ra phút)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">SELECT</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">VALUE</span><span class="o">/</span><span class="mi">1000000</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">   </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICE_STATS</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">   </span><span class="k">WHERE</span><span class="w"> </span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">     </span><span class="k">AND</span><span class="w"> </span><span class="n">STAT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'DB time'</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="o">-</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">VALUE</span><span class="o">/</span><span class="mi">1000000</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">   </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICE_STATS</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">   </span><span class="k">WHERE</span><span class="w"> </span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">     </span><span class="k">AND</span><span class="w"> </span><span class="n">STAT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'DB CPU'</span><span class="p">)</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="k">AS</span><span class="w"> </span><span class="n">SERVICE_WAIT_TIME</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DUAL</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="xem-statistics-theo-awr-snapshot-lich-su">Xem statistics theo AWR snapshot (lịch sử)<a class="headerlink" href="#xem-statistics-theo-awr-snapshot-lich-su" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">.</span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">STAT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">VALUE</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_HIST_SERVICE_STAT</span><span class="w"> </span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">DBA_HIST_SNAPSHOT</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="n">V</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">SNAP_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="p">.</span><span class="n">SNAP_ID</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="p">.</span><span class="n">NAME_HASH</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">V</span><span class="p">.</span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">N</span><span class="p">.</span><span class="n">BEGIN_INTERVAL_TIME</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="n">SYSDATE</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">03</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">SYSDATE</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">01</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">;</span>
+</span></code></pre></div>
+<blockquote>
+<p><code>DBA_HIST_SERVICE_STAT</code> không có cột thời gian nên phải join với <code>DBA_HIST_SNAPSHOT</code>.</p>
+</blockquote>
+<hr />
+<h3 id="5-service-level-wait-events">5. Service-level Wait Events<a class="headerlink" href="#5-service-level-wait-events" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">col</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a50</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">EVENT</span><span class="p">,</span><span class="w"> </span><span class="n">TIME_WAITED</span><span class="p">,</span><span class="w"> </span><span class="n">AVERAGE_WAIT</span><span class="p">,</span><span class="w"> </span><span class="n">MAX_WAIT</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICE_EVENT</span><span class="w"> </span><span class="n">E</span><span class="p">,</span><span class="w"> </span><span class="n">V$EVENT_NAME</span><span class="w"> </span><span class="n">N</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">E</span><span class="p">.</span><span class="n">EVENT_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="p">.</span><span class="n">EVENT_ID</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">N</span><span class="p">.</span><span class="n">WAIT_CLASS</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="s1">'Idle'</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">TIME_WAITED</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="mi">0</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">TIME_WAITED</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">FETCH</span><span class="w"> </span><span class="k">FIRST</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="k">ROWS</span><span class="w"> </span><span class="k">ONLY</span><span class="p">;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1">-- Tổng wait time của service (centi-seconds → phút)</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="n">TIME_WAITED</span><span class="o">/</span><span class="mi">100</span><span class="o">/</span><span class="mi">60</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="ss">"Total Service Wait Time in Minutes"</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICE_EVENT</span><span class="w"> </span><span class="n">E</span><span class="p">,</span><span class="w"> </span><span class="n">V$EVENT_NAME</span><span class="w"> </span><span class="n">N</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">E</span><span class="p">.</span><span class="n">EVENT_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="p">.</span><span class="n">EVENT_ID</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">N</span><span class="p">.</span><span class="n">WAIT_CLASS</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="s1">'Idle'</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">TIME_WAITED</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="mi">0</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">);</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>Lưu ý:</strong> <code>V$SERVICE_EVENT</code> không được flush vào AWR. <code>DBA_HIST_SERVICE_WAIT_CLASS</code> lưu lịch sử theo wait class (không chi tiết theo từng event).</p>
+</blockquote>
+<hr />
+<h3 id="6-service-level-metrics">6. Service-level Metrics<a class="headerlink" href="#6-service-level-metrics" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">NLS_DATE_FORMAT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'DD-MON-YY HH24:MI:SS'</span><span class="p">;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1">-- Metrics 5 giây và 1 phút gần nhất</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">BEGIN_TIME</span><span class="p">,</span><span class="w"> </span><span class="n">END_TIME</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">INTSIZE_CSEC</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="n">INTERVAL_S</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">DBTIMEPERSEC</span><span class="p">)</span><span class="w"> </span><span class="n">DBTIMEPERSEC</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">DBTIMEPERCALL</span><span class="p">)</span><span class="w"> </span><span class="n">DBTIMEPERCALL</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">CALLSPERSEC</span><span class="p">)</span><span class="w"> </span><span class="n">CALLSPERSEC</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">ELAPSEDPERCALL</span><span class="p">)</span><span class="w"> </span><span class="n">ELAPSEDPERCALL</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">CPUPERCALL</span><span class="p">)</span><span class="w"> </span><span class="n">CPUPERCALL</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICEMETRIC</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">BEGIN_TIME</span><span class="w"> </span><span class="k">ASC</span><span class="p">;</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1">-- Metrics trong 1 giờ qua (lịch sử)</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">BEGIN_TIME</span><span class="p">,</span><span class="w"> </span><span class="n">END_TIME</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">INTSIZE_CSEC</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="n">INTERVAL_S</span><span class="p">,</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">DBTIMEPERSEC</span><span class="p">)</span><span class="w"> </span><span class="n">DBTIMEPERSEC</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">DBTIMEPERCALL</span><span class="p">)</span><span class="w"> </span><span class="n">DBTIMEPERCALL</span><span class="p">,</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">CALLSPERSEC</span><span class="p">)</span><span class="w"> </span><span class="n">CALLSPERSEC</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="n">ELAPSEDPERCALL</span><span class="p">)</span><span class="w"> </span><span class="n">ELAPSEDPERCALL</span><span class="p">,</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">(</span><span class="n">CPUPERCALL</span><span class="p">)</span><span class="w"> </span><span class="n">CPUPERCALL</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERVICEMETRIC_HISTORY</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SERVICE_NAME_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">BEGIN_TIME</span><span class="w"> </span><span class="k">ASC</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Giải thích các cột metrics:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Cột</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DBTIMEPERSEC</code></td>
+<td>DB Time microseconds/giây</td>
+</tr>
+<tr>
+<td><code>DBTIMEPERCALL</code></td>
+<td>DB Time microseconds/call</td>
+</tr>
+<tr>
+<td><code>CALLSPERSEC</code></td>
+<td>Số calls/giây</td>
+</tr>
+<tr>
+<td><code>ELAPSEDPERCALL</code></td>
+<td>Elapsed time microseconds/call</td>
+</tr>
+<tr>
+<td><code>CPUPERCALL</code></td>
+<td>CPU time microseconds/call</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="practice-14-module-action-va-client-identifier">Practice 14: Module, Action, và Client Identifier<a class="headerlink" href="#practice-14-module-action-va-client-identifier" title="Permanent link">&para;</a></h2>
+<h3 id="khai-niem">Khái niệm<a class="headerlink" href="#khai-niem" title="Permanent link">&para;</a></h3>
+<p>Ứng dụng dùng <code>DBMS_APPLICATION_INFO</code> để đặt context:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Package</th>
+<th>Tối đa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Module</strong></td>
+<td><code>DBMS_APPLICATION_INFO.SET_MODULE</code></td>
+<td>48 bytes</td>
+</tr>
+<tr>
+<td><strong>Action</strong></td>
+<td><code>DBMS_APPLICATION_INFO.SET_ACTION</code></td>
+<td>32 bytes</td>
+</tr>
+<tr>
+<td><strong>Client Info</strong></td>
+<td><code>DBMS_APPLICATION_INFO.SET_CLIENT_INFO</code></td>
+<td>64 bytes</td>
+</tr>
+<tr>
+<td><strong>Client ID</strong></td>
+<td><code>DBMS_SESSION.SET_IDENTIFIER</code></td>
+<td>64 bytes</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="moduleaction-statistics-tu-dictionary-views">Module/Action Statistics từ Dictionary Views<a class="headerlink" href="#moduleaction-statistics-tu-dictionary-views" title="Permanent link">&para;</a></h3>
+<h4 id="sessions-hien-tai-voi-moduleaction">Sessions hiện tại với module/action<a class="headerlink" href="#sessions-hien-tai-voi-moduleaction" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">col</span><span class="w"> </span><span class="n">MODULE</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a25</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">col</span><span class="w"> </span><span class="n">ACTION</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a15</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">col</span><span class="w"> </span><span class="n">CLIENT_INFO</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a25</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">set</span><span class="w"> </span><span class="n">linesize</span><span class="w"> </span><span class="mi">180</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">MODULE</span><span class="p">,</span><span class="w"> </span><span class="n">ACTION</span><span class="p">,</span><span class="w"> </span><span class="n">CLIENT_INFO</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">CNT</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SESSION</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">MODULE</span><span class="p">,</span><span class="w"> </span><span class="n">ACTION</span><span class="p">,</span><span class="w"> </span><span class="n">CLIENT_INFO</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="moduleaction-trong-30-phut-qua-tu-ash">Module/Action trong 30 phút qua (từ ASH)<a class="headerlink" href="#moduleaction-trong-30-phut-qua-tu-ash" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">col</span><span class="w"> </span><span class="n">ACTION</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a30</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">col</span><span class="w"> </span><span class="n">CLIENT_ID</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a20</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">MODULE</span><span class="p">,</span><span class="w"> </span><span class="n">ACTION</span><span class="p">,</span><span class="w"> </span><span class="n">CLIENT_ID</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$ACTIVE_SESSION_HISTORY</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SAMPLE_TIME</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30'</span><span class="w"> </span><span class="k">MINUTE</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">SERVICE_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">;</span>
+</span></code></pre></div>
+<blockquote>
+<p><code>CLIENT_INFO</code> không có trong ASH view. Dùng <code>CLIENT_ID</code> thay thế.</p>
+</blockquote>
+<h4 id="top-module-theo-db-time">Top Module theo DB Time<a class="headerlink" href="#top-module-theo-db-time" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">WITH</span><span class="w"> </span><span class="n">TOTAL_DBTIME</span><span class="w"> </span><span class="k">AS</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$ACTIVE_SESSION_HISTORY</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">SESSION_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FOREGROUND'</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">MODULE</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">       </span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="ss">"MODULE_DBTIME"</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">       </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">TOTAL_DBTIME</span><span class="p">)</span><span class="w"> </span><span class="ss">"TOTAL_DBTIME"</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">((</span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">TOTAL_DBTIME</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">PCT_DBTIME</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$ACTIVE_SESSION_HISTORY</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SAMPLE_TIME</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30'</span><span class="w"> </span><span class="k">MINUTE</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">SESSION_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FOREGROUND'</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">SERVICE_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">MODULE</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">PCT_DBTIME</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="top-moduleaction-theo-db-time">Top Module/Action theo DB Time<a class="headerlink" href="#top-moduleaction-theo-db-time" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">WITH</span><span class="w"> </span><span class="n">TOTAL_DBTIME</span><span class="w"> </span><span class="k">AS</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$ACTIVE_SESSION_HISTORY</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">SESSION_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FOREGROUND'</span><span class="p">)</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">MODULE</span><span class="p">,</span><span class="w"> </span><span class="n">ACTION</span><span class="p">,</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">       </span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="ss">"ACTION_DBTIME"</span><span class="p">,</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">       </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">TOTAL_DBTIME</span><span class="p">)</span><span class="w"> </span><span class="ss">"TOTAL_DBTIME"</span><span class="p">,</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">       </span><span class="n">ROUND</span><span class="p">((</span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">TOTAL_DBTIME</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">PCT_DBTIME</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$ACTIVE_SESSION_HISTORY</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SAMPLE_TIME</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">'30'</span><span class="w"> </span><span class="k">MINUTE</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">SESSION_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'FOREGROUND'</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">SERVICE_HASH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">NAME_HASH</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_SERVICES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">)</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">MODULE</span><span class="p">,</span><span class="w"> </span><span class="n">ACTION</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">PCT_DBTIME</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">FETCH</span><span class="w"> </span><span class="k">FIRST</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="k">ROWS</span><span class="w"> </span><span class="k">ONLY</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h3 id="enable-moduleaction-statistics-aggregation">Enable Module/Action Statistics Aggregation<a class="headerlink" href="#enable-moduleaction-statistics-aggregation" title="Permanent link">&para;</a></h3>
+<h4 id="bat-aggregation-cho-module-cu-the">Bật aggregation cho module cụ thể<a class="headerlink" href="#bat-aggregation-cho-module-cu-the" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">begin</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">SERV_MOD_ACT_STAT_ENABLE</span><span class="p">(</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">,</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="n">MODULE_NAME</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'Top Customers Report'</span><span class="p">,</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="n">ACTION_NAME</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">NULL</span><span class="w">   </span><span class="c1">-- NULL = áp dụng cho tất cả actions trong module</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="k">end</span><span class="p">;</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="o">/</span>
+</span></code></pre></div>
+<h4 id="kiem-tra-aggregation-a-bat">Kiểm tra aggregation đã bật<a class="headerlink" href="#kiem-tra-aggregation-a-bat" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">col</span><span class="w"> </span><span class="n">AGGREGATION_TYPE</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a21</span><span class="p">;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">col</span><span class="w"> </span><span class="n">PRIMARY_ID</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a20</span><span class="p">;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">col</span><span class="w"> </span><span class="n">QUALIFIER_ID1</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a20</span><span class="p">;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">col</span><span class="w"> </span><span class="n">QUALIFIER_ID2</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a20</span><span class="p">;</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">AGGREGATION_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">PRIMARY_ID</span><span class="p">,</span><span class="w"> </span><span class="n">QUALIFIER_ID1</span><span class="p">,</span><span class="w"> </span><span class="n">QUALIFIER_ID2</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">DBA_ENABLED_AGGREGATIONS</span><span class="p">;</span>
+</span></code></pre></div>
+<blockquote>
+<p><code>AGGREGATION_TYPE = 'SERVICE_MODULE_ACTION'</code> khi ACTION_NAME = NULL.</p>
+</blockquote>
+<h4 id="xem-statistics-cua-module-ang-uoc-aggregate">Xem statistics của module đang được aggregate<a class="headerlink" href="#xem-statistics-cua-module-ang-uoc-aggregate" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">AGGREGATION_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">MODULE</span><span class="p">,</span><span class="w"> </span><span class="n">ACTION</span><span class="p">,</span><span class="w"> </span><span class="n">STAT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">VALUE</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">V$SERV_MOD_ACT_STATS</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">VALUE</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="tat-aggregation">Tắt aggregation<a class="headerlink" href="#tat-aggregation" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">begin</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">SERV_MOD_ACT_STAT_DISABLE</span><span class="p">(</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'ORADB.localdomain'</span><span class="p">,</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="n">MODULE_NAME</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="s1">'Top Customers Report'</span><span class="p">,</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="n">ACTION_NAME</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="k">end</span><span class="p">;</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="o">/</span>
+</span></code></pre></div>
+<hr />
+<h3 id="enable-client-identifier-aggregation">Enable Client Identifier Aggregation<a class="headerlink" href="#enable-client-identifier-aggregation" title="Permanent link">&para;</a></h3>
+<p><strong>Usecase:</strong> Nhiều session chạy cùng một loại tác vụ, muốn theo dõi tổng thể tác vụ đó.</p>
+<h4 id="at-client-identifier-trong-session-phia-ung-dung">Đặt Client Identifier trong session (phía ứng dụng)<a class="headerlink" href="#at-client-identifier-trong-session-phia-ung-dung" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">begin</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="n">DBMS_SESSION</span><span class="p">.</span><span class="n">SET_IDENTIFIER</span><span class="p">(</span><span class="s1">'ETL Load Orders'</span><span class="p">);</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">end</span><span class="p">;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="o">/</span>
+</span></code></pre></div>
+<h4 id="bat-aggregation-cho-client-identifier">Bật aggregation cho client identifier<a class="headerlink" href="#bat-aggregation-cho-client-identifier" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">exec</span><span class="w"> </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">CLIENT_ID_STAT_ENABLE</span><span class="p">(</span><span class="s1">'ETL Load Orders'</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="xem-statistics-cua-client-identifier">Xem statistics của client identifier<a class="headerlink" href="#xem-statistics-cua-client-identifier" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">col</span><span class="w"> </span><span class="n">CLIENT_IDENTIFIER</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a20</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">col</span><span class="w"> </span><span class="n">STAT_NAME</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="n">a45</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="n">col</span><span class="w"> </span><span class="n">VALUE</span><span class="w"> </span><span class="n">format</span><span class="w"> </span><span class="mi">9999999999999</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">CLIENT_IDENTIFIER</span><span class="p">,</span><span class="w"> </span><span class="n">STAT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">VALUE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$CLIENT_STATS</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">VALUE</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="tat-va-bat-lai-e-reset-statistics">Tắt và bật lại để reset statistics<a class="headerlink" href="#tat-va-bat-lai-e-reset-statistics" title="Permanent link">&para;</a></h4>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">exec</span><span class="w"> </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">CLIENT_ID_STAT_DISABLE</span><span class="p">(</span><span class="s1">'ETL Load Orders'</span><span class="p">);</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">exec</span><span class="w"> </span><span class="n">DBMS_MONITOR</span><span class="p">.</span><span class="n">CLIENT_ID_STAT_ENABLE</span><span class="p">(</span><span class="s1">'ETL Load Orders'</span><span class="p">);</span>
+</span></code></pre></div>
+<hr />
+<h3 id="case-study-phat-hien-van-e-qua-client-id-aggregation">Case Study: Phát hiện vấn đề qua Client ID Aggregation<a class="headerlink" href="#case-study-phat-hien-van-e-qua-client-id-aggregation" title="Permanent link">&para;</a></h3>
+<p><strong>Kịch bản:</strong> 20 sessions song song chạy script <code>INSERT /*+ APPEND */</code> vào cùng một bảng.</p>
+<p><strong>Triệu chứng từ V$CLIENT_STATS:</strong>
+- Wait time chiếm % lớn trong DB Time → có vấn đề
+- Wait class = Application → application-level lock</p>
+<p><strong>Điều tra tiếp bằng ASH report:</strong>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">define</span><span class="w"> </span><span class="n">target_client_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ETL Load Orders'</span><span class="p">;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">define</span><span class="w"> </span><span class="n">begin_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'-30'</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">define</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="p">;</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="o">@</span><span class="w"> </span><span class="err">$</span><span class="n">ORACLE_HOME</span><span class="o">/</span><span class="n">rdbms</span><span class="o">/</span><span class="k">admin</span><span class="o">/</span><span class="n">ashrpti</span><span class="p">.</span><span class="k">sql</span>
+</span></code></pre></div></p>
+<p><strong>Phát hiện trong ASH report:</strong>
+- Top event: <code>enq: TM - contention</code> → Table Mode lock
+- Section "Top Event P1/P2/P3": P2 = object_id → xác định table
+- Section "Top SQL with Top Events": INSERT có <code>APPEND</code> hint</p>
+<p><strong>Root cause:</strong> <code>INSERT /*+ APPEND */</code> dùng Direct Path Load → yêu cầu TM exclusive lock → các session song song bị serialize.</p>
+<p><strong>Giải pháp:</strong> Bỏ <code>APPEND</code> hint → INSERT thông thường → không cần exclusive lock → 20 sessions chạy song song được.</p>
+<p><strong>Verify sau fix:</strong>
+- <code>sql execute elapsed time</code> chiếm % cao trong DB Time → tốt
+- <code>application wait time</code> gần bằng 0 → không còn TM contention</p>
+<hr />
+<h2 id="tom-tat">Tóm tắt<a class="headerlink" href="#tom-tat" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Chiều phân tích</th>
+<th>View xem realtime</th>
+<th>View xem lịch sử</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Service</td>
+<td><code>V$SERVICE_STATS</code>, <code>V$SERVICE_EVENT</code>, <code>V$SERVICEMETRIC</code></td>
+<td><code>DBA_HIST_SERVICE_STAT</code></td>
+</tr>
+<tr>
+<td>Module/Action</td>
+<td><code>V$SERV_MOD_ACT_STATS</code></td>
+<td>ASH views</td>
+</tr>
+<tr>
+<td>Client ID</td>
+<td><code>V$CLIENT_STATS</code></td>
+<td>ASH views</td>
+</tr>
+<tr>
+<td>Tất cả chiều</td>
+<td><code>V$ACTIVE_SESSION_HISTORY</code></td>
+<td><code>DBA_HIST_ACTIVE_SESS_HISTORY</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Chức năng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DBMS_APPLICATION_INFO</code></td>
+<td>Đặt module/action/client_info từ ứng dụng</td>
+</tr>
+<tr>
+<td><code>DBMS_SESSION</code></td>
+<td>Đặt client identifier</td>
+</tr>
+<tr>
+<td><code>DBMS_MONITOR</code></td>
+<td>Bật/tắt aggregation cho service/module/client_id</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/section_all/section_14_database_service_statistics_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../section-13-ash-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Section 13 — ASH (Active Session History)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Section 13 — ASH (Active Session History)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../section-15-sql-tracing-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Section 15 — SQL Tracing với DBMS_MONITOR">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Section 15 — SQL Tracing với DBMS_MONITOR
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

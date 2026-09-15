@@ -1,0 +1,3007 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../../module-02/module-02-guide/">
+      
+      
+        <link rel="next" href="../../module-04/module-04-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📘 Module 03: Installing Oracle RAC - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-03-installing-oracle-rac" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📘 Module 03: Installing Oracle RAC
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            04. RAC Administration
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn tiếp tục cho khoá học Oracle RAC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-01/module-01-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 01
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-02/module-02-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 02
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_3_3" id="__nav_5_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Module 03
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Module 03
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📘 Module 03: Installing Oracle RAC
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 03: Installing Oracle RAC
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bai-hoc-trong-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Bài học trong Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-installing-oracle-rac-software-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Installing Oracle RAC Software Stack
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Installing Oracle RAC Software Stack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-yeu-cau-cua-grid-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Yêu cầu của Grid Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-viec-can-lam-truoc-khi-cai-gi-pre-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Việc cần làm trước khi cài GI (Pre-installation)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-cai-grid-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3 Cài Grid Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-kiem-tra-sau-khi-cai-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4 Kiểm tra sau khi cài GI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-post-installation-cho-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5 Post-installation cho GI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-cai-oracle-database-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.6 Cài Oracle Database Software
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-tao-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.7 Tạo RAC Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-post-installation-cho-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.8 Post-installation cho DB
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-practice-01-chuan-bi-moi-truong-thuc-hanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Practice 01: Chuẩn bị môi trường thực hành
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Practice 01: Chuẩn bị môi trường thực hành">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-kien-truc-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Kiến trúc lab
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-ba-network-adapter-moi-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Ba network adapter mỗi node
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-file-etchosts-thay-cho-dns-trong-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 File /etc/hosts (thay cho DNS trong lab)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-users-groups-va-asmlib-chay-bang-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Users, groups và ASMLib (chạy bằng root)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-tao-srv2-bang-cach-clone-srv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Tạo srv2 bằng cách clone srv1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-shared-disks-dung-cho-asm" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 Shared disks (dùng cho ASM)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-practice-02-tao-oracle-12c-r1-two-node-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Practice 02: Tạo Oracle 12c R1 Two-Node RAC Database
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Practice 02: Tạo Oracle 12c R1 Two-Node RAC Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-set-bien-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Set biến môi trường
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-cai-grid-infrastructure-user-grid-runinstaller" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Cài Grid Infrastructure (user grid, ./runInstaller)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-tao-asm-disk-group-data-va-fra-user-grid" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Tạo ASM Disk Group DATA và FRA (user grid)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-cai-oracle-database-software-user-oracle-runinstaller" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Cài Oracle Database Software (user oracle, ./runInstaller)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-tao-database-bang-dbca-user-oracle-lenh-dbca" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 Tạo database bằng DBCA (user oracle, lệnh dbca)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-kiem-tra-database-vua-tao" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6 Kiểm tra database vừa tạo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-shutdown-startup-ung-cach" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.7 Shutdown / Startup đúng cách
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38-em-database-express" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.8 EM Database Express
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-e-nho-lau" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Tóm tắt để nhớ lâu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sau-khi-hoc-xong-hay-tu-lam" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Sau khi học xong, hãy tự làm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Module tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-04/module-04-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 04
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-05/module-05-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 05
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-06/module-06-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 06
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-07/module-07-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 07
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-08/module-08-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 08
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-09/module-09-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 09
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-10/module-10-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 10
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-11/module-11-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 11
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-12/module-12-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 12
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-13/module-13-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 13
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../module-14/module-14-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Module 14
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tiến độ học Oracle RAC Administration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Oracle Database RAC Administration — Mục lục khóa học
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scenarios/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🧩 10 tình huống thực tế Oracle RAC & cách giải quyết
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database RAC Administration Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bai-hoc-trong-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Bài học trong Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu Module
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-installing-oracle-rac-software-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Installing Oracle RAC Software Stack
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Installing Oracle RAC Software Stack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-yeu-cau-cua-grid-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Yêu cầu của Grid Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-viec-can-lam-truoc-khi-cai-gi-pre-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Việc cần làm trước khi cài GI (Pre-installation)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-cai-grid-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3 Cài Grid Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-kiem-tra-sau-khi-cai-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4 Kiểm tra sau khi cài GI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-post-installation-cho-gi" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5 Post-installation cho GI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-cai-oracle-database-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.6 Cài Oracle Database Software
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-tao-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.7 Tạo RAC Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-post-installation-cho-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.8 Post-installation cho DB
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-practice-01-chuan-bi-moi-truong-thuc-hanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Practice 01: Chuẩn bị môi trường thực hành
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Practice 01: Chuẩn bị môi trường thực hành">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-kien-truc-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Kiến trúc lab
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-ba-network-adapter-moi-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Ba network adapter mỗi node
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-file-etchosts-thay-cho-dns-trong-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 File /etc/hosts (thay cho DNS trong lab)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-users-groups-va-asmlib-chay-bang-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Users, groups và ASMLib (chạy bằng root)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-tao-srv2-bang-cach-clone-srv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Tạo srv2 bằng cách clone srv1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-shared-disks-dung-cho-asm" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 Shared disks (dùng cho ASM)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-practice-02-tao-oracle-12c-r1-two-node-rac-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Practice 02: Tạo Oracle 12c R1 Two-Node RAC Database
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Practice 02: Tạo Oracle 12c R1 Two-Node RAC Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-set-bien-moi-truong" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Set biến môi trường
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-cai-grid-infrastructure-user-grid-runinstaller" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Cài Grid Infrastructure (user grid, ./runInstaller)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-tao-asm-disk-group-data-va-fra-user-grid" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Tạo ASM Disk Group DATA và FRA (user grid)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-cai-oracle-database-software-user-oracle-runinstaller" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Cài Oracle Database Software (user oracle, ./runInstaller)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-tao-database-bang-dbca-user-oracle-lenh-dbca" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 Tạo database bằng DBCA (user oracle, lệnh dbca)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-kiem-tra-database-vua-tao" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6 Kiểm tra database vừa tạo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-shutdown-startup-ung-cach" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.7 Shutdown / Startup đúng cách
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38-em-database-express" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.8 EM Database Express
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-e-nho-lau" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Tóm tắt để nhớ lâu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sau-khi-hoc-xong-hay-tu-lam" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Sau khi học xong, hãy tự làm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-tiep-theo" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Module tiếp theo
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="module-03-installing-oracle-rac">📘 Module 03: Installing Oracle RAC<a class="headerlink" href="#module-03-installing-oracle-rac" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Section</strong>: 03/14
+<strong>Khóa học</strong>: Oracle Database RAC Administration Course (Ahmed Baraka)
+<strong>Thời gian học ước tính</strong>: 3-4 giờ</p>
+</blockquote>
+<hr />
+<h2 id="bai-hoc-trong-module">📋 Bài học trong Module<a class="headerlink" href="#bai-hoc-trong-module" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Bài học</th>
+<th>File nguồn</th>
+<th>Loại</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Installing Oracle RAC Software Stack</td>
+<td><code>Section 03/Installing Oracle RAC Software Stack.pdf</code></td>
+<td>Lý thuyết</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Practice 01: Preparing the Practice Environment</td>
+<td><code>Section 03/Practice 01 Preparing the Practice Environment.pdf</code></td>
+<td>🔧 Thực hành</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Practice 02: Create Oracle 12c R1 Two-Node RAC Database</td>
+<td><code>Section 03/Practice 02 Create Oracle 12c R1 Two-Node RAC Database.pdf</code></td>
+<td>🔧 Thực hành</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="muc-tieu-module">🎯 Mục tiêu Module<a class="headerlink" href="#muc-tieu-module" title="Permanent link">&para;</a></h2>
+<p>Sau module này, bạn sẽ:</p>
+<ul>
+<li>Cài đặt được <strong>Oracle Grid Infrastructure (GI)</strong> — nền tảng Clusterware + ASM.</li>
+<li>Cài đặt được <strong>Oracle Database software</strong> cho RAC.</li>
+<li>Tạo được một <strong>RAC database</strong> bằng DBCA.</li>
+<li>Dựng được lab thực hành 2 node (<code>srv1</code>, <code>srv2</code>) trên VirtualBox và tự tạo database <code>rac</code> 12c R1.</li>
+</ul>
+<blockquote>
+<p>💡 Vì sao dùng 12c R1 chứ không phải 12c R2? Để sau này bạn có bài <strong>upgrade</strong> RAC lên 12c R2 (Module 07). Về cơ bản kiến trúc RAC hai bản gần như giống nhau.</p>
+</blockquote>
+<hr />
+<h2 id="noi-dung-chinh">📋 Nội dung chính<a class="headerlink" href="#noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<h3 id="1-installing-oracle-rac-software-stack">1. Installing Oracle RAC Software Stack<a class="headerlink" href="#1-installing-oracle-rac-software-stack" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>📄 Nguồn: <code>Section 03/Installing Oracle RAC Software Stack.pdf</code></p>
+</blockquote>
+<p>RAC gồm <strong>hai sản phẩm phần mềm</strong> phải cài theo đúng thứ tự:</p>
+<ol>
+<li><strong>Oracle Grid Infrastructure</strong> → tham khảo <em>Grid Infrastructure Installation Guide</em></li>
+<li><strong>Oracle Database</strong> → tham khảo <em>Real Application Clusters Installation Guide for Linux and UNIX</em></li>
+</ol>
+<pre class="mermaid"><code>flowchart TD
+    A[OS + Network + Shared Storage] --&gt; B[Install Grid Infrastructure]
+    B --&gt; C[Clusterware + ASM sẵn sàng]
+    C --&gt; D[Install Oracle Database Software]
+    D --&gt; E[Create RAC Database - DBCA]</code></pre>
+<h4 id="11-yeu-cau-cua-grid-infrastructure">1.1 Yêu cầu của Grid Infrastructure<a class="headerlink" href="#11-yeu-cau-cua-grid-infrastructure" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Yêu cầu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM</td>
+<td>Tối thiểu 4 GB (12.2 cần 8 GB)</td>
+</tr>
+<tr>
+<td>Ổ cứng</td>
+<td>8 GB cho Grid Home, 12 GB cho owner, 1 GB cho <code>/tmp</code></td>
+</tr>
+<tr>
+<td>Mạng</td>
+<td>Tối thiểu 1 GbE (khuyến nghị 10 GbE cho <strong>private network</strong>)</td>
+</tr>
+<tr>
+<td>OS Groups/Users</td>
+<td>Ít nhất: owner của GI (thường là <code>grid</code>) và nhóm cài đặt (<code>oinstall</code>)</td>
+</tr>
+<tr>
+<td>Đặt tên</td>
+<td><strong>GNS</strong> (một GNS name + fixed address trên DNS) <strong>hoặc</strong> <strong>DNS</strong> (SCAN name phân giải về <strong>3 địa chỉ</strong>)</td>
+</tr>
+<tr>
+<td>Shared storage</td>
+<td>Cấu hình lưu trữ dùng chung (ví dụ ASM)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="12-viec-can-lam-truoc-khi-cai-gi-pre-installation">1.2 Việc cần làm trước khi cài GI (Pre-installation)<a class="headerlink" href="#12-viec-can-lam-truoc-khi-cai-gi-pre-installation" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Cấu hình <strong>shared storage</strong>. Nếu dùng ASM: có thể tạo <strong>một diskgroup</strong> chứa cả OCR + Voting Disk (VD), data files và Fast Recovery Area (FRA) — hoặc tách mỗi loại một diskgroup riêng.</li>
+<li>Chọn phương pháp <strong>đồng bộ thời gian</strong>: NTP hoặc <strong>CTSS</strong> (Cluster Time Synchronization Service).</li>
+</ul>
+<h4 id="13-cai-grid-infrastructure">1.3 Cài Grid Infrastructure<a class="headerlink" href="#13-cai-grid-infrastructure" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>12.1</strong>: dùng <strong>OUI</strong> (<code>runInstaller</code>). Cấu hình mạng theo GNS+DHCP hoặc thủ công (SCAN, public name, VIP name cho từng node). Cần quyền <strong>root</strong>. Grid Home phải <strong>nằm ngoài</strong> Oracle Base.</li>
+<li><strong>12.2</strong>: (1) tạo Grid Home với quyền group phù hợp, (2) giải nén <em>image file</em> vào Grid Home, (3) chạy <code>gridSetup.sh</code>. Thông tin yêu cầu giống 12.1.</li>
+</ul>
+<h4 id="14-kiem-tra-sau-khi-cai-gi">1.4 Kiểm tra sau khi cài GI<a class="headerlink" href="#14-kiem-tra-sau-khi-cai-gi" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># chạy bằng root</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>crsctl<span class="w"> </span>check<span class="w"> </span>cluster
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">#   CRS-4537 Cluster Ready Services is online</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">#   CRS-4529 Cluster Synchronization Services is online</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">#   CRS-4533 Event Manager is online</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># chạy bằng grid</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>srvctl<span class="w"> </span>status<span class="w"> </span>asm
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">#   ASM is running on rac1,rac2</span>
+</span></code></pre></div>
+<h4 id="15-post-installation-cho-gi">1.5 Post-installation cho GI<a class="headerlink" href="#15-post-installation-cho-gi" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Kiểm tra SCAN: <code>cluvfy comp scan</code> (bằng user <code>grid</code>).</li>
+<li>Cài <strong>ORAchk</strong>, và cài <strong>PSU</strong> (patchset update) mới nhất.</li>
+</ul>
+<h4 id="16-cai-oracle-database-software">1.6 Cài Oracle Database Software<a class="headerlink" href="#16-cai-oracle-database-software" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Pre-install</strong>: Clusterware phải đã cài xong; tạo user/group của DB (thường <code>oracle</code> và <code>dba</code>); (tùy chọn) chạy <strong>CVU</strong> để kiểm tra và sinh <em>fixup scripts</em>:</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/u01/app/12.1.0/grid/bin/cluvfy<span class="w"> </span>stage<span class="w"> </span>-pre<span class="w"> </span>dbinst<span class="w"> </span>-fixup<span class="w"> </span>-n<span class="w"> </span>rac1,rac2<span class="w"> </span>-osdba<span class="w"> </span>dba<span class="w"> </span>-verbose
+</span></code></pre></div>
+<ul>
+<li><strong>Install</strong>: dùng <strong>OUI</strong> (hoặc Rapid Home Provisioning). Cần root. <strong>Oracle Base của DB khác Oracle Base của GI</strong>; Oracle Home của DB nằm <strong>dưới</strong> Oracle Base.</li>
+</ul>
+<h4 id="17-tao-rac-database">1.7 Tạo RAC Database<a class="headerlink" href="#17-tao-rac-database" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Khuyến nghị dùng <strong>DBCA</strong>.</li>
+<li>Quyết định <strong>CDB</strong> hay <strong>non-CDB</strong>.</li>
+<li>Chọn kiểu quản lý cluster database:</li>
+<li><strong>Administrator-managed</strong> (gán instance vào node cụ thể), hoặc</li>
+<li><strong>Policy-managed</strong> (dùng server pool — xem Module 10).</li>
+<li>Đặt <strong>Global Database Name</strong> và <strong>SID Prefix</strong>. Instance name = SID + số thứ tự (ví dụ <code>rac1</code>, <code>rac2</code>).</li>
+</ul>
+<h4 id="18-post-installation-cho-db">1.8 Post-installation cho DB<a class="headerlink" href="#18-post-installation-cho-db" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Set biến môi trường Oracle trong profile của user owner.</li>
+<li>Cài PSU mới nhất.</li>
+<li>Biên dịch lại toàn bộ PL/SQL: <code>utlrp.sql</code>.</li>
+<li>Triển khai chiến lược <strong>backup &amp; recovery</strong> (Module 04).</li>
+<li>Cấu hình <strong>services</strong> (Module 06).</li>
+</ul>
+<hr />
+<h3 id="2-practice-01-chuan-bi-moi-truong-thuc-hanh">2. Practice 01: Chuẩn bị môi trường thực hành<a class="headerlink" href="#2-practice-01-chuan-bi-moi-truong-thuc-hanh" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>📄 Nguồn: <code>Section 03/Practice 01 Preparing the Practice Environment.pdf</code></p>
+</blockquote>
+<p>Mục tiêu: tạo <strong>2 máy ảo</strong> <code>srv1</code>, <code>srv2</code> (Oracle Linux 6.10 64-bit) trên <strong>VirtualBox</strong> và cấu hình <strong>shared storage</strong>.</p>
+<h4 id="21-kien-truc-lab">2.1 Kiến trúc lab<a class="headerlink" href="#21-kien-truc-lab" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>                 srv-scan (192.168.56.91/92/93 - 3 IP round-robin)
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>                          │
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        ┌─────────────────┴─────────────────┐
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>     srv1                                  srv2
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  public  192.168.56.71                 192.168.56.72
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  vip     192.168.56.81                 192.168.56.82
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  priv    192.168.10.1                  192.168.10.2
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        └──────── Shared Disks: DISK1/DISK2/DISK3 ────────┘
+</span></code></pre></div>
+<h4 id="22-ba-network-adapter-moi-node">2.2 Ba network adapter mỗi node<a class="headerlink" href="#22-ba-network-adapter-moi-node" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Adapter</th>
+<th>Attached To (VirtualBox)</th>
+<th>Dùng cho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eth0</td>
+<td><strong>Host-only Adapter</strong></td>
+<td>Public</td>
+</tr>
+<tr>
+<td>eth1</td>
+<td><strong>Internal Network</strong> (đặt tên <code>privnet</code>)</td>
+<td>Private (interconnect)</td>
+</tr>
+<tr>
+<td>eth2</td>
+<td><strong>Bridged Adapter</strong></td>
+<td>Internet (tải package)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="23-file-etchosts-thay-cho-dns-trong-lab">2.3 File <code>/etc/hosts</code> (thay cho DNS trong lab)<a class="headerlink" href="#23-file-etchosts-thay-cho-dns-trong-lab" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Public
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>192.168.56.71 srv1.localdomain srv1
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>192.168.56.72 srv2.localdomain srv2
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a># Private
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>192.168.10.1  srv1-priv.localdomain srv1-priv
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>192.168.10.2  srv2-priv.localdomain srv2-priv
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a># Virtual (VIP)
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>192.168.56.81 srv1-vip.localdomain srv1-vip
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>192.168.56.82 srv2-vip.localdomain srv2-vip
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a># SCAN (thực tế phải để trên DNS, round-robin 3 IP)
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>192.168.56.91 srv-scan.localdomain srv-scan
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>192.168.56.92 srv-scan.localdomain srv-scan
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>192.168.56.93 srv-scan.localdomain srv-scan
+</span></code></pre></div>
+<h4 id="24-users-groups-va-asmlib-chay-bang-root">2.4 Users, groups và ASMLib (chạy bằng root)<a class="headerlink" href="#24-users-groups-va-asmlib-chay-bang-root" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># groups + user grid (oracle đã có sẵn)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>groupadd<span class="w"> </span>asmadmin
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>groupadd<span class="w"> </span>asmdba
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>useradd<span class="w"> </span>-u<span class="w"> </span><span class="m">54323</span><span class="w"> </span>-g<span class="w"> </span>oinstall<span class="w"> </span>-G<span class="w"> </span>asmadmin,asmdba<span class="w"> </span>grid
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>asmdba<span class="w"> </span>oracle<span class="w">          </span><span class="c1"># oracle được đọc ASM</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>passwd<span class="w"> </span>oracle<span class="p">;</span><span class="w"> </span>passwd<span class="w"> </span>grid<span class="w">           </span><span class="c1"># đặt mật khẩu = oracle</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># kiểm tra thư viện prerequisite</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>/usr/bin/oracle-rdbms-server-12cR1-preinstall-verify
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1"># cài + cấu hình ASMLib</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>yum<span class="w"> </span>install<span class="w"> </span>oracleasm-support
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>yum<span class="w"> </span>install<span class="w"> </span>kmod-oracleasm
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>oracleasm<span class="w"> </span>configure<span class="w"> </span>-i<span class="w">               </span><span class="c1"># owner: grid / group: oinstall / boot: y</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>/usr/sbin/oracleasm<span class="w"> </span>init
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1"># thư mục cài đặt</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>/u01/app/oracle/product<span class="w"> </span>/u01/app/grid<span class="w"> </span>/u01/app/12.1.0/grid
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>chown<span class="w"> </span>-R<span class="w"> </span>oracle:oinstall<span class="w"> </span>/u01/app/oracle
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>chown<span class="w"> </span>-R<span class="w"> </span>grid:oinstall<span class="w">  </span>/u01/app/grid<span class="w"> </span>/u01/app/12.1.0/grid
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">775</span><span class="w"> </span>/u01
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="c1"># tắt NTP (dùng CTSS thay thế)</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>chkconfig<span class="w"> </span>ntpd<span class="w"> </span>off
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>mv<span class="w"> </span>/etc/ntp.conf<span class="w"> </span>/etc/ntp.conf.orig
+</span></code></pre></div>
+<h4 id="25-tao-srv2-bang-cach-clone-srv1">2.5 Tạo <code>srv2</code> bằng cách clone <code>srv1</code><a class="headerlink" href="#25-tao-srv2-bang-cach-clone-srv1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Clone <code>srv1</code> → <code>srv2</code>, <strong>initialize network cards</strong>.</li>
+<li>Sửa lỗi <strong>MAC address</strong> trong <code>/etc/udev/rules.d/70-persistent-net.rules</code> và <code>ifcfg-eth*</code>.</li>
+<li>Đổi hostname (<code>/etc/sysconfig/network</code>) và IP eth0/eth1 cho <code>srv2</code>.</li>
+<li>Cài <code>cvuqdisk</code> (nằm trong <code>&lt;grid&gt;/rpm</code>) — nếu thiếu, CVU không thấy được shared disk.</li>
+</ul>
+<h4 id="26-shared-disks-dung-cho-asm">2.6 Shared disks (dùng cho ASM)<a class="headerlink" href="#26-shared-disks-dung-cho-asm" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Disk</th>
+<th>Size</th>
+<th>Diskgroup dự kiến</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DISK1</td>
+<td>10 GB</td>
+<td>CRS (OCR + Voting Disk)</td>
+</tr>
+<tr>
+<td>DISK2</td>
+<td>15 GB</td>
+<td>DATA</td>
+</tr>
+<tr>
+<td>DISK3</td>
+<td>15 GB</td>
+<td>FRA</td>
+</tr>
+</tbody>
+</table>
+<p>Các bước: tạo VDI <strong>Fixed size</strong> → đổi type sang <strong>Shareable</strong> (Virtual Media Manager) → attach vào cả 2 node → phân vùng và tạo ASM disk:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>fdisk<span class="w"> </span>/dev/sdb<span class="w">        </span><span class="c1"># n, p, 1, Enter, Enter, w  (lặp cho sdc, sdd)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>oracleasm<span class="w"> </span>createdisk<span class="w"> </span>DISK1<span class="w"> </span>/dev/sdb1
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>oracleasm<span class="w"> </span>createdisk<span class="w"> </span>DISK2<span class="w"> </span>/dev/sdc1
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>oracleasm<span class="w"> </span>createdisk<span class="w"> </span>DISK3<span class="w"> </span>/dev/sdd1
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>oracleasm<span class="w"> </span>scandisks
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>oracleasm<span class="w"> </span>listdisks<span class="w">   </span><span class="c1"># chạy trên cả srv1 và srv2 để xác nhận cùng thấy đĩa</span>
+</span></code></pre></div>
+<blockquote>
+<p>✅ <strong>Kết quả</strong>: 2 máy ảo + 3 shared disk sẵn sàng để cài GI, DB và tạo RAC database.</p>
+</blockquote>
+<hr />
+<h3 id="3-practice-02-tao-oracle-12c-r1-two-node-rac-database">3. Practice 02: Tạo Oracle 12c R1 Two-Node RAC Database<a class="headerlink" href="#3-practice-02-tao-oracle-12c-r1-two-node-rac-database" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>📄 Nguồn: <code>Section 03/Practice 02 Create Oracle 12c R1 Two-Node RAC Database.pdf</code></p>
+</blockquote>
+<h4 id="31-set-bien-moi-truong">3.1 Set biến môi trường<a class="headerlink" href="#31-set-bien-moi-truong" title="Permanent link">&para;</a></h4>
+<p><strong>User <code>oracle</code></strong> (<code>srv1</code> dùng <code>rac1</code>, <code>srv2</code> dùng <code>rac2</code>):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">ORACLE_SID</span><span class="o">=</span>rac1<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span>ORACLE_SID<span class="w">          </span><span class="c1"># srv2: rac2</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nv">ORACLE_BASE</span><span class="o">=</span>/u01/app/oracle<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span>ORACLE_BASE
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nv">ORACLE_HOME</span><span class="o">=</span><span class="nv">$ORACLE_BASE</span>/product/12.1.0/db_1<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span>ORACLE_HOME
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nv">TNS_ADMIN</span><span class="o">=</span><span class="nv">$ORACLE_HOME</span>/network/admin<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span>TNS_ADMIN
+</span></code></pre></div>
+<p><strong>User <code>grid</code></strong> (<code>+ASM1</code> / <code>+ASM2</code>), lưu ý ORACLE_HOME <strong>không</strong> nằm dưới ORACLE_BASE:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">ORACLE_SID</span><span class="o">=</span>+ASM1<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span>ORACLE_SID<span class="w">          </span><span class="c1"># srv2: +ASM2</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nv">ORACLE_BASE</span><span class="o">=</span>/u01/app/grid<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span>ORACLE_BASE
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">ORACLE_HOME</span><span class="o">=</span>/u01/app/12.1.0/grid<span class="p">;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span>ORACLE_HOME
+</span></code></pre></div>
+<p>Sau đó set <strong>resource limits</strong> cho cả <code>oracle</code> và <code>grid</code> trong <code>/etc/security/limits.d/...</code>.</p>
+<h4 id="32-cai-grid-infrastructure-user-grid-runinstaller">3.2 Cài Grid Infrastructure (user <code>grid</code>, <code>./runInstaller</code>)<a class="headerlink" href="#32-cai-grid-infrastructure-user-grid-runinstaller" title="Permanent link">&para;</a></h4>
+<p>Các lựa chọn quan trọng trong OUI:</p>
+<table>
+<thead>
+<tr>
+<th>Màn hình</th>
+<th>Lựa chọn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Installation Option</td>
+<td>Install and Configure GI for a Cluster</td>
+</tr>
+<tr>
+<td>Cluster Type</td>
+<td>Configure a <strong>Standard Cluster</strong></td>
+</tr>
+<tr>
+<td>Grid Plug and Play</td>
+<td>Cluster Name <code>rac</code>, SCAN Name <code>srv-scan</code>, Port <code>1521</code>, <strong>bỏ</strong> Configure GNS</td>
+</tr>
+<tr>
+<td>Cluster Node</td>
+<td>Thêm <code>srv2</code>; thiết lập <strong>SSH Connectivity</strong> (mật khẩu <code>oracle</code>)</td>
+</tr>
+<tr>
+<td>Network Interface</td>
+<td>eth0 = <strong>Public</strong>, eth1 = <strong>Private</strong>, eth2 = <strong>Do Not Use</strong></td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>Use <strong>Standard ASM</strong></td>
+</tr>
+<tr>
+<td>ASM Disk Group</td>
+<td>Discovery Path <code>/dev/oracleasm/disks*</code>; DG Name <code>CRS</code>, Redundancy <code>External</code>, chọn <strong>DISK1</strong></td>
+</tr>
+<tr>
+<td>OS Groups</td>
+<td>OSASM = <code>asmadmin</code>, OSDBA for ASM = <code>asmdba</code></td>
+</tr>
+<tr>
+<td>Location</td>
+<td>Oracle Base <code>/u01/app/grid</code>, Software <code>/u01/app/12.1.0/grid</code></td>
+</tr>
+</tbody>
+</table>
+<p>Kiểm tra sau cài:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>crsctl<span class="w"> </span>status<span class="w"> </span>resource<span class="w"> </span>-t<span class="w">     </span><span class="c1"># tất cả resource phải ONLINE</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>crsctl<span class="w"> </span>check<span class="w"> </span>cluster<span class="w"> </span>-all
+</span></code></pre></div>
+<h4 id="33-tao-asm-disk-group-data-va-fra-user-grid">3.3 Tạo ASM Disk Group DATA và FRA (user <code>grid</code>)<a class="headerlink" href="#33-tao-asm-disk-group-data-va-fra-user-grid" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>asmca<span class="w">    </span><span class="c1"># Create → DATA (External, DISK2); Create → FRA (External, DISK3)</span>
+</span></code></pre></div>
+<h4 id="34-cai-oracle-database-software-user-oracle-runinstaller">3.4 Cài Oracle Database Software (user <code>oracle</code>, <code>./runInstaller</code>)<a class="headerlink" href="#34-cai-oracle-database-software-user-oracle-runinstaller" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Install database software only</strong>.</li>
+<li>Grid Installation Options: <strong>Oracle Real Application Clusters database installation</strong>.</li>
+<li>Chọn cả 2 node + thiết lập SSH.</li>
+<li>Edition: <strong>Enterprise Edition</strong>.</li>
+<li>Oracle Base <code>/u01/app/oracle</code>, Software <code>/u01/app/oracle/product/12.1.0/db_1</code>.</li>
+<li>Chạy root script trên <strong>node 1 xong</strong> rồi mới đến node 2.</li>
+</ul>
+<h4 id="35-tao-database-bang-dbca-user-oracle-lenh-dbca">3.5 Tạo database bằng DBCA (user <code>oracle</code>, lệnh <code>dbca</code>)<a class="headerlink" href="#35-tao-database-bang-dbca-user-oracle-lenh-dbca" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Màn hình</th>
+<th>Lựa chọn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Database Type</td>
+<td><strong>Oracle RAC database</strong>, Config Type <strong>Admin Managed</strong></td>
+</tr>
+<tr>
+<td>Identification</td>
+<td>Global Name <code>rac.localdomain</code>, SID Prefix <code>rac</code>, <strong>không</strong> tạo Container DB</td>
+</tr>
+<tr>
+<td>Placement</td>
+<td>Chọn cả <code>srv1</code> và <code>srv2</code></td>
+</tr>
+<tr>
+<td>Management</td>
+<td>Bật <strong>Configure EM Database Express</strong></td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>Data <code>+DATA</code> (OMF), FRA <code>+FRA</code> 12 GB, <strong>chưa</strong> bật Archiving</td>
+</tr>
+<tr>
+<td>Character Set</td>
+<td>AL32UTF8</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 Listener <strong>không</strong> tạo trong Oracle Home của DB — nó chạy từ <strong>Grid Home</strong> và do Clusterware quản lý.</p>
+</blockquote>
+<h4 id="36-kiem-tra-database-vua-tao">3.6 Kiểm tra database vừa tạo<a class="headerlink" href="#36-kiem-tra-database-vua-tao" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>srvctl<span class="w"> </span>status<span class="w"> </span>database<span class="w"> </span>-d<span class="w"> </span>rac
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>srvctl<span class="w"> </span>config<span class="w"> </span>database<span class="w"> </span>-d<span class="w"> </span>rac
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>ps<span class="w"> </span>-ef<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>pmon<span class="w">                       </span><span class="c1"># thấy ora_pmon_rac1 / rac2</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>sqlplus<span class="w"> </span>/<span class="w"> </span>as<span class="w"> </span>sysdba
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span>SELECT<span class="w"> </span>INST_NUMBER,<span class="w"> </span>INST_NAME<span class="w"> </span>FROM<span class="w"> </span>V<span class="nv">$ACTIVE_INSTANCES</span><span class="p">;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1"># session phân phối round-robin giữa 2 instance:</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>sqlplus<span class="w"> </span>system/oracle@rac
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span>SELECT<span class="w"> </span>INSTANCE_NAME<span class="w"> </span>FROM<span class="w"> </span>V<span class="nv">$INSTANCE</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="37-shutdown-startup-ung-cach">3.7 Shutdown / Startup đúng cách<a class="headerlink" href="#37-shutdown-startup-ung-cach" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># tắt database</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>srvctl<span class="w"> </span>stop<span class="w"> </span>database<span class="w"> </span>-d<span class="w"> </span>rac<span class="w"> </span>-o<span class="w"> </span>immediate
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># tắt cả Clusterware stack (chạy bằng root, trên MỖI node)</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>/u01/app/12.1.0/grid/bin/crsctl<span class="w"> </span>stop<span class="w"> </span>crs
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># khi boot lại: Clusterware tự khởi động và khôi phục database về trạng thái trước đó</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>crsctl<span class="w"> </span>status<span class="w"> </span>resource<span class="w"> </span>-t
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>crsctl<span class="w"> </span>status<span class="w"> </span>res<span class="w"> </span>ora.rac.db<span class="w"> </span>-f<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>AUTO_START<span class="w">   </span><span class="c1"># giá trị 'restore'</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>srvctl<span class="w"> </span>start<span class="w"> </span>database<span class="w"> </span>-d<span class="w"> </span>rac
+</span></code></pre></div>
+<h4 id="38-em-database-express">3.8 EM Database Express<a class="headerlink" href="#38-em-database-express" title="Permanent link">&para;</a></h4>
+<p>Mở trình duyệt trong VM: <code>https://srv-scan.localdomain:5500/em</code> → chấp nhận cảnh báo (Add Exception) → cài Flash plug-in nếu cần → login <code>sys</code> as sysdba.</p>
+<hr />
+<h2 id="tom-tat-e-nho-lau">🧠 Tóm tắt để nhớ lâu<a class="headerlink" href="#tom-tat-e-nho-lau" title="Permanent link">&para;</a></h2>
+<ul>
+<li>RAC = <strong>2 sản phẩm</strong>: Grid Infrastructure (Clusterware + ASM) <strong>trước</strong>, Database software <strong>sau</strong>.</li>
+<li><strong>Grid Home nằm ngoài Oracle Base</strong>; Oracle Base của DB khác Oracle Base của GI.</li>
+<li>SCAN phân giải về <strong>3 IP</strong> (thực tế trên DNS; trong lab dùng <code>/etc/hosts</code>).</li>
+<li>3 diskgroup điển hình: <strong>CRS</strong> (OCR+VD), <strong>DATA</strong>, <strong>FRA</strong>.</li>
+<li>Tạo database bằng <strong>DBCA</strong>: chọn RAC + Admin-managed/Policy-managed, CDB/non-CDB.</li>
+<li><strong>Listener chạy từ Grid Home</strong>, do Clusterware quản lý — không tạo trong DB Home.</li>
+<li>Dùng <code>crsctl</code>/<code>srvctl</code> để kiểm tra và vận hành cluster (chi tiết ở Module 04).</li>
+</ul>
+<hr />
+<h2 id="sau-khi-hoc-xong-hay-tu-lam">🛠️ Sau khi học xong, hãy tự làm<a class="headerlink" href="#sau-khi-hoc-xong-hay-tu-lam" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Vẽ lại kiến trúc lab 2 node kèm public/private/VIP/SCAN IP.</li>
+<li>Liệt kê thứ tự cài GI → ASM → DB và giải thích vì sao Grid Home phải ngoài Oracle Base.</li>
+<li>Tự dựng lab và tạo database <code>rac</code>; xác nhận bằng <code>srvctl status database -d rac</code> và <code>V$ACTIVE_INSTANCES</code>.</li>
+<li>Thực hành shutdown/startup: <code>srvctl stop database</code> + <code>crsctl stop crs</code>, rồi khởi động lại.</li>
+</ol>
+<hr />
+<h2 id="module-tiep-theo">⏭️ Module tiếp theo<a class="headerlink" href="#module-tiep-theo" title="Permanent link">&para;</a></h2>
+<p><strong>Module 04: RAC Basic Administration &amp; Backup</strong> — vận hành hằng ngày (srvctl/crsctl, tham số, undo, session) và Backup/Recovery bằng RMAN trong RAC.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-RAC-Administration-Course/modules/module_03/module_03_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../../module-02/module-02-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📘 Module 02: Oracle RAC Overview &amp; Architecture">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 02: Oracle RAC Overview & Architecture
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../module-04/module-04-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📘 Module 04: RAC Basic Administration &amp; Backup">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 04: RAC Basic Administration & Backup
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

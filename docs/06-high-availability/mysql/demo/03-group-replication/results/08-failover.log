@@ -1,0 +1,29 @@
+[09:55:03] ================ FAILOVER TEST ================
+[09:55:09] ==> Primary trước halt: node1 (192.168.10.11)
+[09:55:09] ==> Sau halt sẽ query qua: node2
+[09:55:14] ==> Insert sentinel row trên node1 (val='failover-sentinel-1779159314')
+[09:55:25]     sentinel id=201
+[09:55:31]     [node2] đã thấy sentinel
+[09:55:37]     [node3] đã thấy sentinel
+[09:55:37] ==> Halt --force node1
+==> node1: Forcing shutdown of VM...
+[09:55:43] ==> Poll từ node2 đến khi có primary mới (timeout 60s)
+    progress: 5s
+    progress: 10s
+    progress: 15s
+FOUND=192.168.10.12 AT=16
+[09:56:04]     NEW PRIMARY = node2 sau 27s
+[09:56:04] ==> Đo WRITE_RTO: poll INSERT vào node2 (timeout 60s)
+[09:56:09]     node2 chấp nhận INSERT sau 32s
+[09:56:09] ==> [node2] INSERT 50 rows post-failover...
+[09:56:15]     insert 50 rows xong sau 5.499s
+[09:56:15] ==> Chờ node3 (secondary còn sống) catch-up
+[09:56:26]     [node3] OK: 252/252
+[09:56:26] ================ KẾT LUẬN ================
+[09:56:26] FAILOVER_PASS=true  PROMOTE_RTO=27s WRITE_RTO=32s old=node1 new=node2
+FAILOVER_PASS=true
+[09:56:26] 
+[09:56:26] Để khôi phục node1 làm SECONDARY trong group:
+[09:56:26]   vagrant up node1
+[09:56:26]   vagrant ssh node1 -c "mysql -uroot -p'ChangeMe!Root#2026' -e 'START GROUP_REPLICATION;'"
+[09:56:26]   (nếu GTID tụt nhiều → CLONE INSTANCE FROM 'repl'@'node2':3306)

@@ -1,0 +1,27 @@
+[21:40:41] ================ SMOKE TEST (ROWS=200) qua Router ================
+[21:40:46] ==> Current PRIMARY = 192.168.10.11
+[21:40:46] ==> [mgmt:6446] CREATE DATABASE + TABLE smoke_db.t
+[21:40:54]     :6446 đang point đến: node1 (expect = 192.168.10.11)
+[21:40:54] [WARN] :6446 không trỏ đúng primary?
+[21:40:54] ==> [mgmt:6446] INSERT 200 rows...
+[21:41:04] ==> insert 200 rows xong sau 9.723s
+[21:41:08] ==> [node1] thấy 200 rows sau 4.116s
+[21:41:12] ==> [node2] thấy 200 rows sau 4.052s
+[21:41:17] ==> [node3] thấy 200 rows sau 4.140s
+[21:41:17] ==> [mgmt:6447] 6 hits — kỳ vọng round-robin giữa 2 secondaries, mỗi hit thấy đủ 200 rows
+[21:41:21]     :6447 hit #1 -> host=node3 count=200
+[21:41:25]     :6447 hit #2 -> host=node2 count=200
+[21:41:30]     :6447 hit #3 -> host=node3 count=200
+[21:41:34]     :6447 hit #4 -> host=node2 count=200
+[21:41:38]     :6447 hit #5 -> host=node3 count=200
+[21:41:42]     :6447 hit #6 -> host=node2 count=200
+[21:41:42] ==> So sánh gtid_executed:
+[21:41:55]     node1: 7f581c7a-5458-11f1-9779-08002716ddef:1-7,\nee740ab4-5458-11f1-9972-08002716ddef:1-335,\nee740e29-5458-11f1-9972-08002716ddef:1-5
+[21:41:55]     node2: 7f581c7a-5458-11f1-9779-08002716ddef:1-7,\nee740ab4-5458-11f1-9972-08002716ddef:1-336,\nee740e29-5458-11f1-9972-08002716ddef:1-5
+[21:41:55]     node3: 7f581c7a-5458-11f1-9779-08002716ddef:1-7,\nee740ab4-5458-11f1-9972-08002716ddef:1-337,\nee740e29-5458-11f1-9972-08002716ddef:1-5
+[21:41:55] ================ KẾT LUẬN ================
+[21:41:55]     Phân phối :6447:
+[21:41:55]       node3 = 3 hit(s)
+[21:41:55]       node2 = 3 hit(s)
+[21:41:55] SMOKE_PASS=true  insert=9.723s lag1=4.116 lag2=4.052 lag3=4.140
+SMOKE_PASS=true

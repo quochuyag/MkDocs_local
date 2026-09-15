@@ -1,0 +1,2186 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../module-03-guide/">
+      
+      
+        <link rel="next" href="../module-05-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>📘 Module 04: RMAN Full Backups - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-04-rman-full-backups" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              📘 Module 04: RMAN Full Backups
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            09. DBA + AI Automation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Auto ai
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../openclaw-gemini/runbook/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Openclaw gemini
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_4" id="__nav_8_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Oracle rman
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_4">
+            <span class="md-nav__icon md-icon"></span>
+            Oracle rman
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.local.md — Ghi chú cá nhân (không commit)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_4_3" id="__nav_8_4_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_4_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-01-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 01: Giới thiệu Khóa học & Chuẩn bị Môi trường Thực hành (Lab Setup)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-02-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 02: Nền tảng Backup & Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-03-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 03: Làm quen RMAN (Recovery Manager)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📘 Module 04: RMAN Full Backups
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 04: RMAN Full Backups
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-05-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 05: Incremental Backups
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-06-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 06: Cấu hình RMAN Persistent Settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-07-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 07: Reporting & Monitoring RMAN Backups
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-08-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 08: Tối ưu Cấp siêu Việt Backups (Improving Backups)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-09-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 09: Chinh phục Bộ Đĩa Trung Tâm (RMAN Recovery Catalog)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-10-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 10: RMAN-Encrypted Backups
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-11-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 11: Common Backup Practices
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-12-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 12: Khôi phục Mọi Cấp Độ (Performing Recovery)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-13-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 13: Handling Corrupted Blocks & Data Recovery Advisor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-14-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 14: Vận Tải Dữ Liệu Xuyên Nền Tảng (Cross-Platform Data Transportation)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-15-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 15: Nhân bản Cơ sở dữ liệu bằng RMAN (Duplicating a Database)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module-16-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📘 Module 16: Tối ưu Hiệu năng & Xử lý Sự cố RMAN (Performance Tuning & Troubleshooting)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tiến độ học Oracle RMAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tong-hop-17-modules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📊 Tổng hợp 17 Modules — Oracle RMAN Backup & Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../reviews-all/2026-20260418-firedrill-storagecrash/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Reviews all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="module-04-rman-full-backups">📘 Module 04: RMAN Full Backups<a class="headerlink" href="#module-04-rman-full-backups" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Phạm vi</strong>: Bài 10-13 (Lý thuyết &amp; Thực hành Part I &amp; II)
+<strong>Thời gian học ước tính</strong>: 3-4 giờ
+<strong>Tiền điều kiện</strong>: Đã hoàn thành Module 02 (Kiến trúc &amp; ARCHIVELOG) và Module 03 (Làm quen lệnh cơ bản RMAN).</p>
+</blockquote>
+<hr />
+<h2 id="muc-luc">📑 Mục lục<a class="headerlink" href="#muc-luc" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#-bài-10-khái-niệm-cơ-bản--rman-full-backups-part-i">Bài 10: Khái niệm cơ bản &amp; RMAN Full Backups Part I</a></li>
+<li><a href="#-bài-11-thực-hành-practice-3---part-i">Bài 11: Thực hành (Practice 3) - Part I</a></li>
+<li><a href="#-bài-12-rman-backups-nâng-cao-part-ii">Bài 12: RMAN Backups Nâng cao Part II</a></li>
+<li><a href="#-bài-13-thực-hành-practice-4---part-ii">Bài 13: Thực hành (Practice 4) - Part II</a></li>
+<li><a href="#-bảng-tổng-hợp--cú-pháp">Bảng tổng hợp &amp; Cú pháp</a></li>
+<li><a href="#-câu-hỏi-ôn-tập-tổng-hợp">Câu hỏi ôn tập tổng hợp</a></li>
+</ul>
+<hr />
+<h1 id="bai-10-khai-niem-co-ban-rman-full-backups-part-i">📖 Bài 10: Khái niệm cơ bản &amp; RMAN Full Backups Part I<a class="headerlink" href="#bai-10-khai-niem-co-ban-rman-full-backups-part-i" title="Permanent link">&para;</a></h1>
+<h2 id="muc-tieu-bai-hoc">🎯 Mục tiêu bài học<a class="headerlink" href="#muc-tieu-bai-hoc" title="Permanent link">&para;</a></h2>
+<p>Sau khi hoàn thành bài này, bạn sẽ:
+- Trình bày được các chiến lược sao lưu: Whole vs Partial, Full vs Incremental, và Cold vs Hot Backup.
+- Giải thích sâu được sự khác biệt giữa hai định dạng file RMAN: <strong>Backup Sets</strong> và <strong>Image Copies</strong>.
+- Backup thành công toàn bộ cơ sở dữ liệu cũng như một phần (tablespace, datafile) cụ thể.
+- Nắm rõ cách áp dụng biến Format để quản lý file backup hợp lý.</p>
+<h2 id="kien-thuc-nen-tang">📚 Kiến thức nền tảng<a class="headerlink" href="#kien-thuc-nen-tang" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Cần biết cách hoạt động của Datafiles, Control Files và Archived Redo Logs (Xem Module 02).</li>
+<li>Cấu hình ARCHIVELOG MODE phải bật để thực hiện Hot Backup an toàn.</li>
+</ul>
+<hr />
+<h2 id="noi-dung-chinh">📋 Nội dung chính<a class="headerlink" href="#noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<h3 id="1-phan-loai-thuat-ngu-backup-terminologies">1. Phân loại thuật ngữ Backup (Terminologies)<a class="headerlink" href="#1-phan-loai-thuat-ngu-backup-terminologies" title="Permanent link">&para;</a></h3>
+<p>Để hiểu cách tiếp cận sao lưu trong Oracle, bạn cần làm rõ 3 câu hỏi sau:</p>
+<ol>
+<li><strong>Phạm vi Backup (Strategy):</strong></li>
+<li><strong>Whole</strong>: Sao lưu toàn bộ Database (Mọi datafiles + control file).</li>
+<li>
+<p><strong>Partial</strong>: Sao lưu một phần (chỉ 1 tablespace hoặc 1 datafile).</p>
+</li>
+<li>
+<p><strong>Kiểu dữ liệu (Type):</strong></p>
+</li>
+<li><strong>Full</strong>: Quét và sao chép tất cả các block có chứa dữ liệu.</li>
+<li>
+<p><strong>Incremental</strong>: Chỉ sao chép những block bị thay đổi (sẽ học kỹ ở Module 05).</p>
+</li>
+<li>
+<p><strong>Chế độ Database (Mode):</strong></p>
+</li>
+<li><strong>Offline (Cold / Consistent)</strong>: Database ở trạng thái MOUNT. Dữ liệu đang hoàn toàn tĩnh, không bị thay đổi. Tuyến mồ hôi không chảy. Chế độ duy nhất được hỗ trợ nếu DB nằm ở NOARCHIVELOG mode.</li>
+<li><strong>Online (Hot / Inconsistent)</strong>: Database ở trạng thái OPEN. Ai cũng có thể ghi/xóa. Do dữ liệu liên tục thay đổi (inconsistent), nên Oracle <em>bắt buộc</em> phải dùng đến Archived Logs trong quá trình khôi phục để làm đồng nhất trở lại. Nghĩa là, DB BẮT BUỘC ở ARCHIVELOG Mode.</li>
+</ol>
+<h3 id="2-inh-dang-au-ra-backup-sets-vs-image-copies">2. Định dạng đầu ra: Backup Sets vs Image Copies<a class="headerlink" href="#2-inh-dang-au-ra-backup-sets-vs-image-copies" title="Permanent link">&para;</a></h3>
+<p>RMAN có thể lưu trữ dữ liệu bản quyền bằng 2 cơ chế xuất file kỹ thuật số khác nhau. Đây là khái niệm cốt lõi khi thiết kế lộ trình lưu trữ.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>       RMAN OUTPUT TYPES
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>              │
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>      ┌───────┴───────┐
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>      ▼               ▼
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a> Backup Sets       Image Copies
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a> (Định dạng RMAN)  (Bản sao 1-1 OS)
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>+ Nén nhẹ hơn       + Bằng kích thước gốc
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>+ Rất tốt cho       + Lý tưởng để chuyển đổi 
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  lưu trữ dài hạn     nhanh khi ổ chính bị cháy
+</span></code></pre></div>
+<p><strong>Bảng so sánh chi tiết:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>Backup Sets</th>
+<th>Image Copies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bản chất File</strong></td>
+<td>RMAN tạo ra các files gọi là <em>Backup Pieces</em>. Gói nhiều datafiles vào chung 1 file gốc.</td>
+<td>Là bản clone y chang của Datafile. Tương tự dán file trong Windows.</td>
+</tr>
+<tr>
+<td><strong>Kích thước</strong></td>
+<td>Rất nhỏ. Chỉ chứa những Block <strong>đã ghi dữ liệu</strong> (phớt lờ không gian trống).</td>
+<td>Bằng đúng 100% dung lượng Datafile gốc, kể cả vùng trống chưa có mẩu tin.</td>
+</tr>
+<tr>
+<td><strong>Thiết bị lưu trữ</strong></td>
+<td>Ổ đĩa (Disk) hoăc Băng từ (Tape).</td>
+<td>Chỉ hỗ trợ duy nhất trên <strong>Disk</strong>.</td>
+</tr>
+<tr>
+<td><strong>Hỗ trợ phục hồi nhanh?</strong></td>
+<td>❌ Không, phải chờ RMAN extract bung nén ra.</td>
+<td>✅ Có. Cho phép "Tráo đổi" (Switch) ngay lập tức nếu file cũ bị sập. Rất hữu ích đảm bảo SLA.</td>
+</tr>
+<tr>
+<td><strong>Incremental Option</strong></td>
+<td>✅ Hỗ trợ</td>
+<td>✅ Hỗ trợ</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!TIP]
+Việc xây dựng quy định khi nào dùng Backup Sets, khi nào dùng Image Copies thể hiện năng lực kiến trúc của DBA. Thường Data nằm ở Tape thì dùng Backup Set nén. Trách nhiệm phục hồi trong 5 phút RTO thì dùng Image Copy cắm thẳng SSD cho load lại ngay.</p>
+</blockquote>
+<h3 id="3-nhung-gi-khong-tuong-thich-sao-luu-bang-rman">3. Những gì không tương thích sao lưu bằng RMAN?<a class="headerlink" href="#3-nhung-gi-khong-tuong-thich-sao-luu-bang-rman" title="Permanent link">&para;</a></h3>
+<p>Các tệp được chứng thực an toàn RMAN gồm: <strong>Data files</strong>, <strong>Control files</strong>, <strong>SPFILE</strong>, <strong>Archived Redo Logs</strong>. (Nó không support Online redo log, do Online redos liên tục được luân chuyển và không tĩnh lặng hoàn toàn - bạn dùng multiplexing OS để bảo vệ redo này). Các phụ kiện OS (password file <code>orapwd</code>, listener, tnsnames) bạn phải quản lý OS Copy.</p>
+<h3 id="4-backing-up-a-whole-database-toan-bo">4. Backing up a Whole Database (Toàn bộ)<a class="headerlink" href="#4-backing-up-a-whole-database-toan-bo" title="Permanent link">&para;</a></h3>
+<p>Cú pháp thực hiện tùy thuộc vào trạng thái DB của bạn (Offline hay Online).</p>
+<h4 id="41-backup-online-database-ang-open">4.1. Backup Online (Database đang OPEN)<a class="headerlink" href="#41-backup-online-database-ang-open" title="Permanent link">&para;</a></h4>
+<p>Bắt buộc Database đã bật ARCHIVELOG. </p>
+<p><strong>Lệnh RMAN thực thi:</strong>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">PLUS</span><span class="w"> </span><span class="n">ARCHIVELOG</span><span class="p">;</span>
+</span></code></pre></div></p>
+<p><strong>Output mẫu (Giản lược):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Starting backup at 16-APR-26
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>current log archived
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>using channel ORA_DISK_1
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>channel ORA_DISK_1: starting archived log backup set
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>...
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>channel ORA_DISK_1: starting full datafile backup set
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>channel ORA_DISK_1: specifying datafile(s) in backup set
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>input datafile file number=00001 name=/u01/app/oracle/oradata/ORADB/system01.dbf
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>input datafile file number=00003 name=/u01/app/oracle/oradata/ORADB/sysaux01.dbf
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>...
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>current log archived
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>channel ORA_DISK_1: starting archived log backup set
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>...
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>Finished backup at 16-APR-26
+</span></code></pre></div></p>
+<p><strong>Giải thích từng dòng lệnh RMAN thực hiện ẩn dưới nền:</strong>
+Từ khóa <code>PLUS ARCHIVELOG</code> rất mạnh. RMAN tự động làm 5 bước:
+1. <code>current log archived</code>: Yêu cầu DB thực thi đổi log hiện tại (Archive log switch).
+2. <code>starting archived log backup set</code>: Backup tất cả Archive Logs vào trước.
+3. <code>starting full datafile backup set</code>: Backup Datafiles cốt lõi của database.
+4. <code>current log archived</code>: Switch một lần nữa để chứa các thay đổi phát sinh ngay trong lúc backup datafile.
+5. Sao lưu những log nhỏ giọt cuối cùng này.</p>
+<blockquote>
+<p>[!WARNING]
+<strong>Lỗi thường gặp</strong>: <code>ORA-01145: offline normal or immediate not allowed unless media recovery enabled.</code>
+Nguyên nhân: Bạn gõ <code>BACKUP DATABASE;</code> trong khi DB đang chạy OPEN nhưng chế độ <code>NOARCHIVELOG</code> chưa chuyển. Hệ thống không thể đảm bảo an toàn. </p>
+</blockquote>
+<p><strong>Trong production:</strong> Chạy <code>PLUS ARCHIVELOG</code> là tiêu chuẩn vàng của ngành. Nếu bạn chỉ gõ <code>BACKUP DATABASE</code>, và trong thời gian backup có ai đó Update table quan trọng, bạn sẽ KHÔNG phục hồi được trạng thái nguyên sinh của thay đổi đó do thiếu bản lưu Archive Logs mới nhất.</p>
+<h4 id="42-khoi-phuc-partial-inh-dang-file-xuat-ra-u">4.2. Khôi phục Partial định dạng File xuất ra (%U)<a class="headerlink" href="#42-khoi-phuc-partial-inh-dang-file-xuat-ra-u" title="Permanent link">&para;</a></h4>
+<p>Để Backup từng phần và bảo hiểm tên không trùng lặp khi chạy qua đêm, gán biến Format:</p>
+<p><strong>Lệnh RMAN thực thi:</strong>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- Chỉ backup 2 tablespaces cụ thể</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="n">tools</span><span class="w"> </span><span class="n">FORMAT</span><span class="w"> </span><span class="ss">"/u02/backup/orcl_%U.bkp"</span><span class="p">;</span>
+</span></code></pre></div></p>
+<p><strong>Giải thích tham số:</strong>
+- <code>%U</code>: Tự động tạo một hệ thống ID nhận diện 8 ký tự duy nhất toàn cầu và độc quyền thời gian. Bắt buộc dùng để hệ thống OS đè file không xảy ra. Nếu DB 4 node RAC đẩy backup chung qua biến này, chúng hoàn toàn cách ly nhau thành công.</p>
+<hr />
+<h1 id="bai-11-thuc-hanh-practice-3-part-i">💻 Bài 11: Thực hành (Practice 3) - Part I<a class="headerlink" href="#bai-11-thuc-hanh-practice-3-part-i" title="Permanent link">&para;</a></h1>
+<h2 id="vi-du-thuc-hanh-trai-nghiem-rman-co-ban">📝 Ví dụ thực hành: Trải nghiệm RMAN cơ bản<a class="headerlink" href="#vi-du-thuc-hanh-trai-nghiem-rman-co-ban" title="Permanent link">&para;</a></h2>
+<p>Trong Script tập dượt này, bạn sẽ làm quen với OS Command, check System, và lợi dụng Syntax Checking của Parser:</p>
+<p><div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="o">#</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="err">Đă</span><span class="n">ng</span><span class="w"> </span><span class="n">nhập</span><span class="w"> </span><span class="n">RMAN</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="p">[</span><span class="n">oracle</span><span class="o">@</span><span class="n">srv1</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">$</span><span class="w"> </span><span class="n">rman</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="ss">"'/ as SYSBACKUP'"</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="o">#</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="w"> </span><span class="n">Xóa</span><span class="w"> </span><span class="n">Backupset</span><span class="w"> </span><span class="n">qua</span><span class="w"> </span><span class="n">thử</span><span class="w"> </span><span class="n">sai</span><span class="w"> </span><span class="n">Syntax</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">RMAN</span><span class="w"> </span><span class="n">CỰC</span><span class="w"> </span><span class="n">KỲ</span><span class="w"> </span><span class="n">KHÔN</span><span class="o">!</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="o">#</span><span class="w"> </span><span class="n">Nhập</span><span class="w"> </span><span class="n">thử</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">và</span><span class="w"> </span><span class="n">nhấn</span><span class="w"> </span><span class="n">Enter</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DELETE</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">RMAN</span><span class="o">-</span><span class="mi">01009</span><span class="p">:</span><span class="w"> </span><span class="n">syntax</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="k">found</span><span class="w"> </span><span class="ss">"end-of-file"</span><span class="p">:</span><span class="w"> </span><span class="n">expecting</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="k">of</span><span class="p">:</span><span class="w"> </span><span class="ss">"archivelog, backuppiece, backupset, backup, copy..."</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="o">#</span><span class="w"> </span><span class="n">Giải</span><span class="w"> </span><span class="n">thích</span><span class="p">:</span><span class="w"> </span><span class="n">RMAN</span><span class="w"> </span><span class="n">báo</span><span class="w"> </span><span class="err">đ</span><span class="n">ang</span><span class="w"> </span><span class="n">chờ</span><span class="w"> </span><span class="n">bạn</span><span class="w"> </span><span class="n">gõ</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">từ</span><span class="w"> </span><span class="n">cụ</span><span class="w"> </span><span class="n">thể</span><span class="p">,</span><span class="w"> </span><span class="n">ví</span><span class="w"> </span><span class="n">dụ</span><span class="w"> </span><span class="n">backupset</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="o">#</span><span class="w"> </span><span class="n">Bổ</span><span class="w"> </span><span class="n">sung</span><span class="w"> </span><span class="n">theo</span><span class="w"> </span><span class="err">ý</span><span class="w"> </span><span class="n">muốn</span><span class="p">:</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">BACKUPSET</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">RMAN</span><span class="o">-</span><span class="mi">01009</span><span class="p">:</span><span class="w"> </span><span class="n">syntax</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="k">found</span><span class="w"> </span><span class="ss">"end-of-file"</span><span class="p">:</span><span class="w"> </span><span class="n">expecting</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="k">of</span><span class="p">:</span><span class="w"> </span><span class="ss">"for, guid, like, of, tag..."</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="o">#</span><span class="w"> </span><span class="n">Vẫn</span><span class="w"> </span><span class="n">thiếu</span><span class="o">!</span><span class="w"> </span><span class="n">Cần</span><span class="w"> </span><span class="n">báo</span><span class="w"> </span><span class="n">RMAN</span><span class="w"> </span><span class="n">là</span><span class="w"> </span><span class="n">xóa</span><span class="w"> </span><span class="n">cụm</span><span class="w"> </span><span class="n">nào</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="o">#</span><span class="w"> </span><span class="n">Hoàn</span><span class="w"> </span><span class="n">thành</span><span class="w"> </span><span class="n">câu</span><span class="w"> </span><span class="err">đú</span><span class="n">ng</span><span class="p">:</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">BACKUPSET</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="k">DATABASE</span><span class="p">;</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="k">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">really</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">objects</span><span class="w"> </span><span class="p">(</span><span class="n">enter</span><span class="w"> </span><span class="n">YES</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">NO</span><span class="p">)</span><span class="o">?</span><span class="w"> </span><span class="n">YES</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="o">#</span><span class="w"> </span><span class="mi">3</span><span class="p">.</span><span class="w"> </span><span class="n">Xem</span><span class="w"> </span><span class="n">báo</span><span class="w"> </span><span class="n">cáo</span><span class="w"> </span><span class="n">dung</span><span class="w"> </span><span class="n">lượng</span><span class="w"> </span><span class="n">FRA</span><span class="w"> </span><span class="n">từ</span><span class="w"> </span><span class="n">bên</span><span class="w"> </span><span class="n">trong</span><span class="w"> </span><span class="n">RMAN</span><span class="w"> </span><span class="p">(</span><span class="n">Cực</span><span class="w"> </span><span class="n">kỳ</span><span class="w"> </span><span class="err">đá</span><span class="n">ng</span><span class="w"> </span><span class="n">giá</span><span class="p">)</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">FILE_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">PERCENT_SPACE_USED</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">V$RECOVERY_AREA_USAGE</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">PERCENT_SPACE_USED</span><span class="o">&lt;&gt;</span><span class="mi">0</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">PERCENT_SPACE_USED</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span></code></pre></div>
+<strong>Output mẫu của query FRA:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>FILE_TYPE            PERCENT_SPACE_USED
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>-------------------- ------------------
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>BACKUP PIECE                       22.5
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>ARCHIVED LOG                       15.2
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>FLASHBACK LOG                       5.3
+</span></code></pre></div>
+<em>Giải thích</em>: Cột phần trăm này cho biết bao nhiêu phân vùng lưu trữ đã bị chiếm. DBA có thể dự phòng tăng ổ lên 100GB khi đạt 80% để tránh nghẽn.</p>
+<hr />
+<h1 id="bai-12-rman-backups-nang-cao-part-ii">📖 Bài 12: RMAN Backups Nâng cao Part II<a class="headerlink" href="#bai-12-rman-backups-nang-cao-part-ii" title="Permanent link">&para;</a></h1>
+<h2 id="muc-tieu-bai-hoc_1">🎯 Mục tiêu bài học<a class="headerlink" href="#muc-tieu-bai-hoc_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Nắm bắt và giải cấu trúc tự động sao lưu Control files và SPFILE.</li>
+<li>Quản lý cách nạp lại Archived Redo Logs và xóa an toàn ngay sau khi lấy.</li>
+<li>Ứng dụng nhuần nhuyễn Tags, Device Types và tham số tối ưu thời gian "Not Backed Up".</li>
+</ul>
+<h2 id="noi-dung-chinh_1">📋 Nội dung chính<a class="headerlink" href="#noi-dung-chinh_1" title="Permanent link">&para;</a></h2>
+<h3 id="1-snapshot-control-file-cau-hinh-autobackup">1. Snapshot Control File &amp; Cấu hình Autobackup<a class="headerlink" href="#1-snapshot-control-file-cau-hinh-autobackup" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!IMPORTANT]
+Mất Control File là mất trọn bộ Database Metadata. Nó lưu mọi tọa độ. Bạn luôn phải cấu hình tự động lưu Control File.</p>
+</blockquote>
+<p><strong>Lệnh RMAN thực thi cấu hình chung:</strong>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CONFIGURE</span><span class="w"> </span><span class="n">CONTROLFILE</span><span class="w"> </span><span class="n">AUTOBACKUP</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span></code></pre></div>
+Bất kì khi nào bạn Backup TableSpace của hệ thống, RMAN cũng lẳng lặng tự chèn Controlfile và SPFILE vào cuối hành trình để đảm bảo luôn sẵn sàng cứu sống DB.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>       RMAN Backup Flow
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>              │
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  ┌───────────▼────────────┐
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  │ 1. Tạo Snapshot CF     │ Lấy 1 bức ảnh tĩnh chớp nhoáng (SnapCF)
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  │ 2. Backup Datafiles    │ Trích xuất data
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  │ 3. Backup Autobackup   │ Chép đè nguyên gốc SnapCF và SPFile lên đĩa
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  └───────────┬────────────┘
+</span></code></pre></div>
+<p><strong>Trong Production (RAC):</strong> 
+Snapshot mặc định nằm ở thư mục cấp Local <code>$ORACLE_HOME/dbs/snapcf_orcl.f</code>. Trong môi trường cụm (RAC Cluster), Node 2 không thể truy cập thư mục của Node 1! Bạn sẽ BẮT BUỘC phải đổi cấu hình Move cái Snapshot này ra ASM (Shared Storage).
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CONFIGURE</span><span class="w"> </span><span class="n">SNAPSHOT</span><span class="w"> </span><span class="n">CONTROLFILE</span><span class="w"> </span><span class="n">NAME</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">'+FRA/RAC/AUTOBACKUP/snapcf_rac.f'</span><span class="p">;</span>
+</span></code></pre></div></p>
+<h3 id="2-xoa-va-don-rac-archive-logs-thong-minh">2. Xóa và Dọn rác Archive Logs thông minh<a class="headerlink" href="#2-xoa-va-don-rac-archive-logs-thong-minh" title="Permanent link">&para;</a></h3>
+<p>Archive log liên tục sinh ra trong FRA và chiếm chỗ. Hàng ngày bạn sẽ cần dọn chúng vào băng từ hoặc external mount. Rõ ràng, khi đã backup thành công, bạn phải thu hồi ổ cứng.</p>
+<p><strong>Lệnh RMAN thực thi:</strong>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="n">ARCHIVELOG</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">INPUT</span><span class="p">;</span>
+</span></code></pre></div></p>
+<p><strong>Output mẫu:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Starting backup at 16-APR-26
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>current log archived
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>channel ORA_DISK_1: starting archived log backup set
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>...
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>channel ORA_DISK_1: backup set complete, elapsed time: 00:00:03
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>channel ORA_DISK_1: deleting archived log(s)
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>archived log file name=/u01/app/oracle/fra/ORADB/archivelog/2026_04_16/o1_mf_1_538.arc RECID=15 ...
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>Finished backup at 16-APR-26
+</span></code></pre></div>
+<strong>Giải thích</strong>: Tiền tố <code>BACKUP ... ALL</code> đảm bảo chép ra thiết bị sao lưu, trong khi hậu tố <code>DELETE ALL INPUT</code> ngay lập tức báo DB xóa source gốc → Giải phóng vùng FRA an toàn mà không phải can thiệp thủ công từ lệnh OS <code>rm</code>.</p>
+<p><strong>Lỗi thường gặp</strong>: <code>ORA-19809: limit exceeded for recovery files.</code> Database báo không ghi log đc nữa do FRA đạt 100% và sẽ bị sập treo. Việc thiết lập Cronjob chạy lệnh DELETE RMAN này mỗi 6 hoặc 12 giờ là phương án số 1!</p>
+<h3 id="3-image-copies-va-tham-so-nang-cao">3. Image Copies và Tham số Nâng Cao<a class="headerlink" href="#3-image-copies-va-tham-so-nang-cao" title="Permanent link">&para;</a></h3>
+<p>Image Copies được lưu dưới dạng file gốc thuần bằng lệnh thần thánh:
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">COPY</span><span class="w"> </span><span class="k">DATABASE</span><span class="p">;</span>
+</span></code></pre></div></p>
+<p><strong>Trong Production: Lỗi nghẽn đường truyền và RMAN chạy lại</strong>
+Trong DataCenter, bạn làm gì khi backup đêm 1TB bị đứt do giật cáp lúc ở 800GB? Bắt đầu quét lại vòng lặp từ 0 và mất thêm 6 tiếng nữa? <em>Hoàn toàn không cần thiết</em>:
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="n">BACKED</span><span class="w"> </span><span class="n">UP</span><span class="w"> </span><span class="n">SINCE</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="s1">'SYSDATE-1'</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">PLUS</span><span class="w"> </span><span class="n">ARCHIVELOG</span><span class="p">;</span>
+</span></code></pre></div>
+<strong>Output mẫu</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>skipping datafile 1; already backed up on 16-APR-26
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>skipping datafile 2; already backed up on 16-APR-26
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>backing up datafile 15 ...
+</span></code></pre></div>
+<strong>Giải thích</strong>: Lệnh RMAN đối chiếu thông số cờ ngày tháng lưu trên Metadata. Quét thấy 800GB đầu đã có bản lưu (báo <code>skipping datafile X</code>), chỉ sao chép 200GB còn lại (<code>backing up datafile 15</code>). Tối đa hóa băng thông và thời gian cứu hộ Server!</p>
+<p><strong>Tags (Nhãn tra cứu ID)</strong>
+Tự đánh dấu nhãn (tag) cho nhóm file. Không phân biệt hoa thường. 
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="n">DATAFILE</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="w"> </span><span class="n">TAG</span><span class="w"> </span><span class="s1">'MONTHLY_OCT'</span><span class="p">;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">LIST</span><span class="w"> </span><span class="k">COPY</span><span class="w"> </span><span class="n">TAG</span><span class="w"> </span><span class="s1">'monthly_oct'</span><span class="p">;</span>
+</span></code></pre></div></p>
+<hr />
+<h1 id="bai-13-thuc-hanh-practice-4-part-ii">💻 Bài 13: Thực hành (Practice 4) - Part II<a class="headerlink" href="#bai-13-thuc-hanh-practice-4-part-ii" title="Permanent link">&para;</a></h1>
+<h2 id="vi-du-thuc-hanh-gan-tag-va-tao-trace-file-backup">📝 Ví dụ thực hành: Gắn Tag và Tạo Trace File Backup<a class="headerlink" href="#vi-du-thuc-hanh-gan-tag-va-tao-trace-file-backup" title="Permanent link">&para;</a></h2>
+<p>Script sau đây minh họa quá trình thực chiến OS Command trong RMAN và trace SQL của file Control:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="o">#</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="k">Host</span><span class="w"> </span><span class="n">Command</span><span class="p">:</span><span class="w"> </span><span class="n">Bạn</span><span class="w"> </span><span class="err">đâ</span><span class="n">u</span><span class="w"> </span><span class="n">cần</span><span class="w"> </span><span class="n">thoát</span><span class="w"> </span><span class="n">RMAN</span><span class="w"> </span><span class="err">để</span><span class="w"> </span><span class="n">dùng</span><span class="w"> </span><span class="n">lệnh</span><span class="w"> </span><span class="n">Linux</span><span class="o">?</span><span class="w"> </span><span class="n">Từ</span><span class="w"> </span><span class="n">RMAN</span><span class="w"> </span><span class="n">gọi</span><span class="w"> </span><span class="n">Terminal</span><span class="w"> </span><span class="n">ra</span><span class="w"> </span><span class="n">báo</span><span class="w"> </span><span class="n">danh</span><span class="p">:</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="s1">'ls -al /u01/app/oracle/product/12.2.0/db_1/dbs/snapcf_ORADB.f'</span><span class="p">;</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="o">#</span><span class="w"> </span><span class="k">Output</span><span class="w"> </span><span class="p">(</span><span class="n">Lệnh</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">Unix</span><span class="w"> </span><span class="err">đượ</span><span class="k">c</span><span class="w"> </span><span class="n">gọi</span><span class="p">):</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="o">#</span><span class="w"> </span><span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="c1">----- 1 oracle oinstall 10600448 Apr 16 11:45 /u01/app/oracle/product/12.2.0/db_1/dbs/snapcf_ORADB.f</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="o">#</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="w"> </span><span class="n">Tạo</span><span class="w"> </span><span class="k">SQL</span><span class="w"> </span><span class="n">Script</span><span class="w"> </span><span class="n">Trace</span><span class="w"> </span><span class="n">cho</span><span class="w"> </span><span class="n">Cấp</span><span class="w"> </span><span class="n">cứu</span><span class="w"> </span><span class="n">Server</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="o">#</span><span class="w"> </span><span class="n">Bất</span><span class="w"> </span><span class="n">kì</span><span class="w"> </span><span class="n">khi</span><span class="w"> </span><span class="n">nào</span><span class="w"> </span><span class="n">bạn</span><span class="w"> </span><span class="n">muốn</span><span class="w"> </span><span class="n">một</span><span class="w"> </span><span class="n">văn</span><span class="w"> </span><span class="n">bản</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="ss">"CREATE CONTROLFILE"</span><span class="p">,</span><span class="w"> </span><span class="n">gọi</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">Trace</span><span class="w"> </span><span class="n">trong</span><span class="w"> </span><span class="n">SQLPlus</span><span class="p">:</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="n">CONTROLFILE</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">TRACE</span><span class="p">;</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="o">#</span><span class="w"> </span><span class="n">Bật</span><span class="w"> </span><span class="n">Terminal</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">lấy</span><span class="w"> </span><span class="n">tên</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">trace</span><span class="w"> </span><span class="n">mới</span><span class="w"> </span><span class="n">sinh</span><span class="w"> </span><span class="n">ra</span><span class="w"> </span><span class="err">để</span><span class="w"> </span><span class="n">ráp</span><span class="w"> </span><span class="n">mã</span><span class="w"> </span><span class="n">Code</span><span class="w"> </span><span class="k">SQL</span><span class="w"> </span><span class="n">dự</span><span class="w"> </span><span class="n">phòng</span><span class="p">:</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="p">[</span><span class="n">oracle</span><span class="o">@</span><span class="n">srv1</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">$</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">/</span><span class="n">u01</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">diag</span><span class="o">/</span><span class="n">rdbms</span><span class="o">/</span><span class="n">oradb</span><span class="o">/</span><span class="n">ORADB</span><span class="o">/</span><span class="n">trace</span><span class="o">/</span><span class="n">alert_ORADB</span><span class="p">.</span><span class="n">log</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="o">#</span><span class="w"> </span><span class="n">Trong</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">log</span><span class="w"> </span><span class="n">sẽ</span><span class="w"> </span><span class="n">chỉ</span><span class="w"> </span><span class="err">đị</span><span class="n">nh</span><span class="w"> </span><span class="o">/</span><span class="n">u01</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="p">...</span><span class="o">/</span><span class="n">ORADB_ora_14522</span><span class="p">.</span><span class="n">trc</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="o">#</span><span class="w"> </span><span class="n">Bạn</span><span class="w"> </span><span class="n">dùng</span><span class="w"> </span><span class="n">lệnh</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="p">(</span><span class="n">như</span><span class="w"> </span><span class="n">vi</span><span class="p">)</span><span class="w"> </span><span class="err">để</span><span class="w"> </span><span class="n">mổ</span><span class="w"> </span><span class="n">xẻ</span><span class="w"> </span><span class="n">nội</span><span class="w"> </span><span class="n">dung</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="n">CONTROLFILE</span><span class="w"> </span><span class="k">SQL</span><span class="w"> </span><span class="k">statement</span><span class="p">.</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="p">[</span><span class="n">oracle</span><span class="o">@</span><span class="n">srv1</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">$</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">/</span><span class="n">u01</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">diag</span><span class="o">/</span><span class="n">rdbms</span><span class="o">/</span><span class="n">oradb</span><span class="o">/</span><span class="n">ORADB</span><span class="o">/</span><span class="n">trace</span><span class="o">/</span><span class="n">ORADB_ora_14522</span><span class="p">.</span><span class="n">trc</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="o">#</span><span class="w"> </span><span class="mi">3</span><span class="p">.</span><span class="w"> </span><span class="n">Quản</span><span class="w"> </span><span class="n">lý</span><span class="w"> </span><span class="n">Tag</span><span class="w"> </span><span class="n">thông</span><span class="w"> </span><span class="n">minh</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="n">BACKUP</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">COPY</span><span class="w"> </span><span class="n">TABLESPACE</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">FORMAT</span><span class="w"> </span><span class="s1">'/media/sf_extdisk/%U'</span><span class="w"> </span><span class="n">TAG</span><span class="w"> </span><span class="s1">'USERS2018'</span><span class="p">;</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="o">#</span><span class="w"> </span><span class="n">Lệnh</span><span class="w"> </span><span class="n">xóa</span><span class="w"> </span><span class="n">qua</span><span class="w"> </span><span class="n">Tag</span><span class="w"> </span><span class="p">(</span><span class="n">không</span><span class="w"> </span><span class="n">phận</span><span class="w"> </span><span class="n">biệt</span><span class="w"> </span><span class="n">hoa</span><span class="w"> </span><span class="n">thường</span><span class="w"> </span><span class="n">USERS2018</span><span class="w"> </span><span class="n">hay</span><span class="w"> </span><span class="n">users2018</span><span class="p">)</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="n">RMAN</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">COPY</span><span class="w"> </span><span class="n">TAG</span><span class="w"> </span><span class="s1">'users2018'</span><span class="p">;</span><span class="w"> </span>
+</span></code></pre></div>
+<hr />
+<h1 id="bang-tong-hop-cu-phap">📊 Bảng tổng hợp &amp; Cú pháp<a class="headerlink" href="#bang-tong-hop-cu-phap" title="Permanent link">&para;</a></h1>
+<table>
+<thead>
+<tr>
+<th>Tính Năng RMAN</th>
+<th>Cú pháp kinh điển</th>
+<th>Phân tích Kỹ thuật</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cứu hộ Hot Server</strong></td>
+<td><code>BACKUP DATABASE PLUS ARCHIVELOG;</code></td>
+<td>Bắt buộc Archive log. Tự switch 2 lần. Tiêu chuẩn toàn cầu.</td>
+</tr>
+<tr>
+<td><strong>Bắn log, dọn rác dĩa</strong></td>
+<td><code>BACKUP ARCHIVELOG ALL DELETE ALL INPUT;</code></td>
+<td>Dùng định kỳ chống tràn cảnh báo FRA ORA-19809.</td>
+</tr>
+<tr>
+<td><strong>Resume lỗi cáp</strong></td>
+<td><code>BACKUP NOT BACKED UP SINCE TIME 'sysdate-1'...</code></td>
+<td>Tiết kiệm RTO, cho phép bỏ qua tiến trình đã done.</td>
+</tr>
+<tr>
+<td><strong>Bật Controlfile Auto</strong></td>
+<td><code>CONFIGURE CONTROLFILE AUTOBACKUP ON;</code></td>
+<td>Cấu hình SET một lần, Database bảo vệ metadata muôn đời.</td>
+</tr>
+<tr>
+<td><strong>Gắn nhãn nhận diện</strong></td>
+<td><code>BACKUP AS COPY ... TAG 'USERS26';</code></td>
+<td>Tracking Job chuyên nghiệp. Xóa nhanh gọn qua Tag.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="cau-hoi-on-tap-tong-hop">🎯 Câu hỏi ôn tập tổng hợp<a class="headerlink" href="#cau-hoi-on-tap-tong-hop" title="Permanent link">&para;</a></h1>
+<ol>
+<li>Phân biệt <em>Image Copies</em> và <em>Backup Sets</em>. Trong bối cảnh công ty thương mại điện tử cần khôi phục tính năng thanh toán nhanh sau 2 phút, bạn nên ưu tiên áp dụng loại nào để giải quyết Datafile hỏng? Tại sao? (Gợi ý: tốc độ Switch).</li>
+<li>Trình tự 5 bước ẩn sâu phía dưới của cấu trúc dòng lệnh <code>BACKUP DATABASE PLUS ARCHIVELOG</code> diễn ra theo thứ tự nào? Nếu RMAN bỏ quên không switch archived log ở chu kỳ cuối cùng, rủi ro khôi phục DB ở thời điểm <em>Roll Forward</em> gặp phải thảm họa gì?</li>
+<li>Đang đẩy backup Full dung lượng 4TB ra Tape (<code>DEVICE TYPE sbt</code>) thì thư viện băng từ sập nửa đêm. Sáng đi làm, bạn tiếp tục dùng mệnh lệnh tinh vi nào để cấu hình "SKIP" 2.5TB đã chép và vớt vèo 1.5TB lỗi thời còn dở cho tối ưu? </li>
+<li>Hệ thống sẽ trả hệ số báo lỗi OS hay ORA gì nếu bạn cố gắng <code>BACKUP DATABASE</code> trên máy chủ OPEN mà thiết lập tham số ban đầu lại ở mode <code>NOARCHIVELOG</code>?</li>
+</ol>
+<hr />
+<h2 id="bai-tiep-theo">➡️ Bài tiếp theo<a class="headerlink" href="#bai-tiep-theo" title="Permanent link">&para;</a></h2>
+<p>Sau khi thành thạo hệ điều hành khối Full Backups tĩnh, mục tiêu tiếp nối là <strong>Module 05: Incremental Backups</strong> - Bài 14: Performing Incremental Backups (Khác biệt mạnh mẽ giữa Level 0, Level 1 Cumulative và Differential CỰC KÌ ấn tượng) 🚀. 
+Bạn muốn tiếp tục qua học cấu trúc siêu nhẹ Differential ngay bây giờ hay muốn thử gõ hệ thống Host Command ôn lại phần Full này?</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>dba_ai/oracle_rman/modules/module_04_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../module-03-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: 📘 Module 03: Làm quen RMAN (Recovery Manager)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 03: Làm quen RMAN (Recovery Manager)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../module-05-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: 📘 Module 05: Incremental Backups">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                📘 Module 05: Incremental Backups
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

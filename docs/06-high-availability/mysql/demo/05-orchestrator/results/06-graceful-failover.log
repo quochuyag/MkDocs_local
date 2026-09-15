@@ -1,0 +1,20 @@
+[22:41:00] ================ GRACEFUL SWITCHOVER ================
+[22:41:00] ==> Target master mới: node2 (192.168.10.12)
+[22:41:04]     current master: 192.168.10.11:3306
+[22:41:04] ==> Gọi graceful-master-takeover -i 192.168.10.11:3306 -d 192.168.10.12:3306
+192.168.10.12:3306
+[22:41:09]     graceful-master-takeover xong sau 5s
+[22:41:16]     sau switchover: which-master = 192.168.10.12:3306
+[22:41:16] [OK] Master mới = 192.168.10.12
+[22:41:16] ==> Test INSERT vào master mới node2
+mysql: [Warning] Using a password on the command line interface can be insecure.
++------------+-------------+
+| now_master | @@read_only |
++------------+-------------+
+| node2      |           0 |
++------------+-------------+
+[22:41:20] ==> Topology sau switchover
+192.168.10.12:3306   [0s,ok,8.0.46,rw,ROW,>>,GTID]
+- 192.168.10.11:3306 [null,nonreplicating,8.0.46,ro,ROW,>>,GTID,downtimed]
++ 192.168.10.13:3306 [0s,ok,8.0.46,ro,ROW,>>,GTID]
+[22:41:24] ==> Bước 6 hoàn tất. Để rollback master về node1: NEW_MASTER_IP=192.168.10.11 bash 06-graceful-failover.sh

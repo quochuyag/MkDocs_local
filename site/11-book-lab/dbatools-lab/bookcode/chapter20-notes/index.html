@@ -1,0 +1,2579 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../chapter19-notes/">
+      
+      
+        <link rel="next" href="../chapter21-notes/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history) - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-20-tao-va-quan-ly-sql-agent-jobs-nang-cao-categories-schedules-steps-proxies-history" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            11. Book Lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Dbatools lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            Dbatools lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1_1" id="__nav_9_1_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Bookcode
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            Bookcode
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 02 — Setting up your PowerShell environment for dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 03 — Dựng lab dbatools: cài instance, restore DB, tạo login & job
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` & xem dịch vụ với `Get-DbaService`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter05-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 07 — Lập inventory host & instance (features, builds, OS, databases)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 08 — Central Management Server (CMS) & Registered Servers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter09-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 09 — Error log, logins và quản trị quyền
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 10 — Backup database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 11 — Restore database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 12 — Database snapshot (tạo, restore, xoá)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter14-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter16-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter17-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 17 — Log Shipping và High Availability cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-23" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 23
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-28-36" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 28-36
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-40-48" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 40-48
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-52-63" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 52-63
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-67-88-credential-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 67-88 — Credential + Proxy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-92-97" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 92-97
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-102-115" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 102-115
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-120-174-4-step-noi-tiep" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 120-174 — 4 step nối tiếp
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-178-182" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 178-182
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-187-212-job-cmdexec-qua-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 187-212 — Job CmdExec qua Proxy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-216-220" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 216-220
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-225" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 225
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-230" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 230
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-15-dong-234-238" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 15: dòng 234-238
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 21 — Data masking, PII scan & dữ liệu giả lập (Data tooling)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 22 — DACPAC & schema deployment (Export/Publish DAC Package)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 23 — SQL Trace & Extended Events (XEvents)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 24 — Certificates, Network Encryption & Database Encryption
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter25-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 25 — Backup compression & Data compression (Compression & Storage)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter26-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 26 — dbachecks & Pester validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter27-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 27 — Cloud & Azure SQL với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter28-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 28 — `dbatools` configuration system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter29-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 29 — Thực hành tổng hợp (Bonus lab chapter)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learning-path-vi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lộ trình học dbatools-lab — Hướng dẫn bắt đầu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-3-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 3-5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-23" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 23
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-28-36" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 28-36
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-40-48" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 40-48
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-52-63" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 52-63
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-67-88-credential-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 67-88 — Credential + Proxy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-92-97" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 92-97
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-102-115" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 102-115
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-120-174-4-step-noi-tiep" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 120-174 — 4 step nối tiếp
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-178-182" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 178-182
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-187-212-job-cmdexec-qua-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 187-212 — Job CmdExec qua Proxy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-216-220" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 216-220
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-225" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 225
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-230" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 230
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-15-dong-234-238" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 15: dòng 234-238
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-20-tao-va-quan-ly-sql-agent-jobs-nang-cao-categories-schedules-steps-proxies-history">Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)<a class="headerlink" href="#chapter-20-tao-va-quan-ly-sql-agent-jobs-nang-cao-categories-schedules-steps-proxies-history" title="Permanent link">&para;</a></h1>
+<h2 id="muc-tieu">Mục tiêu<a class="headerlink" href="#muc-tieu" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Khám phá toàn bộ "họ" lệnh Agent (<code>Get-Command -Module dbatools -Verb New,Set,Remove -Noun *Agent*</code>).</li>
+<li>Tạo job category, schedule (daily/monthly/weekly), credential + proxy, operator.</li>
+<li>Tạo job đa step (<code>New-DbaAgentJob</code> + nhiều <code>New-DbaAgentJobStep</code>) có liên kết <code>OnSuccessAction</code> / <code>OnFailAction</code>.</li>
+<li>Khởi động job (<code>Start-DbaAgentJob</code>), theo dõi job đang chạy (<code>Get-DbaRunningJob</code>), đọc lịch sử (<code>Get-DbaAgentJobHistory</code>).</li>
+<li>Hiểu khái niệm Subsystem: <code>TransactSql</code>, <code>CmdExec</code>, <code>PowerShell</code> và khi nào cần Proxy.</li>
+</ul>
+<h2 id="tom-tat-3-5-y-chinh">Tóm tắt 3-5 ý chính<a class="headerlink" href="#tom-tat-3-5-y-chinh" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Job = container, Step = đơn vị thực thi.</strong> Mỗi step có Subsystem (loại lệnh), Database, Command, hành động khi thành công/thất bại. Nhiều step kết nối thành workflow.</li>
+<li><strong>Category trước, job sau.</strong> <code>New-DbaAgentJobCategory</code> phải có trước khi <code>New-DbaAgentJob -Category ...</code>. Lab đã tạo sẵn category <code>dbatoolslab</code>.</li>
+<li><strong>Schedule có thể độc lập với job.</strong> Tạo schedule bằng <code>New-DbaAgentSchedule</code>, sau đó gán bằng tham số <code>-Schedule</code> khi tạo job. Một schedule dùng cho nhiều job được.</li>
+<li><strong>Proxy + Credential</strong> cần thiết khi step Subsystem <code>CmdExec</code> hoặc <code>PowerShell</code> cần chạy dưới quyền user không phải Agent service account. Quy trình: <code>New-DbaCredential</code> → <code>New-DbaAgentProxy</code> → step <code>-ProxyName</code>.</li>
+<li><strong>Theo dõi runtime:</strong> <code>Get-DbaRunningJob</code> cho ảnh chụp job đang chạy ngay lúc này; <code>Get-DbaAgentJobHistory</code> cho lịch sử quá khứ. Dùng <code>Get-DbaRegisteredServer | Get-DbaRunningJob</code> để quét nhiều instance đã đăng ký.</li>
+</ol>
+<h2 id="giai-thich-tung-oan-code">Giải thích từng đoạn code<a class="headerlink" href="#giai-thich-tung-oan-code" title="Permanent link">&para;</a></h2>
+<h3 id="oan-1-dong-18">Đoạn 1: dòng 18<a class="headerlink" href="#oan-1-dong-18" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Get-Command</span> <span class="n">-Module</span> <span class="n">dbatools</span> <span class="n">-Verb</span> <span class="n">New</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Remove</span> <span class="n">-Noun</span> <span class="p">*</span><span class="n">Agent</span><span class="p">*</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Liệt kê tất cả cmdlet thao tác (tạo/sửa/xoá) liên quan Agent — cách "khám phá" họ lệnh.
+- <strong>Đổi cho lab:</strong> giữ nguyên, chạy được ngay.
+- <strong>Mẹo:</strong> Thêm <code>| Group-Object Verb</code> để thấy đếm theo verb.</p>
+<h3 id="oan-2-dong-23">Đoạn 2: dòng 23<a class="headerlink" href="#oan-2-dong-23" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">New-DbaAgentJobCategory</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Category</span> <span class="n">PastaFactory</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo category "PastaFactory" — dùng để gom job theo nghiệp vụ.
+- <strong>Đổi cho lab:</strong> đổi sang <code>dbatoolslab\sql2017</code> (instance có Agent — <code>dbatoolslab</code> default trong devcontainer Linux không có Agent đầy đủ). Có thể dùng category <code>Lab-Tutorial</code> (lab đã có sẵn <code>dbatoolslab</code> từ <code>02_Configure_Lab.ps1</code>).
+- <strong>Lưu ý:</strong> Nếu category đã tồn tại sẽ lỗi → kiểm tra trước bằng <code>Get-DbaAgentJobCategory</code>.</p>
+<h3 id="oan-3-dong-28-36">Đoạn 3: dòng 28-36<a class="headerlink" href="#oan-3-dong-28-36" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">$schedulesplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">FrequencyType</span> <span class="p">=</span> <span class="s1">'Daily'</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">Schedule</span> <span class="p">=</span> <span class="s1">'Daily-Midnight'</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">Force</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">StartTime</span> <span class="p">=</span> <span class="s1">'000327'</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">FrequencyInterval</span> <span class="p">=</span> <span class="s1">'Everyday'</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nb">New-DbaAgentSchedule</span> <span class="nv">@schedulesplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo schedule chạy hàng ngày lúc 00:03:27.
+- <strong><code>StartTime = '000327'</code></strong> là format <code>HHmmss</code> (chuỗi 6 ký tự) — đây là điểm dễ nhầm.
+- <strong>Đổi cho lab:</strong> đổi sang <code>dbatoolslab\sql2017</code>. Đổi <code>StartTime</code> thành thời điểm sát hiện tại để test (vd hiện tại 14:25 → đặt <code>'142700'</code>).
+- <strong><code>Force = $true</code>:</strong> ghi đè nếu schedule cùng tên đã tồn tại — cẩn thận trong production.</p>
+<h3 id="oan-4-dong-40-48">Đoạn 4: dòng 40-48<a class="headerlink" href="#oan-4-dong-40-48" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">$schedulesplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">FrequencyType</span> <span class="p">=</span> <span class="s1">'Monthly'</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">Schedule</span> <span class="p">=</span> <span class="s1">'Monthly-1st-Midnight'</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">Force</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">StartTime</span> <span class="p">=</span> <span class="s1">'000248'</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">FrequencyInterval</span> <span class="p">=</span> <span class="n">1</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">}</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nb">New-DbaAgentSchedule</span> <span class="nv">@schedulesplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Schedule hàng tháng vào ngày 1, lúc 00:02:48.
+- <strong><code>FrequencyInterval = 1</code></strong> = ngày 1 trong tháng.
+- <strong>Đổi cho lab:</strong> đổi instance sang <code>dbatoolslab\sql2017</code>.</p>
+<h3 id="oan-5-dong-52-63">Đoạn 5: dòng 52-63<a class="headerlink" href="#oan-5-dong-52-63" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">$schedulesplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">FrequencyType</span> <span class="p">=</span> <span class="s1">'Weekly'</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">FrequencyInterval</span> <span class="p">=</span> <span class="s1">'Weekdays'</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">Schedule</span> <span class="p">=</span> <span class="s1">'WorkingWeek-Every-15-Minute'</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">Force</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">StartTime</span> <span class="p">=</span> <span class="s1">'070036'</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">EndTime</span> <span class="p">=</span> <span class="s1">'180000'</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">FrequencySubdayInterval</span> <span class="p">=</span> <span class="n">15</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">FrequencySubdayType</span> <span class="p">=</span> <span class="s1">'Minutes'</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">}</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="nb">New-DbaAgentSchedule</span> <span class="nv">@schedulesplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Chạy 15 phút/lần, từ 07:00:36 đến 18:00:00, các ngày trong tuần (Mon-Fri).
+- <strong>Đổi cho lab:</strong> đổi instance. Đây là pattern hay dùng cho job log shipping / monitoring giờ làm việc.</p>
+<h3 id="oan-6-dong-67-88-credential-proxy">Đoạn 6: dòng 67-88 — Credential + Proxy<a class="headerlink" href="#oan-6-dong-67-88-credential-proxy" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">$credential</span> <span class="p">=</span> <span class="nb">Get-Credential</span> <span class="n">-Message</span> <span class="s2">"Enter the Username and Password for the credential"</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nv">$credsplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">SecurePassword</span> <span class="p">=</span> <span class="nv">$credential</span><span class="p">.</span><span class="n">Password</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">Name</span> <span class="p">=</span> <span class="s1">'FactoryProcess'</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">Identity</span> <span class="p">=</span> <span class="nv">$credential</span><span class="p">.</span><span class="n">UserName</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">}</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nb">New-DbaCredential</span> <span class="nv">@credsplat</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="nv">$proxysplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="n">ProxyCredential</span> <span class="p">=</span> <span class="s1">'FactoryProcess'</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="n">Name</span> <span class="p">=</span> <span class="s1">'FactoryProcess'</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="n">Description</span> <span class="p">=</span> <span class="s1">'Proxy account to run the Factory processing using the ad\FactoryProcesss account'</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="n">SubSystem</span> <span class="p">=</span> <span class="s1">'CmdExec'</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">}</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="nb">New-DbaAgentProxy</span> <span class="nv">@proxysplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo SQL Credential (lưu Windows username/password trong SQL), rồi tạo Proxy ràng buộc credential đó cho subsystem <code>CmdExec</code>.
+- <strong>Đổi cho lab:</strong> Lab devcontainer/Linux thường không có domain user → có thể <strong>bỏ qua</strong> đoạn này, hoặc trên Windows lab thì tạo proxy với local user. Đây là code mang tính minh hoạ, không cần chạy thật để hiểu khái niệm.
+- <strong>Cảnh báo:</strong> <code>Get-Credential</code> mở prompt UI — chạy block này riêng, đừng chạy cả script luôn.</p>
+<h3 id="oan-7-dong-92-97">Đoạn 7: dòng 92-97<a class="headerlink" href="#oan-7-dong-92-97" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">$operatorSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Operator</span> <span class="p">=</span> <span class="s1">'DBA Team'</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">EmailAddress</span> <span class="p">=</span> <span class="s1">'operator@dbateam.com'</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nb">New-DbaAgentOperator</span> <span class="nv">@operatorsplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo operator "DBA Team" với email — dùng làm đích nhận thông báo job (<code>EmailOperator</code> khi tạo job).
+- <strong>Đổi cho lab:</strong> đổi sang <code>dbatoolslab\sql2017</code>, đổi email thành email test của bạn. Operator này chưa chạy thật mail nếu chưa cấu hình Database Mail.
+- <strong>Lưu ý chính tả:</strong> code gốc có <code>New-DbaAgentOperator @operatorsplat</code> (chữ <code>s</code> thường) — khớp với biến <code>$operatorSplat</code> nhờ PowerShell không phân biệt hoa thường tên biến.</p>
+<h3 id="oan-8-dong-102-115">Đoạn 8: dòng 102-115<a class="headerlink" href="#oan-8-dong-102-115" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">$jobsplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">Description</span> <span class="p">=</span> <span class="s1">'...'</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">Category</span> <span class="p">=</span> <span class="s1">'PastaFactory'</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">EmailOperator</span> <span class="p">=</span> <span class="s1">'DBA Team'</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">Job</span> <span class="p">=</span> <span class="s1">'Factory Data Processing'</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">Schedule</span> <span class="p">=</span> <span class="s1">'WorkingWeek-Every-3-Hours'</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">EventLogLevel</span> <span class="p">=</span> <span class="s1">'OnFailure'</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">EmailLevel</span> <span class="p">=</span> <span class="s1">'OnFailure'</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">OwnerLogin</span> <span class="p">=</span> <span class="s1">'ad\FactoryProcesss'</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">}</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nb">New-DbaAgentJob</span> <span class="nv">@jobsplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo job "Factory Data Processing" thuộc category PastaFactory, schedule đã tạo trước đó, gửi email khi fail, owner là <code>ad\FactoryProcesss</code>.
+- <strong>Đổi cho lab:</strong> <code>SqlInstance = 'dbatoolslab\sql2017'</code>, <code>OwnerLogin = 'sa'</code> (vì lab không có domain account), <code>Schedule</code> đổi sang schedule đã tạo (vd <code>WorkingWeek-Every-15-Minute</code>).
+- <strong>Cảnh báo:</strong> chạy <code>-WhatIf</code> lần đầu:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">New-DbaAgentJob</span> <span class="nv">@jobsplat</span> <span class="n">-WhatIf</span>
+</span></code></pre></div>
+- <strong>Lưu ý:</strong> <code>Schedule = 'WorkingWeek-Every-3-Hours'</code> trong code gốc — schedule này <strong>chưa tạo</strong> ở các block trước (chỉ có 15-Minute) → khi chạy thật sẽ lỗi. Tạo schedule trùng tên trước hoặc đổi tên cho khớp.</p>
+<h3 id="oan-9-dong-120-174-4-step-noi-tiep">Đoạn 9: dòng 120-174 — 4 step nối tiếp<a class="headerlink" href="#oan-9-dong-120-174-4-step-noi-tiep" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nv">$stepcommand</span> <span class="p">=</span> <span class="s1">'EXEC Process_Factory_Sales @Factory="Pasta"'</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nv">$stepsplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">StepId</span> <span class="p">=</span> <span class="n">1</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">Subsystem</span> <span class="p">=</span> <span class="s1">'TransactSql'</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL01'</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">StepName</span> <span class="p">=</span> <span class="s1">' Process Pasta Factory Data'</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">OnSuccessAction</span> <span class="p">=</span> <span class="s1">'GoToNextStep'</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">Job</span> <span class="p">=</span> <span class="s1">'Factory Data Processing'</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">Command</span> <span class="p">=</span> <span class="nv">$stepcommand</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="n">OnFailAction</span> <span class="p">=</span> <span class="s1">'QuitWithFailure'</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="n">Database</span> <span class="p">=</span> <span class="s1">'FactorySales'</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="p">}</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="nb">New-DbaAgentJobStep</span> <span class="nv">@stepsplat</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="c"># ... tương tự cho Pizza, Sausage, Sauce</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo 4 step T-SQL chạy nối tiếp. Step cuối (<code>Sauce</code>) có <code>OnSuccessAction = 'QuitWithSuccess'</code> thay vì <code>'GoToNextStep'</code> — đây là điểm kết thúc workflow.
+- <strong>Đổi cho lab:</strong> đổi <code>SqlInstance</code> → <code>dbatoolslab\sql2017</code>, đổi <code>Database</code> → <code>WideWorldImporters</code> (đã restore trong lab), <code>Command</code> → <code>SELECT COUNT(*) FROM Sales.Orders</code> (lệnh an toàn, không thay đổi dữ liệu).
+- <strong>Cảnh báo:</strong> Trước khi tạo, kiểm tra job đích tồn tại; nếu lỡ tạo nhầm tên thì <code>Remove-DbaAgentJobStep</code> để dọn.</p>
+<h3 id="oan-10-dong-178-182">Đoạn 10: dòng 178-182<a class="headerlink" href="#oan-10-dong-178-182" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">$splatGetJobStep</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"SQL01"</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">Job</span> <span class="p">=</span> <span class="s1">'Factory Data Processing'</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">}</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nb">Get-DbaAgentJobStep</span> <span class="nv">@splatGetJobStep</span> <span class="p">|</span> <span class="nb">Format-Table</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Liệt kê step của job để verify thứ tự, on-success/on-fail.
+- <strong>Đổi cho lab:</strong> đổi instance + job name.</p>
+<h3 id="oan-11-dong-187-212-job-cmdexec-qua-proxy">Đoạn 11: dòng 187-212 — Job CmdExec qua Proxy<a class="headerlink" href="#oan-11-dong-187-212-job-cmdexec-qua-proxy" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">$jobname</span> <span class="p">=</span> <span class="s1">'Copy logins from model'</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nv">$jobsplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL02'</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">Category</span> <span class="p">=</span> <span class="s1">'DBA-Model'</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="p">...</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">Schedule</span> <span class="p">=</span> <span class="s1">'Daily-Midnight'</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">Force</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="p">}</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="nb">New-DbaAgentJob</span> <span class="nv">@jobsplat</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="nv">$command</span> <span class="p">=</span> <span class="s1">'powershell.exe -File C:\AgentScripts\CopyFromModel.ps1'</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="nv">$stepsplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s1">'SQL02'</span>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="n">Subsystem</span> <span class="p">=</span> <span class="s1">'CmdExec'</span>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>    <span class="n">Command</span> <span class="p">=</span> <span class="nv">$command</span>
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>    <span class="n">StepName</span> <span class="p">=</span> <span class="s1">'Copy Logins'</span>
+</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>    <span class="n">Job</span> <span class="p">=</span> <span class="nv">$jobname</span>
+</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="n">ProxyName</span> <span class="p">=</span> <span class="s1">'PowerShell Proxy'</span>
+</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>    <span class="n">Flag</span> <span class="p">=</span> <span class="s1">'AppendAllCmdExecOutputToJobHistory'</span>
+</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="p">}</span>
+</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="nb">New-DbaAgentJobStep</span> <span class="nv">@stepsplat</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Tạo job chạy script PowerShell qua <code>CmdExec</code> + proxy <code>'PowerShell Proxy'</code>. Flag <code>AppendAllCmdExecOutputToJobHistory</code> ghi output vào job history (hữu ích để debug).
+- <strong>Đổi cho lab:</strong> Lab chỉ có 1 instance → đổi <code>SqlInstance = 'dbatoolslab\sql2017'</code>. Cần có proxy tên <code>'PowerShell Proxy'</code> (chưa có trong lab → tạo trước hoặc bỏ tham số <code>-ProxyName</code> nếu Agent service account đủ quyền).
+- <strong>Cảnh báo:</strong> <code>Force = $true</code> sẽ ghi đè nếu job trùng tên → đảm bảo không mất job production.</p>
+<h3 id="oan-12-dong-216-220">Đoạn 12: dòng 216-220<a class="headerlink" href="#oan-12-dong-216-220" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nv">$splatGetJob</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"SQL02"</span><span class="p">,</span> <span class="s2">"SQL2017N20"</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">Job</span> <span class="p">=</span> <span class="s1">'Factory Data Processing'</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">}</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nb">Get-DbaAgentJob</span> <span class="nv">@splatGetJob</span> <span class="p">|</span> <span class="nb">Start-DbaAgentJob</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Lấy job ở 2 instance, pipe sang <code>Start-DbaAgentJob</code> để khởi động đồng loạt.
+- <strong>Đổi cho lab:</strong> đổi mảng thành <code>'dbatoolslab\sql2017'</code>, đổi job thành <code>'dbatools lab job'</code>.
+- <strong>CẢNH BÁO:</strong> <code>Start-DbaAgentJob</code> chạy job thật. Lần đầu <strong>bắt buộc</strong> dùng <code>-WhatIf</code>:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">Get-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Job</span> <span class="s1">'dbatools lab job'</span> <span class="p">|</span> <span class="nb">Start-DbaAgentJob</span> <span class="n">-WhatIf</span>
+</span></code></pre></div></p>
+<h3 id="oan-13-dong-225">Đoạn 13: dòng 225<a class="headerlink" href="#oan-13-dong-225" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">Get-DbaRegisteredServer</span> <span class="p">|</span> <span class="nb">Get-DbaRunningJob</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Lấy tất cả server đã đăng ký trong Registered Servers (SSMS) rồi xem mỗi server có job nào đang chạy không.
+- <strong>Đổi cho lab:</strong> Lab có thể chưa register server → trước hết <code>Add-DbaRegServer -SqlInstance dbatoolslab\sql2017 -ServerName 'lab2017'</code> (tuỳ chọn). Hoặc thay bằng đoạn 14 (truyền instance trực tiếp).</p>
+<h3 id="oan-14-dong-230">Đoạn 14: dòng 230<a class="headerlink" href="#oan-14-dong-230" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">Get-DbaRunningJob</span> <span class="n">-SqlInstance</span> <span class="n">SQL02</span><span class="p">,</span> <span class="n">SQL2017N20</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Cách đơn giản hơn — truyền thẳng danh sách instance.
+- <strong>Đổi cho lab:</strong> <code>Get-DbaRunningJob -SqlInstance dbatoolslab\sql2017</code>.
+- <strong>Mẹo:</strong> Để demo, mở pwsh thứ hai chạy job dài, pwsh chính gọi <code>Get-DbaRunningJob</code> xem có thấy không.</p>
+<h3 id="oan-15-dong-234-238">Đoạn 15: dòng 234-238<a class="headerlink" href="#oan-15-dong-234-238" title="Permanent link">&para;</a></h3>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nv">$splatGetJobHist</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"SQL02"</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">Job</span> <span class="p">=</span> <span class="s1">'Copy logins from model'</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="p">}</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="nb">Get-DbaAgentJobHistory</span> <span class="nv">@splatGetJobHist</span>
+</span></code></pre></div>
+- <strong>Ý nghĩa:</strong> Lấy lịch sử của 1 job cụ thể.
+- <strong>Đổi cho lab:</strong> đổi instance + đổi job thành <code>'dbatools lab job'</code>.</p>
+<h2 id="lenh-thay-vao-lab-cua-ban">Lệnh thay vào lab của bạn<a class="headerlink" href="#lenh-thay-vao-lab-cua-ban" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c"># Lab đã có sẵn:</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="c">#  - Category 'dbatoolslab'</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="c">#  - Jobs: 'dbatools lab job', 'dbatools lab job - where am I'</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c">#  - Ola Hallengren jobs (DatabaseBackup, IndexOptimize, CommandLog Cleanup, ...)</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="c">#  - Instance: dbatoolslab\sql2017</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="nv">$instance</span> <span class="p">=</span> <span class="s1">'dbatoolslab\sql2017'</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="c"># 1) Khám phá họ lệnh Agent</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="nb">Get-Command</span> <span class="n">-Module</span> <span class="n">dbatools</span> <span class="n">-Verb</span> <span class="n">New</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Remove</span> <span class="n">-Noun</span> <span class="p">*</span><span class="n">Agent</span><span class="p">*</span> <span class="p">|</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>    <span class="nb">Group-Object</span> <span class="n">Verb</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Count</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="c"># 2) Xem category đã có (sẽ thấy 'dbatoolslab' do lab tạo)</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="nb">Get-DbaAgentJobCategory</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="p">|</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">CategoryType</span> <span class="p">|</span> <span class="nb">Format-Table</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="c"># 3) Tạo schedule Daily lúc gần hiện tại (để test) — WhatIf trước</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="nv">$soon</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddMinutes</span><span class="p">(</span><span class="n">3</span><span class="p">).</span><span class="n">ToString</span><span class="p">(</span><span class="s1">'HHmmss'</span><span class="p">)</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="nv">$schedSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>    <span class="n">SqlInstance</span>       <span class="p">=</span> <span class="nv">$instance</span>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>    <span class="n">Schedule</span>          <span class="p">=</span> <span class="s1">'Lab-Demo-Daily'</span>
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a>    <span class="n">FrequencyType</span>     <span class="p">=</span> <span class="s1">'Daily'</span>
+</span><span id="__span-17-23"><a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a>    <span class="n">FrequencyInterval</span> <span class="p">=</span> <span class="s1">'Everyday'</span>
+</span><span id="__span-17-24"><a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a>    <span class="n">StartTime</span>         <span class="p">=</span> <span class="nv">$soon</span>
+</span><span id="__span-17-25"><a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a>    <span class="n">Force</span>             <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-17-26"><a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a><span class="p">}</span>
+</span><span id="__span-17-27"><a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="nb">New-DbaAgentSchedule</span> <span class="nv">@schedSplat</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-28"><a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="c"># Khi đã chắc:</span>
+</span><span id="__span-17-29"><a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="nb">New-DbaAgentSchedule</span> <span class="nv">@schedSplat</span>
+</span><span id="__span-17-30"><a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a>
+</span><span id="__span-17-31"><a id="__codelineno-17-31" name="__codelineno-17-31" href="#__codelineno-17-31"></a><span class="c"># 4) Gán schedule vào job lab có sẵn (Set-DbaAgentJob — CẢNH BÁO: thay đổi job thật)</span>
+</span><span id="__span-17-32"><a id="__codelineno-17-32" name="__codelineno-17-32" href="#__codelineno-17-32"></a><span class="nb">Set-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Job</span> <span class="s1">'dbatools lab job'</span> <span class="n">-Schedule</span> <span class="s1">'Lab-Demo-Daily'</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-33"><a id="__codelineno-17-33" name="__codelineno-17-33" href="#__codelineno-17-33"></a><span class="c"># Khi đã chắc:</span>
+</span><span id="__span-17-34"><a id="__codelineno-17-34" name="__codelineno-17-34" href="#__codelineno-17-34"></a><span class="nb">Set-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Job</span> <span class="s1">'dbatools lab job'</span> <span class="n">-Schedule</span> <span class="s1">'Lab-Demo-Daily'</span>
+</span><span id="__span-17-35"><a id="__codelineno-17-35" name="__codelineno-17-35" href="#__codelineno-17-35"></a>
+</span><span id="__span-17-36"><a id="__codelineno-17-36" name="__codelineno-17-36" href="#__codelineno-17-36"></a><span class="c"># 5) Tạo operator (Database Mail chưa setup nên chỉ để test cấu trúc)</span>
+</span><span id="__span-17-37"><a id="__codelineno-17-37" name="__codelineno-17-37" href="#__codelineno-17-37"></a><span class="nv">$opSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-17-38"><a id="__codelineno-17-38" name="__codelineno-17-38" href="#__codelineno-17-38"></a>    <span class="n">SqlInstance</span>  <span class="p">=</span> <span class="nv">$instance</span>
+</span><span id="__span-17-39"><a id="__codelineno-17-39" name="__codelineno-17-39" href="#__codelineno-17-39"></a>    <span class="n">Operator</span>     <span class="p">=</span> <span class="s1">'Lab DBA'</span>
+</span><span id="__span-17-40"><a id="__codelineno-17-40" name="__codelineno-17-40" href="#__codelineno-17-40"></a>    <span class="n">EmailAddress</span> <span class="p">=</span> <span class="s1">'lab-dba@example.com'</span>
+</span><span id="__span-17-41"><a id="__codelineno-17-41" name="__codelineno-17-41" href="#__codelineno-17-41"></a><span class="p">}</span>
+</span><span id="__span-17-42"><a id="__codelineno-17-42" name="__codelineno-17-42" href="#__codelineno-17-42"></a><span class="nb">New-DbaAgentOperator</span> <span class="nv">@opSplat</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-43"><a id="__codelineno-17-43" name="__codelineno-17-43" href="#__codelineno-17-43"></a><span class="nb">New-DbaAgentOperator</span> <span class="nv">@opSplat</span>
+</span><span id="__span-17-44"><a id="__codelineno-17-44" name="__codelineno-17-44" href="#__codelineno-17-44"></a>
+</span><span id="__span-17-45"><a id="__codelineno-17-45" name="__codelineno-17-45" href="#__codelineno-17-45"></a><span class="c"># 6) Tạo job mới có 2 step nối tiếp — an toàn vì câu lệnh chỉ SELECT</span>
+</span><span id="__span-17-46"><a id="__codelineno-17-46" name="__codelineno-17-46" href="#__codelineno-17-46"></a><span class="nv">$newJob</span> <span class="p">=</span> <span class="s1">'Lab Multi-Step Demo'</span>
+</span><span id="__span-17-47"><a id="__codelineno-17-47" name="__codelineno-17-47" href="#__codelineno-17-47"></a><span class="nv">$jobSplat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-17-48"><a id="__codelineno-17-48" name="__codelineno-17-48" href="#__codelineno-17-48"></a>    <span class="n">SqlInstance</span>   <span class="p">=</span> <span class="nv">$instance</span>
+</span><span id="__span-17-49"><a id="__codelineno-17-49" name="__codelineno-17-49" href="#__codelineno-17-49"></a>    <span class="n">Job</span>           <span class="p">=</span> <span class="nv">$newJob</span>
+</span><span id="__span-17-50"><a id="__codelineno-17-50" name="__codelineno-17-50" href="#__codelineno-17-50"></a>    <span class="n">Category</span>      <span class="p">=</span> <span class="s1">'dbatoolslab'</span>
+</span><span id="__span-17-51"><a id="__codelineno-17-51" name="__codelineno-17-51" href="#__codelineno-17-51"></a>    <span class="n">Description</span>   <span class="p">=</span> <span class="s1">'Demo 2-step job — selects only, safe to run'</span>
+</span><span id="__span-17-52"><a id="__codelineno-17-52" name="__codelineno-17-52" href="#__codelineno-17-52"></a>    <span class="n">EmailOperator</span> <span class="p">=</span> <span class="s1">'Lab DBA'</span>
+</span><span id="__span-17-53"><a id="__codelineno-17-53" name="__codelineno-17-53" href="#__codelineno-17-53"></a>    <span class="n">EmailLevel</span>    <span class="p">=</span> <span class="s1">'OnFailure'</span>
+</span><span id="__span-17-54"><a id="__codelineno-17-54" name="__codelineno-17-54" href="#__codelineno-17-54"></a>    <span class="n">EventLogLevel</span> <span class="p">=</span> <span class="s1">'OnFailure'</span>
+</span><span id="__span-17-55"><a id="__codelineno-17-55" name="__codelineno-17-55" href="#__codelineno-17-55"></a>    <span class="n">OwnerLogin</span>    <span class="p">=</span> <span class="s1">'sa'</span>
+</span><span id="__span-17-56"><a id="__codelineno-17-56" name="__codelineno-17-56" href="#__codelineno-17-56"></a>    <span class="n">Force</span>         <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-17-57"><a id="__codelineno-17-57" name="__codelineno-17-57" href="#__codelineno-17-57"></a><span class="p">}</span>
+</span><span id="__span-17-58"><a id="__codelineno-17-58" name="__codelineno-17-58" href="#__codelineno-17-58"></a><span class="nb">New-DbaAgentJob</span> <span class="nv">@jobSplat</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-59"><a id="__codelineno-17-59" name="__codelineno-17-59" href="#__codelineno-17-59"></a><span class="nb">New-DbaAgentJob</span> <span class="nv">@jobSplat</span>
+</span><span id="__span-17-60"><a id="__codelineno-17-60" name="__codelineno-17-60" href="#__codelineno-17-60"></a>
+</span><span id="__span-17-61"><a id="__codelineno-17-61" name="__codelineno-17-61" href="#__codelineno-17-61"></a><span class="nv">$step1</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-17-62"><a id="__codelineno-17-62" name="__codelineno-17-62" href="#__codelineno-17-62"></a>    <span class="n">SqlInstance</span>     <span class="p">=</span> <span class="nv">$instance</span>
+</span><span id="__span-17-63"><a id="__codelineno-17-63" name="__codelineno-17-63" href="#__codelineno-17-63"></a>    <span class="n">Job</span>             <span class="p">=</span> <span class="nv">$newJob</span>
+</span><span id="__span-17-64"><a id="__codelineno-17-64" name="__codelineno-17-64" href="#__codelineno-17-64"></a>    <span class="n">StepId</span>          <span class="p">=</span> <span class="n">1</span>
+</span><span id="__span-17-65"><a id="__codelineno-17-65" name="__codelineno-17-65" href="#__codelineno-17-65"></a>    <span class="n">StepName</span>        <span class="p">=</span> <span class="s1">'Count Sales Orders'</span>
+</span><span id="__span-17-66"><a id="__codelineno-17-66" name="__codelineno-17-66" href="#__codelineno-17-66"></a>    <span class="n">Subsystem</span>       <span class="p">=</span> <span class="s1">'TransactSql'</span>
+</span><span id="__span-17-67"><a id="__codelineno-17-67" name="__codelineno-17-67" href="#__codelineno-17-67"></a>    <span class="n">Database</span>        <span class="p">=</span> <span class="s1">'WideWorldImporters'</span>
+</span><span id="__span-17-68"><a id="__codelineno-17-68" name="__codelineno-17-68" href="#__codelineno-17-68"></a>    <span class="n">Command</span>         <span class="p">=</span> <span class="s1">'SELECT COUNT(*) AS OrderCount FROM Sales.Orders'</span>
+</span><span id="__span-17-69"><a id="__codelineno-17-69" name="__codelineno-17-69" href="#__codelineno-17-69"></a>    <span class="n">OnSuccessAction</span> <span class="p">=</span> <span class="s1">'GoToNextStep'</span>
+</span><span id="__span-17-70"><a id="__codelineno-17-70" name="__codelineno-17-70" href="#__codelineno-17-70"></a>    <span class="n">OnFailAction</span>    <span class="p">=</span> <span class="s1">'QuitWithFailure'</span>
+</span><span id="__span-17-71"><a id="__codelineno-17-71" name="__codelineno-17-71" href="#__codelineno-17-71"></a><span class="p">}</span>
+</span><span id="__span-17-72"><a id="__codelineno-17-72" name="__codelineno-17-72" href="#__codelineno-17-72"></a><span class="nb">New-DbaAgentJobStep</span> <span class="nv">@step1</span>
+</span><span id="__span-17-73"><a id="__codelineno-17-73" name="__codelineno-17-73" href="#__codelineno-17-73"></a>
+</span><span id="__span-17-74"><a id="__codelineno-17-74" name="__codelineno-17-74" href="#__codelineno-17-74"></a><span class="nv">$step2</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-17-75"><a id="__codelineno-17-75" name="__codelineno-17-75" href="#__codelineno-17-75"></a>    <span class="n">SqlInstance</span>     <span class="p">=</span> <span class="nv">$instance</span>
+</span><span id="__span-17-76"><a id="__codelineno-17-76" name="__codelineno-17-76" href="#__codelineno-17-76"></a>    <span class="n">Job</span>             <span class="p">=</span> <span class="nv">$newJob</span>
+</span><span id="__span-17-77"><a id="__codelineno-17-77" name="__codelineno-17-77" href="#__codelineno-17-77"></a>    <span class="n">StepId</span>          <span class="p">=</span> <span class="n">2</span>
+</span><span id="__span-17-78"><a id="__codelineno-17-78" name="__codelineno-17-78" href="#__codelineno-17-78"></a>    <span class="n">StepName</span>        <span class="p">=</span> <span class="s1">'Show server name'</span>
+</span><span id="__span-17-79"><a id="__codelineno-17-79" name="__codelineno-17-79" href="#__codelineno-17-79"></a>    <span class="n">Subsystem</span>       <span class="p">=</span> <span class="s1">'TransactSql'</span>
+</span><span id="__span-17-80"><a id="__codelineno-17-80" name="__codelineno-17-80" href="#__codelineno-17-80"></a>    <span class="n">Database</span>        <span class="p">=</span> <span class="s1">'master'</span>
+</span><span id="__span-17-81"><a id="__codelineno-17-81" name="__codelineno-17-81" href="#__codelineno-17-81"></a>    <span class="n">Command</span>         <span class="p">=</span> <span class="s1">'SELECT @@SERVERNAME AS ServerName'</span>
+</span><span id="__span-17-82"><a id="__codelineno-17-82" name="__codelineno-17-82" href="#__codelineno-17-82"></a>    <span class="n">OnSuccessAction</span> <span class="p">=</span> <span class="s1">'QuitWithSuccess'</span>
+</span><span id="__span-17-83"><a id="__codelineno-17-83" name="__codelineno-17-83" href="#__codelineno-17-83"></a>    <span class="n">OnFailAction</span>    <span class="p">=</span> <span class="s1">'QuitWithFailure'</span>
+</span><span id="__span-17-84"><a id="__codelineno-17-84" name="__codelineno-17-84" href="#__codelineno-17-84"></a><span class="p">}</span>
+</span><span id="__span-17-85"><a id="__codelineno-17-85" name="__codelineno-17-85" href="#__codelineno-17-85"></a><span class="nb">New-DbaAgentJobStep</span> <span class="nv">@step2</span>
+</span><span id="__span-17-86"><a id="__codelineno-17-86" name="__codelineno-17-86" href="#__codelineno-17-86"></a>
+</span><span id="__span-17-87"><a id="__codelineno-17-87" name="__codelineno-17-87" href="#__codelineno-17-87"></a><span class="c"># 7) Verify step</span>
+</span><span id="__span-17-88"><a id="__codelineno-17-88" name="__codelineno-17-88" href="#__codelineno-17-88"></a><span class="nb">Get-DbaAgentJobStep</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Job</span> <span class="nv">$newJob</span> <span class="p">|</span>
+</span><span id="__span-17-89"><a id="__codelineno-17-89" name="__codelineno-17-89" href="#__codelineno-17-89"></a>    <span class="nb">Select-Object</span> <span class="n">Parent</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">Name</span><span class="p">,</span> <span class="n">SubSystem</span><span class="p">,</span> <span class="n">OnSuccessAction</span><span class="p">,</span> <span class="n">OnFailAction</span> <span class="p">|</span>
+</span><span id="__span-17-90"><a id="__codelineno-17-90" name="__codelineno-17-90" href="#__codelineno-17-90"></a>    <span class="nb">Format-Table</span> <span class="n">-AutoSize</span>
+</span><span id="__span-17-91"><a id="__codelineno-17-91" name="__codelineno-17-91" href="#__codelineno-17-91"></a>
+</span><span id="__span-17-92"><a id="__codelineno-17-92" name="__codelineno-17-92" href="#__codelineno-17-92"></a><span class="c"># 8) Chạy job — CẢNH BÁO: WhatIf trước</span>
+</span><span id="__span-17-93"><a id="__codelineno-17-93" name="__codelineno-17-93" href="#__codelineno-17-93"></a><span class="nb">Start-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Job</span> <span class="nv">$newJob</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-94"><a id="__codelineno-17-94" name="__codelineno-17-94" href="#__codelineno-17-94"></a><span class="c"># Khi đã chắc:</span>
+</span><span id="__span-17-95"><a id="__codelineno-17-95" name="__codelineno-17-95" href="#__codelineno-17-95"></a><span class="nb">Start-DbaAgentJob</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Job</span> <span class="nv">$newJob</span>
+</span><span id="__span-17-96"><a id="__codelineno-17-96" name="__codelineno-17-96" href="#__codelineno-17-96"></a>
+</span><span id="__span-17-97"><a id="__codelineno-17-97" name="__codelineno-17-97" href="#__codelineno-17-97"></a><span class="c"># 9) Theo dõi job đang chạy (chạy ngay sau Start trong pwsh khác hoặc job dài)</span>
+</span><span id="__span-17-98"><a id="__codelineno-17-98" name="__codelineno-17-98" href="#__codelineno-17-98"></a><span class="nb">Get-DbaRunningJob</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span>
+</span><span id="__span-17-99"><a id="__codelineno-17-99" name="__codelineno-17-99" href="#__codelineno-17-99"></a>
+</span><span id="__span-17-100"><a id="__codelineno-17-100" name="__codelineno-17-100" href="#__codelineno-17-100"></a><span class="c"># 10) Lịch sử job</span>
+</span><span id="__span-17-101"><a id="__codelineno-17-101" name="__codelineno-17-101" href="#__codelineno-17-101"></a><span class="nb">Get-DbaAgentJobHistory</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Job</span> <span class="nv">$newJob</span> <span class="p">|</span>
+</span><span id="__span-17-102"><a id="__codelineno-17-102" name="__codelineno-17-102" href="#__codelineno-17-102"></a>    <span class="nb">Select-Object</span> <span class="n">StartDate</span><span class="p">,</span> <span class="n">RunDuration</span><span class="p">,</span> <span class="n">Status</span><span class="p">,</span> <span class="n">Message</span> <span class="p">|</span> <span class="nb">Format-Table</span>
+</span><span id="__span-17-103"><a id="__codelineno-17-103" name="__codelineno-17-103" href="#__codelineno-17-103"></a>
+</span><span id="__span-17-104"><a id="__codelineno-17-104" name="__codelineno-17-104" href="#__codelineno-17-104"></a><span class="c"># 11) Dọn dẹp khi học xong — CẢNH BÁO: Remove-DbaAgentJob xoá thật, dùng WhatIf trước</span>
+</span><span id="__span-17-105"><a id="__codelineno-17-105" name="__codelineno-17-105" href="#__codelineno-17-105"></a><span class="nb">Remove-DbaAgentJob</span>      <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Job</span> <span class="nv">$newJob</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-106"><a id="__codelineno-17-106" name="__codelineno-17-106" href="#__codelineno-17-106"></a><span class="nb">Remove-DbaAgentSchedule</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Schedule</span> <span class="s1">'Lab-Demo-Daily'</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-107"><a id="__codelineno-17-107" name="__codelineno-17-107" href="#__codelineno-17-107"></a><span class="nb">Remove-DbaAgentOperator</span> <span class="n">-SqlInstance</span> <span class="nv">$instance</span> <span class="n">-Operator</span> <span class="s1">'Lab DBA'</span> <span class="n">-WhatIf</span>
+</span><span id="__span-17-108"><a id="__codelineno-17-108" name="__codelineno-17-108" href="#__codelineno-17-108"></a><span class="c"># Khi đã chắc, bỏ -WhatIf để xoá thật</span>
+</span></code></pre></div>
+<h2 id="self-check">Self-check<a class="headerlink" href="#self-check" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Định nghĩa:</strong> Phân biệt <code>Subsystem = 'TransactSql'</code> vs <code>'CmdExec'</code> vs <code>'PowerShell'</code>. Khi nào bắt buộc dùng Proxy?</li>
+<li><strong>Thực hành:</strong> Tạo 1 schedule chạy mỗi 5 phút trong giờ làm việc, gán vào job <code>'dbatools lab job - where am I'</code>, đợi 1 chu kỳ rồi đọc <code>Get-DbaAgentJobHistory</code> để xác nhận. Sau đó gỡ schedule (<code>Set-DbaAgentJob -Schedule $null</code> hoặc xoá schedule).</li>
+<li><strong>Liên hệ:</strong> So với việc tạo job qua SSMS (UI), tạo bằng dbatools có lợi gì cho deployment nhiều server? (gợi ý: idempotent, version control, splatting).</li>
+</ol>
+<h2 id="bai-tap-mo-rong">Bài tập mở rộng<a class="headerlink" href="#bai-tap-mo-rong" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Bài 1:</strong> Viết function <code>New-LabSelectJob -SqlInstance &lt;name&gt; -JobName &lt;name&gt; -Query &lt;string&gt;</code> tạo job 1 step T-SQL chạy <code>$Query</code>, gán category <code>dbatoolslab</code>, owner <code>sa</code>, không schedule. Idempotent: nếu job đã tồn tại thì update step thay vì lỗi (dùng <code>Get-DbaAgentJob</code> để kiểm tra trước).</li>
+<li><strong>Bài 2:</strong> Viết script <code>Export-LabAgentInventory.ps1</code> xuất ra CSV danh sách: tất cả job (Name, Category, Enabled, LastRunOutcome), tất cả schedule (Name, FrequencyType, StartTime), tất cả operator (Name, Email). Mỗi loại vào 1 sheet (gợi ý: dùng <code>Export-Excel</code> nếu đã cài module ImportExcel, hoặc 3 file CSV riêng).</li>
+<li><strong>Bài 3 (nâng cao):</strong> Thử dùng <code>ConvertTo-DbaTimeline</code> từ chapter 19 trên job mới tạo, mở HTML xem trực quan workflow 2 step có thành công nối tiếp đúng không.</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>book_lab/dbatools-lab/bookcode/chapter20.notes.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../chapter19-notes/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chapter21-notes/" class="md-footer__link md-footer__link--next" aria-label="Sau: Chapter 21 — Data masking, PII scan &amp; dữ liệu giả lập (Data tooling)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Chapter 21 — Data masking, PII scan & dữ liệu giả lập (Data tooling)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

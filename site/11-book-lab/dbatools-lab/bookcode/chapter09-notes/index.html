@@ -1,0 +1,2545 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../chapter08-notes/">
+      
+      
+        <link rel="next" href="../chapter10-notes/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Chapter 09 — Error log, logins và quản trị quyền - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-09-error-log-logins-va-quan-tri-quyen" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 09 — Error log, logins và quản trị quyền
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            11. Book Lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Dbatools lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            Dbatools lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9_1_1" id="__nav_9_1_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Bookcode
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            Bookcode
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter02-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 02 — Setting up your PowerShell environment for dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter03-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 03 — Dựng lab dbatools: cài instance, restore DB, tạo login & job
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter04-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 04 — Kết nối SQL Server với `Connect-DbaInstance` & xem dịch vụ với `Get-DbaService`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter05-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 05 — Xuất / nhập dữ liệu bảng & CSV với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter06-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 06 — Khám phá instance trong mạng với `Find-DbaInstance`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter07-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 07 — Lập inventory host & instance (features, builds, OS, databases)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter08-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 08 — Central Management Server (CMS) & Registered Servers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chapter 09 — Error log, logins và quản trị quyền
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 09 — Error log, logins và quản trị quyền
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-22-oc-error-log-5-phut-gan-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18-22 — Đọc error log 5 phút gần nhất
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-26-tao-windows-login-on-gian" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 26 — Tạo Windows login đơn giản
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-30-31-tao-login-tren-tat-ca-registered-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 30-31 — Tạo login trên TẤT CẢ registered servers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-35-42-tao-sql-login-co-mat-khau-tren-nhieu-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 35-42 — Tạo SQL login (có mật khẩu) trên nhiều server
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-46-liet-ke-user-cua-1-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 46 — Liệt kê user của 1 database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-54-sua-orphan-user-chu-y-co-typo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 54 — Sửa orphan user (CHÚ Ý CÓ TYPO)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-58-100-mau-code-ong-bo-login-cho-ag-agent-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 58-100 — Mẫu code đồng bộ login cho AG (Agent job)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-104-export-login-schema-cung-co-typo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 104 — Export login schema (CŨNG CÓ TYPO)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-108-khoi-tao-git-repo-cho-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 108 — Khởi tạo git repo cho schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-114-117-export-voi-ten-file-inh-truoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 114-117 — Export với tên file định trước
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-121-123-commit-file-vao-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 121-123 — Commit file vào git
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-127-128-audit-user-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 127-128 — Audit user permission
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-132-161-xuat-excel-co-conditional-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 132-161 — Xuất Excel có conditional formatting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-165-tim-login-nam-trong-ad-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 165 — Tìm login nằm trong AD group
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check-3-cau" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check (3 câu)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter10-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 10 — Backup database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter11-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 11 — Restore database với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter12-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 12 — Database snapshot (tạo, restore, xoá)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter13-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 13 — Install-DbaInstance và tự động hoá triển khai SQL Server
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter14-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 14 — Export-DbaInstance và snapshot cấu hình instance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter15-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 15 — Migration database với Start-DbaMigration và Copy-DbaDatabase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter16-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 16 — Copy logins, jobs và các đối tượng instance-level
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter17-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 17 — Log Shipping và High Availability cơ bản
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter18-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 18 — Tự động hoá với `$PSDefaultParameterValues` và logging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter19-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 19 — Khám phá SQL Agent Jobs, Alerts và Operators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter20-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 20 — Tạo và quản lý SQL Agent Jobs nâng cao (categories, schedules, steps, proxies, history)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter21-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 21 — Data masking, PII scan & dữ liệu giả lập (Data tooling)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter22-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 22 — DACPAC & schema deployment (Export/Publish DAC Package)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter23-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 23 — SQL Trace & Extended Events (XEvents)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter24-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 24 — Certificates, Network Encryption & Database Encryption
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter25-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 25 — Backup compression & Data compression (Compression & Storage)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter26-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 26 — dbachecks & Pester validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter27-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 27 — Cloud & Azure SQL với dbatools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter28-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 28 — `dbatools` configuration system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter29-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chapter 29 — Thực hành tổng hợp (Bonus lab chapter)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learning-path-vi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lộ trình học dbatools-lab — Hướng dẫn bắt đầu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục tiêu
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-5-y-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt 5 ý chính
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-tung-oan-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giải thích từng đoạn code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Giải thích từng đoạn code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oan-1-dong-18-22-oc-error-log-5-phut-gan-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 1: dòng 18-22 — Đọc error log 5 phút gần nhất
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-2-dong-26-tao-windows-login-on-gian" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 2: dòng 26 — Tạo Windows login đơn giản
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-3-dong-30-31-tao-login-tren-tat-ca-registered-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 3: dòng 30-31 — Tạo login trên TẤT CẢ registered servers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-4-dong-35-42-tao-sql-login-co-mat-khau-tren-nhieu-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 4: dòng 35-42 — Tạo SQL login (có mật khẩu) trên nhiều server
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-5-dong-46-liet-ke-user-cua-1-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 5: dòng 46 — Liệt kê user của 1 database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-6-dong-54-sua-orphan-user-chu-y-co-typo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 6: dòng 54 — Sửa orphan user (CHÚ Ý CÓ TYPO)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-7-dong-58-100-mau-code-ong-bo-login-cho-ag-agent-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 7: dòng 58-100 — Mẫu code đồng bộ login cho AG (Agent job)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-8-dong-104-export-login-schema-cung-co-typo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 8: dòng 104 — Export login schema (CŨNG CÓ TYPO)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-9-dong-108-khoi-tao-git-repo-cho-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 9: dòng 108 — Khởi tạo git repo cho schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-10-dong-114-117-export-voi-ten-file-inh-truoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 10: dòng 114-117 — Export với tên file định trước
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-11-dong-121-123-commit-file-vao-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 11: dòng 121-123 — Commit file vào git
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-12-dong-127-128-audit-user-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 12: dòng 127-128 — Audit user permission
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-13-dong-132-161-xuat-excel-co-conditional-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 13: dòng 132-161 — Xuất Excel có conditional formatting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oan-14-dong-165-tim-login-nam-trong-ad-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đoạn 14: dòng 165 — Tìm login nằm trong AD group
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lenh-thay-vao-lab-cua-ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lệnh thay vào lab của bạn
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-check-3-cau" class="md-nav__link">
+    <span class="md-ellipsis">
+      Self-check (3 câu)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bai-tap-mo-rong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bài tập mở rộng
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-09-error-log-logins-va-quan-tri-quyen">Chapter 09 — Error log, logins và quản trị quyền<a class="headerlink" href="#chapter-09-error-log-logins-va-quan-tri-quyen" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Lưu ý quan trọng: Tên user gọi chapter 09 là "SQL Server error log analysis", nhưng đọc file <code>chapter09.ps1</code> thực tế thấy nội dung gồm 3 cụm chính:
+1. Đọc SQL Server error log (<code>Get-DbaErrorLog</code>)
+2. Tạo / copy / export login (<code>New-DbaLogin</code>, <code>Copy-DbaLogin</code>, <code>Export-DbaLogin</code>)
+3. Audit quyền user và xuất Excel có conditional formatting (<code>Get-DbaUserPermission</code>, <code>Find-DbaLoginInGroup</code>)</p>
+<p>Notes file này theo đúng nội dung thực tế của file <code>.ps1</code>.</p>
+</blockquote>
+<h2 id="muc-tieu">Mục tiêu<a class="headerlink" href="#muc-tieu" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Biết cách đọc error log SQL Server bằng <code>Get-DbaErrorLog</code> thay vì mở SSMS.</li>
+<li>Tạo SQL login và Windows login bằng <code>New-DbaLogin</code>, hiểu cách splat tham số.</li>
+<li>Đồng bộ login giữa các replica AG bằng <code>Copy-DbaLogin</code> (mẫu code Agent job production).</li>
+<li>Export login schema (T-SQL) ra file để version control bằng Git.</li>
+<li>Audit quyền user trong database và tô màu cảnh báo bằng <code>Export-Excel</code> + <code>Add-ConditionalFormatting</code>.</li>
+</ul>
+<h2 id="tom-tat-5-y-chinh">Tóm tắt 5 ý chính<a class="headerlink" href="#tom-tat-5-y-chinh" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong><code>Get-DbaErrorLog -After</code></strong> — lọc log theo timestamp gần đây, tránh xả toàn bộ log mấy MB. Đây là cách thay thế SSMS Log File Viewer cho mọi instance bạn quản lý.</li>
+<li><strong><code>New-DbaLogin</code></strong> — tạo login với 3 dạng đầu vào: tên (mặc định Windows login), object <code>PSCredential</code> (SQL login), hoặc qua splat. Có thể đẩy vào <code>-SqlInstance</code> là <strong>mảng instance</strong> từ <code>Get-DbaRegisteredServer</code> để tạo cùng lúc trên nhiều server.</li>
+<li><strong><code>Copy-DbaLogin</code> trong AG</strong> — mẫu code production: lấy danh sách replica, lặp qua, copy login chéo. Có error handling với <code>EnableException = $true</code> để Agent job báo fail đúng.</li>
+<li><strong><code>Export-DbaLogin</code> + Git</strong> — sinh script <code>CREATE LOGIN</code> ra file <code>.sql</code>, commit vào repo. Đây là pattern "infrastructure as code" cho security.</li>
+<li><strong>Audit Excel</strong> — kết hợp <code>Get-DbaUserPermission</code> với module <code>ImportExcel</code>. Hàng có <code>sysadmin</code> hoặc <code>db_owner</code> được tô vàng cảnh báo — ý tưởng: gửi báo cáo Excel tự động cho team security.</li>
+</ol>
+<h2 id="giai-thich-tung-oan-code">Giải thích từng đoạn code<a class="headerlink" href="#giai-thich-tung-oan-code" title="Permanent link">&para;</a></h2>
+<h3 id="oan-1-dong-18-22-oc-error-log-5-phut-gan-nhat">Đoạn 1: dòng 18-22 — Đọc error log 5 phút gần nhất<a class="headerlink" href="#oan-1-dong-18-22-oc-error-log-5-phut-gan-nhat" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nv">$splatGetErrorLog</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"SQL01"</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">After</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddMinutes</span><span class="p">(-</span><span class="n">5</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">}</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">Get-DbaErrorLog</span> <span class="nv">@splatGetErrorLog</span> <span class="p">|</span> <span class="nb">Select </span><span class="n">LogDate</span><span class="p">,</span> <span class="n">Source</span><span class="p">,</span> <span class="n">Text</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Đọc SQL Server error log của instance <code>SQL01</code>, chỉ lấy các entry sau thời điểm "5 phút trước". Chiếu 3 cột chính: thời điểm, nguồn (Logon, Backup, Server, …), nội dung.</li>
+<li><strong>Đổi cho lab:</strong> Thay <code>"SQL01"</code> → <code>"dbatoolslab\sql2017"</code>. <code>Get-DbaErrorLog</code> dùng SMO nên không cần SQL Agent — chạy được cả trên SQL Express.</li>
+<li><strong>Lưu ý:</strong> Nếu instance vừa khởi động, error log có thể có rất nhiều entry "Login succeeded" trong vòng vài phút. Có thể thêm <code>| Where-Object Source -ne 'Logon'</code> để giảm nhiễu.</li>
+</ul>
+<h3 id="oan-2-dong-26-tao-windows-login-on-gian">Đoạn 2: dòng 26 — Tạo Windows login đơn giản<a class="headerlink" href="#oan-2-dong-26-tao-windows-login-on-gian" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">New-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Login</span> <span class="n">Factory</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Tạo Windows login tên <code>Factory</code> (mặc định khi không có <code>-SecurePassword</code>, dbatools giả định đây là Windows login).</li>
+<li><strong>Đổi cho lab:</strong> Thay <code>SQL01</code> → <code>dbatoolslab\sql2017</code>. Tên <code>Factory</code> trong lab nên đổi thành tài khoản thật tồn tại trên máy bạn — ví dụ <code>BUILTIN\Users</code> hoặc 1 local user bạn đã tạo (<code>$env:COMPUTERNAME\TestUser</code>).</li>
+<li><strong>Lưu ý:</strong> Lệnh sẽ FAIL nếu Windows principal không tồn tại. Dùng <code>-WhatIf</code> lần đầu để xem nó định làm gì:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">New-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Login</span> <span class="s2">"$env:COMPUTERNAME\TestUser"</span> <span class="n">-WhatIf</span>
+</span></code></pre></div></li>
+</ul>
+<h3 id="oan-3-dong-30-31-tao-login-tren-tat-ca-registered-servers">Đoạn 3: dòng 30-31 — Tạo login trên TẤT CẢ registered servers<a class="headerlink" href="#oan-3-dong-30-31-tao-login-tren-tat-ca-registered-servers" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">$servers</span> <span class="p">=</span> <span class="nb">Get-DbaRegisteredServer</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">New-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="nv">$servers</span> <span class="n">-Login</span> <span class="n">ad</span><span class="p">\</span><span class="n">factoryauditors</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Lấy danh sách instance đã đăng ký trong Central Management Server (CMS) hoặc Local Server Groups của SSMS, rồi tạo login <code>ad\factoryauditors</code> (AD group) trên mọi instance.</li>
+<li><strong>Đổi cho lab:</strong> Lab chưa có CMS — bạn có thể tự đăng ký bằng <code>Add-DbaRegServer</code> trước, hoặc thay <code>$servers</code> bằng mảng cứng:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">$servers</span> <span class="p">=</span> <span class="s2">"dbatoolslab"</span><span class="p">,</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span></code></pre></div></li>
+<li><strong>Lưu ý:</strong> Đây là mô hình "broadcast" — rất tiện nhưng rất nguy hiểm. Một lỗi sẽ áp lên N server cùng lúc. Luôn <code>-WhatIf</code> trước.</li>
+</ul>
+<h3 id="oan-4-dong-35-42-tao-sql-login-co-mat-khau-tren-nhieu-server">Đoạn 4: dòng 35-42 — Tạo SQL login (có mật khẩu) trên nhiều server<a class="headerlink" href="#oan-4-dong-35-42-tao-sql-login-co-mat-khau-tren-nhieu-server" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">$servers</span> <span class="p">=</span> <span class="nb">Get-DbaRegisteredServer</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nv">$cred</span> <span class="p">=</span> <span class="nb">Get-Credential</span> <span class="n">factoryuser1</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nv">$splatNewLogin</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="nv">$servers</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">Login</span> <span class="p">=</span> <span class="nv">$cred</span><span class="p">.</span><span class="n">UserName</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">SecurePassword</span> <span class="p">=</span> <span class="nv">$cred</span><span class="p">.</span><span class="n">Password</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">}</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nb">New-DbaLogin</span> <span class="nv">@splatNewLogin</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Hỏi mật khẩu tương tác (<code>Get-Credential</code>), rồi tạo SQL login <code>factoryuser1</code> trên tất cả registered server. Khi có <code>-SecurePassword</code>, dbatools tạo SQL login (không phải Windows login).</li>
+<li><strong>Đổi cho lab:</strong>
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">$servers</span> <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nv">$cred</span> <span class="p">=</span> <span class="nb">Get-Credential</span> <span class="n">-UserName</span> <span class="n">factoryuser1</span> <span class="n">-Message</span> <span class="s2">"Mat khau login moi"</span>
+</span></code></pre></div></li>
+<li><strong>Lưu ý:</strong> Mật khẩu phải vượt qua password policy của Windows nếu instance enable <code>CHECK_POLICY = ON</code>. Thêm <code>-PasswordPolicyEnforced:$false -PasswordExpirationEnabled:$false</code> nếu muốn test nhanh.</li>
+</ul>
+<h3 id="oan-5-dong-46-liet-ke-user-cua-1-database">Đoạn 5: dòng 46 — Liệt kê user của 1 database<a class="headerlink" href="#oan-5-dong-46-liet-ke-user-cua-1-database" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">Get-DbaDbUser</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Database</span> <span class="n">WideWorldImporters</span> <span class="p">|</span> <span class="nb">Select </span><span class="n">Name</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Đếm và liệt kê tên user trong DB <code>WideWorldImporters</code>. Khác với <code>Get-DbaLogin</code> (cấp instance), <code>Get-DbaDbUser</code> ở cấp database.</li>
+<li><strong>Đổi cho lab:</strong> <code>dbatoolslab\sql2017</code>. DB <code>WideWorldImporters</code> đã có sẵn sau khi chạy <code>scripts/02_Configure_Lab.ps1</code>.</li>
+<li><strong>Lưu ý:</strong> Đoạn 6 (dòng 50) giống hệt đoạn 5 — có vẻ là chỗ sách đối chiếu trước/sau khi sửa orphan user.</li>
+</ul>
+<h3 id="oan-6-dong-54-sua-orphan-user-chu-y-co-typo">Đoạn 6: dòng 54 — Sửa orphan user (CHÚ Ý CÓ TYPO)<a class="headerlink" href="#oan-6-dong-54-sua-orphan-user-chu-y-co-typo" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">Repair-DbaDbOrphanUser</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span><span class="s2">"</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Một orphan user là DB user mà SID không khớp với login nào trên instance (thường xảy ra khi restore DB từ server khác). <code>Repair-DbaDbOrphanUser</code> tự động map lại SID nếu tìm được login cùng tên.</li>
+<li><strong>CẢNH BÁO:</strong> Dòng này có dấu <code>"</code> thừa cuối — code book bị lỗi cú pháp, sẽ throw parse error. Khi paste vào lab, BỎ dấu <code>"</code>:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">Repair-DbaDbOrphanUser</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span>
+</span></code></pre></div></li>
+<li><strong>Lưu ý:</strong> Mặc định lệnh chạy cho tất cả DB. Thêm <code>-Database WideWorldImporters</code> để giới hạn.</li>
+</ul>
+<h3 id="oan-7-dong-58-100-mau-code-ong-bo-login-cho-ag-agent-job">Đoạn 7: dòng 58-100 — Mẫu code đồng bộ login cho AG (Agent job)<a class="headerlink" href="#oan-7-dong-58-100-mau-code-ong-bo-login-cho-ag-agent-job" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">try</span> <span class="p">{</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="nv">$splatGetAgReplica</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>        <span class="n">SqlInstance</span> <span class="p">=</span> <span class="nv">$ENV:ComputerName</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>        <span class="n">EnableException</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="p">}</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="nv">$replicas</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-DbaAgReplica</span> <span class="nv">$splatGetAgReplica</span><span class="p">).</span><span class="n">Name</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="p">}</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">catch</span> <span class="p">{</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    <span class="nb">Write-Error</span> <span class="n">-Message</span> <span class="nv">$_</span> <span class="n">-ErrorAction</span> <span class="n">Stop</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="p">}</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="k">foreach</span> <span class="p">(</span><span class="nv">$replica</span> <span class="k">in</span> <span class="nv">$replicas</span><span class="p">)</span> <span class="p">{</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="nb">Write-Output</span> <span class="s2">"For this replica $replica"</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="nv">$replicastocopy</span> <span class="p">=</span> <span class="nv">$replicas</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-ne</span> <span class="nv">$replica</span> <span class="p">}</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$replicatocopy</span> <span class="k">in</span> <span class="nv">$replicastocopy</span><span class="p">)</span> <span class="p">{</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>      <span class="nb">Write-Output</span> <span class="s2">"We will copy logins from $replica to $replicatocopy"</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>      <span class="nv">$splatCopyLogin</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>          <span class="n">Source</span> <span class="p">=</span> <span class="nv">$replica</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>          <span class="n">Destination</span> <span class="p">=</span> <span class="nv">$replicatocopy</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>          <span class="n">ExcludeSystemLogins</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>          <span class="n">EnableException</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>      <span class="p">}</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>      <span class="k">try</span> <span class="p">{</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>        <span class="nv">$output</span> <span class="p">=</span>  <span class="nb">Copy-DbaLogin</span> <span class="nv">@splatCopyLogin</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>      <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>        <span class="nv">$error</span><span class="p">[</span><span class="n">0</span><span class="p">..</span><span class="n">5</span><span class="p">]</span> <span class="p">|</span> <span class="nb">Format-List</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-String</span>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>        <span class="nb">Write-Error</span> <span class="n">-Message</span> <span class="nv">$_</span> <span class="n">-ErrorAction</span> <span class="n">Stop</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>      <span class="p">}</span>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a>        <span class="k">if</span> <span class="p">(</span><span class="nv">$output</span><span class="p">.</span><span class="n">Status</span> <span class="o">-contains</span> <span class="s1">'Failed'</span><span class="p">)</span> <span class="p">{</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>            <span class="nv">$error</span><span class="p">[</span><span class="n">0</span><span class="p">..</span><span class="n">5</span><span class="p">]</span> <span class="p">|</span> <span class="nb">Format-List</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-String</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>            <span class="nb">Write-Error</span> <span class="n">-Message</span> <span class="s2">"At least one login failed.</span>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="s2">            [CA]See log for details."</span> <span class="n">-ErrorAction</span> <span class="n">Stop</span>
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>        <span class="p">}</span>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a>    <span class="p">}</span>
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="p">}</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Đây là pattern Agent job production. Chạy trên 1 node AG, tự khám phá các replica khác, rồi copy login chéo giữa các node. Lý do quan trọng: AG không sync metadata cấp instance — login phải đồng bộ thủ công.</li>
+<li><strong>Tại sao <code>EnableException = $true</code>?</strong> Mặc định dbatools chỉ in lỗi (warning), không throw — Agent job sẽ thấy "Succeeded" dù lệnh fail. Bật <code>EnableException</code> để biến warning thành exception, kết hợp <code>-ErrorAction Stop</code> để Agent job báo Failed đúng.</li>
+<li><strong>Đổi cho lab:</strong> Lab chỉ có 1 instance đơn lẻ — KHÔNG có AG. Đoạn này coi như đọc hiểu, không chạy. Nếu muốn thử <code>Copy-DbaLogin</code> giữa 2 instance lab:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">Copy-DbaLogin</span> <span class="n">-Source</span> <span class="s2">"dbatoolslab\sql2017"</span> <span class="n">-Destination</span> <span class="s2">"dbatoolslab"</span> <span class="p">`</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">-ExcludeSystemLogins</span> <span class="n">-Login</span> <span class="n">WWI_ReadOnly</span><span class="p">,</span> <span class="n">WWI_ReadWrite</span> <span class="n">-WhatIf</span>
+</span></code></pre></div></li>
+<li><strong>Lưu ý:</strong> Đoạn <code>[CA]</code> ở dòng 97 có vẻ là ký tự lạ do encode — bỏ đi khi copy.</li>
+</ul>
+<h3 id="oan-8-dong-104-export-login-schema-cung-co-typo">Đoạn 8: dòng 104 — Export login schema (CŨNG CÓ TYPO)<a class="headerlink" href="#oan-8-dong-104-export-login-schema-cung-co-typo" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">Export-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span><span class="s2">"</span>
+</span></code></pre></div>
+<ul>
+<li><strong>CẢNH BÁO:</strong> Lại dấu <code>"</code> thừa. Bỏ khi paste.</li>
+<li><strong>Ý nghĩa:</strong> Sinh ra script T-SQL <code>CREATE LOGIN ... WITH PASSWORD = HASHED ...</code> cho tất cả login, lưu vào <code>$home\&lt;instance&gt;-&lt;timestamp&gt;-login.sql</code>.</li>
+<li><strong>Đổi cho lab:</strong>
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">Export-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Path</span> <span class="n">C</span><span class="p">:\</span><span class="n">dbatoolslab</span><span class="p">\</span><span class="n">exports</span>
+</span></code></pre></div></li>
+</ul>
+<h3 id="oan-9-dong-108-khoi-tao-git-repo-cho-schema">Đoạn 9: dòng 108 — Khởi tạo git repo cho schema<a class="headerlink" href="#oan-9-dong-108-khoi-tao-git-repo-cho-schema" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">git</span> <span class="n">init</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Khởi tạo Git repo ngay tại thư mục hiện hành, chuẩn bị version control cho file <code>.sql</code> export.</li>
+<li><strong>Lưu ý:</strong> Chạy đúng trong thư mục bạn muốn track — vd <code>cd C:\dbatoolslab\exports; git init</code>.</li>
+</ul>
+<h3 id="oan-10-dong-114-117-export-voi-ten-file-inh-truoc">Đoạn 10: dòng 114-117 — Export với tên file định trước<a class="headerlink" href="#oan-10-dong-114-117-export-voi-ten-file-inh-truoc" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nv">$date</span> <span class="p">=</span> <span class="nb">Get-Date</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nv">$path</span> <span class="p">=</span> <span class="s2">"$home\sourcerepo\SqlPermission"</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nv">$file</span> <span class="p">=</span> <span class="s2">"Factory.sql"</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="nb">Export-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span><span class="s2">"</span>
+</span></code></pre></div>
+<ul>
+<li><strong>CẢNH BÁO:</strong> Cùng typo <code>SQL01"</code>. Hơn nữa, lệnh chưa truyền <code>-FilePath</code> hay <code>-Path</code>, nên các biến <code>$path</code>, <code>$file</code> không có tác dụng.</li>
+<li><strong>Đổi cho lab (có ý nghĩa):</strong>
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nv">$date</span> <span class="p">=</span> <span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="s1">'yyyyMMdd'</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nv">$path</span> <span class="p">=</span> <span class="s2">"$home\sourcerepo\SqlPermission"</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="nv">$path</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="nv">$file</span> <span class="p">=</span> <span class="s2">"Factory-$date.sql"</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="nb">Export-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-FilePath</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$path</span> <span class="nv">$file</span><span class="p">)</span>
+</span></code></pre></div></li>
+</ul>
+<h3 id="oan-11-dong-121-123-commit-file-vao-git">Đoạn 11: dòng 121-123 — Commit file vào git<a class="headerlink" href="#oan-11-dong-121-123-commit-file-vao-git" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">Set-Location</span> <span class="nv">$path</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">git</span> <span class="n">add</span> <span class="nv">$file</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">git</span> <span class="n">commit</span> <span class="n">-m</span> <span class="s2">"The Factory users update for $date"</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Cd vào thư mục export, stage file, commit.</li>
+<li><strong>Lưu ý:</strong> Chạy <code>git config user.email</code> và <code>user.name</code> trước nếu chưa có. Đoạn này yêu cầu Git đã cài (<code>scripts/00_Install_Prereqs.ps1</code> cài qua chocolatey).</li>
+</ul>
+<h3 id="oan-12-dong-127-128-audit-user-permission">Đoạn 12: dòng 127-128 — Audit user permission<a class="headerlink" href="#oan-12-dong-127-128-audit-user-permission" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">Get-DbaUserPermission</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Database</span> <span class="n">WideWorldImporters</span> <span class="p">|</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nb">Select </span><span class="n">SqlInstance</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">RoleSecurableClass</span> <span class="p">|</span> <span class="nb">Format-Table</span><span class="s2">"</span>
+</span></code></pre></div>
+<ul>
+<li><strong>CẢNH BÁO:</strong> Lại dấu <code>"</code> thừa cuối. Bỏ.</li>
+<li><strong>Ý nghĩa:</strong> <code>Get-DbaUserPermission</code> trả về 1 dataset rất chi tiết — server roles, database roles, object permissions. Project ra 5 cột để dễ đọc.</li>
+<li><strong>Đổi cho lab:</strong>
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">Get-DbaUserPermission</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Database</span> <span class="n">WideWorldImporters</span> <span class="p">|</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>    <span class="nb">Select-Object</span> <span class="n">SqlInstance</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">RoleSecurableClass</span> <span class="p">|</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>    <span class="nb">Format-Table</span> <span class="n">-AutoSize</span>
+</span></code></pre></div></li>
+<li><strong>Lưu ý:</strong> Lệnh này CHẬM trên DB lớn — nó tạo và xoá vài stored proc tạm để query system catalog. Lần đầu chạy có thể mất 30-60s.</li>
+</ul>
+<h3 id="oan-13-dong-132-161-xuat-excel-co-conditional-formatting">Đoạn 13: dòng 132-161 — Xuất Excel có conditional formatting<a class="headerlink" href="#oan-13-dong-132-161-xuat-excel-co-conditional-formatting" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nv">$splatExportExcel</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a> <span class="n">Path</span> <span class="p">=</span> <span class="s2">"C:\temp\FactoryPermissions.xlsx"</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a> <span class="n">WorksheetName</span> <span class="p">=</span> <span class="s2">"User Permissions"</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a> <span class="n">AutoSize</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a> <span class="n">FreezeTopRow</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a> <span class="n">AutoFilter</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a> <span class="n">PassThru</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="p">}</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="nv">$excel</span> <span class="p">=</span> <span class="nb">Get-DbaUserPermission</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Database</span> <span class="n">WideWorldImporters</span> <span class="p">|</span> <span class="nb">Export-Excel</span> <span class="nv">@splatExportExcel</span>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="nv">$rulesparam</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a> <span class="n">Address</span> <span class="p">=</span> <span class="nv">$excel</span><span class="p">.</span><span class="n">Workbook</span><span class="p">.</span><span class="n">Worksheets</span><span class="p">[</span><span class="s2">"User Permissions"</span><span class="p">].</span><span class="n">Dimension</span><span class="p">.</span><span class="n">Address</span>
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a> <span class="n">WorkSheet</span> <span class="p">=</span> <span class="nv">$excel</span><span class="p">.</span><span class="n">Workbook</span><span class="p">.</span><span class="n">Worksheets</span><span class="p">[</span><span class="s2">"User Permissions"</span><span class="p">]</span>
+</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a> <span class="n">RuleType</span> <span class="p">=</span> <span class="s2">"Expression"</span>
+</span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="p">}</span>
+</span><span id="__span-20-17"><a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a>
+</span><span id="__span-20-18"><a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rulesparam</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("sysadmin",$G1)))'</span> <span class="n">-BackgroundColor</span> <span class="n">Yellow</span> <span class="n">-StopIfTrue</span>
+</span><span id="__span-20-19"><a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rulesparam</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("db_owner",$G1)))'</span> <span class="n">-BackgroundColor</span> <span class="n">Yellow</span> <span class="n">-StopIfTrue</span>
+</span><span id="__span-20-20"><a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rulesparam</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("SERVER LOGINS",$E1)))'</span> <span class="n">-BackgroundColor</span> <span class="n">PaleGreen</span>
+</span><span id="__span-20-21"><a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rulesparam</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("SERVER SECURABLES",$E1)))'</span> <span class="n">-BackgroundColor</span> <span class="n">PowderBlue</span>
+</span><span id="__span-20-22"><a id="__codelineno-20-22" name="__codelineno-20-22" href="#__codelineno-20-22"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rulesparam</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("DB ROLE MEMBERS",$E1)))'</span> <span class="n">-BackgroundColor</span> <span class="n">GoldenRod</span>
+</span><span id="__span-20-23"><a id="__codelineno-20-23" name="__codelineno-20-23" href="#__codelineno-20-23"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rulesparam</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("DB SECURABLES",$E1)))'</span> <span class="n">-BackgroundColor</span> <span class="n">BurlyWood</span>
+</span><span id="__span-20-24"><a id="__codelineno-20-24" name="__codelineno-20-24" href="#__codelineno-20-24"></a>
+</span><span id="__span-20-25"><a id="__codelineno-20-25" name="__codelineno-20-25" href="#__codelineno-20-25"></a><span class="nb">Close-ExcelPackage</span> <span class="nv">$excel</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Xuất kết quả audit ra file <code>.xlsx</code>, freeze hàng tiêu đề, bật autofilter, sau đó áp 6 conditional formatting rule:</li>
+<li>Cột G chứa "sysadmin" → tô <strong>vàng</strong> (cảnh báo cao).</li>
+<li>Cột G chứa "db_owner" → tô <strong>vàng</strong>.</li>
+<li>Cột E (RoleSecurableClass) chứa "SERVER LOGINS" / "SERVER SECURABLES" / "DB ROLE MEMBERS" / "DB SECURABLES" → tô màu phân loại.</li>
+<li><strong>Đổi cho lab:</strong>
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nv">$splatExportExcel</span><span class="p">.</span><span class="n">Path</span> <span class="p">=</span> <span class="s2">"C:\dbatoolslab\reports\WWI-Permissions.xlsx"</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="s2">"C:\dbatoolslab\reports"</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="nv">$excel</span> <span class="p">=</span> <span class="nb">Get-DbaUserPermission</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Database</span> <span class="n">WideWorldImporters</span> <span class="p">|</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="nb">Export-Excel</span> <span class="nv">@splatExportExcel</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="c"># ... (giữ nguyên các Add-ConditionalFormatting)</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="nb">Close-ExcelPackage</span> <span class="nv">$excel</span>
+</span></code></pre></div></li>
+<li><strong>Lưu ý:</strong> Cần cài module <code>ImportExcel</code>:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">Install-Module</span> <span class="n">ImportExcel</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+</span></code></pre></div>
+  Chú ý <code>$G1</code>, <code>$E1</code> là <strong>địa chỉ tương đối</strong> kiểu Excel — sách giả định layout cột G = Member, E = RoleSecurableClass. Nếu bạn <code>Select</code> cột khác, phải đổi địa chỉ.</li>
+</ul>
+<h3 id="oan-14-dong-165-tim-login-nam-trong-ad-group">Đoạn 14: dòng 165 — Tìm login nằm trong AD group<a class="headerlink" href="#oan-14-dong-165-tim-login-nam-trong-ad-group" title="Permanent link">&para;</a></h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">Find-DbaLoginInGroup</span> <span class="n">-SqlInstance</span> <span class="n">SQL01</span> <span class="n">-Login</span> <span class="s2">"ad\bmiller"</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ý nghĩa:</strong> Bạn có 1 user AD <code>ad\bmiller</code>. Họ không có login trực tiếp trên SQL — nhưng thuộc 1 AD group đã được cấp quyền. Lệnh này resolve gián tiếp, trả về group nào đang chứa user.</li>
+<li><strong>Đổi cho lab:</strong> Lab không trong AD, lệnh sẽ fail. Coi như đọc hiểu, hoặc thử với local group:
+  <div class="language-powershell highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">Find-DbaLoginInGroup</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Login</span> <span class="s2">"$env:COMPUTERNAME\&lt;user&gt;"</span>
+</span></code></pre></div></li>
+</ul>
+<h2 id="lenh-thay-vao-lab-cua-ban">Lệnh thay vào lab của bạn<a class="headerlink" href="#lenh-thay-vao-lab-cua-ban" title="Permanent link">&para;</a></h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c"># 1) Đọc error log 30 phút qua, bỏ qua Logon noise</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nv">$splat</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>    <span class="n">SqlInstance</span> <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>    <span class="n">After</span>       <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddMinutes</span><span class="p">(-</span><span class="n">30</span><span class="p">)</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="p">}</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="nb">Get-DbaErrorLog</span> <span class="nv">@splat</span> <span class="p">|</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>    <span class="nb">Where-Object</span> <span class="n">Source</span> <span class="o">-ne</span> <span class="s1">'Logon'</span> <span class="p">|</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>    <span class="nb">Select-Object</span> <span class="n">LogDate</span><span class="p">,</span> <span class="n">Source</span><span class="p">,</span> <span class="n">Text</span> <span class="p">|</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>    <span class="nb">Format-Table</span> <span class="n">-AutoSize</span>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="c"># 2) Tạo SQL login mới trong lab — luôn -WhatIf trước</span>
+</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="nv">$cred</span> <span class="p">=</span> <span class="nb">Get-Credential</span> <span class="n">-UserName</span> <span class="s2">"lab_factory1"</span> <span class="n">-Message</span> <span class="s2">"Mat khau cho login moi"</span>
+</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="nv">$splatNew</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>    <span class="n">SqlInstance</span>              <span class="p">=</span> <span class="s2">"dbatoolslab\sql2017"</span>
+</span><span id="__span-25-15"><a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a>    <span class="n">Login</span>                    <span class="p">=</span> <span class="nv">$cred</span><span class="p">.</span><span class="n">UserName</span>
+</span><span id="__span-25-16"><a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>    <span class="n">SecurePassword</span>           <span class="p">=</span> <span class="nv">$cred</span><span class="p">.</span><span class="n">Password</span>
+</span><span id="__span-25-17"><a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a>    <span class="n">PasswordPolicyEnforced</span>   <span class="p">=</span> <span class="nv">$false</span>
+</span><span id="__span-25-18"><a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a>    <span class="n">PasswordExpirationEnabled</span> <span class="p">=</span> <span class="nv">$false</span>
+</span><span id="__span-25-19"><a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a><span class="p">}</span>
+</span><span id="__span-25-20"><a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="nb">New-DbaLogin</span> <span class="nv">@splatNew</span> <span class="n">-WhatIf</span>
+</span><span id="__span-25-21"><a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a><span class="c"># Sau khi -WhatIf in đúng dự định, bỏ -WhatIf chạy thật</span>
+</span><span id="__span-25-22"><a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a>
+</span><span id="__span-25-23"><a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="c"># 3) Liệt kê user trong WideWorldImporters</span>
+</span><span id="__span-25-24"><a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a><span class="nb">Get-DbaDbUser</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Database</span> <span class="n">WideWorldImporters</span> <span class="p">|</span>
+</span><span id="__span-25-25"><a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a>    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">LoginType</span><span class="p">,</span> <span class="n">CreateDate</span>
+</span><span id="__span-25-26"><a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a>
+</span><span id="__span-25-27"><a id="__codelineno-25-27" name="__codelineno-25-27" href="#__codelineno-25-27"></a><span class="c"># 4) Export login schema ra thư mục backup</span>
+</span><span id="__span-25-28"><a id="__codelineno-25-28" name="__codelineno-25-28" href="#__codelineno-25-28"></a><span class="nv">$exportDir</span> <span class="p">=</span> <span class="s2">"C:\dbatoolslab\Backup\logins"</span>
+</span><span id="__span-25-29"><a id="__codelineno-25-29" name="__codelineno-25-29" href="#__codelineno-25-29"></a><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="nv">$exportDir</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</span><span id="__span-25-30"><a id="__codelineno-25-30" name="__codelineno-25-30" href="#__codelineno-25-30"></a><span class="nb">Export-DbaLogin</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Path</span> <span class="nv">$exportDir</span>
+</span><span id="__span-25-31"><a id="__codelineno-25-31" name="__codelineno-25-31" href="#__codelineno-25-31"></a>
+</span><span id="__span-25-32"><a id="__codelineno-25-32" name="__codelineno-25-32" href="#__codelineno-25-32"></a><span class="c"># 5) Audit quyền user WWI ra Excel</span>
+</span><span id="__span-25-33"><a id="__codelineno-25-33" name="__codelineno-25-33" href="#__codelineno-25-33"></a><span class="nb">Install-Module</span> <span class="n">ImportExcel</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">-Force</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+</span><span id="__span-25-34"><a id="__codelineno-25-34" name="__codelineno-25-34" href="#__codelineno-25-34"></a><span class="nv">$reportDir</span> <span class="p">=</span> <span class="s2">"C:\dbatoolslab\reports"</span>
+</span><span id="__span-25-35"><a id="__codelineno-25-35" name="__codelineno-25-35" href="#__codelineno-25-35"></a><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="nv">$reportDir</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</span><span id="__span-25-36"><a id="__codelineno-25-36" name="__codelineno-25-36" href="#__codelineno-25-36"></a><span class="nv">$splatExcel</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-25-37"><a id="__codelineno-25-37" name="__codelineno-25-37" href="#__codelineno-25-37"></a>    <span class="n">Path</span>          <span class="p">=</span> <span class="nb">Join-Path</span> <span class="nv">$reportDir</span> <span class="s2">"WWI-Permissions.xlsx"</span>
+</span><span id="__span-25-38"><a id="__codelineno-25-38" name="__codelineno-25-38" href="#__codelineno-25-38"></a>    <span class="n">WorksheetName</span> <span class="p">=</span> <span class="s2">"User Permissions"</span>
+</span><span id="__span-25-39"><a id="__codelineno-25-39" name="__codelineno-25-39" href="#__codelineno-25-39"></a>    <span class="n">AutoSize</span>      <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-25-40"><a id="__codelineno-25-40" name="__codelineno-25-40" href="#__codelineno-25-40"></a>    <span class="n">FreezeTopRow</span>  <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-25-41"><a id="__codelineno-25-41" name="__codelineno-25-41" href="#__codelineno-25-41"></a>    <span class="n">AutoFilter</span>    <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-25-42"><a id="__codelineno-25-42" name="__codelineno-25-42" href="#__codelineno-25-42"></a>    <span class="n">PassThru</span>      <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-25-43"><a id="__codelineno-25-43" name="__codelineno-25-43" href="#__codelineno-25-43"></a><span class="p">}</span>
+</span><span id="__span-25-44"><a id="__codelineno-25-44" name="__codelineno-25-44" href="#__codelineno-25-44"></a><span class="nv">$excel</span> <span class="p">=</span> <span class="nb">Get-DbaUserPermission</span> <span class="n">-SqlInstance</span> <span class="n">dbatoolslab</span><span class="p">\</span><span class="n">sql2017</span> <span class="n">-Database</span> <span class="n">WideWorldImporters</span> <span class="p">|</span>
+</span><span id="__span-25-45"><a id="__codelineno-25-45" name="__codelineno-25-45" href="#__codelineno-25-45"></a>    <span class="nb">Export-Excel</span> <span class="nv">@splatExcel</span>
+</span><span id="__span-25-46"><a id="__codelineno-25-46" name="__codelineno-25-46" href="#__codelineno-25-46"></a><span class="nv">$rules</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-25-47"><a id="__codelineno-25-47" name="__codelineno-25-47" href="#__codelineno-25-47"></a>    <span class="n">Address</span>   <span class="p">=</span> <span class="nv">$excel</span><span class="p">.</span><span class="n">Workbook</span><span class="p">.</span><span class="n">Worksheets</span><span class="p">[</span><span class="s2">"User Permissions"</span><span class="p">].</span><span class="n">Dimension</span><span class="p">.</span><span class="n">Address</span>
+</span><span id="__span-25-48"><a id="__codelineno-25-48" name="__codelineno-25-48" href="#__codelineno-25-48"></a>    <span class="n">WorkSheet</span> <span class="p">=</span> <span class="nv">$excel</span><span class="p">.</span><span class="n">Workbook</span><span class="p">.</span><span class="n">Worksheets</span><span class="p">[</span><span class="s2">"User Permissions"</span><span class="p">]</span>
+</span><span id="__span-25-49"><a id="__codelineno-25-49" name="__codelineno-25-49" href="#__codelineno-25-49"></a>    <span class="n">RuleType</span>  <span class="p">=</span> <span class="s2">"Expression"</span>
+</span><span id="__span-25-50"><a id="__codelineno-25-50" name="__codelineno-25-50" href="#__codelineno-25-50"></a><span class="p">}</span>
+</span><span id="__span-25-51"><a id="__codelineno-25-51" name="__codelineno-25-51" href="#__codelineno-25-51"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rules</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("sysadmin",$G1)))'</span> <span class="n">-BackgroundColor</span> <span class="n">Yellow</span> <span class="n">-StopIfTrue</span>
+</span><span id="__span-25-52"><a id="__codelineno-25-52" name="__codelineno-25-52" href="#__codelineno-25-52"></a><span class="nb">Add-ConditionalFormatting</span> <span class="nv">@rules</span> <span class="n">-ConditionValue</span> <span class="s1">'NOT(ISERROR(FIND("db_owner",$G1)))'</span>  <span class="n">-BackgroundColor</span> <span class="n">Yellow</span> <span class="n">-StopIfTrue</span>
+</span><span id="__span-25-53"><a id="__codelineno-25-53" name="__codelineno-25-53" href="#__codelineno-25-53"></a><span class="nb">Close-ExcelPackage</span> <span class="nv">$excel</span>
+</span><span id="__span-25-54"><a id="__codelineno-25-54" name="__codelineno-25-54" href="#__codelineno-25-54"></a><span class="nb">Invoke-Item</span> <span class="nv">$splatExcel</span><span class="p">.</span><span class="n">Path</span>  <span class="c"># mở file để xem</span>
+</span></code></pre></div>
+<h2 id="self-check-3-cau">Self-check (3 câu)<a class="headerlink" href="#self-check-3-cau" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Định nghĩa:</strong> <code>Get-DbaErrorLog</code> có thể đọc log của bao nhiêu file <code>errorlog.N</code> mặc định? Tham số nào giới hạn số file đọc?</li>
+<li><strong>Thực hành:</strong> Tạo 1 login SQL <code>lab_test1</code>, chạy <code>Get-DbaUserPermission</code> ngay sau đó. Vì sao login mới không xuất hiện trong kết quả?</li>
+<li><strong>Liên hệ:</strong> <code>Copy-DbaLogin</code> khác <code>Export-DbaLogin</code> + <code>Invoke-DbaQuery</code> ở 2 điểm — kể tên (gợi ý: idempotency và secret handling).</li>
+</ol>
+<h2 id="bai-tap-mo-rong">Bài tập mở rộng<a class="headerlink" href="#bai-tap-mo-rong" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Bài 1:</strong> Viết script kiểm tra error log 24h qua, lọc các entry có Text khớp regex <code>failed|error|severity</code>, gửi email cho admin nếu có &gt;5 entry. Dùng <code>Send-MailMessage</code> hoặc <code>Send-MgUserMail</code>.</li>
+<li><strong>Bài 2:</strong> Mở rộng đoạn audit Excel — thêm sheet thứ 2 chứa <code>Get-DbaServerRoleMember</code> (sysadmin của instance), highlight đỏ nếu thấy login lạ (không thuộc allow-list của bạn).</li>
+<li><strong>Bài 3:</strong> Đoạn AG sync login coi như template — viết phiên bản đơn server: xuất login từ <code>dbatoolslab\sql2017</code> ra T-SQL, lưu vào git, commit hằng tuần bằng Scheduled Task.</li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>book_lab/dbatools-lab/bookcode/chapter09.notes.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../chapter08-notes/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Chapter 08 — Central Management Server (CMS) &amp; Registered Servers">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Chapter 08 — Central Management Server (CMS) & Registered Servers
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chapter10-notes/" class="md-footer__link md-footer__link--next" aria-label="Sau: Chapter 10 — Backup database với dbatools">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Chapter 10 — Backup database với dbatools
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

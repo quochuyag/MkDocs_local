@@ -1,0 +1,2768 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../016-part-iii-why-should-we-measure-it-performance-guide/">
+      
+      
+        <link rel="next" href="../018-chapter-10-is-it-operating-effectively-guide/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Guide: Chương 9 — Đo Lường Hiệu Suất IT Như Thế Nào? - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guide-chuong-9-o-luong-hieu-suat-it-nhu-the-nao" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Guide: Chương 9 — Đo Lường Hiệu Suất IT Như Thế Nào?
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            07. Sach & Tai lieu (PDF da chuyen doi)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLAUDE.md
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../devsecops-in-oracle-cloud-securing-and-automating-oracle-cloud-infrastructure-for-sebastian-hassinger/guide-ai/012-introduction-to-oci-and-devsecops-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Devsecops in oracle cloud securing and automating oracle cloud infrastructure for sebastian hassinger
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../itil-foundation-v5/guide-ai/001-itil-foundation-version5-official-book-en-v50-prpdf-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Itil foundation v5
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../managing-it-performance-to-create-business-value/guide-ai/004-chapter-1-designing-performance-based-strategic-planning-systems-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Managing it performance to create business value
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../references/guide-structure/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    References
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../skill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Book Study Guide — Tạo Bài Giảng Từ Sách
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_8" id="__nav_7_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    The business value of it managing risks optimizing performance and measuring results auerbach publications 2008
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_8">
+            <span class="md-nav__icon md-icon"></span>
+            The business value of it managing risks optimizing performance and measuring results auerbach publications 2008
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_8_1" id="__nav_7_8_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Guide ai
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_8_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            Guide ai
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../003-introduction-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng: Giới Thiệu — Giá Trị Kinh Doanh của Công Nghệ Thông Tin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-about-the-authors-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng: Giới Thiệu Tác Giả — Ai Đứng Sau Cuốn Sách Này?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../005-list-of-commonly-used-acronyms-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 05: Danh Mục Từ Viết Tắt Thường Dùng
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../006-part-i-what-does-it-contribute-to-the-business-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 06: Phần I — IT Đóng Góp Gì Cho Doanh Nghiệp?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../007-chapter-1-what-should-the-business-expect-from-it-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 07: Doanh Nghiệp Nên Kỳ Vọng Gì Từ IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../008-chapter-2-how-do-i-measure-the-value-of-it-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 08: Làm Thế Nào Để Đo Lường Giá Trị IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../009-chapter-3-how-much-it-is-enough-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Bài Giảng 09: Bao Nhiêu IT Là Đủ?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../010-chapter-4-am-i-paying-too-much-for-it-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Tôi Có Đang Trả Quá Nhiều Cho IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../011-part-ii-why-should-we-care-about-it-governance-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Tại Sao Chúng Ta Cần Quan Tâm Đến IT Governance?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../012-chapter-5-who-governs-it-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: Ai Quản Trị IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../013-chapter-6-what-models-should-it-use-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng Dẫn Học Tập: IT Nên Dùng Những Mô Hình Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../014-chapter-7-are-we-outsourcing-effectively-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chương 7 — Chúng Ta Đang Outsource Hiệu Quả Không?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../015-chapter-8-what-tools-should-it-use-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chương 8 — IT Nên Dùng Công Cụ Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../016-part-iii-why-should-we-measure-it-performance-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Part III — Tại Sao Chúng Ta Phải Đo Lường Hiệu Suất IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Guide: Chương 9 — Đo Lường Hiệu Suất IT Như Thế Nào?
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chương 9 — Đo Lường Hiệu Suất IT Như Thế Nào?
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Tóm tắt nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hai-goc-nhin-o-luong-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hai Góc Nhìn Đo Lường IT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#it-value-contribution-trach-nhiem-chung" class="md-nav__link">
+    <span class="md-ellipsis">
+      IT Value Contribution: Trách Nhiệm Chung
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-thuoc-o-chinh-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      4 Thước Đo Chính (+1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-point-analysis-fpa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Point Analysis (FPA)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-metrics-tich-hop-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      8 Metrics Tích Hợp Size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xay-dung-measurement-program-ben-vung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xây Dựng Measurement Program Bền Vững
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-1-size-khong-quan-trong-va-hau-qua" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 1: "Size Không Quan Trọng" — Và Hậu Quả 🇻🇳
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-2-defect-removal-efficiency-tim-ung-luc-tiet-kiem-10-lan-chi-phi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 2: Defect Removal Efficiency — Tìm Đúng Lúc Tiết Kiệm 10 Lần Chi Phí
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-3-xay-dung-measurement-program-tu-au-startup-fintech" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 3: Xây Dựng Measurement Program Từ Đầu — Startup Fintech 🇻🇳
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-1-size-does-matter-vi-du-so-sanh-tu-chuong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 1: "Size Does Matter" — Ví dụ So Sánh Từ Chương
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-2-8-metrics-quan-trong-cong-thuc-va-ung-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 2: 8 Metrics Quan Trọng — Công Thức và Ứng Dụng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-3-3-thach-thuc-xay-dung-measurement-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 3: 3 Thách Thức Xây Dựng Measurement Program
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../018-chapter-10-is-it-operating-effectively-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chapter 10 — IT Có Đang Hoạt Động Hiệu Quả Không?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../019-chapter-11-where-are-we-in-relation-to-industry-peers-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide: Chapter 11 — IT Đứng Ở Đâu So Với Đồng Nghiệp Ngành?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../020-chapter-12-how-can-we-do-it-better-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 12 — Làm Thế Nào Để Làm Tốt Hơn IT?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../021-part-iv-how-should-we-change-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Phần IV — Chúng Ta Nên Thay Đổi Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../022-chapter-13-how-can-we-manage-it-changes-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 13 — Chúng Ta Có Thể Quản Lý Thay Đổi IT Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../023-chapter-14-how-should-it-manage-risk-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 14 — IT Nên Quản Lý Rủi Ro Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../024-chapter-15-how-should-it-manage-its-people-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 15 — IT Nên Quản Lý Con Người Như Thế Nào?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../025-chapter-16-what-should-it-expect-from-the-business-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chương 16 — IT Nên Kỳ Vọng Gì Từ Business?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trạng Thái Guide — The Business Value of IT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-tieu-hoc-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Mục tiêu học tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-noi-dung-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Tóm tắt nội dung chính
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Tóm tắt nội dung chính">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hai-goc-nhin-o-luong-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hai Góc Nhìn Đo Lường IT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#it-value-contribution-trach-nhiem-chung" class="md-nav__link">
+    <span class="md-ellipsis">
+      IT Value Contribution: Trách Nhiệm Chung
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-thuoc-o-chinh-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      4 Thước Đo Chính (+1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-point-analysis-fpa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Point Analysis (FPA)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-metrics-tich-hop-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      8 Metrics Tích Hợp Size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xay-dung-measurement-program-ben-vung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xây Dựng Measurement Program Bền Vững
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khai-niem-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔑 Khái niệm quan trọng
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vi-du-thuc-te-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Ví dụ thực tế &amp; Case Study
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Ví dụ thực tế & Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#case-study-1-size-khong-quan-trong-va-hau-qua" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 1: "Size Không Quan Trọng" — Và Hậu Quả 🇻🇳
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-2-defect-removal-efficiency-tim-ung-luc-tiet-kiem-10-lan-chi-phi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 2: Defect Removal Efficiency — Tìm Đúng Lúc Tiết Kiệm 10 Lần Chi Phí
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-study-3-xay-dung-measurement-program-tu-au-startup-fintech" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Study 3: Xây Dựng Measurement Program Từ Đầu — Startup Fintech 🇻🇳
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-o-bang-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Sơ đồ &amp; Bảng tổng hợp
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Sơ đồ & Bảng tổng hợp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bang-1-size-does-matter-vi-du-so-sanh-tu-chuong" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 1: "Size Does Matter" — Ví dụ So Sánh Từ Chương
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-2-8-metrics-quan-trong-cong-thuc-va-ung-dung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 2: 8 Metrics Quan Trọng — Công Thức và Ứng Dụng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bang-3-3-thach-thuc-xay-dung-measurement-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bảng 3: 3 Thách Thức Xây Dựng Measurement Program
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cau-hoi-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Câu hỏi ôn tập
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ghi-nho-nhanh" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Ghi nhớ nhanh
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#giai-thich-thuat-ngu-chuyen-nganh" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Giải thích thuật ngữ chuyên ngành
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="guide-chuong-9-o-luong-hieu-suat-it-nhu-the-nao">Guide: Chương 9 — Đo Lường Hiệu Suất IT Như Thế Nào?<a class="headerlink" href="#guide-chuong-9-o-luong-hieu-suat-it-nhu-the-nao" title="Permanent link">&para;</a></h1>
+<p><strong>Nguồn:</strong> The Business Value of IT (Auerbach Publications, 2008) — Chapter 9<br />
+<strong>Ngày tạo:</strong> 2026-04-25<br />
+<strong>Thời gian học ước tính:</strong> 55–65 phút</p>
+<hr />
+<h2 id="muc-tieu-hoc-tap">🎯 Mục tiêu học tập<a class="headerlink" href="#muc-tieu-hoc-tap" title="Permanent link">&para;</a></h2>
+<p>Sau khi học xong chương này, bạn có thể:</p>
+<ul>
+<li><strong>Hiểu</strong> sự khác biệt giữa góc nhìn đo lường của external customer (speed/cost/quality) và internal customer (cùng ba thước đo nhưng với ngưỡng chấp nhận khác nhau)</li>
+<li><strong>Phân biệt</strong> "4 thước đo chính" (Cost, Quality, Duration, Customer Satisfaction) và "thước đo còn thiếu" (Size) — tại sao thiếu Size khiến các thước đo kia trở nên vô nghĩa khi so sánh</li>
+<li><strong>Mô tả</strong> Function Point Analysis (FPA): 5 thành phần, cách tính, ưu điểm so với lines of code</li>
+<li><strong>Áp dụng</strong> 8 metrics kết hợp Size với 4 thước đo chính: cost/FP, cost to repair, reliability, time to market, defect density, defect removal efficiency, test case coverage, productivity</li>
+<li><strong>Đánh giá</strong> 3 thách thức cốt lõi khi xây dựng measurement program: nguồn data, tính toàn vẹn data, và báo cáo data</li>
+<li><strong>Nhận biết</strong> 10 bước CMMI để thể chế hóa một measurement program bền vững</li>
+</ul>
+<hr />
+<h2 id="tom-tat-noi-dung-chinh">📋 Tóm tắt nội dung chính<a class="headerlink" href="#tom-tat-noi-dung-chinh" title="Permanent link">&para;</a></h2>
+<h3 id="hai-goc-nhin-o-luong-it">Hai Góc Nhìn Đo Lường IT<a class="headerlink" href="#hai-goc-nhin-o-luong-it" title="Permanent link">&para;</a></h3>
+<p>Khi đo lường IT performance, có hai điểm nhìn khác nhau cần xét:</p>
+<p><strong>External customer</strong> (khách hàng bên ngoài): tập trung vào speed (giao phần mềm đúng hạn), cost (giá thấp nhất), và quality (tính năng đúng, hoạt động hiệu quả). Họ ít chấp nhận thỏa hiệp.</p>
+<p><strong>Internal customer</strong> (business unit nội bộ): cùng ba thước đo nhưng <strong>phải cân bằng với cost of running the business</strong>. Câu hỏi không chỉ là "có nhanh không?" mà còn là "nhanh thế này có xứng đáng với chi phí không?" và "Six Sigma quality có cần thiết ở đây không, hay 99.5% đã đủ?"</p>
+<h3 id="it-value-contribution-trach-nhiem-chung">IT Value Contribution: Trách Nhiệm Chung<a class="headerlink" href="#it-value-contribution-trach-nhiem-chung" title="Permanent link">&para;</a></h3>
+<p>Chương làm rõ một điểm thường gây nhầm lẫn: ai chịu trách nhiệm về value của phần mềm?</p>
+<ul>
+<li><strong>IT Providers</strong> chịu trách nhiệm về <strong>"right software"</strong> (kỹ thuật đúng, giao đúng hạn, đúng ngân sách, đúng requirements)</li>
+<li><strong>Business units</strong> chịu trách nhiệm về <strong>"right software solution"</strong> (phần mềm đó có thực sự giải quyết vấn đề kinh doanh không? Có tăng revenue hay giảm cost không?)</li>
+</ul>
+<p>Đây là trách nhiệm chia sẻ — IT không thể đơn độc guarantee business value nếu business không xác định đúng problem và requirements từ đầu.</p>
+<h3 id="4-thuoc-o-chinh-1">4 Thước Đo Chính (+1)<a class="headerlink" href="#4-thuoc-o-chinh-1" title="Permanent link">&para;</a></h3>
+<p><strong>1. Cost (Chi phí):</strong> Chủ yếu là labor cost. Phải thu thập ở project level, không chỉ ở organizational level. Phải bao gồm cả chi phí fix defects sau khi release — "cost of poor quality."</p>
+<p><strong>2. Quality (Chất lượng):</strong> Đo bằng defects. Quan trọng: đo defect removal THROUGHOUT life cycle, không chỉ trong testing. Defects tìm thấy sớm rẻ hơn nhiều lần so với tìm thấy sau khi release. Metric chính: defect removal efficiency.</p>
+<p><strong>3. Duration (Thời gian):</strong> Đo từ project initiation đến delivery. Không có định nghĩa chuẩn toàn cầu — quan trọng là tổ chức phải consistent trong cách định nghĩa và áp dụng xuyên suốt.</p>
+<p><strong>4. Customer Satisfaction (Sự hài lòng của khách hàng):</strong> Survey là cách hiệu quả nhất và ít tốn kém nhất. Nên dùng bên thứ ba để tránh bias. Phải sẵn sàng phản hồi với kết quả — nếu hỏi mà không làm gì thì mất tin cậy hơn là không hỏi.</p>
+<p><strong>+1 = SIZE (Kích thước phần mềm — THE MISSING MEASURE):</strong></p>
+<p>Câu chuyện minh họa trong chương: Dự án A có 12 defects, chi phí $500K. Dự án B có 22 defects, chi phí $990K. Dự án nào tốt hơn? <strong>Không thể biết được nếu không biết size!</strong></p>
+<p>Khi thêm size: Dự án A (250 FP) có defect density 0.048 và unit cost $2,000/FP. Dự án B (1,498 FP) có defect density 0.014 và unit cost $660/FP. Dự án B thực ra <strong>tốt hơn nhiều</strong> mặc dù tổng defects nhiều hơn và tổng chi phí cao hơn.</p>
+<p><strong>"Size does matter!"</strong> — đây là câu kết luận quan trọng nhất của chương.</p>
+<h3 id="function-point-analysis-fpa">Function Point Analysis (FPA)<a class="headerlink" href="#function-point-analysis-fpa" title="Permanent link">&para;</a></h3>
+<p>FPA là kỹ thuật đo size phần mềm được chấp nhận rộng rãi nhất thế giới, được quản lý bởi IFPUG (International Function Point Users Group). Ưu điểm: statistically demonstrable repeatability, nhanh, có nhiều chuyên gia.</p>
+<p><strong>5 thành phần của FPA:</strong>
+1. <strong>Inputs</strong> — dữ liệu được đưa vào ứng dụng từ bên ngoài
+2. <strong>Outputs</strong> — dữ liệu được xuất ra ngoài ứng dụng
+3. <strong>Inquiries</strong> — truy vấn kết hợp input + output (lookup, report)
+4. <strong>Internal data stores</strong> — logical groups of data được duy trì trong ứng dụng
+5. <strong>External interface files</strong> — data được dùng chung với ứng dụng khác</p>
+<p>Mỗi thành phần được đánh giá complexity (Low/Average/High) → tính tổng function points. Enhancement nhỏ: 50–100 FP. Ứng dụng lớn: hàng nghìn FP.</p>
+<h3 id="8-metrics-tich-hop-size">8 Metrics Tích Hợp Size<a class="headerlink" href="#8-metrics-tich-hop-size" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Công thức</th>
+<th>Dùng để đo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cost per FP</td>
+<td>Total project cost / Total FP</td>
+<td>Hiệu quả chi phí, so sánh projects và benchmarks</td>
+</tr>
+<tr>
+<td>Cost to repair</td>
+<td>(Hours to repair × Cost/hour) / Release FP</td>
+<td>Chất lượng process phát triển (cost of poor quality)</td>
+</tr>
+<tr>
+<td>Reliability</td>
+<td>Production failures / Total app FP</td>
+<td>Độ ổn định của hệ thống đang chạy</td>
+</tr>
+<tr>
+<td>Time to market</td>
+<td>FP / Elapsed calendar time</td>
+<td>Tốc độ delivery</td>
+</tr>
+<tr>
+<td>Defect density</td>
+<td>Defects (by phase hoặc total) / Total FP</td>
+<td>Chất lượng sản phẩm theo phase</td>
+</tr>
+<tr>
+<td>Defect removal efficiency</td>
+<td>Pre-delivery defects / Total defects</td>
+<td>Hiệu quả QA trong life cycle</td>
+</tr>
+<tr>
+<td>Test case coverage</td>
+<td>Test cases / Total FP</td>
+<td>Độ bao phủ của testing</td>
+</tr>
+<tr>
+<td>Productivity</td>
+<td>Size / Effort (hoặc hours/FP)</td>
+<td>Năng suất team</td>
+</tr>
+</tbody>
+</table>
+<h3 id="xay-dung-measurement-program-ben-vung">Xây Dựng Measurement Program Bền Vững<a class="headerlink" href="#xay-dung-measurement-program-ben-vung" title="Permanent link">&para;</a></h3>
+<p>Ba thách thức cốt lõi:
+1. <strong>Nguồn data</strong> — data cần thiết thường không sẵn có; cần đầu tư thêm resources
+2. <strong>Tính toàn vẹn data</strong> — nhiều tổ chức track time nhưng không audit để đảm bảo chính xác; effort bị misallocated sang projects sai
+3. <strong>Báo cáo data</strong> — biết audience là ai (summary vs detail), xây dựng credibility, tránh misrepresentation</p>
+<p>CMMI đề xuất 10 bước thể chế hóa measurement: Establish policy → Plan → Provide resources → Assign responsibility → Train → Manage configurations → Involve stakeholders → Monitor &amp; control → Evaluate adherence → Review with management.</p>
+<hr />
+<h2 id="khai-niem-quan-trong">🔑 Khái niệm quan trọng<a class="headerlink" href="#khai-niem-quan-trong" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Khái niệm</th>
+<th>Định nghĩa</th>
+<th>Tại sao quan trọng</th>
+<th>Ví dụ</th>
+<th>Liên quan đến</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function Point Analysis (FPA)</td>
+<td>Kỹ thuật đo size phần mềm dựa trên 5 yếu tố chức năng (input, output, inquiry, internal store, external file) — đo từ góc nhìn user, không phải code</td>
+<td>Là "normalizing factor" duy nhất được công nhận quốc tế; cho phép so sánh projects khác nhau và với benchmark ngành</td>
+<td>Enhancement nhỏ = 50–100 FP; hệ thống ERP lớn = 50,000+ FP</td>
+<td>IFPUG, Benchmarking, Chapter 11</td>
+</tr>
+<tr>
+<td>Defect Removal Efficiency (DRE)</td>
+<td>Tỷ lệ defects được phát hiện VÀ loại bỏ trước khi release so với tổng số defects (trước + sau release)</td>
+<td>Đo hiệu quả thực sự của QA; một team tìm 100 bugs nhưng tất cả đều sau release kém hơn team tìm 50 bugs nhưng tất cả trước release</td>
+<td>DRE = 80/100 = 80% (tốt); DRE = 40/100 = 40% (kém)</td>
+<td>Quality, Testing, CMMI</td>
+</tr>
+<tr>
+<td>Cost per Function Point</td>
+<td>Tổng chi phí dự án / tổng function points được deliver</td>
+<td>Chuẩn hóa chi phí để so sánh projects khác size và để benchmark với ngành</td>
+<td>Dự án A: $500K / 250 FP = $2,000/FP vs benchmark ngành $800/FP → đắt hơn 2.5 lần</td>
+<td>Cost, Benchmarking</td>
+</tr>
+<tr>
+<td>Defect Density</td>
+<td>Số defects / tổng function points — đo mật độ lỗi trong một đơn vị chức năng</td>
+<td>Cho phép so sánh quality của các projects khác nhau về size</td>
+<td>Dự án 1,498 FP có 22 defects → density 0.014 defect/FP; Dự án 250 FP có 12 defects → density 0.048 defect/FP</td>
+<td>Quality, FPA</td>
+</tr>
+<tr>
+<td>Time to Market</td>
+<td>FP / Elapsed calendar time — đo tốc độ delivery được chuẩn hóa theo size</td>
+<td>Một team deliver 500 FP trong 3 tháng nhanh hơn team deliver 100 FP trong 3 tháng</td>
+<td>1,500 FP / 9 tháng = 167 FP/tháng</td>
+<td>Duration, Productivity</td>
+</tr>
+<tr>
+<td>Productivity</td>
+<td>Size / Effort (thường tính ngược: hours per FP)</td>
+<td>Đo hiệu quả chuyển đổi effort → working software; thường dùng để so sánh offshore vs onshore, hay tool adoption impact</td>
+<td>Team A: 20 hours/FP (expensive). Team B: 8 hours/FP (efficient)</td>
+<td>Effort, FPA, Tools (Chapter 8)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vi-du-thuc-te-case-study">🌍 Ví dụ thực tế &amp; Case Study<a class="headerlink" href="#vi-du-thuc-te-case-study" title="Permanent link">&para;</a></h2>
+<h3 id="case-study-1-size-khong-quan-trong-va-hau-qua">Case Study 1: "Size Không Quan Trọng" — Và Hậu Quả 🇻🇳<a class="headerlink" href="#case-study-1-size-khong-quan-trong-va-hau-qua" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Công ty bảo hiểm Việt Nam 200 dev có 4 dự án hoàn thành trong quý. Manager tổng kết: "Dự án nào cũng on-time và on-budget, chất lượng tốt." Nhưng CFO muốn biết dự án nào hiệu quả nhất để phân bổ ngân sách quý sau.</p>
+<p><strong>Vấn đề:</strong> Không có size measurement. Kết quả thô: Project Alpha $200K/15 bugs, Project Beta $600K/10 bugs, Project Gamma $400K/20 bugs, Project Delta $800K/8 bugs. Manager kết luận Delta tốt nhất (ít bugs nhất). CFO chọn đẩy mạnh đội Delta.</p>
+<p><strong>Thực tế sau khi đo FP:</strong> Alpha (200 FP) → $1,000/FP, density 0.075. Beta (1,200 FP) → $500/FP, density 0.008. Gamma (300 FP) → $1,333/FP, density 0.067. Delta (2,000 FP) → $400/FP, density 0.004. Thực ra Beta và Delta hiệu quả nhất, Alpha và Gamma kém nhất.</p>
+<p><strong>Kết quả:</strong> Sau khi bổ sung FP measurement, quyết định của CFO thay đổi hoàn toàn — đầu tư vào đội Beta và Delta, cải thiện process đội Alpha và Gamma.</p>
+<p><strong>Bài học:</strong> "Size does matter!" — không có size normalizer, mọi so sánh performance đều có thể dẫn đến quyết định sai. Đây là lý do FPA quan trọng hơn metrics thô.</p>
+<hr />
+<h3 id="case-study-2-defect-removal-efficiency-tim-ung-luc-tiet-kiem-10-lan-chi-phi">Case Study 2: Defect Removal Efficiency — Tìm Đúng Lúc Tiết Kiệm 10 Lần Chi Phí<a class="headerlink" href="#case-study-2-defect-removal-efficiency-tim-ung-luc-tiet-kiem-10-lan-chi-phi" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Hai đội phát triển phần mềm ngân hàng (mỗi đội 20 người, cùng project size 500 FP):</p>
+<ul>
+<li><strong>Đội A:</strong> Tìm 200 defects — 50 trong design/code review, 100 trong testing, 50 sau production release</li>
+<li><strong>Đội B:</strong> Tìm 200 defects — 160 trong design/code review, 30 trong testing, 10 sau production release</li>
+</ul>
+<p><strong>So sánh DRE:</strong> Đội A: DRE = 150/200 = 75%. Đội B: DRE = 190/200 = 95%.</p>
+<p><strong>Chi phí thực tế:</strong> Theo research (Wiegers, 2002 — được trích dẫn trong chương): Fix defect trong design review tốn 1x. Trong testing tốn 10x. Sau production tốn 100x. Đội A: 50×1 + 100×10 + 50×100 = 6,050 units. Đội B: 160×1 + 30×10 + 10×100 = 1,460 units. <strong>Đội B tiết kiệm hơn 4 lần</strong> dù cùng số defects tổng.</p>
+<p><strong>Kết quả:</strong> Management đầu tư vào peer review, static analysis tools, và code review process cho tất cả đội → DRE trung bình tăng từ 72% lên 88% trong 1 năm → chi phí bảo trì giảm 35%.</p>
+<p><strong>Bài học:</strong> Defect removal efficiency là metric mạnh nhất để justify đầu tư vào front-end quality activities. Không cần Six Sigma — cần biết mình đang ở đâu trong defect removal lifecycle.</p>
+<hr />
+<h3 id="case-study-3-xay-dung-measurement-program-tu-au-startup-fintech">Case Study 3: Xây Dựng Measurement Program Từ Đầu — Startup Fintech 🇻🇳<a class="headerlink" href="#case-study-3-xay-dung-measurement-program-tu-au-startup-fintech" title="Permanent link">&para;</a></h3>
+<p><strong>Bối cảnh:</strong> Startup fintech Việt Nam 60 dev muốn scale lên 150 dev trong 18 tháng. CTO muốn thiết lập measurement program để đảm bảo quality không giảm khi scale.</p>
+<p><strong>Vấn đề:</strong> Chưa có measurement gì. Không có baseline. Team chưa biết FP là gì. CFO không muốn đầu tư nhiều vào "measuring" — muốn dùng tiền cho dev.</p>
+<p><strong>Giải pháp 3 bước từ chương:</strong>
+1. <strong>Nguồn data:</strong> Thiết lập Jira tracking đầy đủ cho time, defects theo phase; train đội lead về FP counting (không cần count toàn bộ — sample 30% dự án đủ để baseline)
+2. <strong>Tính toàn vẹn:</strong> Monthly spot-check 3 projects ngẫu nhiên bởi Tech Lead — so sánh Jira data với actual output
+3. <strong>Báo cáo:</strong> Dashboard đơn giản 4 metrics/tháng: cost/FP, defect density, DRE, time to market — gửi cho CTO và CFO</p>
+<p><strong>Kết quả:</strong> Sau 6 tháng có baseline. Khi scale từ 60 → 150 dev, phát hiện productivity giảm 20% (từ 8 → 10 hours/FP) — sớm hơn dự kiến. CTO dùng data này để justify đầu tư vào CI/CD tools và onboarding process cải thiện. Productivity phục hồi về 8.5 hours/FP sau 3 tháng.</p>
+<p><strong>Bài học:</strong> Bắt đầu đơn giản (4 metrics, sample-based FP counting) tốt hơn chờ perfect data. Measurement program phải có "owner" rõ ràng và được review với management hàng tháng.</p>
+<hr />
+<h2 id="so-o-bang-tong-hop">📊 Sơ đồ &amp; Bảng tổng hợp<a class="headerlink" href="#so-o-bang-tong-hop" title="Permanent link">&para;</a></h2>
+<h3 id="bang-1-size-does-matter-vi-du-so-sanh-tu-chuong">Bảng 1: "Size Does Matter" — Ví dụ So Sánh Từ Chương<a class="headerlink" href="#bang-1-size-does-matter-vi-du-so-sanh-tu-chuong" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Dự án</th>
+<th>Size (FP)</th>
+<th>Chi phí ($K)</th>
+<th>Unit Cost ($/FP)</th>
+<th>Defects</th>
+<th>Defect Density</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PO special</td>
+<td>250</td>
+<td>500</td>
+<td><strong>2,000</strong></td>
+<td>12</td>
+<td><strong>0.048</strong></td>
+</tr>
+<tr>
+<td>Vendor mods</td>
+<td>765</td>
+<td>760</td>
+<td>993</td>
+<td>18</td>
+<td>0.023</td>
+</tr>
+<tr>
+<td>Pricing adj</td>
+<td>100</td>
+<td>80</td>
+<td>800</td>
+<td>5</td>
+<td><strong>0.050</strong></td>
+</tr>
+<tr>
+<td>Store sys</td>
+<td>1,498</td>
+<td>990</td>
+<td><strong>660</strong></td>
+<td>22</td>
+<td><strong>0.014</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Store sys có unit cost thấp nhất và defect density thấp nhất — TỐTНАЙТ. PO special nhìn rẻ nhất nhưng thực ra đắt nhất khi chuẩn hóa theo size.</em></p>
+<hr />
+<h3 id="bang-2-8-metrics-quan-trong-cong-thuc-va-ung-dung">Bảng 2: 8 Metrics Quan Trọng — Công Thức và Ứng Dụng<a class="headerlink" href="#bang-2-8-metrics-quan-trong-cong-thuc-va-ung-dung" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Công thức tính</th>
+<th>Benchmark điển hình</th>
+<th>Ứng dụng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cost per FP</strong></td>
+<td>Total cost / Total FP</td>
+<td>$500–$1,500/FP (tùy ngành)</td>
+<td>So sánh projects, outsource vs in-house</td>
+</tr>
+<tr>
+<td><strong>Cost to repair</strong></td>
+<td>(Repair hours × Rate) / Release FP</td>
+<td>—</td>
+<td>Đo "cost of poor quality"</td>
+</tr>
+<tr>
+<td><strong>Reliability</strong></td>
+<td>Production failures / App FP</td>
+<td>&lt;0.01 failures/FP</td>
+<td>Monitor production quality</td>
+</tr>
+<tr>
+<td><strong>Time to market</strong></td>
+<td>FP / Calendar months</td>
+<td>50–200 FP/month</td>
+<td>Đo tốc độ team</td>
+</tr>
+<tr>
+<td><strong>Defect density</strong></td>
+<td>Defects / FP</td>
+<td>&lt;0.05/FP (tốt)</td>
+<td>So sánh quality giữa projects</td>
+</tr>
+<tr>
+<td><strong>Defect removal efficiency</strong></td>
+<td>Pre-delivery defects / Total defects</td>
+<td>&gt;85% (tốt)</td>
+<td>Đánh giá hiệu quả QA</td>
+</tr>
+<tr>
+<td><strong>Test case coverage</strong></td>
+<td>Test cases / FP</td>
+<td>3–10 cases/FP</td>
+<td>Forecast testing effort</td>
+</tr>
+<tr>
+<td><strong>Productivity</strong></td>
+<td>Hours / FP (inverted)</td>
+<td>8–20 hours/FP (tùy loại)</td>
+<td>Đo hiệu năng team</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="bang-3-3-thach-thuc-xay-dung-measurement-program">Bảng 3: 3 Thách Thức Xây Dựng Measurement Program<a class="headerlink" href="#bang-3-3-thach-thuc-xay-dung-measurement-program" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thách thức</th>
+<th>Biểu hiện</th>
+<th>Giải pháp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nguồn data không sẵn có</strong></td>
+<td>Không có project-level cost; không track defects theo phase</td>
+<td>Đầu tư tools tracking + training; bắt đầu với sample</td>
+</tr>
+<tr>
+<td><strong>Tính toàn vẹn data</strong></td>
+<td>Effort bị misallocate; time sheet không chính xác</td>
+<td>Internal audit process 7 bước định kỳ</td>
+</tr>
+<tr>
+<td><strong>Báo cáo không hiệu quả</strong></td>
+<td>Data tốt nhưng report không ai đọc hoặc bị misread</td>
+<td>Biết audience; design report trước khi collect data</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cau-hoi-on-tap">❓ Câu hỏi ôn tập<a class="headerlink" href="#cau-hoi-on-tap" title="Permanent link">&para;</a></h2>
+<p><strong>Câu 1 (Nhớ lại):</strong> 5 thành phần của Function Point Analysis là gì? Mỗi thành phần đo lường điều gì?</p>
+<p>💡 <strong>Gợi ý:</strong> Nghĩ đến cách dữ liệu "vào" và "ra" khỏi một ứng dụng, và cách dữ liệu được lưu trữ.</p>
+<p>📝 <strong>Đáp án:</strong> 5 thành phần của FPA bao gồm: (1) <strong>Inputs</strong> — dữ liệu đưa vào ứng dụng từ người dùng hoặc hệ thống bên ngoài (ví dụ: form nhập liệu, file upload); (2) <strong>Outputs</strong> — dữ liệu được xuất ra ngoài ứng dụng (ví dụ: báo cáo PDF, file export, screen hiển thị kết quả); (3) <strong>Inquiries</strong> — yêu cầu kết hợp input (câu hỏi từ user) và output (kết quả tra cứu) mà không cần xử lý tính toán phức tạp (ví dụ: tra cứu trạng thái đơn hàng); (4) <strong>Internal data stores</strong> — logical groups of data được duy trì trong ứng dụng (ví dụ: bảng khách hàng, bảng sản phẩm trong database); (5) <strong>External interface files</strong> — dữ liệu được dùng chung với ứng dụng khác mà không thuộc sở hữu của ứng dụng này (ví dụ: file tỷ giá từ ngân hàng nhà nước). Mỗi thành phần được đánh giá complexity Low/Average/High và cộng điểm để ra tổng function points.</p>
+<hr />
+<p><strong>Câu 2 (Nhớ lại):</strong> Tại sao Customer Satisfaction surveys nên được thực hiện bởi bên thứ ba thay vì do IT department tự thực hiện?</p>
+<p>💡 <strong>Gợi ý:</strong> Nghĩ đến conflict of interest và objectivity.</p>
+<p>📝 <strong>Đáp án:</strong> Khi IT department tự thực hiện customer satisfaction survey, có ít nhất ba vấn đề: (1) <strong>Bias trong thiết kế câu hỏi</strong> — người thiết kế survey có xu hướng (dù vô thức) viết câu hỏi theo hướng nhận được phản hồi tích cực; (2) <strong>Bias trong phân tích kết quả</strong> — kết quả tiêu cực có thể bị "giải thích" theo hướng ít gây tổn hại; (3) <strong>Người được khảo sát không trả lời thật</strong> — nhân viên biết rằng IT đang đọc kết quả có thể ngần ngại phê bình thẳng thắn. Bên thứ ba độc lập loại bỏ ba vấn đề này: câu hỏi được thiết kế khách quan, kết quả được phân tích không thiên vị, và người được khảo sát tin rằng phản hồi của mình ẩn danh thực sự. Ngoài ra, tác giả nhấn mạnh: IT phải <strong>sẵn sàng phản hồi với kết quả</strong> — nếu hỏi mà không làm gì, mất niềm tin còn nhiều hơn là không hỏi.</p>
+<hr />
+<p><strong>Câu 3 (Hiểu):</strong> Tại sao Defect Removal Efficiency (DRE) được mô tả là "one of the most powerful performance indicators" — mạnh hơn chỉ đo tổng số defects?</p>
+<p>💡 <strong>Gợi ý:</strong> Chi phí fix defect ở giai đoạn nào thì rẻ nhất?</p>
+<p>📝 <strong>Đáp án:</strong> DRE mạnh hơn tổng defect count vì hai lý do: (1) <strong>Thời điểm phát hiện quyết định chi phí</strong> — fix defect trong design review tốn khoảng 1x, trong testing tốn ~10x, sau production tốn ~100x (được chứng minh bởi Wiegers, 2002, được trích dẫn trong chương). Hai team cùng tìm 100 defects có thể có chi phí khác nhau 5–10 lần tùy vào lúc nào tìm thấy; (2) <strong>DRE đo hiệu quả QA process</strong> — nếu DRE thấp (ví dụ 50%), nghĩa là một nửa defects không được phát hiện trước khi release — front-end QA activities (peer review, static analysis, code review) đang kém. DRE cao (&gt;85%) thì ngược lại — QA process đang hoạt động tốt. Vì vậy DRE không chỉ cho biết có bao nhiêu bugs mà còn cho biết QA process của tổ chức có systematically loại bỏ defects sớm không — thông tin này có giá trị kinh doanh trực tiếp.</p>
+<hr />
+<p><strong>Câu 4 (Hiểu):</strong> Chương phân biệt trách nhiệm của IT Provider và Business Unit như thế nào trong việc deliver "right software"?</p>
+<p>💡 <strong>Gợi ý:</strong> Ai quyết định "right" problem cần giải? Ai quyết định cách giải "right"?</p>
+<p>📝 <strong>Đáp án:</strong> Chương phân biệt rõ: IT Provider chịu trách nhiệm về <strong>"right software"</strong> — tức là phần mềm được xây đúng kỹ thuật, giao đúng hạn, đúng ngân sách, và đáp ứng đúng requirements đã được thỏa thuận. Đây là trách nhiệm kỹ thuật và project delivery. Business Unit chịu trách nhiệm về <strong>"right software solution"</strong> — tức là phần mềm đó có thực sự giải quyết đúng vấn đề kinh doanh không, có tạo ra tăng doanh thu hay cắt giảm chi phí không. Đây là trách nhiệm về problem definition và business impact. Thực tế: IT có thể build perfect software cho wrong requirements và vẫn "fail" dưới góc nhìn business. Ngược lại, business có thể define đúng problem nhưng IT deliver kém về quality/schedule → cũng fail. Do đó, chương nhấn mạnh đây là <strong>trách nhiệm chia sẻ</strong> — cả hai bên cùng phải sở hữu outcome, không thể một bên đổ lỗi cho bên kia hoàn toàn.</p>
+<hr />
+<p><strong>Câu 5 (Ứng dụng):</strong> Bạn là CTO của một công ty thương mại điện tử Việt Nam. CEO hỏi: "Đội IT của chúng ta đang làm việc hiệu quả không? Và làm sao tôi biết?" Sử dụng framework của chương, bạn sẽ xây dựng measurement program như thế nào trong 90 ngày đầu?</p>
+<p>💡 <strong>Gợi ý:</strong> Bắt đầu từ 4 thước đo chính + Size, không cần đo tất cả ngay lập tức.</p>
+<p>📝 <strong>Đáp án:</strong> Trong 90 ngày đầu, tôi sẽ thực hiện theo 3 phase: <strong>Phase 1 (tháng 1) — Thiết lập baseline:</strong> Xác định 4–6 dự án gần nhất làm mẫu; train 2 Tech Lead về FP counting (dùng IFPUG method); thu thập data retrospective: total cost, duration, defects theo phase cho 6 dự án đó; tính 4 metrics cơ bản: cost/FP, defect density, DRE, time to market. <strong>Phase 2 (tháng 2) — Audit và Validate:</strong> Spot-check time tracking của 2 dự án đang chạy để đảm bảo data integrity; xây dựng simple Jira/tracking template để capture data forward-looking; so sánh baseline với ISBSG benchmark ngành e-commerce nếu có. <strong>Phase 3 (tháng 3) — Báo cáo đầu tiên:</strong> Trình bày dashboard 1 trang cho CEO: 4 metrics hiện tại vs trend 3 tháng gần nhất (nếu có data); so sánh với benchmark ngành; 1–2 action items cụ thể (ví dụ: "DRE hiện tại 65%, target 80% trong 6 tháng bằng cách thêm code review process"). Sau 90 ngày, CEO có câu trả lời định lượng và CTO có roadmap cải thiện cụ thể.</p>
+<hr />
+<h2 id="ghi-nho-nhanh">💡 Ghi nhớ nhanh<a class="headerlink" href="#ghi-nho-nhanh" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ "Size does matter!" — không có size normalizer, mọi so sánh IT performance đều có thể misleading</li>
+<li>✅ Function Point Analysis là kỹ thuật đo size được công nhận quốc tế — đo từ góc nhìn user (functional), không phải từ code</li>
+<li>✅ Defect Removal Efficiency là metric mạnh nhất để optimize cost of quality — fix sớm rẻ hơn fix sau 10–100 lần</li>
+<li>⚠️ Data integrity là điều kiện tiên quyết — collect data mà không audit sẽ tạo ra false picture và quyết định sai</li>
+<li>⚠️ IT chịu trách nhiệm về "right software" (kỹ thuật), Business chịu trách nhiệm về "right solution" (business impact) — không thể một bên đổ lỗi hoàn toàn cho bên kia</li>
+<li>⚠️ Customer satisfaction survey phải dùng third-party và phải cam kết phản hồi — nếu hỏi mà không làm gì = mất tin cậy</li>
+<li>🔗 Chapter 10 tiếp theo sẽ đánh giá toàn diện liệu IT có đang hoạt động hiệu quả không, dựa trên các metrics này</li>
+</ul>
+<hr />
+<h2 id="giai-thich-thuat-ngu-chuyen-nganh">📖 Giải thích thuật ngữ chuyên ngành<a class="headerlink" href="#giai-thich-thuat-ngu-chuyen-nganh" title="Permanent link">&para;</a></h2>
+<p><strong>Function Point Analysis — FPA (Phân tích điểm chức năng)</strong>
+Kỹ thuật đo lường kích thước phần mềm dựa trên 5 thành phần chức năng từ góc nhìn người dùng, được chuẩn hóa bởi IFPUG và sử dụng rộng rãi toàn cầu.
+<em>Ví dụ:</em> Một màn hình nhập đơn hàng (input) + xuất hóa đơn PDF (output) + tra cứu tồn kho (inquiry) → đóng góp khoảng 15–25 FP cho hệ thống.
+<em>Vai trò trong chương:</em> "The missing measure" — normalizing factor cho phép so sánh cost, quality, duration giữa các projects khác nhau về size.</p>
+<hr />
+<p><strong>IFPUG (International Function Point Users Group)</strong>
+Tổ chức quốc tế duy trì phương pháp FPA, hỗ trợ certification chuyên gia đếm function points (CFPS), và xuất bản Counting Practices Manual (CPM).
+<em>Ví dụ:</em> Chuyên gia được IFPUG chứng nhận (CFPS) có thể count FP cho bất kỳ hệ thống nào với kết quả statistically repeatable.
+<em>Vai trò trong chương:</em> Đảm bảo FPA có "statistically demonstrable repeatability" — tiêu chí quan trọng của sizing metric tốt.</p>
+<hr />
+<p><strong>Defect Removal Efficiency — DRE (Hiệu quả loại bỏ lỗi)</strong>
+Tỷ lệ phần trăm defects được phát hiện và loại bỏ TRƯỚC khi phần mềm được release, so với tổng số defects (trước + sau release trong một khoảng thời gian xác định).
+<em>Ví dụ:</em> Tổng 100 defects: 80 tìm trước release, 20 sau release → DRE = 80%. Mục tiêu tốt: &gt;85%.
+<em>Vai trò trong chương:</em> "One of the most powerful performance indicators" — trực tiếp đo hiệu quả QA process và correlate với cost of quality.</p>
+<hr />
+<p><strong>Defect Density (Mật độ lỗi)</strong>
+Số defects chia cho tổng function points — chuẩn hóa số lỗi theo kích thước phần mềm để có thể so sánh chất lượng giữa các sản phẩm khác nhau.
+<em>Ví dụ:</em> Product A: 22 defects / 1,498 FP = 0.015 defect/FP (tốt). Product B: 12 defects / 250 FP = 0.048 defect/FP (kém hơn).
+<em>Vai trò trong chương:</em> Minh họa "size does matter" — product A ít bugs/FP hơn dù có nhiều bugs tuyệt đối hơn.</p>
+<hr />
+<p><strong>Cost per Function Point (Chi phí mỗi điểm chức năng)</strong>
+Tổng chi phí dự án (chủ yếu labor) chia cho tổng function points được deliver — đơn vị chuẩn hóa chi phí để so sánh projects và benchmark với ngành.
+<em>Ví dụ:</em> Dự án $990K / 1,498 FP = $660/FP; ngành average $800/FP → đội này hiệu quả hơn ngành 17%.
+<em>Vai trò trong chương:</em> Metric cốt lõi để trả lời câu hỏi từ Chapter 4: "Am I paying too much for IT?"</p>
+<hr />
+<p><strong>Productivity (Năng suất)</strong>
+Trong IT: Size (FP) / Effort (hours), thường được tính ngược thành hours per FP — bao nhiêu giờ cần để produce một function point.
+<em>Ví dụ:</em> Team A: 10,000 hours cho 500 FP = 20 hours/FP. Team B: 4,000 hours cho 500 FP = 8 hours/FP. Team B năng suất hơn 2.5 lần.
+<em>Vai trò trong chương:</em> Metric quan trọng để justify investment vào tools (Chapter 8) và so sánh offshore vs onshore productivity.</p>
+<hr />
+<p><strong>Baseline (Đường cơ sở hiệu suất)</strong>
+Mức hiệu suất đo được trong một khoảng thời gian xác định, được dùng làm điểm tham chiếu để so sánh hiệu suất tương lai hoặc để set performance targets trong SLA/contract.
+<em>Ví dụ:</em> Đo 10 dự án trong 6 tháng qua → baseline: cost/FP = $900, DRE = 72%, defect density = 0.038/FP.
+<em>Vai trò trong chương:</em> Điều kiện tiên quyết của bất kỳ measurement program nào — không có baseline = không thể đo cải thiện.</p>
+<hr />
+<p><strong>Defect Density by Phase (Mật độ lỗi theo giai đoạn)</strong>
+Đo số defects phát hiện trong từng giai đoạn (requirements, design, coding, testing) / total FP — để xác định giai đoạn nào đang "introduce" nhiều lỗi nhất.
+<em>Ví dụ:</em> Nếu 80% defects xuất hiện trong coding phase, có thể coding standards hoặc code review đang yếu.
+<em>Vai trò trong chương:</em> Cho phép phân tích root cause của quality issues theo từng phase — không chỉ biết "có nhiều bugs" mà còn biết "bugs đến từ đâu trong process."</p>
+<hr />
+<p><strong>AD/M (Application Development and Maintenance — Phát triển và bảo trì ứng dụng)</strong>
+Thuật ngữ mô tả toàn bộ vòng đời của phần mềm: từ phát triển mới đến bảo trì, nâng cấp và hỗ trợ ứng dụng đang chạy.
+<em>Ví dụ:</em> Đội AD/M gồm dev mới tính năng, team fix bugs production, và team hỗ trợ user.
+<em>Vai trò trong chương:</em> Context chính của Chapter 9 — "For this chapter, the context for our view of IT performance is primarily within the AD/M domain."</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>pdf_md/the-business-value-of-it-managing-risks-optimizing-performance-and-measuring-results-auerbach-publications-2008/guide_ai/17_chapter-9-how-do-i-measure-it-performance_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../016-part-iii-why-should-we-measure-it-performance-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Guide: Part III — Tại Sao Chúng Ta Phải Đo Lường Hiệu Suất IT?">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Guide: Part III — Tại Sao Chúng Ta Phải Đo Lường Hiệu Suất IT?
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../018-chapter-10-is-it-operating-effectively-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Guide: Chapter 10 — IT Có Đang Hoạt Động Hiệu Quả Không?">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Guide: Chapter 10 — IT Có Đang Hoạt Động Hiệu Quả Không?
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

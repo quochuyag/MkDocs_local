@@ -1,0 +1,2239 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../000-index/">
+      
+      
+        <link rel="next" href="../002-phase2-environment-vagrant-plan/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Kế hoạch Code Lab & Lộ trình học — Oracle Database Performance Tuning - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ke-hoach-code-lab-lo-trinh-hoc-oracle-database-performance-tuning" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Kế hoạch Code Lab & Lộ trình học — Oracle Database Performance Tuning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ke hoach
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ke_hoach/ — Kế hoạch & Nhật ký xây dựng môi trường học
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Kế hoạch Code Lab & Lộ trình học — Oracle Database Performance Tuning
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Kế hoạch Code Lab & Lộ trình học — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-phan-tich-hien-trang" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Phân tích hiện trạng
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Phân tích hiện trạng">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-co-phan-tai-lieu-95-hoan-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đã có (phần tài liệu — 95% hoàn chỉnh)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#con-thieu-phan-thuc-hanh-khoang-trong-lon-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Còn thiếu (phần thực hành — khoảng trống lớn nhất)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ke-hoach-4-giai-oan" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Kế hoạch 4 giai đoạn
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Kế hoạch 4 giai đoạn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-1-xay-bo-khung-code-lab-labs-bat-au-tu-ay" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 1 — Xây bộ khung Code Lab (labs/) ⬅️ BẮT ĐẦU TỪ ĐÂY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-2-dung-moi-truong-thuc-hanh-section-2-dung-vagrant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 2 — Dựng môi trường thực hành (Section 2, dùng Vagrant)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-3-hoan-thanh-9-senior-guide-con-lai" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 3 — Hoàn thành 9 Senior Guide còn lại
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-4-benchmark-harness-che-o-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 4 — Benchmark harness &amp; chế độ ôn tập
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-loi-khuyen-lo-trinh-hoc-khuyen-nghi-tot-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Lời khuyên lộ trình học (khuyến nghị tốt nhất)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Lời khuyên lộ trình học (khuyến nghị tốt nhất)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nguyen-tac-cot-loi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nguyên tắc cốt lõi
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lich-hoc-goi-y-23-buoituan-moi-buoi-90-phut" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lịch học gợi ý (2–3 buổi/tuần, mỗi buổi ~90 phút)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anti-patterns-can-tranh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Anti-patterns cần tránh
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-theo-doi-tien-o-ke-hoach" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Theo dõi tiến độ kế hoạch
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../002-phase2-environment-vagrant-plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Giai đoạn 2 — Kế hoạch chi tiết: Môi trường thực hành với Vagrant
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../003-phase2-setup-log/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nhật ký thực hiện Giai đoạn 2 — Dựng môi trường Vagrant (step-by-step)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../004-huong-dan-swingbench/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn cài đặt & cấu hình Swingbench 2.5 (Bước 3 — bạn tự thao tác GUI)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../005-huong-dan-ssh-vm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hướng dẫn SSH vào VM srv1 & thực hành trực tiếp trong Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all-new/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-phan-tich-hien-trang" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Phân tích hiện trạng
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Phân tích hiện trạng">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-co-phan-tai-lieu-95-hoan-chinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Đã có (phần tài liệu — 95% hoàn chỉnh)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#con-thieu-phan-thuc-hanh-khoang-trong-lon-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Còn thiếu (phần thực hành — khoảng trống lớn nhất)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ke-hoach-4-giai-oan" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Kế hoạch 4 giai đoạn
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Kế hoạch 4 giai đoạn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-1-xay-bo-khung-code-lab-labs-bat-au-tu-ay" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 1 — Xây bộ khung Code Lab (labs/) ⬅️ BẮT ĐẦU TỪ ĐÂY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-2-dung-moi-truong-thuc-hanh-section-2-dung-vagrant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 2 — Dựng môi trường thực hành (Section 2, dùng Vagrant)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-3-hoan-thanh-9-senior-guide-con-lai" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 3 — Hoàn thành 9 Senior Guide còn lại
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#giai-oan-4-benchmark-harness-che-o-on-tap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Giai đoạn 4 — Benchmark harness &amp; chế độ ôn tập
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-loi-khuyen-lo-trinh-hoc-khuyen-nghi-tot-nhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Lời khuyên lộ trình học (khuyến nghị tốt nhất)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Lời khuyên lộ trình học (khuyến nghị tốt nhất)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nguyen-tac-cot-loi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nguyên tắc cốt lõi
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lich-hoc-goi-y-23-buoituan-moi-buoi-90-phut" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lịch học gợi ý (2–3 buổi/tuần, mỗi buổi ~90 phút)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anti-patterns-can-tranh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Anti-patterns cần tránh
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-theo-doi-tien-o-ke-hoach" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Theo dõi tiến độ kế hoạch
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="ke-hoach-code-lab-lo-trinh-hoc-oracle-database-performance-tuning">Kế hoạch Code Lab &amp; Lộ trình học — Oracle Database Performance Tuning<a class="headerlink" href="#ke-hoach-code-lab-lo-trinh-hoc-oracle-database-performance-tuning" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Tạo ngày: 2026-07-13 · Cập nhật khi hoàn thành mỗi giai đoạn
+Mục tiêu: chuyển dự án từ "đọc tài liệu" sang "thực hành có đo lường" — mỗi kiến thức đều được chứng minh bằng số liệu trước/sau.</p>
+</blockquote>
+<hr />
+<h2 id="1-phan-tich-hien-trang">1. Phân tích hiện trạng<a class="headerlink" href="#1-phan-tich-hien-trang" title="Permanent link">&para;</a></h2>
+<h3 id="a-co-phan-tai-lieu-95-hoan-chinh">Đã có (phần tài liệu — 95% hoàn chỉnh)<a class="headerlink" href="#a-co-phan-tai-lieu-95-hoan-chinh" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Trạng thái</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pdf_extracted/</code></td>
+<td>✅ 38/38 practice</td>
+<td>Nội dung PDF gốc đã extract ra .md</td>
+</tr>
+<tr>
+<td><code>section_all/</code></td>
+<td>✅ 28/29 guide</td>
+<td>Chỉ thiếu Section 2 (môi trường)</td>
+</tr>
+<tr>
+<td><code>section_all_new/</code></td>
+<td>🟡 21/29 senior guide</td>
+<td>Thiếu: 2, 28, 29, 30, 31, 32, 34, 35, 36</td>
+</tr>
+<tr>
+<td><code>progress.md</code></td>
+<td>✅ Đến buổi 7 (25/04/2026)</td>
+<td>Gợi ý tiếp theo: Section 28</td>
+</tr>
+</tbody>
+</table>
+<h3 id="con-thieu-phan-thuc-hanh-khoang-trong-lon-nhat">Còn thiếu (phần thực hành — khoảng trống lớn nhất)<a class="headerlink" href="#con-thieu-phan-thuc-hanh-khoang-trong-lon-nhat" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Chỉ có 1 file SQL chạy được</strong> trong toàn dự án: <code>Section 35/client_wrkld/client_wrkld.sql</code></li>
+<li>Script thực hành bị kẹt trong PDF (dạng text) hoặc ZIP chưa giải nén:</li>
+<li><code>Section 2/Practice+1+-+Attached+Files.zip</code> (~110MB): SOE schema, Swingbench, soedump</li>
+<li><code>Section 28/Practice+30+-+ScriptFiles.zip</code>: script row migration</li>
+<li><code>Section 32/sqlnet.zip</code>, <code>tnsnames.zip</code>: config connection</li>
+<li><strong>Hệ quả:</strong> muốn thực hành phải gõ lại SQL từ PDF thủ công mỗi lần → chậm, dễ sai, không ôn tập lại được.</li>
+</ul>
+<hr />
+<h2 id="2-ke-hoach-4-giai-oan">2. Kế hoạch 4 giai đoạn<a class="headerlink" href="#2-ke-hoach-4-giai-oan" title="Permanent link">&para;</a></h2>
+<h3 id="giai-oan-1-xay-bo-khung-code-lab-labs-bat-au-tu-ay">Giai đoạn 1 — Xây bộ khung Code Lab (<code>labs/</code>) ⬅️ BẮT ĐẦU TỪ ĐÂY<a class="headerlink" href="#giai-oan-1-xay-bo-khung-code-lab-labs-bat-au-tu-ay" title="Permanent link">&para;</a></h3>
+<p>Tạo thư mục <code>labs/</code> với cấu trúc chuẩn hóa:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>labs/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── _toolkit/                  # Bộ chẩn đoán dùng chung mọi section
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── 00_env_check.sql       # Kiểm tra môi trường: version, SGA/PGA, SOE schema
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── top_waits.sql          # Top wait events (V$SYSTEM_EVENT)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── time_model.sql         # DB Time breakdown (V$SYS_TIME_MODEL)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   ├── top_sql.sql            # Top SQL theo elapsed / CPU / buffer gets
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── awr_snap.sql           # Tạo AWR snapshot nhanh
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   ├── ash_now.sql            # ASH 5 phút gần nhất theo event/sql_id
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   └── before_after.sql       # Chụp thống kê session trước/sau khi tune
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>├── section_&lt;N&gt;/               # Mỗi section một lab, 5 file cố định
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── 01_setup.sql           # Tạo object + dữ liệu test
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   ├── 02_workload.sql        # Sinh tải TÁI TẠO vấn đề hiệu năng
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   ├── 03_diagnose.sql        # Query chẩn đoán (script gốc PDF + annotation)
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   ├── 04_fix.sql             # Cách xử lý + đo lại kết quả
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   └── 99_cleanup.sql         # Dọn sạch, trả môi trường về ban đầu
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>└── README.md                  # Hướng dẫn dùng lab + quy ước
+</span></code></pre></div>
+<p><strong>Nguyên tắc:</strong>
+- SQL lấy từ <code>pdf_extracted/</code> (script gốc Ahmed Baraka) làm xương sống, bổ sung annotation tiếng Việt.
+- Mỗi lab phải chạy được từ đầu đến cuối bằng SQL*Plus/SQLcl mà không cần sửa tay.
+- Mỗi <code>04_fix.sql</code> kết thúc bằng so sánh số liệu trước/sau (buffer gets, elapsed, waits).</p>
+<p><strong>Thứ tự tạo lab — ưu tiên section tái tạo được vấn đề bằng SQL thuần:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Ưu tiên</th>
+<th>Section</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>28 — Row Migration &amp; Chaining</td>
+<td>Tiếp theo trong lộ trình; có ScriptFiles.zip đối chiếu; dễ tái tạo bằng PCTFREE thấp + UPDATE</td>
+</tr>
+<tr>
+<td>2</td>
+<td>27 — Index Defragmentation</td>
+<td>Companion của 28; tái tạo bằng DELETE hàng loạt → đo BLEVEL/DEL_LF_ROWS</td>
+</tr>
+<tr>
+<td>3</td>
+<td>29 — Table Fragmentation</td>
+<td>Cùng nhóm storage; DELETE + đo HWM</td>
+</tr>
+<tr>
+<td>4</td>
+<td>19 — Enqueue Waits</td>
+<td>Tái tạo lock contention bằng 2 session</td>
+</tr>
+<tr>
+<td>5</td>
+<td>21 — Shared Pool</td>
+<td>Hard parse storm bằng literal SQL vòng lặp</td>
+</tr>
+<tr>
+<td>6</td>
+<td>23 — PGA</td>
+<td>Sort/hash tràn temp bằng query lớn</td>
+</tr>
+<tr>
+<td>7</td>
+<td>30 — Table Compression</td>
+<td>So sánh size + elapsed các loại compression</td>
+</tr>
+<tr>
+<td>8</td>
+<td>22 — Buffer Cache</td>
+<td>Cache advice, full scan lớn</td>
+</tr>
+<tr>
+<td>9</td>
+<td>24 — Redo Path</td>
+<td>log file sync bằng commit loop</td>
+</tr>
+<tr>
+<td>10+</td>
+<td>Các section còn lại</td>
+<td>Monitoring sections (6–17) dùng chung <code>_toolkit/</code> là chính</td>
+</tr>
+</tbody>
+</table>
+<h3 id="giai-oan-2-dung-moi-truong-thuc-hanh-section-2-dung-vagrant">Giai đoạn 2 — Dựng môi trường thực hành (Section 2, dùng Vagrant)<a class="headerlink" href="#giai-oan-2-dung-moi-truong-thuc-hanh-section-2-dung-vagrant" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>📋 <strong>Kế hoạch chi tiết từng bước: <a href="../002-phase2-environment-vagrant-plan/">02_phase2_environment_vagrant_plan.md</a></strong></p>
+</blockquote>
+<p>Tóm tắt: thay quy trình VirtualBox thủ công của Practice 1 gốc (OL6.10 + Oracle 12.2 — đã EOL) bằng <strong>Vagrant + oracle/vagrant-projects → VM Oracle Linux 8 + Oracle 19c EE</strong>, PDB tên <code>ORADB</code> (giữ tên như course).</p>
+<ol>
+<li>Giải nén, kiểm kê <code>Section 2/Practice+1+-+Attached+Files.zip</code> (create_soe.sql, soe.dmp, Swingbench 2.5)</li>
+<li><code>vagrant up</code> dựng VM 19c (6 GB RAM, 2 vCPU) — ~45 phút tự động</li>
+<li>Import SOE schema vào PDB ORADB; cài Swingbench 2.5 trên host (oltp.xml + warehouse.xml)</li>
+<li>Cài <code>stress-ng</code> + <code>sysstat</code> trong VM (Section 25/34); snapshot <code>baseline</code> bằng <code>vagrant snapshot save</code></li>
+<li>Tạo guide còn thiếu: <code>section_all/section_2_preparing_environment_guide.md</code></li>
+<li>Hoàn thiện <code>labs/_toolkit/00_env_check.sql</code> để kiểm tra môi trường sẵn sàng chưa</li>
+</ol>
+<h3 id="giai-oan-3-hoan-thanh-9-senior-guide-con-lai">Giai đoạn 3 — Hoàn thành 9 Senior Guide còn lại<a class="headerlink" href="#giai-oan-3-hoan-thanh-9-senior-guide-con-lai" title="Permanent link">&para;</a></h3>
+<p>Thứ tự theo <code>progress.md</code>: <strong>28 → 29 → 30 → 31 → 32 → 34 → 35 → 36 → 2</strong></p>
+<p>Điểm mới: mỗi senior guide từ giờ <strong>link sang lab tương ứng</strong> trong <code>labs/</code> thay vì chỉ mô tả SQL. Lab Exercise 3 (Troubleshooting Scenario) dùng chính <code>02_workload.sql</code> để sinh incident thật.</p>
+<h3 id="giai-oan-4-benchmark-harness-che-o-on-tap">Giai đoạn 4 — Benchmark harness &amp; chế độ ôn tập<a class="headerlink" href="#giai-oan-4-benchmark-harness-che-o-on-tap" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>labs/_toolkit/before_after.sql</code>: chụp <code>V$SESSTAT</code>/<code>V$SESSION_EVENT</code> trước và sau khi tune → chứng minh hiệu quả bằng con số, không bằng cảm giác</li>
+<li><strong>Chế độ "chạy mù"</strong> cho ôn tập: chạy <code>02_workload.sql</code> của một section ngẫu nhiên → tự chẩn đoán bằng <code>_toolkit/</code> → so đáp án với <code>03_diagnose.sql</code></li>
+<li>Quiz tổng hợp theo giai đoạn (dùng format quiz trong CLAUDE.md)</li>
+</ul>
+<hr />
+<h2 id="3-loi-khuyen-lo-trinh-hoc-khuyen-nghi-tot-nhat">3. Lời khuyên lộ trình học (khuyến nghị tốt nhất)<a class="headerlink" href="#3-loi-khuyen-lo-trinh-hoc-khuyen-nghi-tot-nhat" title="Permanent link">&para;</a></h2>
+<h3 id="nguyen-tac-cot-loi">Nguyên tắc cốt lõi<a class="headerlink" href="#nguyen-tac-cot-loi" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Học bằng tay, không học bằng mắt.</strong> Đọc guide chỉ tạo "cảm giác hiểu". Chỉ khi tự tái tạo vấn đề → thấy wait event tăng → fix → thấy số giảm, kiến thức mới thành kỹ năng. Đây là lý do <code>labs/</code> quan trọng hơn việc hoàn thành 9 guide còn lại.</p>
+</li>
+<li>
+<p><strong>Mỗi buổi học = 1 vòng lặp đầy đủ:</strong> đọc lecture (30') → chạy lab (45') → tự trả lời Debrief Questions không nhìn tài liệu (15'). Không chuyển section mới khi chưa chạy xong lab section cũ.</p>
+</li>
+<li>
+<p><strong>Luôn bắt đầu từ triệu chứng, không từ giải pháp.</strong> Thứ tự tư duy chuẩn của tuning: <code>DB Time → Wait Event → SQL/Session gây ra → Root cause → Fix → Đo lại</code>. Toolkit được thiết kế đúng theo thứ tự này — dùng nó như checklist mỗi lần chẩn đoán.</p>
+</li>
+<li>
+<p><strong>Ôn tập giãn cách (spaced repetition):</strong> sau mỗi 3 section mới, quay lại chạy "chạy mù" 1 section cũ. Kiến thức tuning rất dễ rơi nếu không dùng.</p>
+</li>
+</ol>
+<h3 id="lich-hoc-goi-y-23-buoituan-moi-buoi-90-phut">Lịch học gợi ý (2–3 buổi/tuần, mỗi buổi ~90 phút)<a class="headerlink" href="#lich-hoc-goi-y-23-buoituan-moi-buoi-90-phut" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tuần</th>
+<th>Nội dung</th>
+<th>Kết quả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>GĐ1: <code>_toolkit/</code> + lab Section 28 (mẫu chuẩn)</td>
+<td>Format lab được chốt</td>
+</tr>
+<tr>
+<td>2</td>
+<td>GĐ2: môi trường Section 2 + guide Section 2</td>
+<td>DB sẵn sàng, <code>section_all/</code> đủ 29/29</td>
+</tr>
+<tr>
+<td>3–4</td>
+<td>Lab + Senior guide: Section 28, 29, 30</td>
+<td>Nhóm storage tuning xong</td>
+</tr>
+<tr>
+<td>5–6</td>
+<td>Lab + Senior guide: Section 31, 32</td>
+<td>In-Memory + Connection xong</td>
+</tr>
+<tr>
+<td>7–8</td>
+<td>Lab + Senior guide: Section 34, 35, 36</td>
+<td>Senior guide đủ 29/29</td>
+</tr>
+<tr>
+<td>9</td>
+<td>GĐ4: benchmark harness + chạy mù 3 section ngẫu nhiên</td>
+<td>Chế độ ôn tập hoạt động</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Bổ sung lab cho các section cũ (19, 21, 23, 27...) theo bảng ưu tiên</td>
+<td>Phòng lab đầy đủ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="anti-patterns-can-tranh">Anti-patterns cần tránh<a class="headerlink" href="#anti-patterns-can-tranh" title="Permanent link">&para;</a></h3>
+<ul>
+<li>❌ Hoàn thành nốt 9 guide trước rồi mới làm lab → lại rơi vào "đọc chay", guide viết xong không có lab kiểm chứng</li>
+<li>❌ Copy script chạy mà không dự đoán trước kết quả → luôn tự hỏi "mình kỳ vọng thấy gì?" trước khi Enter</li>
+<li>❌ Tune theo "best practice" thuộc lòng thay vì theo số liệu đo được — chính là bài học lớn nhất của khóa này</li>
+</ul>
+<hr />
+<h2 id="4-theo-doi-tien-o-ke-hoach">4. Theo dõi tiến độ kế hoạch<a class="headerlink" href="#4-theo-doi-tien-o-ke-hoach" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Giai đoạn</th>
+<th>Hạng mục</th>
+<th>Trạng thái</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>labs/_toolkit/</code> (7 script)</td>
+<td>✅ 7/7 xong 2026-07-14 — tất cả đã smoke-test trên VM</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>labs/_toolkit/</code> bộ sinh tải (workload_soe + soe_load.sh + workload_stop)</td>
+<td>✅ Xong 2026-07-14 (buổi 10) — thay Swingbench; external job spawn phiên SOE thật (job PLSQL không tính DB time)</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>labs/section_28/</code> (lab mẫu)</td>
+<td>✅ Xong 2026-07-14 — chạy end-to-end trên DB thật, số liệu trước/sau ghi trong <code>labs/section_28/README.md</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>labs/section_2,6,8,9,10/</code> (nhóm monitoring)</td>
+<td>✅ Xong 2026-07-14 (buổi 10) — 5 lab test end-to-end trên VM, README kèm số đo thật</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>labs/README.md</code></td>
+<td>✅ Xong 2026-07-14</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td><strong>TOÀN BỘ Giai đoạn 2 — VM 19c + SOE + Swingbench + snapshot</strong></td>
+<td><strong>✅ Xong 2026-07-13</strong> — xem <a href="../003-phase2-setup-log/">03_phase2_setup_log.md</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Kiểm kê Attached Files Section 2</td>
+<td>✅ Xong 2026-07-13</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>section_all/section_2_preparing_environment_guide.md</code></td>
+<td>✅ Xong 2026-07-13 → section_all đủ 29/29</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Senior guide 28, 29, 30, 31, 32, 34, 35, 36, 2</td>
+<td>⬜ 0/9</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>before_after.sql</code> + chế độ chạy mù</td>
+<td>⬜ Chưa làm</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Khi hoàn thành hạng mục nào, đổi ⬜ → ✅ và ghi ngày. Cuối mỗi buổi vẫn cập nhật <code>progress.md</code> như quy trình cũ trong CLAUDE.md.</p>
+</blockquote>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/ke_hoach/01_learning_plan.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../000-index/" class="md-footer__link md-footer__link--prev" aria-label="Trước: ke_hoach/ — Kế hoạch &amp; Nhật ký xây dựng môi trường học">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                ke_hoach/ — Kế hoạch & Nhật ký xây dựng môi trường học
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../002-phase2-environment-vagrant-plan/" class="md-footer__link md-footer__link--next" aria-label="Sau: Giai đoạn 2 — Kế hoạch chi tiết: Môi trường thực hành với Vagrant">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Giai đoạn 2 — Kế hoạch chi tiết: Môi trường thực hành với Vagrant
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

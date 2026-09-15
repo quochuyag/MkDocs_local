@@ -1,0 +1,2827 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../migration-strategy/">
+      
+      
+        <link rel="next" href="../../docs/adr/001-data-architecture/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Phân tích Hiệu năng — Settlement Query Optimization - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#phan-tich-hieu-nang-settlement-query-optimization" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Phân tích Hiệu năng — Settlement Query Optimization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../03-performance-tuning/claude-review/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            13. VietPay
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_1" id="__nav_11_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design notes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_1">
+            <span class="md-nav__icon md-icon"></span>
+            Design notes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrity-guarantees/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Đảm bảo Toàn vẹn Dữ liệu — VietPay Wallet Platform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-strategy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chiến Lược Migration: Thêm Cột `settlement_batch_id` vào Bảng `transactions`
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Phân tích Hiệu năng — Settlement Query Optimization
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Phân tích Hiệu năng — Settlement Query Optimization
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-query-goc-va-van-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Query gốc và Vấn đề
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Query gốc và Vấn đề">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query-goc-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query gốc (slow)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#van-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vấn đề
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-cham" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao chậm?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-phan-tich-query-plan-before-vs-after" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Phân tích Query Plan: Before vs After
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Phân tích Query Plan: Before vs After">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-before-khong-co-index-toi-uu" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 BEFORE — Không có index tối ưu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-after-covering-partial-index-khong-partition" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 AFTER — Covering Partial Index (không partition)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-after-partitioned-table-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 AFTER — Partitioned Table + Index
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-so-sanh-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 So sánh tổng hợp
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-chien-luoc-partial-covering-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Chiến lược Partial Covering Index
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Chiến lược Partial Covering Index">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tai-sao-partial-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Tại sao Partial Index?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 Tại sao Partial Index?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-status-settled-partial" class="md-nav__link">
+    <span class="md-ellipsis">
+      WHERE status = 'SETTLED' — Partial
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#created_at-wallet_id-column-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      (created_at, wallet_id) — Column order
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#include-currency-amount-covering" class="md-nav__link">
+    <span class="md-ellipsis">
+      INCLUDE (currency, amount) — Covering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-kich-thuoc-index-uoc-tinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Kích thước Index ước tính
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-chien-luoc-partitioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Chiến lược Partitioning
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Chiến lược Partitioning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-range-partition-by-created_at-monthly" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Range Partition by created_at (Monthly)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tai-sao-range-partitioning-theo-thang" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Tại sao Range Partitioning theo tháng?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-partition-pruning-hoat-ong-nhu-the-nao" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Partition Pruning hoạt động như thế nào?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-luu-y-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Lưu ý quan trọng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-quan-ly-partition-tu-ong" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5 Quản lý Partition tự động
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-materialized-view-vs-direct-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Materialized View vs Direct Query
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Materialized View vs Direct Query">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-so-sanh-chi-tiet" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 So sánh chi tiết
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-khi-nao-dung-cai-nao" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Khi nào dùng cái nào?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-hybrid-approach-e-xuat-cho-vietpay" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Hybrid Approach (Đề xuất cho VietPay)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-trade-offs-va-chi-phi" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Trade-offs và Chi phí
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Trade-offs và Chi phí">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-write-overhead" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 Write Overhead
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-index-size-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Index Size Estimation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-maintenance-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Maintenance Cost
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-phuong-phap-benchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Phương pháp Benchmark
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Phương pháp Benchmark">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-tao-test-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Tạo Test Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-benchmark-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2 Benchmark Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-metrics-can-thu-thap" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3 Metrics cần thu thập
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-monitoring-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.4 Monitoring Queries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-khuyen-nghi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt Khuyến nghị
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../docs/adr/001-data-architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Docs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../huong-dan-chi-tiet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📖 HƯỚNG DẪN CHI TIẾT — VietPay Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../mongodb/webhook-events-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Mongodb
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../neo4j/fraud-detection-model/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Neo4j
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🏦 VietPay — Enterprise Database Architecture Assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../requirements-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📋 Take Home Assessment — Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Mục lục
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#muc-luc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mục lục
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-query-goc-va-van-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Query gốc và Vấn đề
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Query gốc và Vấn đề">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query-goc-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query gốc (slow)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#van-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vấn đề
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tai-sao-cham" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tại sao chậm?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-phan-tich-query-plan-before-vs-after" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Phân tích Query Plan: Before vs After
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Phân tích Query Plan: Before vs After">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-before-khong-co-index-toi-uu" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 BEFORE — Không có index tối ưu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-after-covering-partial-index-khong-partition" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 AFTER — Covering Partial Index (không partition)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-after-partitioned-table-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 AFTER — Partitioned Table + Index
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-so-sanh-tong-hop" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 So sánh tổng hợp
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-chien-luoc-partial-covering-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Chiến lược Partial Covering Index
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Chiến lược Partial Covering Index">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tai-sao-partial-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Tại sao Partial Index?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 Tại sao Partial Index?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-status-settled-partial" class="md-nav__link">
+    <span class="md-ellipsis">
+      WHERE status = 'SETTLED' — Partial
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#created_at-wallet_id-column-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      (created_at, wallet_id) — Column order
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#include-currency-amount-covering" class="md-nav__link">
+    <span class="md-ellipsis">
+      INCLUDE (currency, amount) — Covering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-kich-thuoc-index-uoc-tinh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Kích thước Index ước tính
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-chien-luoc-partitioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Chiến lược Partitioning
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Chiến lược Partitioning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-range-partition-by-created_at-monthly" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Range Partition by created_at (Monthly)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tai-sao-range-partitioning-theo-thang" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Tại sao Range Partitioning theo tháng?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-partition-pruning-hoat-ong-nhu-the-nao" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Partition Pruning hoạt động như thế nào?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-luu-y-quan-trong" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Lưu ý quan trọng
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-quan-ly-partition-tu-ong" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5 Quản lý Partition tự động
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-materialized-view-vs-direct-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Materialized View vs Direct Query
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Materialized View vs Direct Query">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-so-sanh-chi-tiet" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 So sánh chi tiết
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-khi-nao-dung-cai-nao" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Khi nào dùng cái nào?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-hybrid-approach-e-xuat-cho-vietpay" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Hybrid Approach (Đề xuất cho VietPay)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-trade-offs-va-chi-phi" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Trade-offs và Chi phí
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Trade-offs và Chi phí">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-write-overhead" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 Write Overhead
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-index-size-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Index Size Estimation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-maintenance-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Maintenance Cost
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-phuong-phap-benchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Phương pháp Benchmark
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Phương pháp Benchmark">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-tao-test-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Tạo Test Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-benchmark-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2 Benchmark Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-metrics-can-thu-thap" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3 Metrics cần thu thập
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-monitoring-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.4 Monitoring Queries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tom-tat-khuyen-nghi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tóm tắt Khuyến nghị
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="phan-tich-hieu-nang-settlement-query-optimization">Phân tích Hiệu năng — Settlement Query Optimization<a class="headerlink" href="#phan-tich-hieu-nang-settlement-query-optimization" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Tài liệu kỹ thuật</strong> cho đội ngũ DBA và Backend Engineer<br />
+<strong>Phiên bản:</strong> 1.0 — 2026-06-23<br />
+<strong>Database:</strong> PostgreSQL 15+<br />
+<strong>Bối cảnh:</strong> Bảng <code>transactions</code> với 50M+ rows, query settlement hàng tháng chạy chậm</p>
+</blockquote>
+<hr />
+<h2 id="muc-luc">Mục lục<a class="headerlink" href="#muc-luc" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-query-gốc-và-vấn-đề">Query gốc và vấn đề</a></li>
+<li><a href="#2-phân-tích-query-plan-before-vs-after">Phân tích Query Plan: Before vs After</a></li>
+<li><a href="#3-chiến-lược-partial-covering-index">Chiến lược Partial Covering Index</a></li>
+<li><a href="#4-chiến-lược-partitioning">Chiến lược Partitioning</a></li>
+<li><a href="#5-materialized-view-vs-direct-query">Materialized View vs Direct Query</a></li>
+<li><a href="#6-trade-offs-và-chi-phí">Trade-offs và Chi phí</a></li>
+<li><a href="#7-phương-pháp-benchmark">Phương pháp Benchmark</a></li>
+</ol>
+<hr />
+<h2 id="1-query-goc-va-van-e">1. Query gốc và Vấn đề<a class="headerlink" href="#1-query-goc-va-van-e" title="Permanent link">&para;</a></h2>
+<h3 id="query-goc-slow">Query gốc (slow)<a class="headerlink" href="#query-goc-slow" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">:</span><span class="n">month_start</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w">  </span><span class="p">:</span><span class="n">month_end</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="van-e">Vấn đề<a class="headerlink" href="#van-e" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Yếu tố</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kích thước bảng</strong></td>
+<td>50M rows, ~15 GB data</td>
+</tr>
+<tr>
+<td><strong>Selectivity</strong></td>
+<td><code>status = 'SETTLED'</code> lọc ~70% → vẫn còn 35M rows</td>
+</tr>
+<tr>
+<td><strong>Date range</strong></td>
+<td>1 tháng ≈ 4.2M rows (1/12 của 50M)</td>
+</tr>
+<tr>
+<td><strong>Combined filter</strong></td>
+<td>~2.9M rows cần scan (4.2M × 70%)</td>
+</tr>
+<tr>
+<td><strong>Execution plan</strong></td>
+<td><strong>Sequential Scan</strong> → đọc toàn bộ 50M rows</td>
+</tr>
+<tr>
+<td><strong>Thời gian</strong></td>
+<td>~45 giây (cold cache), ~15 giây (warm cache)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tai-sao-cham">Tại sao chậm?<a class="headerlink" href="#tai-sao-cham" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>50M rows × ~300 bytes/row ≈ 15 GB
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                                  ↓
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                    Sequential Scan đọc 15 GB
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                                  ↓
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                    Filter loại bỏ 47M rows (94%)
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>                                  ↓
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>                    Chỉ 3M rows cần cho kết quả
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>                                  ↓
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>            → 94% I/O là lãng phí!
+</span></code></pre></div>
+<hr />
+<h2 id="2-phan-tich-query-plan-before-vs-after">2. Phân tích Query Plan: Before vs After<a class="headerlink" href="#2-phan-tich-query-plan-before-vs-after" title="Permanent link">&para;</a></h2>
+<h3 id="21-before-khong-co-index-toi-uu">2.1 BEFORE — Không có index tối ưu<a class="headerlink" href="#21-before-khong-co-index-toi-uu" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>HashAggregate  (cost=2,847,321..2,847,821 rows=50000 width=44)
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>                (actual time=44,823..44,891 ms)
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  Group Key: wallet_id, currency
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  Batches: 1   Memory Usage: 8209kB
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  →  Seq Scan on transactions  
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>       (cost=0.00..2,597,321 rows=2,916,667 width=36)
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>       (actual time=0.031..43,217 ms)
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>       Filter: (status = 'SETTLED' AND created_at &gt;= '2026-01-01'
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>                AND created_at &lt; '2026-02-01')
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>       Rows Removed by Filter: 47,083,333
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>       Buffers: shared hit=324112 read=1,623,456
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>Planning Time: 0.215 ms
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>Execution Time: 44,912.543 ms
+</span></code></pre></div>
+<p><strong>Phân tích:</strong>
+- <code>Seq Scan</code> đọc <strong>toàn bộ</strong> 50M rows → 15 GB I/O
+- <code>Rows Removed by Filter: 47M</code> → 94% dữ liệu đọc lên rồi bỏ
+- <code>shared read=1,623,456</code> → ~12.4 GB từ disk (cold cache scenario)</p>
+<h3 id="22-after-covering-partial-index-khong-partition">2.2 AFTER — Covering Partial Index (không partition)<a class="headerlink" href="#22-after-covering-partial-index-khong-partition" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>HashAggregate  (cost=87,321..87,821 rows=50000 width=44)
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>               (actual time=782..823 ms)
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  Group Key: wallet_id, currency
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  Batches: 1   Memory Usage: 8209kB
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  →  Index Only Scan using idx_txn_settlement_covering on transactions
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>       (cost=0.56..72,321 rows=2,916,667 width=36)
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>       (actual time=0.042..412 ms)
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>       Index Cond: (created_at &gt;= '2026-01-01' AND created_at &lt; '2026-02-01')
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>       Heap Fetches: 0
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>       Buffers: shared hit=15,234
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>Planning Time: 0.312 ms
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>Execution Time: 847.891 ms
+</span></code></pre></div>
+<p><strong>Cải thiện:</strong>
+- <code>Index Only Scan</code> → <strong>không truy cập heap</strong> (Heap Fetches: 0)
+- Chỉ đọc ~116 MB index pages thay vì 15 GB table data
+- <strong>Giảm 53× thời gian</strong> (45s → 0.85s)</p>
+<h3 id="23-after-partitioned-table-index">2.3 AFTER — Partitioned Table + Index<a class="headerlink" href="#23-after-partitioned-table-index" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>HashAggregate  (cost=12,321..12,821 rows=50000 width=44)
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>               (actual time=187..213 ms)
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  Group Key: source_wallet_id, currency
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  →  Index Only Scan using transactions_y2026m01_settlement_idx
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>       on transactions_y2026m01 transactions_partitioned
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>       (cost=0.43..9,321 rows=2,916,667 width=36)
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>       (actual time=0.028..98 ms)
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>       Index Cond: (created_at &gt;= '2026-01-01' AND created_at &lt; '2026-02-01')
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>       Heap Fetches: 0
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>       Buffers: shared hit=4,123
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>Planning Time: 0.487 ms
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>Execution Time: 231.456 ms
+</span></code></pre></div>
+<p><strong>Cải thiện thêm:</strong>
+- <strong>Partition pruning</strong>: chỉ scan 1 partition (4.2M rows) thay vì 50M
+- Index nhỏ hơn ~12× → fit tốt hơn trong shared_buffers
+- <strong>Giảm 195× so với ban đầu</strong> (45s → 0.23s)</p>
+<h3 id="24-so-sanh-tong-hop">2.4 So sánh tổng hợp<a class="headerlink" href="#24-so-sanh-tong-hop" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    A["Seq Scan\n45,000 ms"] --&gt;|"53× faster"| B["Covering Index\n850 ms"]
+    B --&gt;|"3.7× faster"| C["Partition + Index\n230 ms"]
+    C --&gt;|"23× faster"| D["Materialized View\n10 ms"]
+
+    style A fill:#ff6b6b,color:#fff
+    style B fill:#ffd93d,color:#000
+    style C fill:#6bcb77,color:#fff
+    style D fill:#4d96ff,color:#fff</code></pre>
+<table>
+<thead>
+<tr>
+<th>Phương pháp</th>
+<th>Execution Time</th>
+<th>So với gốc</th>
+<th>I/O Pages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Seq Scan (gốc)</td>
+<td>~45,000 ms</td>
+<td>1×</td>
+<td>1,950,000</td>
+</tr>
+<tr>
+<td>Covering Partial Index</td>
+<td>~850 ms</td>
+<td>53×</td>
+<td>15,234</td>
+</tr>
+<tr>
+<td>Partition + Covering Index</td>
+<td>~230 ms</td>
+<td>195×</td>
+<td>4,123</td>
+</tr>
+<tr>
+<td>Materialized View</td>
+<td>~10 ms</td>
+<td>4,500×</td>
+<td>52</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-chien-luoc-partial-covering-index">3. Chiến lược Partial Covering Index<a class="headerlink" href="#3-chien-luoc-partial-covering-index" title="Permanent link">&para;</a></h2>
+<h3 id="31-tai-sao-partial-index">3.1 Tại sao Partial Index?<a class="headerlink" href="#31-tai-sao-partial-index" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_txn_settlement_covering</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">INCLUDE</span><span class="w"> </span><span class="p">(</span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span><span class="p">;</span><span class="w">    </span><span class="c1">-- ← PARTIAL condition</span>
+</span></code></pre></div>
+<p><strong>Phân tích từng thành phần:</strong></p>
+<h4 id="where-status-settled-partial"><code>WHERE status = 'SETTLED'</code> — Partial<a class="headerlink" href="#where-status-settled-partial" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Chỉ index rows có <code>status = 'SETTLED'</code> (≈70% tổng rows).</li>
+<li><strong>Tiết kiệm 30% kích thước index</strong> so với full index.</li>
+<li>Query settlement <strong>luôn</strong> filter <code>status = 'SETTLED'</code> → partial index match hoàn hảo.</li>
+<li>Rows chưa SETTLED (PENDING, PROCESSING, FAILED) không bao giờ xuất hiện trong settlement query → không cần index.</li>
+</ul>
+<h4 id="created_at-wallet_id-column-order"><code>(created_at, wallet_id)</code> — Column order<a class="headerlink" href="#created_at-wallet_id-column-order" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>created_at</code> <strong>đặt trước</strong> vì range filter (<code>&gt;=</code>, <code>&lt;</code>) là predicate chính.</li>
+<li>PostgreSQL scan B-tree từ <code>month_start</code> đến <code>month_end</code> → <strong>range scan rất hiệu quả</strong>.</li>
+<li><code>wallet_id</code> đặt sau để hỗ trợ GROUP BY (pre-sorted data giúp HashAggregate hoặc GroupAggregate).</li>
+</ul>
+<h4 id="include-currency-amount-covering"><code>INCLUDE (currency, amount)</code> — Covering<a class="headerlink" href="#include-currency-amount-covering" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>INCLUDE</code> thêm columns vào leaf pages nhưng <strong>không thêm vào internal B-tree nodes</strong>.</li>
+<li>Kết quả: index chứa đủ mọi column cần cho query → <strong>Index-Only Scan</strong>.</li>
+<li>Không cần truy cập heap (table pages) → giảm random I/O dramatically.</li>
+</ul>
+<h3 id="32-kich-thuoc-index-uoc-tinh">3.2 Kích thước Index ước tính<a class="headerlink" href="#32-kich-thuoc-index-uoc-tinh" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Số rows SETTLED:        35,000,000 (70% × 50M)
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Kích thước mỗi entry:  ~64 bytes
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    - created_at:       8 bytes
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    - wallet_id (UUID): 16 bytes
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    - currency:         4 bytes (INCLUDE)
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    - amount:           8 bytes (INCLUDE)
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    - tuple header:     ~28 bytes
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>Tổng kích thước index:  35M × 64B ≈ 2.1 GB
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>Fill factor (default):  90%
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>Actual size:            ~2.3 GB
+</span></code></pre></div>
+<p>So sánh:
+- Full table size: ~15 GB
+- Full index (không partial): ~3.3 GB
+- Partial covering index: <strong>~2.3 GB</strong> (tiết kiệm ~1 GB)</p>
+<hr />
+<h2 id="4-chien-luoc-partitioning">4. Chiến lược Partitioning<a class="headerlink" href="#4-chien-luoc-partitioning" title="Permanent link">&para;</a></h2>
+<h3 id="41-range-partition-by-created_at-monthly">4.1 Range Partition by <code>created_at</code> (Monthly)<a class="headerlink" href="#41-range-partition-by-created_at-monthly" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">transactions_partitioned</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="p">...</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="p">)</span><span class="w"> </span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">RANGE</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">);</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">transactions_y2026m01</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="n">PARTITION</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="n">transactions_partitioned</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="k">FOR</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span><span class="s1">'2026-01-01'</span><span class="p">)</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="p">(</span><span class="s1">'2026-02-01'</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="42-tai-sao-range-partitioning-theo-thang">4.2 Tại sao Range Partitioning theo tháng?<a class="headerlink" href="#42-tai-sao-range-partitioning-theo-thang" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>Đánh giá</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Query pattern</strong></td>
+<td>Settlement query luôn filter theo tháng → partition pruning hoàn hảo</td>
+</tr>
+<tr>
+<td><strong>Data distribution</strong></td>
+<td>~4.2M rows/tháng, phân bố đều → partition size cân bằng</td>
+</tr>
+<tr>
+<td><strong>Data lifecycle</strong></td>
+<td>Dữ liệu cũ (&gt;2 năm) có thể detach + archive → quản lý dễ</td>
+</tr>
+<tr>
+<td><strong>Index size</strong></td>
+<td>Index mỗi partition ~190 MB vs 2.3 GB toàn bảng → fit trong RAM</td>
+</tr>
+<tr>
+<td><strong>VACUUM</strong></td>
+<td>VACUUM mỗi partition nhanh hơn, ít block concurrent operations</td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-partition-pruning-hoat-ong-nhu-the-nao">4.3 Partition Pruning hoạt động như thế nào?<a class="headerlink" href="#43-partition-pruning-hoat-ong-nhu-the-nao" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Query: WHERE created_at &gt;= '2026-01-01' AND created_at &lt; '2026-02-01'
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Partitions:
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  ┌─────────────────┐
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>  │ 2025-07 (4.2M)  │ ← PRUNED (skipped)
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>  ├─────────────────┤
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>  │ 2025-08 (4.2M)  │ ← PRUNED
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  ├─────────────────┤
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>  │ ...              │ ← PRUNED
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>  ├─────────────────┤
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>  │ 2026-01 (4.2M)  │ ← SCANNED ✅ (only this partition)
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>  ├─────────────────┤
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>  │ 2026-02 (4.2M)  │ ← PRUNED
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  ├─────────────────┤
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>  │ ...              │ ← PRUNED
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>  └─────────────────┘
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>Kết quả: scan 4.2M rows thay vì 50M → giảm 12×
+</span></code></pre></div>
+<h3 id="44-luu-y-quan-trong">4.4 Lưu ý quan trọng<a class="headerlink" href="#44-luu-y-quan-trong" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!WARNING]
+<strong>Primary Key phải bao gồm partition key.</strong>
+PostgreSQL yêu cầu PK/UNIQUE constraint phải chứa partition key (<code>created_at</code>).
+Điều này có nghĩa PK trở thành <code>(id, created_at)</code> thay vì chỉ <code>(id)</code>.
+FK từ bảng khác cần reference cả 2 columns, hoặc dùng application-level enforcement.</p>
+</blockquote>
+<h3 id="45-quan-ly-partition-tu-ong">4.5 Quản lý Partition tự động<a class="headerlink" href="#45-quan-ly-partition-tu-ong" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">-- Tạo partition mới mỗi tháng (chạy ngày 25)</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">cron</span><span class="p">.</span><span class="n">schedule</span><span class="p">(</span><span class="s1">'create-txn-partition'</span><span class="p">,</span><span class="w"> </span><span class="s1">'0 0 25 * *'</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="err">$$</span><span class="k">SELECT</span><span class="w"> </span><span class="n">fn_create_next_month_partition</span><span class="p">()</span><span class="err">$$</span><span class="p">);</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1">-- Archive partition cũ (&gt;24 tháng)</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1">-- ALTER TABLE transactions_partitioned</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1">--     DETACH PARTITION transactions_y2024m01;</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="c1">-- Sau đó dump + archive partition table riêng biệt.</span>
+</span></code></pre></div>
+<hr />
+<h2 id="5-materialized-view-vs-direct-query">5. Materialized View vs Direct Query<a class="headerlink" href="#5-materialized-view-vs-direct-query" title="Permanent link">&para;</a></h2>
+<h3 id="51-so-sanh-chi-tiet">5.1 So sánh chi tiết<a class="headerlink" href="#51-so-sanh-chi-tiet" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>Direct Query + Index</th>
+<th>Materialized View</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Latency</strong></td>
+<td>200-850 ms</td>
+<td>&lt; 10 ms</td>
+</tr>
+<tr>
+<td><strong>Data freshness</strong></td>
+<td>Real-time</td>
+<td>Staleness = refresh interval</td>
+</tr>
+<tr>
+<td><strong>Storage overhead</strong></td>
+<td>Index only (~2.3 GB)</td>
+<td>MV + indexes (~50 MB)</td>
+</tr>
+<tr>
+<td><strong>Write overhead</strong></td>
+<td>Nhỏ (index maintenance)</td>
+<td>Refresh cost (~2-5s mỗi lần)</td>
+</tr>
+<tr>
+<td><strong>Flexibility</strong></td>
+<td>Mọi date range, filter</td>
+<td>Chỉ pre-defined aggregation</td>
+</tr>
+<tr>
+<td><strong>Concurrent reads</strong></td>
+<td>Có (no lock)</td>
+<td>Có (with CONCURRENTLY)</td>
+</tr>
+<tr>
+<td><strong>Phù hợp cho</strong></td>
+<td>Ad-hoc queries, API real-time</td>
+<td>Dashboard, báo cáo định kỳ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-khi-nao-dung-cai-nao">5.2 Khi nào dùng cái nào?<a class="headerlink" href="#52-khi-nao-dung-cai-nao" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    A{"Cần dữ liệu\nreal-time?"} --&gt;|Có| B{"Latency\n&lt; 1s chấp nhận?"}
+    A --&gt;|Không| C{"Query frequency\ncao (&gt;10/phút)?"}
+
+    B --&gt;|Có| D["Direct Query\n+ Covering Index"]
+    B --&gt;|Không| E["Direct Query\n+ Partition + Index"]
+
+    C --&gt;|Có| F["Materialized View\nrefresh mỗi 15-60 phút"]
+    C --&gt;|Không| D
+
+    style D fill:#ffd93d,color:#000
+    style E fill:#6bcb77,color:#fff
+    style F fill:#4d96ff,color:#fff</code></pre>
+<h3 id="53-hybrid-approach-e-xuat-cho-vietpay">5.3 Hybrid Approach (Đề xuất cho VietPay)<a class="headerlink" href="#53-hybrid-approach-e-xuat-cho-vietpay" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Loại dữ liệu</th>
+<th>Phương pháp</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tháng hiện tại</strong></td>
+<td>Direct query (live table)</td>
+<td>Dữ liệu đang thay đổi liên tục, cần real-time</td>
+</tr>
+<tr>
+<td><strong>Các tháng trước</strong></td>
+<td>Materialized view</td>
+<td>Dữ liệu ổn định, query instant</td>
+</tr>
+<tr>
+<td><strong>Báo cáo quý/năm</strong></td>
+<td>Materialized view riêng</td>
+<td>Pre-aggregate ở mức thô hơn</td>
+</tr>
+</tbody>
+</table>
+<p>Đã implement trong <code>v_settlement_report</code> view — tự động chọn data source phù hợp.</p>
+<hr />
+<h2 id="6-trade-offs-va-chi-phi">6. Trade-offs và Chi phí<a class="headerlink" href="#6-trade-offs-va-chi-phi" title="Permanent link">&para;</a></h2>
+<h3 id="61-write-overhead">6.1 Write Overhead<a class="headerlink" href="#61-write-overhead" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Optimization</th>
+<th>Write Impact</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Covering Partial Index</strong></td>
+<td>+5-8% write latency</td>
+<td>Mỗi INSERT/UPDATE SETTLED phải update index</td>
+</tr>
+<tr>
+<td><strong>Table Partitioning</strong></td>
+<td>+2-3% write latency</td>
+<td>Partition routing overhead (rất nhỏ)</td>
+</tr>
+<tr>
+<td><strong>Materialized View</strong></td>
+<td>Batch cost</td>
+<td>REFRESH CONCURRENTLY: ~2-5s, không block reads</td>
+</tr>
+<tr>
+<td><strong>GIN Index (metadata)</strong></td>
+<td>+10-15% write latency</td>
+<td>GIN updates expensive; chỉ tạo nếu thực sự query metadata</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-index-size-estimation">6.2 Index Size Estimation<a class="headerlink" href="#62-index-size-estimation" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>┌──────────────────────────────────────────────────────────────┐
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>│ Tổng data hiện tại:            15.0 GB                      │
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>│                                                              │
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>│ Indexes cho transactions:                                    │
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>│   idx_txn_settlement_covering:  2.3 GB  (partial covering)  │
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>│   idx_txn_status:               1.1 GB  (status + created)  │
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>│   idx_txn_source_wallet:        0.8 GB  (partial)           │
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>│   idx_txn_dest_wallet:          0.8 GB  (partial)           │
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>│   uq_txn_reference_number:     1.2 GB  (unique)            │
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>│   idx_txn_metadata (GIN):      0.6 GB                       │
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>│   ─────────────────────────────────────                      │
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>│   Tổng indexes:                 6.8 GB  (45% of data)       │
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>│                                                              │
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>│ Materialized View:              0.05 GB                      │
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>│                                                              │
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>│ TỔNG CỘNG:                      21.85 GB                    │
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>│ (data + indexes + MV)                                        │
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>└──────────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<h3 id="63-maintenance-cost">6.3 Maintenance Cost<a class="headerlink" href="#63-maintenance-cost" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Tần suất</th>
+<th>Thời gian</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VACUUM ANALYZE transactions</code></td>
+<td>Mỗi 2-4 giờ (autovacuum)</td>
+<td>1-5 phút</td>
+<td>Nhỏ, concurrent</td>
+</tr>
+<tr>
+<td><code>REFRESH MATERIALIZED VIEW</code></td>
+<td>Mỗi 1 giờ</td>
+<td>2-5 giây</td>
+<td>Không block reads</td>
+</tr>
+<tr>
+<td><code>fn_cleanup_expired_idempotency_keys()</code></td>
+<td>Mỗi đêm</td>
+<td>1-10 giây</td>
+<td>Rất nhỏ</td>
+</tr>
+<tr>
+<td><code>fn_create_next_month_partition()</code></td>
+<td>Mỗi tháng</td>
+<td>&lt; 1 giây</td>
+<td>Không</td>
+</tr>
+<tr>
+<td><code>check_ledger_balance()</code></td>
+<td>Mỗi đêm</td>
+<td>30-60 giây</td>
+<td>Read-only</td>
+</tr>
+<tr>
+<td>Partition detach/archive</td>
+<td>Mỗi quý</td>
+<td>5-10 phút</td>
+<td>Cần kế hoạch</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-phuong-phap-benchmark">7. Phương pháp Benchmark<a class="headerlink" href="#7-phuong-phap-benchmark" title="Permanent link">&para;</a></h2>
+<h3 id="71-tao-test-data">7.1 Tạo Test Data<a class="headerlink" href="#71-tao-test-data" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">-- Tạo 50M rows test data (chạy trên môi trường test, KHÔNG chạy trên production)</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">transactions</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="n">reference_number</span><span class="p">,</span><span class="w"> </span><span class="n">source_wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">destination_wallet_id</span><span class="p">,</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="n">amount</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">settled_at</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">)</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">SELECT</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="s1">'TXN-'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">to_char</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span><span class="w"> </span><span class="s1">'FM00000000'</span><span class="p">),</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">wallets</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">    </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">wallets</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="p">(</span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">'TRANSFER'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PAYMENT'</span><span class="p">,</span><span class="w"> </span><span class="s1">'DEPOSIT'</span><span class="p">])[</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)::</span><span class="nb">int</span><span class="p">],</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">    </span><span class="p">(</span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">10000000</span><span class="p">)::</span><span class="nb">numeric</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="w">           </span><span class="c1">-- 0 - 10M</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">    </span><span class="s1">'VND'</span><span class="p">,</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span><span class="p">(</span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">'SETTLED'</span><span class="p">,</span><span class="s1">'SETTLED'</span><span class="p">,</span><span class="s1">'SETTLED'</span><span class="p">,</span><span class="s1">'PENDING'</span><span class="p">,</span><span class="s1">'FAILED'</span><span class="p">])[</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">)::</span><span class="nb">int</span><span class="p">],</span>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">    </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">365</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">' days'</span><span class="p">)::</span><span class="nb">interval</span><span class="p">,</span><span class="w">  </span><span class="c1">-- last 12 months</span>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">    </span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">random</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">365</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">' days'</span><span class="p">)::</span><span class="nb">interval</span><span class="w"> </span><span class="k">END</span>
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="k">FROM</span><span class="w"> </span><span class="n">generate_series</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">50000000</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">gs</span><span class="p">;</span>
+</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>
+</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="k">VACUUM</span><span class="w"> </span><span class="k">ANALYZE</span><span class="w"> </span><span class="n">transactions</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="72-benchmark-script">7.2 Benchmark Script<a class="headerlink" href="#72-benchmark-script" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">-- ============================================================</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1">-- Benchmark: So sánh Before vs After</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1">-- Chạy 3 lần mỗi query, lấy trung bình.</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">-- Chạy DISCARD ALL giữa mỗi lần để clear cache plan.</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">-- ============================================================</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1">-- Warm-up: load data vào shared_buffers</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="s1">'2026-02-01'</span><span class="p">;</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="c1">-- Test 1: Seq Scan (drop index trước)</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="c1">-- DROP INDEX IF EXISTS idx_txn_settlement_covering;</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="k">EXPLAIN</span><span class="w"> </span><span class="p">(</span><span class="k">ANALYZE</span><span class="p">,</span><span class="w"> </span><span class="n">BUFFERS</span><span class="p">,</span><span class="w"> </span><span class="n">FORMAT</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">)</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="s1">'2026-02-01'</span>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">;</span>
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="c1">-- Test 2: With Covering Index</span>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="c1">-- CREATE INDEX idx_txn_settlement_covering ...</span>
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="k">EXPLAIN</span><span class="w"> </span><span class="p">(</span><span class="k">ANALYZE</span><span class="p">,</span><span class="w"> </span><span class="n">BUFFERS</span><span class="p">,</span><span class="w"> </span><span class="n">FORMAT</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">)</span>
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions</span>
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span>
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="s1">'2026-02-01'</span>
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">;</span>
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a>
+</span><span id="__span-12-31"><a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a><span class="c1">-- Test 3: Partitioned Table</span>
+</span><span id="__span-12-32"><a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a><span class="k">EXPLAIN</span><span class="w"> </span><span class="p">(</span><span class="k">ANALYZE</span><span class="p">,</span><span class="w"> </span><span class="n">BUFFERS</span><span class="p">,</span><span class="w"> </span><span class="n">FORMAT</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">)</span>
+</span><span id="__span-12-33"><a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">source_wallet_id</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</span><span id="__span-12-34"><a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">transactions_partitioned</span>
+</span><span id="__span-12-35"><a id="__codelineno-12-35" name="__codelineno-12-35" href="#__codelineno-12-35"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'SETTLED'</span>
+</span><span id="__span-12-36"><a id="__codelineno-12-36" name="__codelineno-12-36" href="#__codelineno-12-36"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'2026-01-01'</span>
+</span><span id="__span-12-37"><a id="__codelineno-12-37" name="__codelineno-12-37" href="#__codelineno-12-37"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="s1">'2026-02-01'</span>
+</span><span id="__span-12-38"><a id="__codelineno-12-38" name="__codelineno-12-38" href="#__codelineno-12-38"></a><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">source_wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">;</span>
+</span><span id="__span-12-39"><a id="__codelineno-12-39" name="__codelineno-12-39" href="#__codelineno-12-39"></a>
+</span><span id="__span-12-40"><a id="__codelineno-12-40" name="__codelineno-12-40" href="#__codelineno-12-40"></a><span class="c1">-- Test 4: Materialized View</span>
+</span><span id="__span-12-41"><a id="__codelineno-12-41" name="__codelineno-12-41" href="#__codelineno-12-41"></a><span class="k">EXPLAIN</span><span class="w"> </span><span class="p">(</span><span class="k">ANALYZE</span><span class="p">,</span><span class="w"> </span><span class="n">BUFFERS</span><span class="p">,</span><span class="w"> </span><span class="n">FORMAT</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">)</span>
+</span><span id="__span-12-42"><a id="__codelineno-12-42" name="__codelineno-12-42" href="#__codelineno-12-42"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">wallet_id</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="n">total_amount</span>
+</span><span id="__span-12-43"><a id="__codelineno-12-43" name="__codelineno-12-43" href="#__codelineno-12-43"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">mv_monthly_settlement</span>
+</span><span id="__span-12-44"><a id="__codelineno-12-44" name="__codelineno-12-44" href="#__codelineno-12-44"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">settlement_month</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'2026-01-01'</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="73-metrics-can-thu-thap">7.3 Metrics cần thu thập<a class="headerlink" href="#73-metrics-can-thu-thap" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Tool</th>
+<th>Mục đích</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Execution time</td>
+<td><code>EXPLAIN ANALYZE</code></td>
+<td>Thời gian query thực tế</td>
+</tr>
+<tr>
+<td>Buffer hits vs reads</td>
+<td><code>EXPLAIN (BUFFERS)</code></td>
+<td>Đánh giá cache efficiency</td>
+</tr>
+<tr>
+<td>Rows removed by filter</td>
+<td><code>EXPLAIN ANALYZE</code></td>
+<td>Đánh giá selectivity</td>
+</tr>
+<tr>
+<td>Index size</td>
+<td><code>pg_total_relation_size()</code></td>
+<td>Storage overhead</td>
+</tr>
+<tr>
+<td>Write latency impact</td>
+<td><code>pgbench</code></td>
+<td>Ảnh hưởng đến INSERT/UPDATE</td>
+</tr>
+<tr>
+<td>Heap fetches</td>
+<td><code>EXPLAIN ANALYZE</code></td>
+<td>Index-only scan effectiveness</td>
+</tr>
+<tr>
+<td>VACUUM lag</td>
+<td><code>pg_stat_user_tables</code></td>
+<td>Visibility map freshness</td>
+</tr>
+</tbody>
+</table>
+<h3 id="74-monitoring-queries">7.4 Monitoring Queries<a class="headerlink" href="#74-monitoring-queries" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">-- Kiểm tra index usage</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">SELECT</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="n">schemaname</span><span class="p">,</span><span class="w"> </span><span class="n">tablename</span><span class="p">,</span><span class="w"> </span><span class="n">indexname</span><span class="p">,</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="n">idx_scan</span><span class="p">,</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="n">idx_tup_read</span><span class="p">,</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="n">idx_tup_fetch</span><span class="p">,</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="n">pg_size_pretty</span><span class="p">(</span><span class="n">pg_relation_size</span><span class="p">(</span><span class="n">indexrelid</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">index_size</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_user_indexes</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">tablename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'transactions'</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">idx_scan</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="c1">-- Kiểm tra cache hit ratio</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="k">SELECT</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">    </span><span class="n">relname</span><span class="p">,</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">    </span><span class="n">heap_blks_read</span><span class="p">,</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">    </span><span class="n">heap_blks_hit</span><span class="p">,</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">heap_blks_hit</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">heap_blks_hit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">heap_blks_read</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="w">        </span><span class="k">AS</span><span class="w"> </span><span class="n">cache_hit_pct</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_statio_user_tables</span>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">relname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'transactions'</span><span class="p">;</span>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="c1">-- Kiểm tra VACUUM status</span>
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="k">SELECT</span>
+</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a><span class="w">    </span><span class="n">relname</span><span class="p">,</span>
+</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="w">    </span><span class="n">last_vacuum</span><span class="p">,</span>
+</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a><span class="w">    </span><span class="n">last_autovacuum</span><span class="p">,</span>
+</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="w">    </span><span class="n">n_dead_tup</span><span class="p">,</span>
+</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a><span class="w">    </span><span class="n">n_live_tup</span><span class="p">,</span>
+</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a><span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n_dead_tup</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">NULLIF</span><span class="p">(</span><span class="n">n_live_tup</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">dead_pct</span>
+</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_user_tables</span>
+</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">relname</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'transactions%'</span>
+</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">relname</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="tom-tat-khuyen-nghi">Tóm tắt Khuyến nghị<a class="headerlink" href="#tom-tat-khuyen-nghi" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Ưu tiên</th>
+<th>Hành động</th>
+<th>Impact</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔴 <strong>P0</strong></td>
+<td>Tạo covering partial index <code>idx_txn_settlement_covering</code></td>
+<td>53× faster</td>
+<td>Thấp (1 DDL)</td>
+</tr>
+<tr>
+<td>🟠 <strong>P1</strong></td>
+<td>Chuyển sang partitioned table (monthly)</td>
+<td>195× faster</td>
+<td>Trung bình (migration)</td>
+</tr>
+<tr>
+<td>🟡 <strong>P2</strong></td>
+<td>Tạo materialized view cho dashboard</td>
+<td>4,500× faster</td>
+<td>Thấp (DDL + cron)</td>
+</tr>
+<tr>
+<td>🟢 <strong>P3</strong></td>
+<td>Implement hybrid view <code>v_settlement_report</code></td>
+<td>UX tối ưu</td>
+<td>Thấp (1 DDL)</td>
+</tr>
+<tr>
+<td>🔵 <strong>P4</strong></td>
+<td>Setup monitoring queries + alerts</td>
+<td>Preventive</td>
+<td>Thấp (cron + alerting)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!TIP]
+<strong>Bắt đầu với P0</strong> — tạo covering partial index. Đây là thay đổi nhỏ nhất nhưng mang lại cải thiện lớn nhất (53×). Không cần migration, không cần downtime (CREATE INDEX CONCURRENTLY), có thể apply ngay trên production.</p>
+</blockquote>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>vietpay/design-notes/performance-analysis.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../migration-strategy/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Chiến Lược Migration: Thêm Cột `settlement_batch_id` vào Bảng `transactions`">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Chiến Lược Migration: Thêm Cột `settlement_batch_id` vào Bảng `transactions`
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../docs/adr/001-data-architecture/" class="md-footer__link md-footer__link--next" aria-label="Sau: ADR-001: Kiến trúc Dữ liệu cho Nền tảng Thanh toán VietPay">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                ADR-001: Kiến trúc Dữ liệu cho Nền tảng Thanh toán VietPay
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

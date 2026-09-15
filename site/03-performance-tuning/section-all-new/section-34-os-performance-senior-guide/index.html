@@ -1,0 +1,2253 @@
+
+<!doctype html>
+<html lang="vi" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quản lý tập trung tài liệu học Oracle DBA, MySQL, MongoDB">
+      
+      
+        <meta name="author" content="quochuyag">
+      
+      
+      
+        <link rel="prev" href="../section-32-database-connection-optimization-senior-guide/">
+      
+      
+        <link rel="next" href="../section-35-sql-performance-analyzer-senior-guide/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Section 34 — OS Performance (Linux Utilities & OSWatcher): Senior DBA Guide - Thư viện khóa học DBA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#section-34-os-performance-linux-utilities-oswatcher-senior-dba-guide" class="md-skip">
+          Bỏ qua
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Đầu trang">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-header__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Thư viện khóa học DBA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 34 — OS Performance (Linux Utilities & OSWatcher): Senior DBA Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền tối"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền tối" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Chuyển sang nền sáng"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Chuyển sang nền sáng" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Tìm kiếm" placeholder="Tìm kiếm" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Tìm kiếm">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Chia sẻ" aria-label="Chia sẻ" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Xoá" aria-label="Xoá" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Thanh điều hướng" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Thư viện khóa học DBA" class="md-nav__button md-logo" aria-label="Thư viện khóa học DBA" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Thư viện khóa học DBA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trang chủ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../01-oracle-dba-zero-to-hero/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    01. Oracle DBA — Zero to Hero
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../02-rman-backup-recovery/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    02. Backup & Recovery voi RMAN
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    03. Performance Tuning
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            03. Performance Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-review/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Oracle Database Performance Tuning — Tài liệu Ôn tập Tổng hợp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Oracle Database Performance Tuning Course
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../ke-hoach/000-index/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Ke hoach
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../labs/frag-check/readme/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    README — Giải thích thiết kế System Prompt Oracle DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oracle-dba-system-prompt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SYSTEM PROMPT — Oracle DBA Instructor Claude
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../progress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tiến độ học tập — Oracle Database Performance Tuning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../section-all/section-10-server-generated-alerts-guide/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Section all
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Section all new
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            Section all new
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-10-server-generated-alerts-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Server-generated Alerts — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-11-statspack-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Statspack — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-12-addm-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADDM (Automatic Database Diagnostic Monitor) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-13-ash-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ASH (Active Session History) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-14-database-service-statistics-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 14 — Database Service Statistics & Module/Action/Client ID — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-15-sql-tracing-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 15 — SQL Tracing với DBMS_MONITOR — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-16-realtime-monitoring-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 16 — Real-time Database Operation Monitoring: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-17-automated-maintenance-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 17 — Automated Maintenance Tasks: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-19-enqueue-waits-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 19 — Handling Enqueue Waits: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-20-latch-mutex-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 20 — Latch & Mutex Contention: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-21-shared-pool-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 21 — Shared Pool Tuning: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-26-disk-io-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 26 — Disk I/O Tuning: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-27-index-defrag-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 27 — Index Defragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-28-row-migration-chaining-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Row Migration & Row Chaining — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-29-table-fragmentation-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 29 — Table Fragmentation: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-30-table-compression-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 30 — Table Compression: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-31-in-memory-column-store-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 31 — In-Memory Column Store: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-32-database-connection-optimization-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 32 — Database Connection Optimization: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Section 34 — OS Performance (Linux Utilities & OSWatcher): Senior DBA Guide
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-35-sql-performance-analyzer-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 35 — SQL Performance Analyzer: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-36-database-replay-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 36 — Database Replay: Senior DBA Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-6-time-model-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 6 — Time Model Views: Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-8-instance-activity-wait-events-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 8 — Instance Activity & Wait Events — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../section-9-awr-senior-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Section 9 — AWR (Automatic Workload Repository) — Deep Dive for Senior DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../04-rac-administration/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    04. RAC Administration
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../06-high-availability/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    06. High Availability (MySQL & MongoDB)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../07-sach-va-tai-lieu/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    07. Sach & Tai lieu (PDF da chuyen doi)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../09-dba-ai/auto-ai/claude/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    09. DBA + AI Automation
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    
+  
+  
+    <a href="../../../11-book-lab/dbatools-lab/bookcode/chapter02-notes/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    11. Book Lab
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../12-sql-oracle-mysql/docs/architecture/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    12. SQL Oracle & MySQL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../13-vietpay/design-notes/integrity-guarantees/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    13. VietPay
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../14-vietpay-claude/huong-dan/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    14. VietPay (Claude)
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Mục lục">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="section-34-os-performance-linux-utilities-oswatcher-senior-dba-guide">Section 34 — OS Performance (Linux Utilities &amp; OSWatcher): Senior DBA Guide<a class="headerlink" href="#section-34-os-performance-linux-utilities-oswatcher-senior-dba-guide" title="Permanent link">&para;</a></h1>
+<p><strong>Nguồn:</strong> Practice 35 (Linux Utilities) + Practice 36 (OSWatcher Black Box) + Oracle/Linux internals
+<strong>Cập nhật:</strong> 2026-07-16
+<strong>Level:</strong> Senior DBA / Production</p>
+<hr />
+<h1 id="lecture-notes">LECTURE NOTES<a class="headerlink" href="#lecture-notes" title="Permanent link">&para;</a></h1>
+<h2 id="1-mental-model">1. Mental Model<a class="headerlink" href="#1-mental-model" title="Permanent link">&para;</a></h2>
+<p>Các view của DB (Time Model, ASH, AWR) có <strong>một ranh giới cứng: chúng chỉ thấy Oracle</strong>. Khi nút thắt nằm <strong>ngoài</strong> Oracle (tiến trình khác, tài nguyên OS bão hòa), hoặc khi bạn cần biết <strong>tài nguyên OS nào</strong> đang cạn (CPU / memory-swap / disk / network), phải tụt xuống tầng OS. OS và DB là hai lăng kính nhìn cùng một cỗ máy — kỹ năng senior là <strong>tương quan hai lăng kính</strong> qua cầu nối <strong>SPID</strong>.</p>
+<p>Khung tư duy chuẩn để đọc mọi công cụ OS là <strong>USE method</strong> (Utilization / Saturation / Errors) cho từng tài nguyên:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Tài nguyên  │ Utilization        │ Saturation              │ Công cụ
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>────────────┼────────────────────┼─────────────────────────┼──────────────
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>CPU         │ %us + %sy          │ run queue r &gt; #CPU      │ mpstat, vmstat, top
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Memory      │ used/free          │ swap si/so &gt; 0          │ vmstat, free, top
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Disk        │ %util (per device) │ await, avgqu-sz         │ iostat -x, iotop
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>Network     │ throughput (RX/TX) │ RX-ERR/DRP, retransmits │ netstat, ip -s, sar
+</span></code></pre></div>
+<p>Câu hỏi đầu tiên khi mở bất kỳ công cụ nào: <em>tài nguyên nào? utilization hay saturation? Oracle hay external?</em> Nếu là Oracle → map SPID về session.</p>
+<hr />
+<h2 id="2-internals-mechanics">2. Internals &amp; Mechanics<a class="headerlink" href="#2-internals-mechanics" title="Permanent link">&para;</a></h2>
+<h3 id="load-average-khong-phai-cpu-load">Load Average không phải "CPU load"<a class="headerlink" href="#load-average-khong-phai-cpu-load" title="Permanent link">&para;</a></h3>
+<p>Load average (1/5/15 phút) là trung bình động số tiến trình ở <strong>run queue</strong> CỘNG tiến trình ở <strong>uninterruptible sleep (D state — chờ I/O)</strong>. Vì vậy load = 8 trên máy 4-CPU có thể là 8 tiến trình đói CPU, HOẶC 2 đói CPU + 6 chờ I/O. <strong>Load cao ≠ CPU bottleneck.</strong> Phải tách:
+- <code>vmstat</code> cột <strong><code>r</code></strong> (run queue) &gt; #CPU kéo dài = <strong>CPU saturation</strong> thật.
+- <code>vmstat</code> cột <strong><code>b</code></strong> (blocked, chờ I/O) cao = nút thắt <strong>I/O</strong>, không phải CPU.
+- <code>top</code>/<code>mpstat</code> <strong><code>%wa</code></strong> (iowait) cao = CPU <strong>rảnh</strong> đang chờ I/O → storage là nút thắt.</p>
+<p>Đây chính là ranh giới Section 25 nêu (Load Average với %WIO). <code>%wa</code> là <strong>chỉ báo I/O duy nhất trong top</strong>.</p>
+<h3 id="swap-bao-ong-o-cho-oracle">Swap = báo động đỏ cho Oracle<a class="headerlink" href="#swap-bao-ong-o-cho-oracle" title="Permanent link">&para;</a></h3>
+<p><code>vmstat</code> <code>si</code>/<code>so</code> (swap in/out) <strong>liên tục &gt; 0</strong> = memory bottleneck. Trên server Oracle, swap nghĩa là <strong>SGA/PGA bị đẩy ra đĩa</strong> → mọi truy cập bộ nhớ Oracle biến thành I/O đĩa → thảm họa hiệu năng. HugePages ghim SGA để <strong>không bao giờ</strong> bị paged. Thấy swapping trên DB server → xử lý ngay, không chờ.</p>
+<h3 id="iostat-x-oc-util-va-await-ung">iostat -x: đọc %util và await đúng<a class="headerlink" href="#iostat-x-oc-util-va-await-ung" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>%util</code></strong>: % thời gian device có ít nhất một request đang xử lý. Gần 100% = device bão hòa (với đĩa cơ đơn; với SSD/array nhiều queue, %util 100% chưa chắc bão hòa vì xử lý song song — <code>[⚠️ đọc theo loại storage]</code>).</li>
+<li><strong><code>await</code></strong>: latency trung bình mỗi I/O (ms), gồm cả thời gian xếp hàng. &gt; 10ms (cơ) / &gt; 2ms (SSD) = đáng ngờ.</li>
+<li><strong><code>avgqu-sz</code></strong>: độ dài hàng đợi trung bình — saturation.</li>
+<li><strong><code>r/s</code>, <code>w/s</code>, <code>rkB/s</code>, <code>wkB/s</code></strong>: IOPS và throughput.</li>
+<li><code>iostat</code> không option = số <strong>tích lũy từ boot</strong> (vô dụng); phải <code>iostat -xd 2</code> (delta mỗi 2s), <code>-y</code> bỏ report đầu.</li>
+</ul>
+<h3 id="steal-time-st-vo-hinh-ben-trong-db">Steal time %st — vô hình bên trong DB<a class="headerlink" href="#steal-time-st-vo-hinh-ben-trong-db" title="Permanent link">&para;</a></h3>
+<p>Trên VM/cloud, <code>%st</code> (steal) = CPU mà hypervisor lấy đi cho VM khác (noisy neighbor). Bên trong guest, Oracle <strong>không thấy</strong> %st — Time Model chỉ đo CPU Oracle dùng được. Chỉ công cụ OS (<code>top</code>, <code>mpstat</code>, <code>vmstat</code>) mới lộ %st. Trên môi trường ảo hóa, <code>%st</code> cao giải thích "DB chậm mà mọi metric Oracle bình thường".</p>
+<h3 id="cau-noi-spid-os-process-db-session">Cầu nối SPID — OS process ↔ DB session<a class="headerlink" href="#cau-noi-spid-os-process-db-session" title="Permanent link">&para;</a></h3>
+<p>Đây là kỹ thuật Oracle-connecting cốt lõi của cả section:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>top/ps → PID nóng (oracleORADB_xxx / ora_xxxx)
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                  │
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                  ▼  SPID = PID
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>   V$PROCESS.SPID ──JOIN── V$SESSION (S.PADDR = P.ADDR)
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                  │
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>                  ▼
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>   USERNAME / MODULE / SQL_ID / SQL_TEXT / MACHINE
+</span></code></pre></div>
+<ul>
+<li>OS → DB: từ PID nóng trong <code>top</code>, <code>SELECT ... V$PROCESS P JOIN V$SESSION S ON S.PADDR=P.ADDR WHERE P.SPID='&lt;pid&gt;'</code> → biết session/SQL nào.</li>
+<li>DB → OS: từ session nóng (ASH), lấy <code>V$PROCESS.SPID</code> để <code>strace</code>/<code>pstack</code>/<code>gdb</code> tiến trình đó ở OS.</li>
+<li>Foreground: <code>oracle&lt;SID&gt;</code> (hoặc <code>oracle_&lt;pid&gt;_&lt;sid&gt;</code>); background: <code>ora_pmon_&lt;SID&gt;</code>, <code>ora_dbw0_&lt;SID&gt;</code>, <code>ora_lgwr_&lt;SID&gt;</code>... — biết tên process để nhận diện nhanh trong <code>ps -ef | grep &lt;SID&gt;</code>.</li>
+</ul>
+<h3 id="oswatcher-black-box-vi-sao-can">OSWatcher Black Box — vì sao cần<a class="headerlink" href="#oswatcher-black-box-vi-sao-can" title="Permanent link">&para;</a></h3>
+<p>AWR <strong>không lưu</strong> metric OS (CPU external, iostat, swap, netstat). Không có collector lịch sử, bạn <strong>không thể</strong> điều tra một sự cố OS đã qua (external CPU spike, I/O storm lúc 03:00). OSWatcher là <strong>collector shell nhẹ</strong> chạy liên tục, sample <code>vmstat/mpstat/iostat/netstat/top/ps</code> (và private-net/cell trên Exadata) mỗi N giây, giữ M giờ trong file phẳng dưới <code>archive/</code>. Overhead cực nhỏ → chạy 24/7 trên production. <code>OSWbba</code> (analyzer, cần Java 8) vẽ graph + dashboard HTML từ archive. Chuẩn của Oracle Support (MOS 301137.1); Exadata có sẵn ExaWatcher. <strong>Điểm mấu chốt: nó phải đang chạy TRƯỚC sự cố</strong> — post-mortem cần lịch sử.</p>
+<hr />
+<h2 id="3-production-realities">3. Production Realities<a class="headerlink" href="#3-production-realities" title="Permanent link">&para;</a></h2>
+<h3 id="khong-tin-load-average-mot-minh">Không tin load average một mình<a class="headerlink" href="#khong-tin-load-average-mot-minh" title="Permanent link">&para;</a></h3>
+<p>Một alert "load average 40!" gửi lúc 3 giờ sáng có thể vô hại (40 tiến trình chờ I/O trên NFS treo) hoặc thảm họa (40 đói CPU trên 8-core). Luôn correlate: <code>vmstat</code> r vs b, <code>%wa</code>, <code>si/so</code>. Kết luận từ load đơn thuần là sai lầm kinh điển.</p>
+<h3 id="wa-gay-hieu-nham-tren-may-nhieu-core">%wa gây hiểu nhầm trên máy nhiều core<a class="headerlink" href="#wa-gay-hieu-nham-tren-may-nhieu-core" title="Permanent link">&para;</a></h3>
+<p><code>%wa</code> là chỉ số <strong>toàn hệ thống</strong>: tỷ lệ thời gian CPU rảnh mà có I/O đang chờ. Trên máy 32-core, một tiến trình I/O-bound làm <code>%wa</code> chỉ ~3% (31 core khác bận/rảnh việc khác) nhưng <code>iostat %util</code> của device đó = 100%. Đừng dựa <code>%wa</code> để loại trừ I/O bottleneck trên máy nhiều core — dùng <code>iostat -x</code> per-device + <code>iotop</code> per-process.</p>
+<h3 id="swap-zero-tolerance-hugepages">Swap zero-tolerance + HugePages<a class="headerlink" href="#swap-zero-tolerance-hugepages" title="Permanent link">&para;</a></h3>
+<p>Trên DB server chuẩn production: <code>vm.swappiness</code> thấp, HugePages đủ cho SGA, <code>USE_LARGE_PAGES=ONLY</code>. Mục tiêu là SGA <strong>không bao giờ</strong> vào swap. <code>si/so &gt; 0</code> kéo dài trên DB server là sự cố P1, không phải "để ý sau".</p>
+<h3 id="iotopiostat-can-ung-device-cua-oracle">iotop/iostat cần đúng device của Oracle<a class="headerlink" href="#iotopiostat-can-ung-device-cua-oracle" title="Permanent link">&para;</a></h3>
+<p><code>apply_io_stress.sh</code> của Practice ghi vào <code>/tmp</code> — nhưng datafile Oracle thường ở <code>/u01</code>, <code>/u02</code>, ASM disk. Khi điều tra I/O của DB, phải xác định <strong>đúng device/mount</strong> chứa datafile (<code>V$DATAFILE</code> → path → <code>df</code> → device) rồi mới đọc <code>iostat -x &lt;device&gt;</code>. Nhìn nhầm device = kết luận sai.</p>
+<h3 id="batch-mode-e-thu-thap-khong-chi-xem">Batch mode để thu thập, không chỉ xem<a class="headerlink" href="#batch-mode-e-thu-thap-khong-chi-xem" title="Permanent link">&para;</a></h3>
+<p><code>top -b</code>, <code>iotop -b -o</code>, <code>vmstat -t 2</code> (có timestamp) cho phép <strong>ghi ra file</strong> để phân tích sau hoặc feed vào script. Trong sự cố, chạy <code>vmstat -t 2 &gt;&gt; /tmp/vmstat.log &amp;</code> + <code>top -bc -d 5 &gt;&gt; ...</code> để có bằng chứng lịch sử ngay cả khi chưa có OSWatcher.</p>
+<h3 id="oswatcher-phai-chay-san-java-8-cho-analyzer">OSWatcher phải chạy sẵn + Java 8 cho analyzer<a class="headerlink" href="#oswatcher-phai-chay-san-java-8-cho-analyzer" title="Permanent link">&para;</a></h3>
+<p>Cài đặt OSWatcher lúc sự cố đang xảy ra là quá muộn cho khoảng thời gian trước đó. Chạy nó như service từ đầu. Analyzer <code>oswbba.jar</code> cần <strong>Java 8</strong> — Java shipped của OS (thường 7 hoặc mới hơn) có thể sai version → prepend <code>$ORACLE_HOME/jdk/jre/bin</code> vào PATH (bẫy đã ghi trong Practice 36).</p>
+<h3 id="cong-cu-nao-khong-tra-loi-uoc-gi">Công cụ nào KHÔNG trả lời được gì<a class="headerlink" href="#cong-cu-nao-khong-tra-loi-uoc-gi" title="Permanent link">&para;</a></h3>
+<p><code>iostat</code>/<code>mpstat</code> cho biết CPU bận nhưng <strong>không</strong> biết tiến trình nào → cần <code>top</code>/<code>ps</code>. <code>ifconfig</code>/<code>netstat</code> kiểm tra sức khỏe kết nối nhưng <strong>khó</strong> đo tải mạng theo thời gian → cần OSWatcher graph hoặc <code>sar -n DEV</code>. Biết giới hạn từng công cụ để không dừng điều tra sai chỗ.</p>
+<hr />
+<h2 id="4-decision-framework">4. Decision Framework<a class="headerlink" href="#4-decision-framework" title="Permanent link">&para;</a></h2>
+<p><strong>Triệu chứng → công cụ → metric:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>"Hệ thống chậm" → vmstat 2  (tổng quan nhanh: r, b, si/so, %us, %wa)
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>        │
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        ├── r &gt; #CPU, %us cao        → CPU bound  → top/ps tìm process → SPID map nếu Oracle
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        ├── b cao, %wa cao           → I/O bound  → iostat -x tìm device → iotop tìm process
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        ├── si/so &gt; 0 liên tục       → Memory bound (swap) → free, top; kiểm HugePages/SGA
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        ├── %st cao (VM)             → hypervisor steal → vấn đề tầng ảo hóa, ngoài DB
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        └── mọi thứ thấp mà vẫn chậm → network? → netstat -s (retransmit), sar -n DEV; hoặc lock/app
+</span></code></pre></div>
+<p><strong>Khi nào dùng OSWatcher (vs công cụ real-time):</strong>
+- Điều tra sự cố <strong>đã qua</strong> → OSWatcher archive (real-time tools vô dụng cho quá khứ)
+- Cần <strong>graph xu hướng</strong> nhiều giờ/ngày → OSWbba analyzer/dashboard
+- Baseline OS trước/sau thay đổi hạ tầng → OSWatcher liên tục
+- Real-time "đang cháy ngay bây giờ" → vmstat/top/iostat/iotop trực tiếp</p>
+<p><strong>Khi nào map SPID:</strong>
+- top/ps chỉ ra <code>oracle&lt;SID&gt;</code>/<code>ora_*</code> là process nóng → map về session/SQL để hành động (kill, tune)
+- Ngược lại: session Oracle nóng cần trace OS-level (<code>strace</code>/<code>pstack</code>) → lấy SPID từ V$PROCESS</p>
+<p><strong>Anti-patterns:</strong>
+- Kết luận CPU bottleneck từ load average mà không xem r/b/%wa
+- Bỏ qua I/O bottleneck vì <code>%wa</code> thấp trên máy nhiều core (phải xem iostat per-device)
+- Coi swapping trên DB server là chuyện nhỏ
+- Cài OSWatcher lúc sự cố đang diễn ra rồi kỳ vọng thấy được quá khứ
+- Đọc <code>iostat</code> không option (số tích lũy từ boot) rồi tưởng là tải hiện tại</p>
+<hr />
+<h2 id="5-key-sql-commands">5. Key SQL / Commands<a class="headerlink" href="#5-key-sql-commands" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 5.1 Tong quan nhanh (delta moi 2s, co timestamp)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>vmstat<span class="w"> </span>-t<span class="w"> </span><span class="m">2</span><span class="w">            </span><span class="c1"># r,b (queue) | si,so (swap) | bi,bo (block IO) | us,sy,id,wa (CPU)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>free<span class="w"> </span>-m<span class="w">                </span><span class="c1"># memory/swap tuyet doi</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># 5.2 CPU</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>mpstat<span class="w"> </span><span class="m">2</span><span class="w">               </span><span class="c1"># %usr %sys %iowait %idle %steal — per interval</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>mpstat<span class="w"> </span>-P<span class="w"> </span>ALL<span class="w"> </span><span class="m">2</span><span class="w">        </span><span class="c1"># tung core (lech tai giua core?)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>iostat<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w">            </span><span class="c1"># CPU avg</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># 5.3 Process nong (CPU)</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>top<span class="w">                    </span><span class="c1"># tuong tac: Shift+P (CPU), Shift+M (mem), z, c, k(kill), q</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>top<span class="w"> </span>-bc<span class="w"> </span>-d<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-30<span class="w">            </span><span class="c1"># batch mode -&gt; file/pipe</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>ps<span class="w"> </span>-e<span class="w"> </span>-o<span class="w"> </span>pcpu,pid,user,args<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-nrk1<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w">   </span><span class="c1"># top CPU processes</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>ps<span class="w"> </span>-ef<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>pmon<span class="w">                 </span><span class="c1"># instance dang chay?</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1"># 5.4 Disk I/O</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>iostat<span class="w"> </span>-xyd<span class="w"> </span><span class="m">2</span><span class="w"> </span>&lt;dev&gt;<span class="w">    </span><span class="c1"># %util, await, avgqu-sz, r/s w/s rkB/s wkB/s (delta)</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>iotop<span class="w"> </span>-o<span class="w"> </span>-b<span class="w"> </span>-k<span class="w"> </span>-d<span class="w"> </span><span class="m">2</span><span class="w">    </span><span class="c1"># process nao dang I/O (root)</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="c1"># 5.5 Network</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>ip<span class="w"> </span>-s<span class="w"> </span>link<span class="w">             </span><span class="c1"># RX/TX packets, errors, dropped (ifconfig da obsolete)</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>netstat<span class="w"> </span>-s<span class="w"> </span>-t<span class="w">          </span><span class="c1"># retransmit/bad segment (healthy: &lt;0.1%)</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>sar<span class="w"> </span>-n<span class="w"> </span>DEV<span class="w"> </span><span class="m">2</span><span class="w">           </span><span class="c1"># throughput per interface theo thoi gian</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="c1"># 5.6 OSWatcher</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="nb">cd</span><span class="w"> </span>~/oswbb
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>nohup<span class="w"> </span>./startOSWbb.sh<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">48</span><span class="w"> </span><span class="p">&amp;</span><span class="w">      </span><span class="c1"># sample moi 10s, giu 48h (nen: 30 336 cho prod)</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>tail<span class="w"> </span>-f<span class="w"> </span>nohup.out<span class="w">                  </span><span class="c1"># heartbeat</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>./stopOSWbb.sh
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$ORACLE_HOME</span>/jdk/jre/bin:<span class="nv">$PATH</span><span class="w">   </span><span class="c1"># Java 8 cho analyzer</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>java<span class="w"> </span>-jar<span class="w"> </span>oswbba.jar<span class="w"> </span>-i<span class="w"> </span>~/oswbb/archive<span class="w">      </span><span class="c1"># analyzer: so -&gt; graph, d -&gt; dashboard</span>
+</span></code></pre></div>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- 5.7 CAU NOI SPID: map OS process (PID nong) -&gt; DB session/SQL</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">sid</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="nb">serial</span><span class="o">#</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">username</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">osuser</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">machine</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">       </span><span class="n">s</span><span class="p">.</span><span class="n">program</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">module</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">spid</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">       </span><span class="n">s</span><span class="p">.</span><span class="n">sql_id</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">sql_text</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">FROM</span><span class="w">   </span><span class="n">v$session</span><span class="w"> </span><span class="n">s</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">JOIN</span><span class="w">   </span><span class="n">v$process</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">paddr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">addr</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">LEFT</span><span class="w">   </span><span class="k">JOIN</span><span class="w"> </span><span class="n">v$sql</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">sql_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">sql_id</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">WHERE</span><span class="w">  </span><span class="n">p</span><span class="p">.</span><span class="n">spid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&amp;os_pid'</span><span class="p">;</span><span class="w">          </span><span class="c1">-- PID lay tu top/ps</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">-- 5.8 Nguoc lai: session Oracle nong -&gt; SPID de trace o OS</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">sid</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">sql_id</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">spid</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">program</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="k">FROM</span><span class="w">   </span><span class="n">v$session</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">v$process</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">paddr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">addr</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">WHERE</span><span class="w">  </span><span class="n">s</span><span class="p">.</span><span class="n">sid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">db_sid</span><span class="p">;</span><span class="w">             </span><span class="c1">-- roi: strace -p &lt;spid&gt; / pstack &lt;spid&gt;</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1">-- 5.9 Datafile nam tren device nao (de doc dung iostat)</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">v$datafile</span><span class="p">;</span><span class="w">        </span><span class="c1">-- -&gt; df &lt;path&gt; -&gt; device -&gt; iostat -x &lt;device&gt;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="6-senior-checklist">6. Senior Checklist<a class="headerlink" href="#6-senior-checklist" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Bắt đầu bằng <code>vmstat -t 2</code>:</strong> đọc r/b (queue), si/so (swap), %us/%wa (CPU vs I/O) trước — phân loại nút thắt trong 5 giây</li>
+<li><strong>Không kết luận CPU từ load average:</strong> tách bằng r (CPU) vs b/%wa (I/O); load gồm cả D-state chờ I/O</li>
+<li><strong>Swapping = P1 trên DB server:</strong> si/so &gt; 0 liên tục nghĩa SGA/PGA bị paged → thảm họa; kiểm HugePages ngay</li>
+<li><strong>I/O: đọc per-device đúng mount của datafile:</strong> <code>V$DATAFILE</code>→path→df→device→<code>iostat -x</code>; đừng tin <code>%wa</code> đơn lẻ trên máy nhiều core</li>
+<li><strong>VM: kiểm %st (steal):</strong> DB metric bình thường mà vẫn chậm → hypervisor lấy CPU; chỉ OS tool thấy được</li>
+<li><strong>Map SPID hai chiều:</strong> OS PID nóng → <code>V$PROCESS.SPID</code>→session/SQL; session nóng → SPID→<code>strace</code>/<code>pstack</code>; đây là kỹ năng nối OS-DB</li>
+<li><strong>OSWatcher phải chạy TRƯỚC sự cố:</strong> AWR không lưu metric OS; không có collector lịch sử thì không điều tra được quá khứ; cài sẵn 24/7, analyzer cần Java 8</li>
+</ol>
+<hr />
+<h1 id="lab-exercises">LAB EXERCISES<a class="headerlink" href="#lab-exercises" title="Permanent link">&para;</a></h1>
+<h2 id="exercise-1-phan-loai-nut-that-cpu-vs-io-vs-memory-bang-vmstatmpstatiostat">Exercise 1 — Phân loại nút thắt: CPU vs I/O vs Memory bằng vmstat/mpstat/iostat<a class="headerlink" href="#exercise-1-phan-loai-nut-that-cpu-vs-io-vs-memory-bang-vmstatmpstatiostat" title="Permanent link">&para;</a></h2>
+<p><strong>Scenario:</strong> Người dùng báo "server chậm". Bạn có 60 giây để phân loại nút thắt trước khi đào sâu. Cần chứng minh vì sao load average một mình không đủ, và mỗi loại stress hiện ra ở metric nào.</p>
+<p><strong>Tasks:</strong>
+1. Chạy <code>vmstat -t 2</code> ở cửa sổ monitoring.
+2. Áp CPU stress (busy loop) → quan sát <code>r</code>, <code>%us</code> tăng; <code>%wa</code>, <code>b</code> không đổi.
+3. Dừng, áp I/O stress (<code>dd</code> ghi liên tục) → quan sát <code>b</code>, <code>%wa</code>, <code>bo</code> tăng; <code>%us</code> không tăng nhiều.
+4. Đối chiếu load average giữa hai trường hợp — chỉ ra vì sao cùng "load cao" nhưng nút thắt khác nhau.
+5. Với I/O stress, dùng <code>iostat -xyd 2 &lt;dev&gt;</code> xác định device + đọc <code>%util</code>, <code>await</code>.</p>
+<p><strong>Expected Findings:</strong>
+- CPU stress: <code>r</code> &gt; #CPU, <code>%us</code> cao, <code>%wa</code> ~0.
+- I/O stress: <code>b</code> cao, <code>%wa</code> cao, <code>%us</code> thấp; <code>iostat %util</code> device gần 100%, <code>await</code> tăng.
+- Load average tăng ở CẢ HAI nhưng vmstat phân biệt được nguồn (r vs b/%wa).</p>
+<p><strong>Debrief Questions:</strong>
+- Vì sao load average không đủ để kết luận CPU bottleneck?
+- Trên máy 32-core, một tiến trình I/O-bound làm <code>%wa</code> chỉ 3% — bạn kiểm tra ở đâu để không bỏ sót?
+- <code>si/so &gt; 0</code> xuất hiện — vì sao đây là báo động đỏ riêng trên DB server?</p>
+<hr />
+<h2 id="exercise-2-cau-noi-spid-tu-process-os-nong-ve-sql-trong-db">Exercise 2 — Cầu nối SPID: từ process OS nóng về SQL trong DB<a class="headerlink" href="#exercise-2-cau-noi-spid-tu-process-os-nong-ve-sql-trong-db" title="Permanent link">&para;</a></h2>
+<p><strong>Scenario:</strong> <code>top</code> cho thấy một tiến trình <code>oracle&lt;SID&gt;</code> chiếm ~100% CPU. Bạn cần biết đó là session nào, user nào, chạy SQL gì — để quyết định kill hay tune, thay vì kill mù theo PID.</p>
+<p><strong>Tasks:</strong>
+1. Từ một session <code>soe</code>, chạy vòng lặp PL/SQL đốt CPU (<code>WHILE TRUE ... SQRT(...)</code>).
+2. Ở cửa sổ monitoring, <code>ps -e -o pcpu,pid,user,args | sort -nrk1 | head</code> → lấy PID nóng.
+3. Với PID đó, chạy <code>map_os_to_db.sql</code> (SYS) → xác định SID/SERIAL#/USERNAME/MODULE/SQL_TEXT.
+4. Ngược lại: từ SID vừa tìm, lấy lại <code>V$PROCESS.SPID</code>, xác nhận khớp PID ban đầu.
+5. (Tùy chọn) Với SPID, chạy <code>pstack &lt;spid&gt;</code> vài lần xem call stack Oracle.</p>
+<p><strong>Expected Findings:</strong>
+- PID nóng là process <code>oracle&lt;SID&gt;</code> (foreground của session soe).
+- <code>map_os_to_db.sql</code> trả về đúng session soe + SQL_TEXT là block PL/SQL đốt CPU.
+- SPID từ V$PROCESS khớp PID từ OS (mapping hai chiều nhất quán).</p>
+<p><strong>Debrief Questions:</strong>
+- Cột nào trong <code>V$PROCESS</code> là cầu nối tới PID của OS?
+- Vì sao kill theo PID ở OS (<code>kill -9</code>) nguy hiểm hơn <code>ALTER SYSTEM KILL SESSION</code>?
+- Nếu process nóng là <code>ora_lgwr_&lt;SID&gt;</code> (background) thay vì foreground, cách điều tra khác gì?</p>
+<hr />
+<h2 id="exercise-3-troubleshooting-scenario-expert-level">Exercise 3 — Troubleshooting Scenario (Expert Level)<a class="headerlink" href="#exercise-3-troubleshooting-scenario-expert-level" title="Permanent link">&para;</a></h2>
+<p><strong>Incident Brief:</strong>
+Thứ Ba 09:20. Batch nightly kết thúc muộn, và sáng nay OLTP phản hồi chậm rời rạc. Sự cố "đỉnh điểm lúc 03:10–03:40" đã qua — không còn tái hiện lúc bạn vào lúc 09:20. AWR cho khoảng 03:00–04:00 cho thấy DB Time bình thường, top event là <code>SQL*Net message from client</code> (idle) và một ít <code>db file sequential read</code>. Junior DBA kết luận "DB ổn, chắc do mạng". Bạn không tin.</p>
+<p><strong>Evidence Provided:</strong></p>
+<p>AWR 03:00–04:00 (Host CPU section):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%User   %System   %WIO   %Idle   Load Average Begin/End
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  22        8       51      19        6.2 / 41.8
+</span></code></pre></div></p>
+<p>OSWatcher archive (đang chạy sẵn), trích <code>oswvmstat</code> quanh 03:10–03:40:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>time      r   b     swpd   free    si   so    bi      bo     us sy id wa st
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>03:08:02  2   1        0  812340    0    0    120    1400    20  7 68  5  0
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>03:12:04  3  38        0  120440    0    0    240  512880     8  9  4 79  0   ← b=38, wa=79
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>03:20:06  4  44        0   98220   40  180    180  548200     7 10  3 80  0   ← si/so&gt;0
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>03:36:08  3  41        0  110300    0    0    210  530400     8  9  4 79  0
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>03:52:10  2   0        0  790120    0    0    140    1600    19  6 70  5  0
+</span></code></pre></div></p>
+<p>OSWatcher <code>oswiostat</code> (device chứa datafile, quanh 03:12):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Device   r/s   w/s   rkB/s    wkB/s   await  avgqu-sz  %util
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>sdb      12    980    480    510000   210.0     58.0    100.00
+</span></code></pre></div></p>
+<p><code>V$DATAFILE</code>: datafile chính nằm trên mount <code>/u02</code> → device <code>sdb</code>.
+AWR không có metric OS nào cho khoảng này (chỉ Host CPU tổng hợp begin/end).</p>
+<p><strong>Your Mission:</strong>
+1. Junior nói "DB ổn, do mạng" dựa trên AWR top event <code>SQL*Net message from client</code>. Bác bỏ hoặc xác nhận bằng bằng chứng OSWatcher.
+2. Từ <code>oswvmstat</code>, phân loại chính xác nút thắt lúc 03:10–03:40. Đọc r, b, %wa, si/so.
+3. <code>si/so &gt; 0</code> lúc 03:20 nói lên điều gì thêm? Tại sao nó làm mọi thứ tệ hơn?
+4. <code>iostat</code> cho <code>sdb</code>: <code>%util=100</code>, <code>await=210ms</code>, <code>w/s=980</code>, <code>wkB/s≈500MB/s</code>. Đây là I/O của cái gì (batch ghi lớn) và vì sao OLTP bị vạ lây?
+5. Vì sao AWR <strong>không đủ</strong> để chẩn đoán sự cố này, còn OSWatcher thì được? Đề xuất fix + phòng ngừa.</p>
+<p><strong>Evaluation Criteria:</strong>
+- Bác bỏ "do mạng": <code>SQL*Net message from client</code> là <strong>idle wait</strong> (server chờ client) — không phải nguyên nhân; AWR Host CPU cho thấy <code>%WIO=51%</code> và Load Average End=41.8 → dấu hiệu I/O bottleneck rõ, không phải mạng. Junior đọc nhầm idle event thành thủ phạm.
+- Phân loại nút thắt: <code>oswvmstat</code> lúc 03:12–03:36 có <code>b=38-44</code> (nhiều tiến trình blocked chờ I/O), <code>wa=79-80%</code> (CPU gần như chỉ ngồi chờ I/O), <code>r</code> thấp (2-4) → <strong>I/O bottleneck</strong>, KHÔNG phải CPU. <code>bo</code> (block out) ~500k+ = ghi ồ ạt.
+- <code>si/so &gt; 0</code> lúc 03:20 + <code>free</code> tụt còn ~98MB → <strong>memory pressure gây swapping</strong> chồng lên I/O bottleneck; SGA/PGA có nguy cơ bị paged → OLTP càng chậm; đây là nút thắt thứ hai, làm mọi thứ tệ hơn.
+- <code>sdb</code> <code>%util=100</code>, <code>await=210ms</code>, <code>wkB/s≈500MB/s</code>, <code>w/s=980</code>: batch nightly đang ghi khối lượng khổng lồ lên chính device chứa datafile → device bão hòa (await 210ms &gt;&gt; 10ms) → mọi <code>db file sequential read</code> của OLTP xếp hàng sau → OLTP chậm rời rạc. OLTP vạ lây vì <strong>chung device</strong> với batch.
+- AWR không đủ: chỉ có Host CPU <strong>begin/end</strong> tổng hợp, không có chuỗi thời gian OS, không có iostat per-device, không thấy swapping — không thể chỉ ra device <code>sdb</code> bão hòa lúc 03:12. OSWatcher có chuỗi vmstat/iostat theo thời gian → chẩn đoán được sự cố <strong>đã qua</strong>. Đây chính là lý do OSWatcher phải chạy sẵn.
+- Fix/phòng ngừa: (1) tách I/O batch khỏi device datafile OLTP (mount/ASM diskgroup riêng, hoặc lịch batch lệch giờ OLTP); (2) xử lý memory pressure (thêm RAM/điều chỉnh PGA_AGGREGATE, HugePages cho SGA để không swap); (3) giữ OSWatcher chạy 24/7 + cân nhắc I/O Resource Manager giới hạn batch; (4) alert theo <code>await</code>/<code>%util</code> per-device, không chỉ load average.
+- <strong>Bonus:</strong> chỉ ra map ngược: từ <code>oswtop</code>/<code>ps</code> trong archive tìm PID ghi nhiều (batch process), map SPID → session batch để xác nhận đúng thủ phạm; và cảnh báo <code>%st</code> nếu đây là VM (kiểm cột st — ở đây st=0 nên loại trừ hypervisor).</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Nguồn gốc</p>
+<p><code>The-Oracle-Database-Performance-Tuning-Course/section_all_new/section_34_os_performance_senior_guide.md</code></p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Trở lại mục lục
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Chân trang" >
+        
+          
+          <a href="../section-32-database-connection-optimization-senior-guide/" class="md-footer__link md-footer__link--prev" aria-label="Trước: Section 32 — Database Connection Optimization: Senior DBA Guide">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Trước
+              </span>
+              <div class="md-ellipsis">
+                Section 32 — Database Connection Optimization: Senior DBA Guide
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../section-35-sql-performance-analyzer-senior-guide/" class="md-footer__link md-footer__link--next" aria-label="Sau: Section 35 — SQL Performance Analyzer: Senior DBA Guide">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Sau
+              </span>
+              <div class="md-ellipsis">
+                Section 35 — SQL Performance Analyzer: Senior DBA Guide
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "navigation.prune", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "\u0110\u00e3 sao ch\u00e9p", "clipboard.copy": "Sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m", "search.result.more.one": "1 t\u1eeb kh\u00e1c trong trang", "search.result.more.other": "# t\u1eeb kh\u00e1c trong trang", "search.result.none": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i li\u1ec7u li\u00ean quan", "search.result.one": "1 t\u00e0i li\u1ec7u li\u00ean quan", "search.result.other": "# t\u00e0i li\u1ec7u li\u00ean quan", "search.result.placeholder": "Nh\u1eadp \u0111\u1ec3 b\u1eaft \u0111\u1ea7u t\u00ecm ki\u1ebfm", "search.result.term.missing": "Kh\u00f4ng", "select.version": "Ch\u1ecdn phi\u00ean b\u1ea3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

@@ -1,0 +1,21 @@
+[11:40:16] ==> Tìm interface chứa private IP trên node1
+[11:40:20]     iface=eth1
+[11:40:20] ==> Gắn VIP 192.168.10.100/24 lên node1:eth1
+ARPING 192.168.10.100 from 192.168.10.100 eth1
+Sent 3 probes (3 broadcast(s))
+Received 0 response(s)
+    VIP đã gắn
+    inet 192.168.10.11/24 brd 192.168.10.255 scope global eth1
+    inet 192.168.10.100/24 scope global secondary eth1
+[11:40:28] ==> Test VIP reachable từ mgmt
+PING 192.168.10.100 (192.168.10.100) 56(84) bytes of data.
+64 bytes from 192.168.10.100: icmp_seq=1 ttl=64 time=0.443 ms
+64 bytes from 192.168.10.100: icmp_seq=2 ttl=64 time=0.279 ms
+
+--- 192.168.10.100 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1024ms
+rtt min/avg/max/mdev = 0.279/0.361/0.443/0.082 ms
+    PING OK
+    [FAIL] MySQL connect via VIP: bash: line 3: mysql: command not found
+[11:40:32] ==> Bước 6 hoàn tất. VIP đang trỏ về node1.
+[11:40:32]     Để test failover: bash demo/04-mha/07-failover-test.sh
